@@ -19,5 +19,6 @@
     "1025dex"
   ],
   "conflicts": [],
-  "description": "FireRed / LeafGreen: registers National Dex species #387-1025 (Gen 4-9) as data -- stats, typing, Gen 3-expressible learnsets, abilities and evolutions, generated from PokéAPI. Evolutions gated on an item FireRed lacks wait rather than drop, and activate automatically if another mod ever adds that item. A framework, not an art pack: no sprites, icons or cries ship; sprite mods plug in through setArtProvider. Steps aside when 1025Dex is installed."
+  "description": "FireRed / LeafGreen: registers National Dex species #387-1025 (Gen 4-9) as data -- stats, typing, Gen 3-expressible learnsets, abilities and evolutions, generated from PokéAPI. Evolutions gated on an item FireRed lacks wait rather than drop, and activate automatically if another mod ever adds that item. A framework, not an art pack: no sprites, icons or cries ship; sprite mods plug in through setArtProvider. Steps aside when 1025Dex is installed.",
+  "github": "poooooby/national_dex_gen3"
 }
