@@ -1,0 +1,11 @@
+# Excluded from the packaged mod (modkit matches exact relative paths).
+CLAUDE.md
+tools/build_species.py
+tests/_gen3.lua
+tests/register_test.lua
+tests/steps_aside_test.lua
+tests/fixtures/1025dex/main.lua
+tests/fixtures/1025dex/manifest.json
+tests/companion_item_test.lua
+tests/fixtures/item_mod/main.lua
+tests/fixtures/item_mod/manifest.json

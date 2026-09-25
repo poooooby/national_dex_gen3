@@ -1,0 +1,10 @@
+{
+  "id": "1025dex",
+  "name": "1025Dex (test stub)",
+  "version": "1.1.21",
+  "api": 2,
+  "entry": "main.lua",
+  "profile": "content",
+  "games": ["firered", "leafgreen"],
+  "description": "Test stub standing in for 1025Dex: only its presence matters here."
+}

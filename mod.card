@@ -1,0 +1,27 @@
+-- Sharing metadata (25-community-and-ecosystem.md 3.2). Read by tooling and
+-- the manager's detail pane; never by the loader's merge.
+return {
+  summary = "FireRed/LeafGreen: National Dex #387-1025 as data, for spawn and battle mods.",
+  author = "poooooby",
+  tags = { "content", "dex", "tool", "gen3" },
+  differences = {
+    added = {
+      "species #387-1025 with stats, Gen 3 typing, learnsets, abilities and evolutions",
+      "TM/HM, move-tutor and egg-move compatibility for the new species",
+      "evolutions from FireRed's own species into new ones where FireRed has the item (Magnezone, Probopass)",
+      "an evolution gated on an item FireRed lacks waits instead of dropping, and activates on its own if another mod ever registers that item",
+      "exports apiVersion / isActive / provider / listSpecies / slotOf / evolutionsOf / setArtProvider",
+    },
+    known = {
+      "no sprites, icons or cries: pair with a sprite mod through setArtProvider",
+      "Fairy typing is dropped (Gen 3 has no Fairy type)",
+      "new species are not listed in FireRed's Pokedex screens",
+      "held-item + time-of-day evolutions (Happiny, Gligar, Sneasel) need a new engine trigger, not just an item, so no item mod can unlock them",
+      "registers nothing when 1025Dex is installed",
+    },
+  },
+  credits = {
+    { who = "PokéAPI", for_ = "the species data" },
+  },
+  compat = { engine = ">=0.3.0", modApi = 2 },
+}

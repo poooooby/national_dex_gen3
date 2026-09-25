@@ -1,0 +1,7 @@
+# Local Tooling
+CLAUDE.md
+
+# PokéAPI response cache and Python build junk
+/tools/.cache/
+__pycache__/
+*.pyc
