@@ -60,7 +60,7 @@ return function(mod, state)
     return out
   end
 
-  -- The FireRed species slot for an id or dex number (this mod's species).
+  -- The running game's species slot for an id or dex number (this mod's species).
   exports.slotOf = function(idOrDex)
     local r = find(idOrDex)
     return r and r.slot or nil

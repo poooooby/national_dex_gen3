@@ -3,6 +3,20 @@
 All notable changes to this mod are documented here, in
 [keep a changelog](https://keepachangelog.com/en/1.1.0/) format.
 
+## [0.3.1] - 2026-10-05
+
+### Changed
+
+- Documented Ruby, Sapphire and Emerald as explicitly supported alongside
+  FireRed and LeafGreen. `manifest.json` already targeted `games: ["gen3"]`
+  (all five versions) and nothing under `src/` was ever tied to FireRed's
+  own registries -- moves, items and species are always resolved against
+  whichever game is running -- so this is a documentation and comment
+  correction, not a behavior change. Docs that cited FireRed/LeafGreen-only
+  facts (15 move tutors, which evolution items are present) now say so
+  explicitly, since those numbers differ on Ruby/Sapphire (no tutors) and
+  Emerald (its own larger tutor set).
+
 ## [0.3.0] - 2026-09-25
 
 ### Changed

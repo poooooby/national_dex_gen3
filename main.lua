@@ -1,4 +1,6 @@
--- National Dex Gen 3: species #387-1025 for Pokémon FireRed / LeafGreen.
+-- National Dex Gen 3: species #387-1025 for every Gen 3 game -- Pokémon
+-- FireRed, LeafGreen, Ruby, Sapphire and Emerald (manifest.json: games =
+-- ["gen3"]).
 --
 -- Data + framework only. The payload (data/species/*.lua, built from PokéAPI
 -- by tools/build_species.py) is registered through the engine's own species
@@ -6,17 +8,17 @@
 -- through mod.exports.setArtProvider (src/art.lua).
 --
 -- Module map:
---   src/species.lua  payload -> FireRed records, resolved against the running
+--   src/species.lua  payload -> records, resolved against the running
 --                    game's move / item / species registries, and registered
 --   src/fixups.lua   Pokemon.onReload repairs the engine cannot do from a
 --                    registry write (evolution targets, name + national lookup)
---                    and the move-tutor compatibility FireRed keeps outside
---                    the species registry
+--                    and the move-tutor compatibility the running game keeps
+--                    outside the species registry
 --   src/art.lua      pokemon.sprite seam for art providers
 --   src/api.lua      mod.exports
 --
--- FireRed slot numbering: species dex + 64 (451..1089), above every ROM slot,
--- the same numbering 1025Dex uses, so a save moves between the two intact.
+-- Slot numbering: species dex + 64 (451..1089), above every ROM slot, the
+-- same numbering 1025Dex uses, so a save moves between the two intact.
 
 local function loadSibling(mod, name)
   local source = mod:read(name)

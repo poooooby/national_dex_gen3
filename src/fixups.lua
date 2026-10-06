@@ -1,4 +1,4 @@
--- Repairs FireRed's species tables need after a registry write, re-applied on
+-- Repairs the running Gen 3 game's species tables need after a registry write, re-applied on
 -- every species reload (Pokemon.onReload), because the engine rebuilds its
 -- tables from the ROM pack each time.
 --
@@ -35,7 +35,7 @@ local function nameKeys(record)
   return keys
 end
 
--- The step's engine PARAM (a level, or an item's FireRed number), and
+-- The step's engine PARAM (a level, or an item's number in the running game), and
 -- whether it resolved. An item step that does not resolve is not "param 0"
 -- -- that would be a real, wrong item id -- it is "not yet": the caller
 -- must skip writing the row rather than write a bad one.
@@ -89,7 +89,8 @@ function Fixups.new(registered, itemIndex, bridges, log)
     end
   end
 
-  -- FireRed's 15 move tutors: a species' tutor bits come from the moves it
+  -- The running game's move tutors (FireRed/LeafGreen: 15; Ruby/Sapphire: none;
+  -- Emerald: its own larger set): a species' tutor bits come from the moves it
   -- can be taught in any game. MoveLearn loads its tutor pack lazily and can
   -- drop it (resetTutorPack), so the bits are added to whichever pack its
   -- tutorLearnsets() hands back, once per pack.

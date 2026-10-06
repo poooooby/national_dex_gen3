@@ -3,16 +3,17 @@
 Build national_dex_gen3's species payload from PokéAPI.
 
 Writes data/species/NNN.lua shards: one record per National Dex species
-#387-1025 (default variety only), shaped for Pokémon FireRed's species
-registry in gen1recomp, plus data/species/index.lua listing the shards.
+#387-1025 (default variety only), shaped for the Gen 3 species registry
+in gen1recomp (FireRed, LeafGreen, Ruby, Sapphire, Emerald all share it),
+plus data/species/index.lua listing the shards.
 
-Only what FireRed can express is kept:
+Only what Gen 3 can express is kept:
   * types: FAIRY does not exist in Gen 3; it is dropped (a pure Fairy type
     becomes NORMAL, the pre-Gen 6 convention);
   * learnset: level-up moves from the newest main-series version group that
-    has any, restricted to move ids 1-354 (the moves FireRed has), shipped as
-    move NUMBERS -- the mod resolves them to FireRed's own move names from the
-    running game's move registry;
+    has any, restricted to move ids 1-354 (Gen 3's move table), shipped as
+    move NUMBERS -- the mod resolves them to the running game's own move
+    names from its move registry;
   * abilities: PokéAPI ability ids 1-76 (Gen 3's own numbering), as numbers;
   * evolutions: level-up with a minimum level, item use, trade and friendship
     steps between species #1-1025, targets as dex numbers.
@@ -43,9 +44,9 @@ import requests
 BASE_URL = "https://pokeapi.co/api/v2"
 ROOT = Path(__file__).resolve().parent.parent
 FIRST_DEX, LAST_DEX = 387, 1025
-SLOT_OFFSET = 64          # FireRed slot = dex + 64 (451..1089), above every ROM slot
+SLOT_OFFSET = 64          # Gen 3 slot = dex + 64 (451..1089), above every ROM slot
 SHARD_SIZE = 80
-MAX_MOVE_ID = 354         # FireRed's move table
+MAX_MOVE_ID = 354         # Gen 3's move table
 MAX_ABILITY_ID = 76       # Gen 3's abilities
 
 # Newest first. Legends: Arceus is left out: its move system is its own.
@@ -117,7 +118,7 @@ def id_from_url(url: str) -> int:
 
 
 def engine_id(name: str) -> str:
-    """PokéAPI species slug -> the registry id style FireRed uses
+    """PokéAPI species slug -> the registry id style Gen 3 games use
     (MR_MIME, HO_OH, NIDORAN_F): upper case, separators as underscores."""
     s = name.replace("♀", "-f").replace("♂", "-m")
     s = re.sub(r"[.'’:]", "", s)
@@ -168,8 +169,8 @@ def learnset_for(pokemon: dict[str, Any]) -> list[list[int]]:
 
 
 def moves_by_method(pokemon: dict[str, Any], methods: set[str]) -> list[int]:
-    """Move ids (FireRed's 1-354 only) the species learns by any of `methods`
-    in any main-series game -- a FireRed TM, HM or tutor is compatible when
+    """Move ids (Gen 3's 1-354 only) the species learns by any of `methods`
+    in any main-series game -- a Gen 3 TM, HM or tutor is compatible when
     some game teaches the species that move that way."""
     found = set()
     for move in pokemon["moves"]:
@@ -195,7 +196,7 @@ def abilities_for(pokemon: dict[str, Any]) -> list[int]:
 
 
 def evolution_steps(chain: dict[str, Any]) -> dict[int, list[dict[str, Any]]]:
-    """dex -> steps FROM that species, in the FireRed-expressible subset."""
+    """dex -> steps FROM that species, in the Gen 3-expressible subset."""
     steps: dict[int, list[dict[str, Any]]] = {}
 
     def walk(node: dict[str, Any]) -> None:
@@ -253,7 +254,7 @@ def build(api: API, workers: int) -> tuple[list[dict[str, Any]], list[dict[str, 
             for source, rows in evolution_steps(item["chain"]).items():
                 steps.setdefault(source, rows)
     # steps FROM the cart's own species (#1-386) INTO new ones: Eevee ->
-    # Leafeon, Magneton -> Magnezone, ... (only methods FireRed can express)
+    # Leafeon, Magneton -> Magnezone, ... (only methods Gen 3 can express)
     crossgen = [dict(step, source=source)
                 for source, rows in sorted(steps.items()) if source < FIRST_DEX
                 for step in rows if step["target"] >= FIRST_DEX]
@@ -283,8 +284,8 @@ def build(api: API, workers: int) -> tuple[list[dict[str, Any]], list[dict[str, 
             "friendship": min(255, species.get("base_happiness") if species.get("base_happiness") is not None else 70),
             "abilities": abilities_for(pokemon),
             "learnset": learnset_for(pokemon),
-            # taught (machine or tutor) and egg moves, FireRed's moves only;
-            # the mod maps `teach` onto FireRed's own TMs, HMs and tutors
+            # taught (machine or tutor) and egg moves, Gen 3's moves only;
+            # the mod maps `teach` onto the running game's own TMs, HMs and tutors
             "teach": moves_by_method(pokemon, {"machine", "tutor"}),
             "eggMoves": moves_by_method(pokemon, {"egg"}),
             "evolutions": steps.get(dex, []),
@@ -292,8 +293,8 @@ def build(api: API, workers: int) -> tuple[list[dict[str, Any]], list[dict[str, 
             "mythical": bool(species.get("is_mythical")),
             "dexEntry": {
                 "kind": re.sub(r"\s*Pok[eé]mon$", "", genus).upper(),
-                "height": pokemon.get("height") or 0,   # decimetres, as FireRed
-                "weight": pokemon.get("weight") or 0,   # hectograms, as FireRed
+                "height": pokemon.get("height") or 0,   # decimetres, as Gen 3 stores it
+                "weight": pokemon.get("weight") or 0,   # hectograms, as Gen 3 stores it
             },
         })
     return records, crossgen
@@ -334,7 +335,7 @@ def write(records: list[dict[str, Any]], crossgen: list[dict[str, Any]], out_dir
     (out_dir / "index.lua").write_text(index, encoding="utf-8")
     body = ",\n".join("  " + lua(step) for step in crossgen)
     (out_dir / "crossgen.lua").write_text(
-        header + "-- Evolutions from FireRed's own species into #387-1025.\n"
+        header + "-- Evolutions from the cart's own species into #387-1025.\n"
         + "return {\n" + body + (",\n" if body else "") + "}\n", encoding="utf-8")
 
 

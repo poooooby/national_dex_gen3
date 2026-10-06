@@ -1,7 +1,9 @@
--- Payload -> FireRed species records, registered through mod.content.pokemon.
+-- Payload -> Gen 3 species records, registered through mod.content.pokemon.
+-- Runs the same way on any Gen 3 game (FireRed, LeafGreen, Ruby, Sapphire,
+-- Emerald): nothing here is tied to one ROM's registries.
 --
 -- The payload is written in numbers (move ids, ability ids, dex targets); the
--- NAMES FireRed's registry wants are read from the running game, never
+-- NAMES the registry wants are read from the running game, never
 -- hard-coded: move names from the moves registry (record.index = move id),
 -- evolution items from the items registry, evolution targets from the species
 -- registry plus this payload. Anything the game cannot resolve is dropped
@@ -47,8 +49,10 @@ function Species.loadPayload(load)
   return #out > 0 and out or nil
 end
 
--- FireRed's species registry caps `index` at 1023; this payload needs 1089.
--- The cap is a schema constant with no mod API, hence engine_internals.
+-- The Gen 3 species registry (one schema shared by every Gen 3 game -- see
+-- Schemas.REGISTRIES.pokemon.gen3Fields in the engine) caps `index` at 1023;
+-- this payload needs 1089. The cap is a schema constant with no mod API,
+-- hence engine_internals.
 local function raiseSlotCap(mod)
   local ok, Schemas = pcall(require, "src.mods.Schemas")
   local fields = ok and type(Schemas) == "table" and Schemas.REGISTRIES
@@ -57,7 +61,7 @@ local function raiseSlotCap(mod)
     fields.index = Schemas.f.opt(Schemas.f.int(1, SLOT_CAP))
     return true
   end
-  mod.log:warn("could not raise FireRed's species slot cap -- species past "
+  mod.log:warn("could not raise the Gen 3 species slot cap -- species past "
     .. "slot 1023 (dex > 959) will not register")
   return false
 end
@@ -98,7 +102,7 @@ local function enginePicPath(side, slot)
 end
 
 -- One evolution step -> a registry row { method, species, level?, item? },
--- or nil when FireRed lacks the target or the item RIGHT NOW. Eager and
+-- or nil when the running game lacks the target or the item RIGHT NOW. Eager and
 -- load-time only: used for the schema-validated record handed to
 -- mod.content.pokemon:register/:patch, which can't be touched again once
 -- content freezes. `itemId` is the snapshot lookups() built from whatever is
@@ -112,7 +116,7 @@ local function evolutionRow(step, itemId, byDex)
   if step.level then row.level = step.level end
   if step.item then
     row.item = itemId[normalize(step.item)]
-    if not row.item then return nil end -- an item FireRed does not have yet
+    if not row.item then return nil end -- an item the running game does not have yet
   end
   return row, target.slot
 end
@@ -142,7 +146,7 @@ local function moveNames(ids, moveName)
   return out
 end
 
--- One payload row -> the record FireRed's registry validates.
+-- One payload row -> the record the running game's registry validates.
 local function toRecord(r, moveName, itemId, byDex)
   local learnset = {}
   for _, row in ipairs(r.learnset or {}) do
@@ -165,8 +169,8 @@ local function toRecord(r, moveName, itemId, byDex)
     genderRatio = r.genderRatio, eggCycles = r.eggCycles, friendship = r.friendship,
     abilities = (r.abilities and #r.abilities > 0) and r.abilities or nil,
     learnset = learnset, evolutions = evolutions,
-    -- every FireRed move the species can be taught; the registry keeps the
-    -- ones that are FireRed TMs/HMs (the tutors are src/fixups.lua's job)
+    -- every move the running game can teach the species; the registry keeps
+    -- the ones that are its TMs/HMs (the tutors are src/fixups.lua's job)
     tmhm = moveNames(r.teach, moveName),
     eggMoves = moveNames(r.eggMoves, moveName),
     dexEntry = r.dexEntry,
@@ -242,8 +246,8 @@ function Species.register(mod, payload, crossgen)
     if ok then
       -- Bookkeeping for fixups, built from the PAYLOAD's own evolution list
       -- (not `record.evolutions`, which evolutionRow already thinned to
-      -- whatever resolves right now): an item step that FireRed's item
-      -- registry does not answer for yet is kept, not dropped, so it can
+      -- whatever resolves right now): an item step that the running game's
+      -- item registry does not answer for yet is kept, not dropped, so it can
       -- resolve on a later apply() once some mod adds that item.
       local evolutions = {}
       for _, step in ipairs(r.evolutions or {}) do
@@ -279,7 +283,8 @@ function Species.loadCrossGeneration(load)
   return type(steps) == "table" and steps or {}
 end
 
--- PokéAPI item slug (e.g. "oval-stone") -> the item's FireRed number, or nil
+-- PokéAPI item slug (e.g. "oval-stone") -> the item's number in the running
+-- game, or nil
 -- when no registered item matches it -- YET. Matched by normalized id/name
 -- against the item registry FRESH ON EVERY CALL, never a snapshot, so an
 -- item any mod adds -- loaded before this one or after it, this session or
