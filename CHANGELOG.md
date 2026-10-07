@@ -3,6 +3,22 @@
 All notable changes to this mod are documented here, in
 [keep a changelog](https://keepachangelog.com/en/1.1.0/) format.
 
+## [0.3.2] - 2026-10-05
+
+### Added
+
+- `tests/rse_test.lua`, which actually proves 0.3.1's claim rather than
+  just asserting it: loads this mod against real imported Emerald, Ruby
+  and Sapphire carts and checks registration, reload repairs, TM/HM and
+  egg-move compatibility, tutor compatibility (present on Emerald, and
+  correctly absent with no error on Ruby/Sapphire), and the Magneton ->
+  Magnezone cross-generation evolution -- the same checks `register_test.lua`
+  already makes on FireRed, confirming they hold on the other three carts
+  too. `tests/_gen3.lua`'s `H.gen3Data()` now takes a `game` argument (still
+  defaulting to `"firered"`) and tolerates a cart with no `tutor.lua` at all
+  (Ruby/Sapphire), the same way the real engine's own `MoveLearn` already
+  does. No production code changed.
+
 ## [0.3.1] - 2026-10-05
 
 ### Changed

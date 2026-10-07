@@ -1,6 +1,6 @@
 -- Test helper (the "_" prefix keeps tests/tier_runner.lua from running it).
--- Builds a FireRed dataset headlessly from the imported cart under
--- firered/data/generated/gba, shaped the way Game3 exposes it to mods
+-- Builds a Gen 3 dataset headlessly from an imported cart under
+-- <game>/data/generated/gba, shaped the way Game3 exposes it to mods
 -- (src/core/Game3.lua _exposeModData). The species tables live on the real
 -- src.core.game3.pokemon module, as in the game, so repairs made through it
 -- are visible to the registry and the tests alike.
@@ -8,10 +8,6 @@
 -- Suites run from the gen1recomp root: luajit mods/<id>/tests/<name>_test.lua
 
 local H = {}
-
-local ROOT = "firered/data/generated/gba/"
-
-local function load(path) return dofile(ROOT .. path) end
 
 function H.modRoot()
   local script = ((arg and arg[0]) or ""):gsub("\\", "/")
@@ -24,13 +20,13 @@ function H.module(name)
 end
 
 -- data.maps: one record per map header (id, mapType, region section)
-local function maps()
+local function maps(root)
   local Json = require("src.link.Json")
   local MapCatalog = require("src.import.gba.map_catalog")
   local out = {}
-  local pipe = io.popen('ls "' .. ROOT .. 'map_tree/maps"')
+  local pipe = io.popen('ls "' .. root .. 'map_tree/maps"')
   for dir in pipe:lines() do
-    local f = io.open(ROOT .. "map_tree/maps/" .. dir .. "/header.json")
+    local f = io.open(root .. "map_tree/maps/" .. dir .. "/header.json")
     if f then
       local ok, h = pcall(Json.decode, f:read("*a"))
       f:close()
@@ -48,7 +44,23 @@ local function maps()
   return out
 end
 
-function H.gen3Data()
+-- game: "firered" (default, matching every existing call site), "leafgreen",
+-- "emerald", "ruby" or "sapphire" -- any imported <game>/ cart.
+function H.gen3Data(game)
+  local root = (game or "firered") .. "/data/generated/gba/"
+  local function load(path) return dofile(root .. path) end
+  -- Ruby and Sapphire never had move tutors (Emerald and FireRed/LeafGreen
+  -- added them); their carts ship no tutor.lua at all, and the real engine's
+  -- own MoveLearn.tutorLearnsets() already answers nil for that, gracefully
+  -- (src/core/game3/move_learn.lua read_cache_lua: a missing file is not an
+  -- error). Mirror that here instead of a plain dofile, which would error.
+  local function loadOptional(path)
+    local f = io.open(root .. path)
+    if not f then return nil end
+    f:close()
+    return load(path)
+  end
+
   local P = require("src.core.game3.pokemon")
   P._names = load("pokemon/names.lua")
   P._types = load("pokemon/types.lua")
@@ -63,9 +75,10 @@ function H.gen3Data()
   P._moveNames = load("pokemon/move_names.lua")
   P._national = load("pokemon/national.lua")
   P._tmhm = load("pokemon/tmhm.lua")
-  -- FireRed's move tutors live on MoveLearn, loaded lazily from the cache
+  -- Move tutors live on MoveLearn, loaded lazily from the cache.
   local ML = require("src.core.game3.move_learn")
-  ML._tutorPack, ML._tutorLoaded = load("pokemon/tutor.lua"), true
+  ML.resetTutorPack()
+  ML._tutorPack, ML._tutorLoaded = loadOptional("pokemon/tutor.lua"), true
   P._byName = {}
   for id, name in pairs(P._names) do
     if type(id) == "number" and type(name) == "string" then
@@ -73,7 +86,7 @@ function H.gen3Data()
     end
   end
   return {
-    maps = maps(), tilesets = {},
+    maps = maps(root), tilesets = {},
     gen3Pokemon = P,
     gen3Moves = { _rom = load("pokemon/battle_moves.lua").moves },
     gen3Items = { _byId = load("items/pack.lua").items },
