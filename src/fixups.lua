@@ -180,8 +180,25 @@ function Fixups.new(registered, itemIndex, bridges, log)
 
   -- Called on game.ready: apply now and after every reload. The key replaces
   -- an earlier registration of the same hook (F5 reloads).
+  -- The engine's "how many National Dex entries exist" constant. It is a
+  -- loop bound only (seen/caught are plain tables keyed by slot), and a mod
+  -- that reads it to enumerate species -- Kanto Gear's wild-encounter guide
+  -- builds its species cache over 1..NATIONAL_MAX -- never sees species past
+  -- it, so a spawn mod's #387+ rows silently vanish from that guide. Raised,
+  -- never lowered (1025Dex sets the same value). SIDE EFFECT, deliberate:
+  -- the native Pokedex list in National mode also uses this bound, so it now
+  -- lists #387-1025, without art unless a sprite mod provides it.
+  local DEX_TOP = 1025
+  local function raiseNationalMax()
+    local ok, Dex = pcall(require, "src.core.game3.dex")
+    if ok and type(Dex) == "table" and (tonumber(Dex.NATIONAL_MAX) or 0) < DEX_TOP then
+      Dex.NATIONAL_MAX = DEX_TOP
+    end
+  end
+
   function self.install(_)
     installTutors()
+    raiseNationalMax()
     local ok, P = pcall(require, "src.core.game3.pokemon")
     if not (ok and type(P) == "table") then return false end
     self.apply(P)

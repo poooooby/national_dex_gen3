@@ -3,6 +3,20 @@
 All notable changes to this mod are documented here, in
 [keep a changelog](https://keepachangelog.com/en/1.1.0/) format.
 
+## [0.4.0] - 2026-10-07
+
+### Changed
+
+- Raises the engine's `Dex.NATIONAL_MAX` from 386 to 1025 once this mod has
+  registered its species (never when 1025Dex provides them, never lowered).
+  Kanto Gear's wild-encounter guide builds its species cache over
+  `1..Dex.NATIONAL_MAX`, so every species past #386 was silently missing
+  from it and Modern Spawns' generated rows for them vanished from the
+  guide. Side effect, accepted: the native National Pokédex list uses the
+  same bound and now lists #387-1025, without art unless a sprite mod
+  provides it. Seen/caught counting already handled species past the old
+  bound and is unaffected.
+
 ## [0.3.2] - 2026-10-05
 
 ### Added

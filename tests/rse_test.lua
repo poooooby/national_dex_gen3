@@ -53,6 +53,16 @@ for _, game in ipairs({ "emerald", "ruby", "sapphire" }) do
     T.eq(sets, nil, game .. ": no tutor pack at all, and no error getting here")
   end
 
+  -- The National Dex bound the engine (and Kanto Gear's species cache)
+  -- enumerate up to: raised to cover every species this mod registers.
+  local Dex = require("src.core.game3.dex")
+  T.eq(Dex.NATIONAL_MAX, 1025, game .. ": Dex.NATIONAL_MAX covers #1025")
+  local missing = 0
+  for dex = 387, 1025 do
+    if not data.gen3Pokemon.speciesFromNational(dex) then missing = missing + 1 end
+  end
+  T.eq(missing, 0, game .. ": every National number 387-1025 maps to a slot")
+
   -- Evolutions from the cart's own species into new ones (Magneton ->
   -- Magnezone, FireRed's own Thunder Stone check in register_test.lua):
   -- resolves the same way here, since it is the same shared item schema.

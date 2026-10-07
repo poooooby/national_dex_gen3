@@ -91,8 +91,14 @@ them. When it's installed, this mod registers nothing and reports
   this mod with a sprite mod.
 - No party icons and no cries (silent). The engine has no sanctioned path for
   either on Gen 3.
-- New species don't appear in the Pokédex lists, which every Gen 3 game caps
-  at 386.
+- **The native Pokédex list now includes #387–1025 in National mode, without
+  art.** This mod raises the engine's `Dex.NATIONAL_MAX` (386) to 1025 — the
+  same value 1025Dex sets — because a mod that enumerates species up to that
+  bound (Kanto Gear's wild-encounter guide builds its species cache that way)
+  otherwise never sees a new species and silently drops its rows. The
+  Pokédex list uses the same bound, so without a sprite mod those entries
+  show missing or garbled pictures. Seen/caught counting is unaffected
+  (plain tables, no size limit).
 - Moves newer than Gen 3 aren't learnable (Gen 3 has no data for them). EV
   yields are 0.
 - Evolutions into species past #151 need the National Dex unlocked, as in

@@ -15,7 +15,7 @@ return {
     known = {
       "no sprites, icons or cries: pair with a sprite mod through setArtProvider",
       "Fairy typing is dropped (Gen 3 has no Fairy type)",
-      "new species are not listed in the Pokedex screens of any Gen 3 game",
+      "raises Dex.NATIONAL_MAX to 1025 (like 1025Dex), so the National Pokedex list shows #387-1025, without art unless a sprite mod provides it",
       "Ruby/Sapphire never had move tutors at all (Emerald and FireRed/LeafGreen added them), so tutor compatibility there is correctly empty, not broken",
       "held-item + time-of-day evolutions (Happiny, Gligar, Sneasel) need a new engine trigger, not just an item, so no item mod can unlock them",
       "registers nothing when 1025Dex is installed (FireRed/LeafGreen only)",
