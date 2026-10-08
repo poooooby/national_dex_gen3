@@ -105,7 +105,9 @@ them. When it's installed, this mod registers nothing and reports
   bound (Kanto Gear's wild-encounter guide builds its species cache that way)
   otherwise never sees a new species and silently drops its rows. The
   Pokédex list uses the same bound, so without a sprite mod those entries
-  show missing or garbled pictures. Seen/caught counting is unaffected
+  show missing or garbled pictures. On Emerald this mod also supplies a
+  Pokédex entry (category and size; no flavor text) for each new species,
+  since a mod walking every National number asserts one exists. Seen/caught counting is unaffected
   (plain tables, no size limit).
 - Moves newer than Gen 3 aren't learnable (Gen 3 has no data for them). EV
   yields are 0.

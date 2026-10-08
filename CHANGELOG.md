@@ -3,6 +3,19 @@
 All notable changes to this mod are documented here, in
 [keep a changelog](https://keepachangelog.com/en/1.1.0/) format.
 
+## [0.5.1] - 2026-10-08
+
+### Fixed
+
+- On Emerald, every species past #386 was still missing from Kanto Gear's
+  wild-encounter guide after 0.4.0, and its species cache could fail
+  outright: it walks every National number and asserts a Pokédex entry
+  exists for each, and Emerald's entries end at slot 411. This mod now
+  answers `Mapsec.readLua("pokemon/pokedex/entries.lua")` with an entry
+  (category, height, weight from PokéAPI; blank flavor text) for every
+  species it registers. Other games fall back to a blank entry on their own
+  and are untouched.
+
 ## [0.5.0] - 2026-10-07
 
 ### Added
@@ -39,19 +52,6 @@ All notable changes to this mod are documented here, in
   scoped to these item icons; species art is still a sprite mod's job.
 - `tests/register_test.lua` and `tests/companion_item_test.lua` updated for
   items no longer waiting.
-
-## [0.4.1] - 2026-10-08
-
-### Fixed
-
-- On Emerald, every species past #386 was still missing from Kanto Gear's
-  wild-encounter guide after 0.4.0, and its species cache could fail
-  outright: it walks every National number and asserts a Pokédex entry
-  exists for each, and Emerald's entries end at slot 411. This mod now
-  answers `Mapsec.readLua("pokemon/pokedex/entries.lua")` with an entry
-  (category, height, weight from PokéAPI; blank flavor text) for every
-  species it registers. Other games fall back to a blank entry on their own
-  and are untouched.
 
 ## [0.4.0] - 2026-10-07
 
