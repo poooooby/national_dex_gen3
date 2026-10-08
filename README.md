@@ -1,12 +1,123 @@
 # National Dex Gen 3
 
-National Dex Gen 3 adds National Dex species #387–1025 (Generations 4–9) to
-every Gen 3 Pokémon game in gen1recomp — FireRed, LeafGreen, Ruby, Sapphire
-and Emerald — as data. It gives them stats, typing, learnsets, abilities and
-evolutions. It's for mods that need the full roster on a Gen 3 game (such as
-Modern Spawns, on FireRed) and for players pairing it with a sprite mod. It
-is a framework: no sprites or party icons ship with it. It does ship cries
-for every species, and Bag icons for its own evolution items.
+**National Dex Gen 3 adds Generation 4 to 9 Pokémon to the Game Boy Advance games**
+in [gen1recomp](https://github.com/bryanthaboi/gen1recomp): FireRed, LeafGreen,
+Ruby, Sapphire and Emerald.
+
+Those games only know 386 Pokémon. This mod teaches them the other 639, from
+Turtwig (#387) to Pecharunt (#1025), so Sinnoh, Unova, Kalos, Alola, Galar and
+Paldea Pokémon can exist in Kanto and Hoenn. Each one gets its stats, typing,
+moves, ability, Pokédex entry, cry, and the evolutions that lead to it.
+
+On its own it is the *foundation*: it adds the Pokémon, but not their pictures
+and not a way to meet them in the wild. For the full experience, add the two
+companion mods [below](#companion-mods-recommended).
+
+## What it does
+
+- **Adds 639 Pokémon** (#387–1025) that behave like any other Pokémon in the
+  game: you can catch, train, evolve, trade and battle with them.
+- **Gives them Gen 3 moves.** Gen 3 only has 354 moves, so a newer move is
+  swapped, at the same level, for the closest Gen 3 move of the same type. Each
+  Pokémon keeps the same number of moves as in the modern games.
+- **Gives them an ability.** Gen 3 can't have new abilities, so each Pokémon gets
+  the closest Gen 3 one (for example Bidoof's Simple becomes Own Tempo). It acts
+  like that Gen 3 ability, not the real one.
+- **Lets old Pokémon evolve into new ones**, such as Rhydon into Rhyperior,
+  Magneton into Magnezone, Nosepass into Probopass, Scyther into Kleavor and
+  Togetic into Togekiss.
+- **Adds the evolution items** those evolutions need (Dusk Stone, Protector,
+  Dubious Disc and 16 more), and **sells them in shops**: stones and trade items
+  in Celadon's and Lilycove's department stores, the newest items in late-game
+  marts. See [the item guide](docs/items.md) for prices and locations.
+- **Adds 56 alternate forms** as Pokémon of their own: Galarian and Hisuian forms (Darumaka,
+  Zorua, Goodra and more), Wormadam's cloaks, the five Rotom appliances, Oricorio's styles, Gourgeist
+  and Pumpkaboo sizes, Lycanroc, Urshifu Rapid Strike, and legendary forms like Giratina Origin and
+  Kyurem Black. They show their normal Pokémon's Pokédex number. See [the forms guide](docs/pokemon/forms.md).
+- **Adds cries** for all 639 Pokémon, and for each form.
+- **Adds them to the Pokédex.** They appear in the National Pokédex list.
+- **Keeps each Pokémon's real typing.** Gen 3 has no Fairy type, so a Fairy half is
+  dropped (a pure Fairy becomes Normal). Togekiss stays Normal / Flying.
+
+## What it does not do
+
+- **It does not add battle sprites.** Without the sprite mod below, a new 
+  Pokémon shows a wrong, blank or garbled picture. No party icons either.
+- **It does not give forms a way to appear.** Gen 3 can't change a Pokémon's form, and nothing places
+  forms in the wild, so for now they only come from a save editor, plus a few that evolve into each
+  other. Megas and Gigantamax forms aren't included.
+- **It does not put the new Pokémon in the wild.** Nothing here changes where
+  Pokémon appear. Use Modern Spawns below; otherwise you'd have to
+  cheat to get them.
+- **It does not add new moves or abilities.** You'll never see Moonblast, Close
+  Combat or modern abilities like Protean. Everything is mapped to what
+  Gen 3 has, so a Pokémon plays like its modern self in spirit, not in detail.
+- **It does not change the 386 original Pokémon**, the story, the trainers or
+  the maps. Original Pokémon only gain the new evolutions.
+- **It can't do every evolution.** Gen 3 can't check the time of day or a held
+  item at level-up, so a few lines have no way to evolve: Gligar → Gliscor,
+  Sneasel → Weavile, Eevee → Leafeon / Glaceon, Piloswine → Mamoswine,
+  Happiny → Chansey.
+- **TM, tutor and egg moves stay limited to what Gen 3 has.** Only the
+  level-up moves are swapped for stand-ins.
+- **It does nothing if 1025Dex is installed.** 1025Dex adds the same Pokémon
+  itself, so this mod steps aside.
+
+## Companion mods (recommended)
+
+These two aren't required to start the game, but without them most of the new
+Pokémon will be missing or unseen.
+
+### [G9 Battle Sprites (Gen 3)](https://github.com/poooooby/g9-battle-sprites-gen3)
+
+**Why you need it: it adds the pictures.** This mod adds the Pokémon but ships no
+artwork. G9 Battle Sprites (Gen 3) gives every new Pokémon animated battle
+sprites (front and back, normal and shiny), its Pokédex and summary picture, and
+a party-menu icon. The original 386 Pokémon keep the game's own sprites. It's a
+Gen 3 rewrite of [g9-battle-sprites](https://github.com/tectorifter/g9-battle-sprites)
+by tectorifter.
+
+### [Modern Spawns](https://github.com/poooooby/g1r_modern_spawns)
+
+**Why you need it: it puts the new Pokémon in the wild.** Modern Spawns replaces
+the wild Pokémon in each area with Pokémon from all generations, picked to fit
+the place, by level, terrain, habitat, type and rarity. Each map keeps the game's
+own encounter rates and levels, so the game feels the same, just with a modern
+roster. It has options for how many generations can appear, how often rosters
+change, and rare legendaries, in **OPTIONS → MODS → Modern Spawns**. It needs this
+mod to know the new Pokémon on Gen 3 games.
+
+**Suggested setup:** install all three (National Dex Gen 3, G9 Battle Sprites (Gen
+3), Modern Spawns) and start a new game or load an existing save.
+
+## Installing
+
+1. Install [gen1recomp](https://github.com/bryanthaboi/gen1recomp) and import your
+   own FireRed, LeafGreen, Ruby, Sapphire or Emerald game.
+2. Download the latest `national_dex_gen3-….zip` from the
+   [Releases page](https://github.com/poooooby/national_dex_gen3/releases/latest).
+3. In the game, go to **MODS → Import mod .zip** and choose the file.
+4. Do the same for the companion mods (links above), then make sure all are turned on.
+
+## Player guides
+
+- [Added items](docs/items.md): every item's price, where to buy it in FireRed /
+  LeafGreen and Ruby / Sapphire / Emerald, and which Pokémon evolve with it.
+- [Added Pokémon](docs/pokemon.md): all 639 Pokémon by generation, with typing,
+  the Gen 3 ability each has in this game, and its level-up moves.
+- [Alternate forms](docs/pokemon/forms.md): the 56 forms, with the same details.
+
+## Credits
+
+Cries and item sprites are fan-made; see [CREDITS.md](CREDITS.md). Pokémon and
+all related names are the property of Nintendo, Creatures Inc. and GAME FREAK
+inc. This is an unofficial fan project.
+
+---
+
+# For mod authors and developers
+
+The rest of this page is technical.
 
 Try it (from a gen1recomp checkout, with this repo linked as `mods/national_dex_gen3`):
 
@@ -27,13 +138,28 @@ the same numbering 1025Dex uses, so a save moves between the two intact.
 |---|---|
 | Name, dex number, base stats, catch rate, base experience (capped at 255), growth rate, gender ratio, egg cycles, friendship, Pokédex kind/height/weight | PokéAPI |
 | Types | PokéAPI. Gen 3 has no Fairy type, so Fairy is dropped; a pure Fairy type becomes Normal |
-| Learnset | Level-up moves from the newest game that has them, limited to the 354 moves Gen 3 has. Move names are read from the running game's own move registry |
+| Learnset | The level-up list from the newest game that has one, at its full length. A move Gen 3 lacks is replaced, at the same level, by the closest Gen 3 move the species doesn't already learn (`tools/move_map.py`: same type, then similar power, accuracy, priority and effect). Move names are read from the running game's own move registry |
 | TM/HM compatibility | Every TM or HM (the same 58 machines in all five games) whose move the species can be taught by machine or tutor in any game (636 species; 37 of 58 machines on average) |
 | Move tutors | Whichever tutors the running game has — FireRed/LeafGreen's 15, Ruby/Sapphire's none, or Emerald's own larger set — whose move the species can be taught in any game (628 species on FireRed/LeafGreen) |
 | Egg moves | Egg moves Gen 3 has (315 species; many modern egg moves don't exist in Gen 3) |
 | Abilities | Gen 3 abilities only: the cart's own (ids 1–75 and Air Lock at 77) are kept, and each newer ability is mapped to the closest Gen 3 one (`tools/ability_map.py`), e.g. Simple → Own Tempo, Moxie → Guts. The Gen 3 battle engine cannot take new abilities from a mod, so a species shows and behaves like the Gen 3 ability it was given, not its real one |
 | Evolutions | Level, item, friendship and trade steps between species 1–1025 |
 | Evolutions from the cart's species | Steps from the cart's own species into new ones, such as Magneton → Magnezone and Nosepass → Probopass with a Thunder Stone |
+
+**Where to buy them.** The real games sell almost none of these, so placement
+is by item type and how far into the game a store is (`data/shops.lua`):
+
+| | FireRed / LeafGreen | Ruby / Sapphire / Emerald |
+|---|---|---|
+| Dusk, Dawn, Shiny and Ice Stone, Sachet, Whipped Dream | Celadon Dept. Store 4F (the stone floor) | Lilycove Dept. Store, supplements floor (Hoenn has no stone floor) |
+| Protector, Electirizer, Magmarizer, Dubious Disc, Reaper Cloth | Celadon Dept. Store 5F (battle items) | Lilycove Dept. Store, battle-item floor |
+| Gen 8-9 items | Six Island Mart (after the Elite Four) | Apples at Mossdeep, Armors and Metal Alloy at Sootopolis, Black Augurite and Peat Block at the Ever Grande League mart |
+
+Prices are twice the sell price Bulbapedia lists for the earliest game that has
+one (2,100 for most; Ice Stone and Metal Alloy 3,000; Black Augurite and Peat
+Block 1,000), and 2,100 where it lists none. A store is found by its original
+stock, so each entry covers every game with that list. LeafGreen's 23 stores are
+identical to FireRed's (checked against both carts).
 
 **Evolution items.** No Gen 3 game has every item PokéAPI's evolutions call
 for, so this mod registers the 19 it needs itself (Dusk Stone, Dawn Stone,
@@ -109,8 +235,10 @@ them. When it's installed, this mod registers nothing and reports
   Pokédex entry (category and size; no flavor text) for each new species,
   since a mod walking every National number asserts one exists. Seen/caught counting is unaffected
   (plain tables, no size limit).
-- Moves newer than Gen 3 aren't learnable (Gen 3 has no data for them). EV
-  yields are 0.
+- Moves newer than Gen 3 don't exist: the Gen 3 battle engine only has its own
+  354, and a mod can't add a move with a new effect. A species' newer moves
+  are replaced by the closest Gen 3 move (99% of attacks keep their type), so
+  it plays like its modern self in spirit, not in detail. EV yields are 0.
 - Evolutions into species past #151 need the National Dex unlocked, as in
   vanilla FireRed/LeafGreen/Emerald. (Ruby and Sapphire never had a National
   Dex at all in the original games; this still works there because
@@ -118,9 +246,8 @@ them. When it's installed, this mod registers nothing and reports
 - Every item evolution this mod generates is live, because the mod provides
   the items (see above): the 15 steps from the cart's own species (Magneton
   → Magnezone, Rhydon → Rhyperior, Scyther → Kleavor, …) and the new
-  species' own item steps. Nothing in the world gives you these items yet:
-  this mod only registers them, so players need another mod (or a cheat) to
-  obtain one.
+  species' own item steps. The items are sold in shops (see "Where to buy
+  them" above and [the item guide](docs/items.md)).
 - **Held-item level-ups, and other conditions no Gen 3 game has a trigger
   for at all** (location, a known move, gender, and similar) — Happiny →
   Chansey (Oval Stone, by day), Gligar → Gliscor (Razor Fang, at night),
@@ -139,19 +266,16 @@ them. When it's installed, this mod registers nothing and reports
   friendship-evolution trigger Red never had natively. On Gen 3, only a mod
   willing to patch the engine's own evolution-check code (not merely
   register data) could add a trigger like this; nothing here attempts that.
-- Learnsets are level-up only: 6,255 of the 9,331 level-up moves PokéAPI
-  lists are moves Gen 3 has (67%), so 20 species (Kricketot, Budew, Burmy,
-  Combee, the three Simisage/Simisear/Simipour monkeys, Tynamo, …) end up
-  with fewer than 4 learnable moves. TM/HM and egg-move coverage is partial
-  for the same reason: of 639 species, 636 get at least one TM/HM and 315
+- Level-up learnsets keep their modern length (9,302 moves across 639 species;
+  6,255 of them are real Gen 3 moves and 3,047 are substitutes). Eight
+  species still have fewer than 4 distinct moves because their real learnsets
+  are that short (Spewpa, Wimpod, Cosmog, Cosmoem, Blipbug, Applin, Snom,
+  Gimmighoul). TM/HM, tutor and egg moves are still limited to Gen 3's own
+  moves, not substituted: of 639 species, 636 get at least one TM/HM and 315
   get at least one egg move. Tutor coverage (628 species get at least one
   tutor move) is counted against FireRed/LeafGreen's 15 tutors; it's lower
   on Ruby/Sapphire (no tutors at all) and may be higher on Emerald, whose
   own, larger tutor set this mod reads live rather than assumes.
-
-## Credits
-
-Cries and item sprites are fan-made; see [CREDITS.md](CREDITS.md).
 
 ## Regenerating the data
 

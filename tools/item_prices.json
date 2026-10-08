@@ -1,0 +1,504 @@
+{
+ "dawn-stone": {
+  "title": "Dawn Stone",
+  "prices": [
+   {
+    "games": [
+     "DPPtHGSS",
+     "W",
+     "XYORAS",
+     "BDSP"
+    ],
+    "buy": null,
+    "sell": 1050
+   },
+   {
+    "games": [
+     "B"
+    ],
+    "buy": 10000,
+    "sell": 1050
+   },
+   {
+    "games": [
+     "B2W2"
+    ],
+    "buy": 60000,
+    "sell": 1050
+   },
+   {
+    "games": [
+     "SMUSUM",
+     "SwSh"
+    ],
+    "buy": null,
+    "sell": 1500
+   },
+   {
+    "games": [
+     "LA",
+     "SV"
+    ],
+    "buy": null,
+    "sell": 750
+   },
+   {
+    "games": [
+     "ZA"
+    ],
+    "buy": 3000,
+    "sell": 750
+   }
+  ]
+ },
+ "dubious-disc": {
+  "title": "Dubious Disc",
+  "prices": [
+   {
+    "games": [
+     "DPPtHGSS",
+     "BW",
+     "XYORAS",
+     "BDSP"
+    ],
+    "buy": null,
+    "sell": 1050
+   },
+   {
+    "games": [
+     "B2W2"
+    ],
+    "buy": 60000,
+    "sell": 1050
+   },
+   {
+    "games": [
+     "SMUSUM",
+     "SwSh"
+    ],
+    "buy": null,
+    "sell": 1000
+   },
+   {
+    "games": [
+     "LA"
+    ],
+    "buy": 10000,
+    "sell": 500
+   },
+   {
+    "games": [
+     "SV"
+    ],
+    "buy": null,
+    "sell": 1000
+   },
+   {
+    "games": [
+     "ZA"
+    ],
+    "buy": null,
+    "sell": 500
+   }
+  ]
+ },
+ "dusk-stone": {
+  "title": "Dusk Stone",
+  "prices": [
+   {
+    "games": [
+     "DPPtHGSS",
+     "WW2",
+     "XYORAS",
+     "BDSP"
+    ],
+    "buy": null,
+    "sell": 1050
+   },
+   {
+    "games": [
+     "B"
+    ],
+    "buy": 10000,
+    "sell": 1050
+   },
+   {
+    "games": [
+     "B2"
+    ],
+    "buy": 40000,
+    "sell": 1050
+   },
+   {
+    "games": [
+     "SMUSUM",
+     "SwSh"
+    ],
+    "buy": null,
+    "sell": 1500
+   },
+   {
+    "games": [
+     "LA",
+     "SV"
+    ],
+    "buy": null,
+    "sell": 750
+   },
+   {
+    "games": [
+     "ZA"
+    ],
+    "buy": 3000,
+    "sell": 750
+   }
+  ]
+ },
+ "electirizer": {
+  "title": "Electirizer",
+  "prices": [
+   {
+    "games": [
+     "DPPtHGSS",
+     "BWB2W2",
+     "XYORAS",
+     "BDSP"
+    ],
+    "buy": null,
+    "sell": 1050
+   },
+   {
+    "games": [
+     "SMUSUM",
+     "SwSh",
+     "SV"
+    ],
+    "buy": null,
+    "sell": 1000
+   },
+   {
+    "games": [
+     "LA"
+    ],
+    "buy": 10000,
+    "sell": 500
+   }
+  ]
+ },
+ "ice-stone": {
+  "title": "Ice Stone",
+  "prices": [
+   {
+    "games": [
+     "SMUSUM",
+     "SwSh"
+    ],
+    "buy": null,
+    "sell": 1500
+   },
+   {
+    "games": [
+     "PE"
+    ],
+    "buy": 5000,
+    "sell": 2500
+   },
+   {
+    "games": [
+     "LA",
+     "SV"
+    ],
+    "buy": null,
+    "sell": 750
+   },
+   {
+    "games": [
+     "ZA"
+    ],
+    "buy": 3000,
+    "sell": 750
+   }
+  ]
+ },
+ "magmarizer": {
+  "title": "Magmarizer",
+  "prices": [
+   {
+    "games": [
+     "DPPtHGSS",
+     "BWB2W2",
+     "XYORAS",
+     "BDSP"
+    ],
+    "buy": null,
+    "sell": 1050
+   },
+   {
+    "games": [
+     "SMUSUM",
+     "SwSh",
+     "SV"
+    ],
+    "buy": null,
+    "sell": 1000
+   },
+   {
+    "games": [
+     "LA"
+    ],
+    "buy": 10000,
+    "sell": 500
+   }
+  ]
+ },
+ "protector": {
+  "title": "Protector",
+  "prices": [
+   {
+    "games": [
+     "DPPtHGSS",
+     "BW",
+     "XYORAS",
+     "BDSP"
+    ],
+    "buy": null,
+    "sell": 1050
+   },
+   {
+    "games": [
+     "B2W2"
+    ],
+    "buy": 10000,
+    "sell": 1050
+   },
+   {
+    "games": [
+     "SMUSUM",
+     "SV"
+    ],
+    "buy": null,
+    "sell": 1000
+   },
+   {
+    "games": [
+     "SwSh"
+    ],
+    "buy": 3000,
+    "sell": 1000
+   },
+   {
+    "games": [
+     "LA"
+    ],
+    "buy": 10000,
+    "sell": 500
+   }
+  ]
+ },
+ "reaper-cloth": {
+  "title": "Reaper Cloth",
+  "prices": [
+   {
+    "games": [
+     "DPPtHGSS",
+     "BWB2W2",
+     "XYORAS",
+     "BDSP"
+    ],
+    "buy": null,
+    "sell": 1050
+   },
+   {
+    "games": [
+     "SMUSUM",
+     "SV"
+    ],
+    "buy": null,
+    "sell": 1000
+   },
+   {
+    "games": [
+     "SwSh"
+    ],
+    "buy": 3000,
+    "sell": 1000
+   },
+   {
+    "games": [
+     "LA"
+    ],
+    "buy": 10000,
+    "sell": 500
+   }
+  ]
+ },
+ "sachet": {
+  "title": "Sachet",
+  "prices": [
+   {
+    "games": [
+     "XYORAS"
+    ],
+    "buy": null,
+    "sell": 1050
+   },
+   {
+    "games": [
+     "SMUSUM",
+     "SwSh"
+    ],
+    "buy": null,
+    "sell": 1000
+   },
+   {
+    "games": [
+     "ZA"
+    ],
+    "buy": null,
+    "sell": 750
+   }
+  ]
+ },
+ "shiny-stone": {
+  "title": "Shiny Stone",
+  "prices": [
+   {
+    "games": [
+     "DPPtHGSS",
+     "W",
+     "XYORAS",
+     "BDSP"
+    ],
+    "buy": null,
+    "sell": 1050
+   },
+   {
+    "games": [
+     "B"
+    ],
+    "buy": 10000,
+    "sell": 1050
+   },
+   {
+    "games": [
+     "B2W2"
+    ],
+    "buy": 4000,
+    "sell": 1050
+   },
+   {
+    "games": [
+     "SMUSUM",
+     "SwSh"
+    ],
+    "buy": null,
+    "sell": 1500
+   },
+   {
+    "games": [
+     "LA",
+     "SV"
+    ],
+    "buy": null,
+    "sell": 750
+   },
+   {
+    "games": [
+     "ZA"
+    ],
+    "buy": 3000,
+    "sell": 750
+   }
+  ]
+ },
+ "sweet-apple": {
+  "title": "Sweet Apple",
+  "prices": []
+ },
+ "tart-apple": {
+  "title": "Tart Apple",
+  "prices": []
+ },
+ "whipped-dream": {
+  "title": "Whipped Dream",
+  "prices": [
+   {
+    "games": [
+     "XYORAS"
+    ],
+    "buy": null,
+    "sell": 1050
+   },
+   {
+    "games": [
+     "SMUSUM",
+     "SwSh"
+    ],
+    "buy": null,
+    "sell": 1000
+   },
+   {
+    "games": [
+     "ZA"
+    ],
+    "buy": null,
+    "sell": 750
+   }
+  ]
+ },
+ "auspicious-armor": {
+  "title": "Auspicious Armor",
+  "prices": []
+ },
+ "black-augurite": {
+  "title": "Black Augurite",
+  "prices": [
+   {
+    "games": [
+     "LA"
+    ],
+    "buy": 8000,
+    "sell": 500
+   },
+   {
+    "games": [
+     "ZA"
+    ],
+    "buy": null,
+    "sell": 500
+   }
+  ]
+ },
+ "malicious-armor": {
+  "title": "Malicious Armor",
+  "prices": []
+ },
+ "metal-alloy": {
+  "title": "Metal Alloy",
+  "prices": [
+   {
+    "games": [
+     "SV"
+    ],
+    "buy": null,
+    "sell": 1500
+   }
+  ]
+ },
+ "peat-block": {
+  "title": "Peat Block",
+  "prices": [
+   {
+    "games": [
+     "LA"
+    ],
+    "buy": 10000,
+    "sell": 500
+   }
+  ]
+ },
+ "syrupy-apple": {
+  "title": "Syrupy Apple",
+  "prices": []
+ }
+}

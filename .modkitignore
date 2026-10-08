@@ -4,6 +4,7 @@ tools/build_species.py
 tools/build_items.py
 tools/build_cries.py
 tools/ability_map.py
+tools/move_map.py
 tests/_gen3.lua
 tests/register_test.lua
 tests/steps_aside_test.lua
@@ -14,3 +15,18 @@ tests/companion_item_test.lua
 tests/fixtures/item_mod/main.lua
 tests/fixtures/item_mod/manifest.json
 tests/dex_entries_test.lua
+tests/shops_test.lua
+tools/fetch_item_prices.py
+tools/item_prices.json
+tools/build_docs.lua
+docs/items.md
+docs/pokemon.md
+docs/pokemon/gen4.md
+docs/pokemon/gen5.md
+docs/pokemon/gen6.md
+docs/pokemon/gen7.md
+docs/pokemon/gen8.md
+docs/pokemon/gen9.md
+tests/forms_test.lua
+tools/form_list.py
+docs/pokemon/forms.md

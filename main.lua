@@ -19,6 +19,7 @@
 --                    (and anyone else's) stop waiting on a companion item mod
 --   src/item_art.lua Bag icons for those items (no hook offers this; wraps the
 --                    Bag's own icon draw directly -- see its own header)
+--   src/shops.lua    puts those items on sale (data/shops.lua; wraps Marts.itemsFor)
 --   src/cry_art.lua  cries for #387-1025 (wraps Audio.playCry; assets/cries/cries.pak)
 --   src/art.lua      pokemon.sprite seam for art providers
 --   src/api.lua      mod.exports
@@ -51,9 +52,10 @@ return function(mod)
   local Items = loadSibling(mod, "src/items.lua")
   local ItemArt = loadSibling(mod, "src/item_art.lua")
   local CryArt = loadSibling(mod, "src/cry_art.lua")
+  local Shops = loadSibling(mod, "src/shops.lua")
   local Art = loadSibling(mod, "src/art.lua")
   local Api = loadSibling(mod, "src/api.lua")
-  if not (Species and Fixups and Items and ItemArt and CryArt and Art and Api) then return end
+  if not (Species and Fixups and Items and ItemArt and CryArt and Shops and Art and Api) then return end
 
   local read = function(path) return loadSibling(mod, path) end
 
@@ -80,16 +82,25 @@ return function(mod)
   Items.register(mod, itemPayload)
 
   local crossgen = Species.loadCrossGeneration(read)
-  local registered, bridges = Species.register(mod, payload, crossgen)
-  local fixups = Fixups.new(registered, Species.itemIndex(mod), bridges, mod.log)
+  local forms = Species.loadForms(read)
+  local registered, bridges, registeredForms = Species.register(mod, payload, crossgen, forms)
+  local fixups = Fixups.new(registered, Species.itemIndex(mod), bridges, mod.log, registeredForms)
   -- after Gen3Compat's own reload hook (registered while the game boots), so
   -- its re-apply of registry data does not undo these repairs
   mod.events:on("game.ready", function(ev)
     fixups.install(ev and ev.game or mod.game)
     ItemArt.install(mod, read)
     CryArt.install(mod, read)
+    Shops.install(read("data/shops.lua") or {}, Species.itemIndex(mod), function()
+      local okV, GV = pcall(require, "src.core.GameVersion")
+      return okV and GV and GV.current or nil
+    end, mod.log)
   end, -100)
 
-  local art = Art.install(mod, registered)
-  Api(mod, { active = true, species = registered, bridges = bridges, art = art })
+  -- art providers are asked about forms too, by their own id and slot
+  local everySpecies = {}
+  for _, r in ipairs(registered) do everySpecies[#everySpecies + 1] = r end
+  for _, r in ipairs(registeredForms) do everySpecies[#everySpecies + 1] = r end
+  local art = Art.install(mod, everySpecies)
+  Api(mod, { active = true, species = registered, forms = registeredForms, bridges = bridges, art = art })
 end

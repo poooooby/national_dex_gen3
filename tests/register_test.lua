@@ -56,6 +56,27 @@ T.eq(badAbility, nil, "and only ever one the cart has (1-75 or 77)")
 T.eq(P._abilities[451][1], 65, "Turtwig keeps Overgrow")
 T.check(P._abilities[875 + 64][1] ~= 0, "Eiscue (Ice Face has no Gen 3 id) gets a mapped ability")
 
+-- Typing: the Gen 3-era typing. Togekiss was Normal/Flying before Fairy
+-- existed (PokeAPI past_types); dropping Fairy from today's typing alone would
+-- leave it pure Flying.
+local togekiss = run.loader.content.pokemon:get("TOGEKISS")
+T.eq(togekiss.types[1], "NORMAL", "Togekiss keeps its pre-Fairy Normal half")
+T.eq(togekiss.types[2], "FLYING", "and Flying")
+T.eq(run.loader.content.pokemon:get("SYLVEON").types[1], "NORMAL", "a pure Gen 6+ Fairy is Normal")
+
+-- Learnsets keep the modern games' length: a move Gen 3 lacks is replaced by
+-- the closest Gen 3 move (tools/move_map.py), never dropped.
+local emptyLearnset = 0
+for _, r in ipairs(list) do
+  local rec = run.loader.content.pokemon:get(r.id)
+  if #(rec.learnset or {}) == 0 then emptyLearnset = emptyLearnset + 1 end
+end
+T.eq(emptyLearnset, 0, "every new species has a level-up learnset")
+T.check(#(run.loader.content.pokemon:get("BLIPBUG").learnset or {}) >= 1,
+        "even Blipbug, whose moves are all newer than Gen 3")
+T.check(#(run.loader.content.pokemon:get("GARGANACL").learnset or {}) >= 15,
+        "and a late species keeps a full-length list")
+
 local unresolved = 0
 for slot = 451, 1089 do
   local rows = P._learnsets[slot]

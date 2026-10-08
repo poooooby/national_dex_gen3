@@ -4,25 +4,26 @@
 --
 -- The evolution items no Gen 3 game has, that this mod's own evolutions
 -- (data/species, data/species/crossgen.lua) call for. src/items.lua
--- registers each at its own fixed slot (index = 900 + position here).
+-- registers each at its own fixed slot (index = 900 + position here). price is
+-- the shop price from tools/item_prices.json (Bulbapedia): 2x the earliest sell price.
 return {
-  { slug = "dawn-stone", id = "DAWN_STONE", name = "Dawn Stone", index = 900 },
-  { slug = "dubious-disc", id = "DUBIOUS_DISC", name = "Dubious Disc", index = 901 },
-  { slug = "dusk-stone", id = "DUSK_STONE", name = "Dusk Stone", index = 902 },
-  { slug = "electirizer", id = "ELECTIRIZER", name = "Electirizer", index = 903 },
-  { slug = "ice-stone", id = "ICE_STONE", name = "Ice Stone", index = 904 },
-  { slug = "magmarizer", id = "MAGMARIZER", name = "Magmarizer", index = 905 },
-  { slug = "protector", id = "PROTECTOR", name = "Protector", index = 906 },
-  { slug = "reaper-cloth", id = "REAPER_CLOTH", name = "Reaper Cloth", index = 907 },
-  { slug = "sachet", id = "SACHET", name = "Sachet", index = 908 },
-  { slug = "shiny-stone", id = "SHINY_STONE", name = "Shiny Stone", index = 909 },
-  { slug = "sweet-apple", id = "SWEET_APPLE", name = "Sweet Apple", index = 910 },
-  { slug = "tart-apple", id = "TART_APPLE", name = "Tart Apple", index = 911 },
-  { slug = "whipped-dream", id = "WHIPPED_DREAM", name = "Whipped Dream", index = 912 },
-  { slug = "auspicious-armor", id = "AUSPICIOUS_ARMOR", name = "Auspicious Armor", index = 913 },
-  { slug = "black-augurite", id = "BLACK_AUGURITE", name = "Black Augurite", index = 914 },
-  { slug = "malicious-armor", id = "MALICIOUS_ARMOR", name = "Malicious Armor", index = 915 },
-  { slug = "metal-alloy", id = "METAL_ALLOY", name = "Metal Alloy", index = 916 },
-  { slug = "peat-block", id = "PEAT_BLOCK", name = "Peat Block", index = 917 },
-  { slug = "syrupy-apple", id = "SYRUPY_APPLE", name = "Syrupy Apple", index = 918 },
+  { slug = "dawn-stone", id = "DAWN_STONE", name = "Dawn Stone", index = 900, price = 2100 }, -- 2x sell price 1050 (DPPtHGSS,W,XYORAS,BDSP)
+  { slug = "dubious-disc", id = "DUBIOUS_DISC", name = "Dubious Disc", index = 901, price = 2100 }, -- 2x sell price 1050 (DPPtHGSS,BW,XYORAS,BDSP)
+  { slug = "dusk-stone", id = "DUSK_STONE", name = "Dusk Stone", index = 902, price = 2100 }, -- 2x sell price 1050 (DPPtHGSS,WW2,XYORAS,BDSP)
+  { slug = "electirizer", id = "ELECTIRIZER", name = "Electirizer", index = 903, price = 2100 }, -- 2x sell price 1050 (DPPtHGSS,BWB2W2,XYORAS,BDSP)
+  { slug = "ice-stone", id = "ICE_STONE", name = "Ice Stone", index = 904, price = 3000 }, -- 2x sell price 1500 (SMUSUM,SwSh)
+  { slug = "magmarizer", id = "MAGMARIZER", name = "Magmarizer", index = 905, price = 2100 }, -- 2x sell price 1050 (DPPtHGSS,BWB2W2,XYORAS,BDSP)
+  { slug = "protector", id = "PROTECTOR", name = "Protector", index = 906, price = 2100 }, -- 2x sell price 1050 (DPPtHGSS,BW,XYORAS,BDSP)
+  { slug = "reaper-cloth", id = "REAPER_CLOTH", name = "Reaper Cloth", index = 907, price = 2100 }, -- 2x sell price 1050 (DPPtHGSS,BWB2W2,XYORAS,BDSP)
+  { slug = "sachet", id = "SACHET", name = "Sachet", index = 908, price = 2100 }, -- 2x sell price 1050 (XYORAS)
+  { slug = "shiny-stone", id = "SHINY_STONE", name = "Shiny Stone", index = 909, price = 2100 }, -- 2x sell price 1050 (DPPtHGSS,W,XYORAS,BDSP)
+  { slug = "sweet-apple", id = "SWEET_APPLE", name = "Sweet Apple", index = 910, price = 2100 }, -- no price data; classic stone price
+  { slug = "tart-apple", id = "TART_APPLE", name = "Tart Apple", index = 911, price = 2100 }, -- no price data; classic stone price
+  { slug = "whipped-dream", id = "WHIPPED_DREAM", name = "Whipped Dream", index = 912, price = 2100 }, -- 2x sell price 1050 (XYORAS)
+  { slug = "auspicious-armor", id = "AUSPICIOUS_ARMOR", name = "Auspicious Armor", index = 913, price = 2100 }, -- no price data; classic stone price
+  { slug = "black-augurite", id = "BLACK_AUGURITE", name = "Black Augurite", index = 914, price = 1000 }, -- 2x sell price 500 (LA)
+  { slug = "malicious-armor", id = "MALICIOUS_ARMOR", name = "Malicious Armor", index = 915, price = 2100 }, -- no price data; classic stone price
+  { slug = "metal-alloy", id = "METAL_ALLOY", name = "Metal Alloy", index = 916, price = 3000 }, -- 2x sell price 1500 (SV)
+  { slug = "peat-block", id = "PEAT_BLOCK", name = "Peat Block", index = 917, price = 1000 }, -- 2x sell price 500 (LA)
+  { slug = "syrupy-apple", id = "SYRUPY_APPLE", name = "Syrupy Apple", index = 918, price = 2100 }, -- no price data; classic stone price
 }

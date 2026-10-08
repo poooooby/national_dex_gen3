@@ -50,9 +50,23 @@ end
 -- on an item that does not exist YET simply waits; bridges: evolutions
 -- added to the cart's own species (Species.register); log: mod.log, for a
 -- one-line summary of what is waiting and on what.
-function Fixups.new(registered, itemIndex, bridges, log)
+function Fixups.new(registered, itemIndex, bridges, log, forms)
   local self = {}
   bridges = bridges or {}
+  forms = forms or {}
+  -- Every species this mod registered, base species first, then the alternate
+  -- forms (src/species.lua). A form is a species of its own for the engine's
+  -- tables, but it is not a Pokedex species: it reports its base's National
+  -- number and never takes over the base's slot in the number -> slot map.
+  local all = {}
+  for _, r in ipairs(registered) do all[#all + 1] = r end
+  for _, r in ipairs(forms) do all[#all + 1] = r end
+  local baseSlotOf = {}
+  for _, f in ipairs(forms) do
+    for _, b in ipairs(registered) do
+      if b.id == f.baseSpecies then baseSlotOf[f.slot] = b.slot end
+    end
+  end
   local loggedWaiting = false
 
   -- The cart's species keep their own rows; each added step whose item (if
@@ -111,7 +125,7 @@ function Fixups.new(registered, itemIndex, bridges, log)
         for tutor, move in pairs(type(ML.tutorMoves) == "function" and ML.tutorMoves() or {}) do
           tutorOf[move] = tutor
         end
-        for _, r in ipairs(registered) do
+        for _, r in ipairs(all) do
           local bits = 0
           for _, move in ipairs(r.teach or {}) do
             local tutor = tutorOf[move]
@@ -128,7 +142,7 @@ function Fixups.new(registered, itemIndex, bridges, log)
     if type(P) ~= "table" then return end
     P._evolutions = P._evolutions or {}
     for slug in pairs(waiting) do waiting[slug] = nil end -- recount fresh each pass
-    for _, r in ipairs(registered) do
+    for _, r in ipairs(all) do
       -- every step is decided fresh against the current item registry, so a
       -- mod that stops providing an item between reloads (disabled, removed)
       -- takes its evolution step with it rather than leaving a stale row
@@ -153,8 +167,8 @@ function Fixups.new(registered, itemIndex, bridges, log)
       if type(P._national) == "table" then
         P._national.toNational = P._national.toNational or {}
         P._national.toSpecies = P._national.toSpecies or {}
-        P._national.toNational[r.slot] = r.dex
-        P._national.toSpecies[r.dex] = r.slot
+        P._national.toNational[r.slot] = r.dex -- a form's dex is its base's
+        if not r.form then P._national.toSpecies[r.dex] = r.slot end
       end
     end
     applyBridges(P)
@@ -217,9 +231,11 @@ function Fixups.new(registered, itemIndex, bridges, log)
     Mapsec.readLua = function(rel, ...)
       local out = original(rel, ...)
       if rel == "pokemon/pokedex/entries.lua" and type(out) == "table" then
-        for _, r in ipairs(registered) do
+        local entryOf = {}
+        for _, b in ipairs(registered) do entryOf[b.id] = b.dexEntry end
+        for _, r in ipairs(all) do
           if out[r.slot] == nil then
-            local d = r.dexEntry or {}
+            local d = r.dexEntry or entryOf[r.baseSpecies] or {}
             out[r.slot] = { category = d.kind or "", height = d.height or 0,
               weight = d.weight or 0, description = "", description2 = "" }
           end
@@ -229,9 +245,68 @@ function Fixups.new(registered, itemIndex, bridges, log)
     end
   end
 
+  -- The Pokedex knows species by slot (seen/caught are tables keyed by it),
+  -- so a form slot would count as a species of its own and never light up its
+  -- base. Marking a form seen/caught also marks its base, and the counts are
+  -- taken over a view of the Dex without form slots. Installed once.
+  local function installFormDex()
+    local ok, Dex = pcall(require, "src.core.game3.dex")
+    if not (ok and type(Dex) == "table") or Dex.__nationalDexGenForms or next(baseSlotOf) == nil then
+      return
+    end
+    Dex.__nationalDexGenForms = true
+
+    local function withBase(name)
+      local original = Dex[name]
+      if type(original) ~= "function" then return end
+      Dex[name] = function(dex, species, ...)
+        local result = original(dex, species, ...)
+        local base = baseSlotOf[tonumber(species) or -1]
+        if base then original(dex, base) end
+        return result
+      end
+    end
+    withBase("setSeen")
+    withBase("setCaught")
+
+    local function withoutForms(dex)
+      if type(dex) ~= "table" then return dex end
+      local view = {}
+      for k, v in pairs(dex) do view[k] = v end
+      for _, key in ipairs({ "seen", "caught", "owned" }) do
+        if type(dex[key]) == "table" then
+          local kept = {}
+          for slot, on in pairs(dex[key]) do
+            if not baseSlotOf[tonumber(slot) or -1] then kept[slot] = on end
+          end
+          view[key] = kept
+        end
+      end
+      return view
+    end
+    for _, name in ipairs({ "countSeen", "countCaught", "countOwned" }) do
+      local original = Dex[name]
+      if type(original) == "function" then
+        Dex[name] = function(dex, ...) return original(withoutForms(dex), ...) end
+      end
+    end
+    local summary = Dex.summaryCount
+    if type(summary) == "function" then
+      Dex.summaryCount = function(save)
+        if type(save) ~= "table" then return summary(save) end
+        local view = {}
+        for k, v in pairs(save) do view[k] = v end
+        if type(save.dex) == "table" then view.dex = withoutForms(save.dex)
+        elseif type(save.pokedex) == "table" then view.pokedex = withoutForms(save.pokedex) end
+        return summary(view)
+      end
+    end
+  end
+
   function self.install(_)
     installTutors()
     raiseNationalMax()
+    installFormDex()
     installDexEntries()
     local ok, P = pcall(require, "src.core.game3.pokemon")
     if not (ok and type(P) == "table") then return false end

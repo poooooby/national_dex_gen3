@@ -3,6 +3,61 @@
 All notable changes to this mod are documented here, in
 [keep a changelog](https://keepachangelog.com/en/1.1.0/) format.
 
+## [0.6.0] - 2026-10-08
+
+### Added
+
+- **56 alternate forms** (`tools/form_list.py`), each registered as a species of its
+  own at slots 1090-1145 (`SLOT_CAP` is now 1200), using the original `national_dex`
+  mod's ids (`WORMADAM_SANDY`, `DARUMAKA_GALAR`, ...) so the sprite pack and other
+  mods keyed to national_dex link up: 13 Galarian/Hisuian forms, 19 permanent forms
+  (Wormadam cloaks, Rotom appliances, Oricorio styles, Pumpkaboo/Gourgeist sizes,
+  Lycanroc Midnight/Dusk, Urshifu Rapid Strike) and 24 legendary item/fusion forms
+  (Origin, Therian, Black/White Kyurem, Crowned, ...). Megas, Gigantamax and
+  in-battle/cosmetic forms are out. A form's slot is saved in player saves, so the
+  list is append-only. Native saves are safe (a species is a plain number); a save
+  holding a form still needs this mod on, as it already does for the 639.
+  - A form reports its base's National number and never takes the base's place in
+    the number map or its Pokédex entry. Marking a form seen/caught also marks its
+    base, and the Pokédex counts skip form slots (otherwise each form would count as
+    a species).
+  - Records carry `baseSpecies`, `form` and `baseDex`; Modern Spawns skips such
+    records, so forms never spawn by accident.
+  - Form-to-form evolutions Gen 3 can express: Darumaka-Galar -> Darmanitan-Galar
+    (Ice Stone), Zorua-Hisui -> Zoroark-Hisui (30), Pumpkaboo -> Gourgeist by trade.
+  - API version 2: `listForms()`, `formsOf()`, `baseDexOf()`, `idOfSlot()`;
+    `listSpecies()` still lists the 639 base species only.
+  - Cries for each form (shared with the base where the pack has none).
+  - Six abilities that appear only on forms are mapped (Gorilla Tactics, Mimicry,
+    As One x2, Mind's Eye, Power Construct).
+- `docs/`: a player reference, generated from the mod's own data. `items.md`
+  lists every added item with its price, where it is sold in FireRed /
+  LeafGreen and Ruby / Sapphire / Emerald, and what evolves with it;
+  `pokemon.md` and `pokemon/gen4.md`-`gen9.md` list all 639 species with
+  typing, Gen 3 ability and level-up learnset.
+- The 19 evolution items are now sold, by item type and progression:
+  stones and Sachet/Whipped Dream on Celadon Dept. Store 4F (FRLG) and the
+  Lilycove supplements floor (RSE, which has no stone floor); the held trade
+  items on the battle-item floors; the Gen 8-9 items in late marts (Six
+  Island; Mossdeep, Sootopolis and the Ever Grande League mart). There is no
+  shop registry, so `src/shops.lua` wraps `Marts.itemsFor`. Stores are found
+  by their original stock, so one entry covers every game with that list.
+- Real prices instead of 0 (which would have sold them for free): twice the
+  earliest sell price Bulbapedia lists, else 2,100. Bulbapedia is credited in
+  CREDITS.md.
+
+### Changed
+
+- Level-up learnsets keep their full modern length. A move Gen 3 lacks (3,047
+  of 9,302 learnset moves, 382 distinct moves) is replaced at the same level
+  by the closest Gen 3 move the species doesn't already learn
+  (`tools/move_map.py`, scored against the cart's move table and PokéAPI:
+  type first, then power, accuracy, priority and effect). 99% of attacks keep
+  their type; the 4 that couldn't are listed in the build report.
+- Togekiss is Normal/Flying again: the builder used today's typing and lost
+  its Fairy half to pure Flying, ignoring PokéAPI's pre-Fairy typing
+  (`past_types`). It was the only species affected.
+
 ## [0.5.1] - 2026-10-08
 
 ### Fixed

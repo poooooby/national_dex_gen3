@@ -233,6 +233,13 @@ CLOSEST: dict[str, tuple[int, str]] = {
     "toxic-chain": (POISON_POINT, "poison"),
     "tera-shift": (PRESSURE, "legendary"),
     "poison-puppeteer": (POISON_POINT, "poison"),
+    # added with the alternate forms (tools/form_list.py)
+    "gorilla-tactics": (GUTS, "attack boost with a drawback"),
+    "mimicry": (COLOR_CHANGE, "changes type"),
+    "as-one-glastrier": (PRESSURE, "Unnerve + Chilling Neigh; legendary"),
+    "as-one-spectrier": (PRESSURE, "Unnerve + Grim Neigh; legendary"),
+    "minds-eye": (KEEN_EYE, "ignores evasion / accuracy drops"),
+    "power-construct": (PRESSURE, "legendary form change"),
 }
 
 

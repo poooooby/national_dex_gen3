@@ -8,10 +8,12 @@ in gen1recomp (FireRed, LeafGreen, Ruby, Sapphire, Emerald all share it),
 plus data/species/index.lua listing the shards.
 
 Only what Gen 3 can express is kept:
-  * types: FAIRY does not exist in Gen 3; it is dropped (a pure Fairy type
-    becomes NORMAL, the pre-Gen 6 convention);
+  * types: the Gen V typing where PokéAPI records one (Togekiss was
+    Normal/Flying); FAIRY does not exist in Gen 3, so it is otherwise dropped
+    (a pure Fairy type becomes NORMAL, the pre-Gen 6 convention);
   * learnset: level-up moves from the newest main-series version group that
-    has any, restricted to move ids 1-354 (Gen 3's move table), shipped as
+    has any, at full length: a move Gen 3 lacks is replaced by the closest
+    one it has (tools/move_map.py), restricted to move ids 1-354, shipped as
     move NUMBERS -- the mod resolves them to the running game's own move
     names from its move registry;
   * abilities: the cart's own ability ids, as numbers -- newer abilities are
@@ -44,6 +46,8 @@ from typing import Any
 import requests
 
 import ability_map
+import form_list
+import move_map
 
 BASE_URL = "https://pokeapi.co/api/v2"
 ROOT = Path(__file__).resolve().parent.parent
@@ -149,12 +153,23 @@ def gender_ratio(rate: int | None) -> int:
 
 
 def types_for(pokemon: dict[str, Any]) -> list[str]:
-    names = [t["type"]["name"] for t in sorted(pokemon["types"], key=lambda t: t["slot"])]
+    """The species' Gen 3-era typing. PokéAPI's `types` are today's; where a
+    species' typing changed afterwards (Fairy was added in Gen 6) `past_types`
+    records the earlier one, so Togekiss stays Normal/Flying rather than
+    losing its Fairy half and becoming pure Flying. A Gen 6+ Fairy has no
+    earlier typing: its Fairy half is simply dropped (pure Fairy -> Normal)."""
+    current = pokemon["types"]
+    for past in pokemon.get("past_types") or []:
+        if past["generation"]["name"] == "generation-v":
+            current = past["types"]
+    names = [t["type"]["name"] for t in sorted(current, key=lambda t: t["slot"])]
     kept = [n.upper() for n in names if n in GEN3_TYPES]
     return kept or ["NORMAL"]
 
 
-def learnset_for(pokemon: dict[str, Any]) -> list[list[int]]:
+def modern_learnset(pokemon: dict[str, Any]) -> list[tuple[int, int]]:
+    """(level, move id) for the newest main-series game that lists any
+    level-up moves, every move included."""
     by_group: dict[str, list[tuple[int, int]]] = {}
     for move in pokemon["moves"]:
         move_id = id_from_url(move["move"]["url"])
@@ -166,9 +181,23 @@ def learnset_for(pokemon: dict[str, Any]) -> list[list[int]]:
     for group in VERSION_GROUPS:
         rows = by_group.get(group)
         if rows:
-            kept = sorted({(lvl, mid) for lvl, mid in rows if mid <= MAX_MOVE_ID})
-            return [[lvl, mid] for lvl, mid in kept]
+            return sorted(set(rows))
     return []
+
+
+def learnset_for(pokemon: dict[str, Any], mapper: "move_map.MoveMapper") -> list[list[int]]:
+    """The modern level-up list at its full length: Gen 3 moves as they are,
+    every newer move replaced by the closest Gen 3 move the species does not
+    already learn (tools/move_map.py), at the same level."""
+    rows = modern_learnset(pokemon)
+    taken = {mid for _, mid in rows if mid <= MAX_MOVE_ID}
+    out = []
+    for level, mid in rows:
+        if mid > MAX_MOVE_ID:
+            mid = mapper.substitute(mid, taken)
+            taken.add(mid)
+        out.append([level, mid])
+    return sorted(out, key=lambda r: r[0])
 
 
 def moves_by_method(pokemon: dict[str, Any], methods: set[str]) -> list[int]:
@@ -260,7 +289,18 @@ def evolution_steps(chain: dict[str, Any]) -> dict[int, list[dict[str, Any]]]:
     return steps
 
 
-def build(api: API, workers: int) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
+def build_mapper(api: API, fetched: list[dict[str, Any]], cart_dir: Path,
+                 workers: int) -> "move_map.MoveMapper":
+    """PokéAPI data for the 1-354 candidates and every newer move in a learnset."""
+    used = {mid for item in fetched for _, mid in modern_learnset(item["pokemon"])
+            if mid > MAX_MOVE_ID}
+    ids = sorted(set(range(1, MAX_MOVE_ID + 1)) | used)
+    with concurrent.futures.ThreadPoolExecutor(max_workers=workers) as ex:
+        api_moves = dict(zip(ids, ex.map(lambda i: api.get(f"/move/{i}"), ids)))
+    return move_map.MoveMapper(move_map.parse_cart(cart_dir), api_moves, MAX_MOVE_ID)
+
+
+def build(api: API, workers: int, cart_dir: Path) -> tuple[list[dict[str, Any]], list[dict[str, Any]], "move_map.MoveMapper", list[dict[str, Any]]]:
     def fetch(dex: int) -> dict[str, Any]:
         species = api.get(f"/pokemon-species/{dex}")
         default = next(v for v in species["varieties"] if v["is_default"])
@@ -282,45 +322,95 @@ def build(api: API, workers: int) -> tuple[list[dict[str, Any]], list[dict[str, 
                 for source, rows in sorted(steps.items()) if source < FIRST_DEX
                 for step in rows if step["target"] >= FIRST_DEX]
 
-    records = []
-    for item in fetched:
-        species, pokemon, dex = item["species"], item["pokemon"], item["dex"]
-        stats = {s["stat"]["name"]: s["base_stat"] for s in pokemon["stats"]}
-        genus = english(species.get("genera", []), "genus") or ""
-        records.append({
-            "id": engine_id(species["name"]),
-            "name": (english(species.get("names", []), "name") or species["name"]).upper(),
-            "dex": dex,
-            "slot": dex + SLOT_OFFSET,
-            "generation": species["generation"]["name"],
-            "types": types_for(pokemon),
-            "baseStats": {
-                "hp": stats["hp"], "attack": stats["attack"], "defense": stats["defense"],
-                "speed": stats["speed"], "specialAttack": stats["special-attack"],
-                "specialDefense": stats["special-defense"],
-            },
-            "catchRate": species.get("capture_rate") or 45,
-            "baseExp": min(255, pokemon.get("base_experience") or 64),
-            "growthRate": GROWTH_RATES.get(species["growth_rate"]["name"], "MEDIUM_FAST"),
-            "genderRatio": gender_ratio(species.get("gender_rate")),
-            "eggCycles": min(255, species.get("hatch_counter") or 20),
-            "friendship": min(255, species.get("base_happiness") if species.get("base_happiness") is not None else 70),
-            "abilities": abilities_for(pokemon),
-            "learnset": learnset_for(pokemon),
-            # taught (machine or tutor) and egg moves, Gen 3's moves only;
-            # the mod maps `teach` onto the running game's own TMs, HMs and tutors
-            "teach": moves_by_method(pokemon, {"machine", "tutor"}),
-            "eggMoves": moves_by_method(pokemon, {"egg"}),
-            "evolutions": steps.get(dex, []),
-            "legendary": bool(species.get("is_legendary")),
-            "mythical": bool(species.get("is_mythical")),
-            "dexEntry": {
-                "kind": re.sub(r"\s*Pok[eé]mon$", "", genus).upper(),
-                "height": pokemon.get("height") or 0,   # decimetres, as Gen 3 stores it
-                "weight": pokemon.get("weight") or 0,   # hectograms, as Gen 3 stores it
-            },
-        })
-    return records, crossgen
+    form_items = fetch_forms(api, fetched, workers)
+    mapper = build_mapper(api, fetched + form_items, cart_dir, workers)
+    records = [species_record(item["species"], item["pokemon"], item["dex"], mapper,
+                              steps.get(item["dex"], []))
+               for item in fetched]
+    forms = [form_record(item, mapper) for item in form_items]
+    return records, crossgen, mapper, forms
+
+
+def species_record(species: dict[str, Any], pokemon: dict[str, Any], dex: int,
+                   mapper: "move_map.MoveMapper", evolutions: list[dict[str, Any]]) -> dict[str, Any]:
+    """One species (or one form of it: `pokemon` is that variety's data)."""
+    stats = {s["stat"]["name"]: s["base_stat"] for s in pokemon["stats"]}
+    genus = english(species.get("genera", []), "genus") or ""
+    return {
+        "id": engine_id(species["name"]),
+        "name": (english(species.get("names", []), "name") or species["name"]).upper(),
+        "dex": dex,
+        "slot": dex + SLOT_OFFSET,
+        "generation": species["generation"]["name"],
+        "types": types_for(pokemon),
+        "baseStats": {
+            "hp": stats["hp"], "attack": stats["attack"], "defense": stats["defense"],
+            "speed": stats["speed"], "specialAttack": stats["special-attack"],
+            "specialDefense": stats["special-defense"],
+        },
+        "catchRate": species.get("capture_rate") or 45,
+        "baseExp": min(255, pokemon.get("base_experience") or 64),
+        "growthRate": GROWTH_RATES.get(species["growth_rate"]["name"], "MEDIUM_FAST"),
+        "genderRatio": gender_ratio(species.get("gender_rate")),
+        "eggCycles": min(255, species.get("hatch_counter") or 20),
+        "friendship": min(255, species.get("base_happiness") if species.get("base_happiness") is not None else 70),
+        "abilities": abilities_for(pokemon),
+        "learnset": learnset_for(pokemon, mapper),
+        # taught (machine or tutor) and egg moves, Gen 3's moves only;
+        # the mod maps `teach` onto the running game's own TMs, HMs and tutors
+        "teach": moves_by_method(pokemon, {"machine", "tutor"}),
+        "eggMoves": moves_by_method(pokemon, {"egg"}),
+        "evolutions": evolutions,
+        "legendary": bool(species.get("is_legendary")),
+        "mythical": bool(species.get("is_mythical")),
+        "dexEntry": {
+            "kind": re.sub(r"\s*Pok[eé]mon$", "", genus).upper(),
+            "height": pokemon.get("height") or 0,   # decimetres, as Gen 3 stores it
+            "weight": pokemon.get("weight") or 0,   # hectograms, as Gen 3 stores it
+        },
+    }
+
+
+def fetch_forms(api: API, fetched: list[dict[str, Any]], workers: int) -> list[dict[str, Any]]:
+    """PokéAPI data for each form in tools/form_list.py: its base species'
+    data (catch rate, growth, ...) and the form's own variety (stats, types,
+    abilities, moves)."""
+    by_id = {engine_id(item["species"]["name"]): item for item in fetched}
+
+    def fetch(entry: tuple[int, tuple]) -> dict[str, Any]:
+        index, (fid, base, form, slug) = entry
+        base_item = by_id[base]
+        variety = next(v for v in base_item["species"]["varieties"] if v["pokemon"]["name"] == slug)
+        return {"id": fid, "base": base, "form": form, "slot": form_list.FIRST_FORM_SLOT + index,
+                "dex": base_item["dex"], "species": base_item["species"],
+                "pokemon": api.get(variety["pokemon"]["url"])}
+
+    with concurrent.futures.ThreadPoolExecutor(max_workers=workers) as ex:
+        return list(ex.map(fetch, enumerate(form_list.FORMS)))
+
+
+def form_record(item: dict[str, Any], mapper: "move_map.MoveMapper") -> dict[str, Any]:
+    """A form is a species record of its own, in a slot above the base range.
+    It keeps its base species' name and dex number (what a player sees), gets
+    no Pokédex entry of its own (that is keyed by dex and would overwrite the
+    base's), and points back at its base."""
+    evolutions = []
+    for src, dst, method, arg in form_list.FORM_EVOLUTIONS:
+        if src != item["id"]:
+            continue
+        step: dict[str, Any] = {"method": method, "targetForm": dst}
+        if method == "EVO_LEVEL":
+            step["level"] = arg
+        elif method == "EVO_ITEM":
+            step["item"] = arg
+        evolutions.append(step)
+    rec = species_record(item["species"], item["pokemon"], item["dex"], mapper, evolutions)
+    rec.update({
+        "id": item["id"], "slot": item["slot"], "baseSpecies": item["base"],
+        "form": item["form"], "baseDex": item["dex"],
+    })
+    del rec["dexEntry"]
+    return rec
 
 
 def lua(value: Any, indent: str = "") -> str:
@@ -341,7 +431,8 @@ def lua(value: Any, indent: str = "") -> str:
     raise TypeError(type(value))
 
 
-def write(records: list[dict[str, Any]], crossgen: list[dict[str, Any]], out_dir: Path) -> None:
+def write(records: list[dict[str, Any]], crossgen: list[dict[str, Any]], out_dir: Path,
+          forms: list[dict[str, Any]] | None = None) -> None:
     out_dir.mkdir(parents=True, exist_ok=True)
     for old in out_dir.glob("*.lua"):  # includes crossgen.lua
         old.unlink()
@@ -360,6 +451,11 @@ def write(records: list[dict[str, Any]], crossgen: list[dict[str, Any]], out_dir
     (out_dir / "crossgen.lua").write_text(
         header + "-- Evolutions from the cart's own species into #387-1025.\n"
         + "return {\n" + body + (",\n" if body else "") + "}\n", encoding="utf-8")
+    fbody = ",\n".join("  " + lua(r) for r in (forms or []))
+    (out_dir / "forms.lua").write_text(
+        header + "-- Alternate forms (tools/form_list.py), each in a slot of its own above the\n"
+        "-- base species range. Append-only: a slot is stored in player saves.\n"
+        + "return {\n" + fbody + (",\n" if fbody else "") + "}\n", encoding="utf-8")
 
 
 def ability_report(records: list[dict[str, Any]]) -> None:
@@ -381,11 +477,19 @@ def main() -> None:
     p.add_argument("--cache", type=Path, default=ROOT / "tools" / ".cache")
     p.add_argument("--out", type=Path, default=ROOT / "data" / "species")
     p.add_argument("--workers", type=int, default=12)
+    p.add_argument("--cart", type=Path, default=ROOT.parent / "gen1recomp" / "firered" / "data"
+                   / "generated" / "gba" / "pokemon",
+                   help="an imported cart's pokemon/ folder (battle_moves.lua, move_names.lua): "
+                        "the Gen 3 move stats newer moves are matched against")
     p.add_argument("--refresh", action="store_true")
     args = p.parse_args()
-    records, crossgen = build(API(args.cache, args.refresh), args.workers)
-    write(records, crossgen, args.out)
+    records, crossgen, mapper, forms = build(API(args.cache, args.refresh), args.workers, args.cart)
+    write(records, crossgen, args.out, forms)
     ability_report(records)
+    report = args.cache / "move_substitutions.txt"
+    report.write_text(mapper.report(), encoding="utf-8")
+    print(chr(10).join(mapper.report().splitlines()[:3]))
+    print(f"(full list: {report})")
     moves = sum(len(r["learnset"]) for r in records)
     teach = sum(len(r["teach"]) for r in records)
     eggs = sum(len(r["eggMoves"]) for r in records)

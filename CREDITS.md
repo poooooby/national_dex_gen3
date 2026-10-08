@@ -33,3 +33,11 @@ ships are fan-made, and the credits below belong to their authors.
 - **Metal Alloy:** Wooble
 - **Peat Block:** Wooble
 - **Syrupy Apple:** Wooble
+
+## Shop prices
+
+- The evolution items' shop prices are derived from the item price tables on
+  **Bulbapedia** (<https://bulbapedia.bulbagarden.net/>), whose text is
+  available under CC BY-NC-SA 3.0. Only the numbers are used: each price is
+  twice the sell price of the earliest game that lists one
+  (`tools/item_prices.json`, fetched by `tools/fetch_item_prices.py`).

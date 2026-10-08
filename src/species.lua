@@ -11,7 +11,8 @@
 
 local Species = {}
 
-local SLOT_CAP = 1089 -- dex 1025 + 64
+local SLOT_CAP = 1200 -- the last base species is slot 1089 (dex 1025 + 64); forms follow at
+                      -- 1090+ (tools/form_list.py), with headroom
 
 local function normalize(name)
   return (tostring(name or ""):upper():gsub("[^A-Z0-9]", ""))
@@ -109,8 +110,15 @@ end
 -- registered at the moment THIS mod runs -- a companion mod loaded after it
 -- is invisible here, which is why this is never the only place an item is
 -- resolved (see evolutionStep below).
-local function evolutionRow(step, itemId, byDex)
-  local target = byDex[step.target]
+-- An evolution step's target: a base species by dex number, or a FORM by id
+-- (`targetForm`, a step between two forms such as Darumaka-Galar -> Darmanitan-Galar).
+local function targetOf(step, byDex, formById)
+  if step.targetForm then return formById and formById[step.targetForm] end
+  return byDex[step.target]
+end
+
+local function evolutionRow(step, itemId, byDex, formById)
+  local target = targetOf(step, byDex, formById)
   if not target then return nil end
   local row = { method = step.method, species = target.id }
   if step.level then row.level = step.level end
@@ -130,8 +138,8 @@ end
 -- load order) has registered, and again on every reload -- so a step lights
 -- up the moment any mod adds a matching item, including one loaded after
 -- this one.
-local function evolutionStep(step, byDex)
-  local target = byDex[step.target]
+local function evolutionStep(step, byDex, formById)
+  local target = targetOf(step, byDex, formById)
   if not target then return nil end
   return { method = step.method, level = step.level, item = step.item,
            species = target.id }, target.slot
@@ -147,7 +155,7 @@ local function moveNames(ids, moveName)
 end
 
 -- One payload row -> the record the running game's registry validates.
-local function toRecord(r, moveName, itemId, byDex)
+local function toRecord(r, moveName, itemId, byDex, formById)
   local learnset = {}
   for _, row in ipairs(r.learnset or {}) do
     local name = moveName[row[2]]
@@ -157,7 +165,7 @@ local function toRecord(r, moveName, itemId, byDex)
 
   local evolutions = {}
   for _, step in ipairs(r.evolutions or {}) do
-    local row = evolutionRow(step, itemId, byDex)
+    local row = evolutionRow(step, itemId, byDex, formById)
     if row then evolutions[#evolutions + 1] = row end
   end
 
@@ -183,6 +191,9 @@ local function toRecord(r, moveName, itemId, byDex)
     spriteBack = enginePicPath("back", r.slot),
     -- carried through for readers (this mod's API, spawn mods)
     legendary = r.legendary or nil, mythical = r.mythical or nil,
+    -- a FORM points back at its base species (nil on a base species): spawn
+    -- mods skip a record with these, and `dex`/`baseDex` stay the base's number
+    baseSpecies = r.baseSpecies, form = r.form, baseDex = r.baseDex,
   }
 end
 
@@ -236,9 +247,11 @@ end
 -- Registers every payload species; returns the list actually registered, each
 -- { id, dex, slot, name, teach, evolutions = { {method, level?, item?, targetSlot} } },
 -- and the cross-generation evolutions added to the cart's species.
-function Species.register(mod, payload, crossgen)
+function Species.register(mod, payload, crossgen, forms)
   raiseSlotCap(mod)
   local moveName, itemId, byDex = lookups(mod, payload)
+  local formById = {}
+  for _, f in ipairs(forms or {}) do formById[f.id] = { id = f.id, slot = f.slot } end
   local registered, failed, firstError = {}, 0, nil
   for _, r in ipairs(payload) do
     local record = toRecord(r, moveName, itemId, byDex)
@@ -274,7 +287,49 @@ function Species.register(mod, payload, crossgen)
     mod.log:warn("%d species failed to register; first: %s", failed, firstError)
   end
   local bridges = crossGeneration(mod, crossgen, itemId, byDex)
-  return registered, bridges
+
+  -- The alternate forms, after every base species (a form's evolution
+  -- targets are other forms; its base is never a target). Each is its own
+  -- registered species in a slot above the base range, and is returned apart
+  -- from the base list: it is not a Pokedex species of its own.
+  local registeredForms, formsFailed, formsError = {}, 0, nil
+  for _, r in ipairs(forms or {}) do
+    local record = toRecord(r, moveName, itemId, byDex, formById)
+    local ok, err = pcall(function() mod.content.pokemon:register(record.id, record) end)
+    if ok then
+      local evolutions = {}
+      for _, step in ipairs(r.evolutions or {}) do
+        local ev, targetSlot = evolutionStep(step, byDex, formById)
+        if ev then
+          evolutions[#evolutions + 1] = { method = ev.method, level = ev.level,
+                                           item = ev.item, species = ev.species,
+                                           targetSlot = targetSlot }
+        end
+      end
+      registeredForms[#registeredForms + 1] = {
+        id = r.id, dex = r.baseDex, slot = r.slot, name = r.name,
+        form = r.form, baseSpecies = r.baseSpecies, baseDex = r.baseDex,
+        legendary = r.legendary, mythical = r.mythical, evolutions = evolutions,
+        teach = r.teach or {},
+      }
+    else
+      formsFailed = formsFailed + 1
+      formsError = formsError or tostring(err)
+    end
+  end
+  if #registeredForms > 0 or formsFailed > 0 then
+    mod.log:info("registered %d alternate form(s)", #registeredForms)
+  end
+  if formsFailed > 0 then
+    mod.log:warn("%d form(s) failed to register; first: %s", formsFailed, formsError)
+  end
+  return registered, bridges, registeredForms
+end
+
+-- data/species/forms.lua: the alternate forms (tools/form_list.py); {} when absent.
+function Species.loadForms(load)
+  local list = load("data/species/forms.lua")
+  return type(list) == "table" and list or {}
 end
 
 -- data/species/crossgen.lua: evolution steps from the cart's species.

@@ -23,7 +23,7 @@ function Items.register(mod, payload)
     local ok, err = pcall(function()
       mod.content.items:register(r.id, {
         id = r.id, name = r.name, index = r.index,
-        price = 0, pocket = "ITEMS",
+        price = r.price or 0, pocket = "ITEMS",
       })
     end)
     if ok then
