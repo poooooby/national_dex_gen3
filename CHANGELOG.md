@@ -3,6 +3,43 @@
 All notable changes to this mod are documented here, in
 [keep a changelog](https://keepachangelog.com/en/1.1.0/) format.
 
+## [0.5.0] - 2026-10-07
+
+### Added
+
+- Registers the 19 evolution items no Gen 3 game has (Dusk Stone, Protector,
+  Black Augurite, ...) at indices 900-918, so every evolution this mod
+  generates is live with no companion item mod. Rhydon -> Rhyperior,
+  Scyther -> Kleavor and the other 13 cart-species steps, and the new
+  species' own item steps, no longer wait. Another mod registering one of
+  the same items still works: whichever loads first (lower manifest
+  priority number) keeps the slot, and the evolution resolves either way.
+- Bag icons for all 19 (`assets/items/icons.png`, 24x24, from the
+  third-party pokesprite pack), drawn on FireRed/LeafGreen and
+  Ruby/Sapphire/Emerald by wrapping the Bag's icon draw. Not yet verified
+  in-game. Six Gen 9 items missing from the pack (Auspicious/Malicious Armor,
+  Black Augurite, Metal Alloy, Peat Block, Syrupy Apple) were added by hand.
+
+- Cries for all 639 species (`assets/cries/cries.pak`, 10 MB, every Ogg packed into
+  one file; `data/cries.lua` indexes it), played by wrapping `Audio.playCry`.
+  Not yet verified in-game; the cart's pitch/pan modes and the music duck
+  while a cry plays are not reproduced.
+
+### Changed
+
+- Species with no Gen 3 ability (277 of 639, e.g. Bidoof, Eiscue, Drifloon)
+  now have one: every newer ability is mapped to the closest ability the
+  cart has (`tools/ability_map.py`, 201 entries, each with a reason). The
+  Gen 3 battle engine hard-codes abilities by name and a mod cannot add
+  one, so a species shows and behaves like the Gen 3 ability it was given.
+  Also fixes Air Lock, which was mapped onto the cart's unused Cacophony
+  slot (PokéAPI 76 vs the cart's 77), and gives species whose Gen 4+ regular
+  ability maps (e.g. Solid Rock on Rhyperior) a second slot.
+- This is a deliberate exception to the mod's "never ship artwork" rule,
+  scoped to these item icons; species art is still a sprite mod's job.
+- `tests/register_test.lua` and `tests/companion_item_test.lua` updated for
+  items no longer waiting.
+
 ## [0.4.0] - 2026-10-07
 
 ### Changed

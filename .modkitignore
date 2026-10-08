@@ -1,6 +1,9 @@
 # Excluded from the packaged mod (modkit matches exact relative paths).
 CLAUDE.md
 tools/build_species.py
+tools/build_items.py
+tools/build_cries.py
+tools/ability_map.py
 tests/_gen3.lua
 tests/register_test.lua
 tests/steps_aside_test.lua

@@ -7,5 +7,5 @@
   "profile": "content",
   "games": ["gen3"],
   "priority": 10,
-  "description": "Test stub: registers PROTECTOR, the way a companion held-item mod would. Loaded AFTER national_dex_gen3 (lower priority = later) to prove load order does not matter."
+  "description": "Test stub: registers PROTECTOR, the way a companion held-item mod would. Loads BEFORE national_dex_gen3 (lower priority number = earlier) and collides with its own PROTECTOR on purpose."
 }

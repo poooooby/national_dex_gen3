@@ -4,11 +4,19 @@
 -- An evolution step whose item FireRed does not have is never dropped for
 -- good: it waits, and lights up the moment ANY mod registers a matching
 -- item -- loaded before national_dex_gen3 or after it, this boot or a later
--- one -- with no code of its own and no re-release of this mod. Proven
--- end-to-end with Rhydon -> Rhyperior, which needs a Protector
--- (data/species/crossgen.lua); tests/fixtures/item_mod adds one. Nosepass ->
--- Probopass (Thunder Stone, which FireRed already has) is the control:
--- always live, with or without the companion mod.
+-- one -- with no code of its own and no re-release of this mod. Since
+-- src/items.lua (added after this test was first written) now registers a
+-- Protector itself, Rhydon -> Rhyperior (data/species/crossgen.lua) no
+-- longer NEEDS a companion mod -- but the waiting mechanism still matters
+-- for an item this mod does not provide, and for what happens when a
+-- companion mod registers THE SAME item anyway (tests/fixtures/item_mod
+-- does, deliberately): load order is by manifest PRIORITY, ascending (the
+-- loader's contract), not by the order mods are passed to loadMods below, so
+-- the fixture (10) loads before national_dex_gen3 (90) and keeps the slot
+-- either way; this mod's own attempt fails loudly (logged, not silently
+-- dropped), and the evolution resolves regardless. Nosepass -> Probopass
+-- (Thunder Stone, which FireRed already has) is the control: always live,
+-- regardless of any of this.
 package.path = "./?.lua;./?/init.lua;" .. package.path
 
 local T = require("tests.modkit")
@@ -30,24 +38,25 @@ local function liveRow(P, sourceSlot, targetSlot)
   return nil
 end
 
--- ------- alone: the step waits, visibly, rather than vanishing
+-- ------- alone: national_dex_gen3's own Protector is enough
 
 do
   local data = H.gen3Data()
   local run = T.sdk.loadMods({ "mods/national_dex_gen3" }, { data = data, generation = 3 })
   T.eq(#run.errors, 0, "loads clean alone (" .. tostring(run.errors[1]) .. ")")
   run.loader.events:emit("game.ready", {})
-  T.eq(liveRow(data.gen3Pokemon, RHYDON, RHYPERIOR_SLOT), nil,
-       "Rhydon -> Rhyperior is not live: no mod provides a Protector")
+  local row = liveRow(data.gen3Pokemon, RHYDON, RHYPERIOR_SLOT)
+  T.check(row ~= nil, "Rhydon -> Rhyperior is live with no companion mod at all")
+  T.eq(row and row.param, 906, "using national_dex_gen3's own Protector (data/items.lua)")
 
   local api = run.loader.exports.national_dex_gen3
   local viaId = api.evolutionsOf("RHYDON")
   local viaDex = api.evolutionsOf(RHYDON)
   local sawRhyperior = false
-  for _, row in ipairs((viaId or {}).evolvesInto or {}) do
-    if row.id == "RHYPERIOR" then sawRhyperior = true end
+  for _, row2 in ipairs((viaId or {}).evolvesInto or {}) do
+    if row2.id == "RHYPERIOR" then sawRhyperior = true end
   end
-  T.check(sawRhyperior, "evolutionsOf('RHYDON') still lists it as a pending step")
+  T.check(sawRhyperior, "evolutionsOf('RHYDON') lists it")
   T.check(viaDex ~= nil and #viaDex.evolvesInto == #viaId.evolvesInto,
           "evolutionsOf(112) answers the same, by dex number")
   local back = api.evolutionsOf("RHYPERIOR")
@@ -56,34 +65,24 @@ do
   run.release()
 end
 
--- ------- item_mod loaded AFTER national_dex_gen3: still resolves
+-- ------- a companion mod's OWN Protector collides either way: load order is
+-- priority ascending (fixture 10, national_dex_gen3 90), not the array order
+-- passed to loadMods, so the fixture keeps the slot in both orderings below;
+-- Rhydon -> Rhyperior resolves either way
 
-do
+for _, mods in ipairs({
+  { "mods/national_dex_gen3", H.modRoot() .. "/tests/fixtures/item_mod" },
+  { H.modRoot() .. "/tests/fixtures/item_mod", "mods/national_dex_gen3" },
+}) do
   local data = H.gen3Data()
-  local run = T.sdk.loadMods({ "mods/national_dex_gen3", H.modRoot() .. "/tests/fixtures/item_mod" },
-                             { data = data, generation = 3 })
-  T.eq(#run.errors, 0, "loads clean with a companion item mod after it ("
+  local run = T.sdk.loadMods(mods, { data = data, generation = 3 })
+  T.eq(#run.errors, 0, "loads clean with a companion item mod ("
        .. tostring(run.errors[1]) .. ")")
   run.loader.events:emit("game.ready", {})
-  -- national_dex_gen3's own item lookup ran, mid-load, before item_mod
-  -- registered anything; the live table must still pick it up.
   local row = liveRow(data.gen3Pokemon, RHYDON, RHYPERIOR_SLOT)
-  T.check(row ~= nil, "Rhydon -> Rhyperior is live once a companion mod adds a Protector")
-  T.eq(row and row.param, 400, "with that Protector's own item number")
-  run.release()
-end
-
--- ------- item_mod loaded BEFORE national_dex_gen3: also resolves
-
-do
-  local data = H.gen3Data()
-  local run = T.sdk.loadMods({ H.modRoot() .. "/tests/fixtures/item_mod", "mods/national_dex_gen3" },
-                             { data = data, generation = 3 })
-  T.eq(#run.errors, 0, "loads clean with a companion item mod before it ("
-       .. tostring(run.errors[1]) .. ")")
-  run.loader.events:emit("game.ready", {})
-  T.check(liveRow(data.gen3Pokemon, RHYDON, RHYPERIOR_SLOT) ~= nil,
-          "resolves the same way regardless of load order")
+  T.check(row ~= nil, "Rhydon -> Rhyperior is still live")
+  T.eq(row and row.param, 400,
+       "the fixture's lower priority number loads first and keeps PROTECTOR, whatever loadMods' order")
   run.release()
 end
 
@@ -109,10 +108,12 @@ do
                              { data = data, generation = 3 })
   local Species = H.module("src/species.lua")
   T.eq(Species.itemIndex(run.loader)("protector"), 400,
-       "Species.itemIndex resolves a companion mod's item by its PokéAPI slug")
+       "Species.itemIndex resolves whichever mod's item registered, by its PokéAPI slug "
+       .. "(the fixture, which loads first)")
   T.eq(Species.itemIndex(run.loader)("no-such-item"), nil,
        "and answers nil, not an error, for one nothing provides")
   run.release()
 end
+
 
 T.finish("national_dex_gen3 companion item")

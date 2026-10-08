@@ -14,6 +14,12 @@
 --                    registry write (evolution targets, name + national lookup)
 --                    and the move-tutor compatibility the running game keeps
 --                    outside the species registry
+--   src/items.lua    registers the evolution items no Gen 3 game has (data/items.lua,
+--                    built by tools/build_items.py), so this mod's own evolutions
+--                    (and anyone else's) stop waiting on a companion item mod
+--   src/item_art.lua Bag icons for those items (no hook offers this; wraps the
+--                    Bag's own icon draw directly -- see its own header)
+--   src/cry_art.lua  cries for #387-1025 (wraps Audio.playCry; assets/cries/cries.pak)
 --   src/art.lua      pokemon.sprite seam for art providers
 --   src/api.lua      mod.exports
 --
@@ -42,9 +48,14 @@ end
 return function(mod)
   local Species = loadSibling(mod, "src/species.lua")
   local Fixups = loadSibling(mod, "src/fixups.lua")
+  local Items = loadSibling(mod, "src/items.lua")
+  local ItemArt = loadSibling(mod, "src/item_art.lua")
+  local CryArt = loadSibling(mod, "src/cry_art.lua")
   local Art = loadSibling(mod, "src/art.lua")
   local Api = loadSibling(mod, "src/api.lua")
-  if not (Species and Fixups and Art and Api) then return end
+  if not (Species and Fixups and Items and ItemArt and CryArt and Art and Api) then return end
+
+  local read = function(path) return loadSibling(mod, path) end
 
   -- 1025Dex registers the same species into the same slots with its own art;
   -- two registrations of one slot would fight. It wins; this mod steps aside.
@@ -56,19 +67,27 @@ return function(mod)
     return
   end
 
-  local payload = Species.loadPayload(function(path) return loadSibling(mod, path) end)
+  local payload = Species.loadPayload(read)
   if not payload then
     mod.log:error("data/species is missing or empty -- reinstall the mod")
     return
   end
 
-  local crossgen = Species.loadCrossGeneration(function(path) return loadSibling(mod, path) end)
+  -- before species registration, so Species.register's own eager item lookup
+  -- (species.lua's evolutionRow, a load-time snapshot) sees these too, not
+  -- only the live bookkeeping path fixups drives
+  local itemPayload = Items.loadPayload(read)
+  Items.register(mod, itemPayload)
+
+  local crossgen = Species.loadCrossGeneration(read)
   local registered, bridges = Species.register(mod, payload, crossgen)
   local fixups = Fixups.new(registered, Species.itemIndex(mod), bridges, mod.log)
   -- after Gen3Compat's own reload hook (registered while the game boots), so
   -- its re-apply of registry data does not undo these repairs
   mod.events:on("game.ready", function(ev)
     fixups.install(ev and ev.game or mod.game)
+    ItemArt.install(mod, read)
+    CryArt.install(mod, read)
   end, -100)
 
   local art = Art.install(mod, registered)

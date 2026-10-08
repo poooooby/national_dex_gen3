@@ -36,6 +36,26 @@ T.eq(P._stats[451].hp, 55, "its base stats are in the species tables")
 T.eq(P._names[451], "TURTWIG", "and its name")
 T.eq(P._types[451][1], P._types[1][1], "Grass typing, the engine's own type number")
 
+-- Abilities: every newer ability is mapped to the closest one the cart has
+-- (tools/ability_map.py), never a new id: the Gen 3 battle engine only
+-- implements the cart's own (1-75, and Air Lock at 77). Cacophony (76) is
+-- unused. Each species ends up with at least one.
+local abilityIds, noAbility, badAbility = {}, 0, nil
+for slot = 451, 1089 do
+  local pair = P._abilities[slot]
+  if not pair or ((pair[1] or 0) == 0 and (pair[2] or 0) == 0) then
+    noAbility = noAbility + 1
+  else
+    for _, id in ipairs({ pair[1] or 0, pair[2] or 0 }) do
+      if id ~= 0 and (id < 1 or id > 77 or id == 76) then badAbility = badAbility or (slot .. ":" .. id) end
+    end
+  end
+end
+T.eq(noAbility, 0, "every new species has a Gen 3 ability")
+T.eq(badAbility, nil, "and only ever one the cart has (1-75 or 77)")
+T.eq(P._abilities[451][1], 65, "Turtwig keeps Overgrow")
+T.check(P._abilities[875 + 64][1] ~= 0, "Eiscue (Ice Face has no Gen 3 id) gets a mapped ability")
+
 local unresolved = 0
 for slot = 451, 1089 do
   local rows = P._learnsets[slot]
@@ -129,8 +149,10 @@ for _, r in ipairs(P._evolutions[82] or {}) do if r.target == 462 + 64 then row 
 T.check(row ~= nil, "the species table points Magneton at Magnezone's slot")
 T.eq(row and row.method, 7, "EVO_ITEM")
 T.eq(row and row.param, 96, "with FireRed's Thunder Stone")
-T.eq(#(run.loader.content.pokemon:get("SCYTHER").evolutions or {}), 1,
-     "an evolution needing an item FireRed lacks is not added (Scyther keeps Scizor only)")
+-- SCYTHER -> KLEAVOR needs a Black Augurite, which src/items.lua now
+-- registers itself; both evolutions are live.
+T.eq(#(run.loader.content.pokemon:get("SCYTHER").evolutions or {}), 2,
+     "Scyther gains both Scizor (trade) and Kleavor (national_dex_gen3's own Black Augurite)")
 
 -- ------- evolutionsOf
 

@@ -5,7 +5,8 @@ every Gen 3 Pokémon game in gen1recomp — FireRed, LeafGreen, Ruby, Sapphire
 and Emerald — as data. It gives them stats, typing, learnsets, abilities and
 evolutions. It's for mods that need the full roster on a Gen 3 game (such as
 Modern Spawns, on FireRed) and for players pairing it with a sprite mod. It
-is a framework: no sprites, icons or cries ship with it.
+is a framework: no sprites or party icons ship with it. It does ship cries
+for every species, and Bag icons for its own evolution items.
 
 Try it (from a gen1recomp checkout, with this repo linked as `mods/national_dex_gen3`):
 
@@ -30,20 +31,25 @@ the same numbering 1025Dex uses, so a save moves between the two intact.
 | TM/HM compatibility | Every TM or HM (the same 58 machines in all five games) whose move the species can be taught by machine or tutor in any game (636 species; 37 of 58 machines on average) |
 | Move tutors | Whichever tutors the running game has — FireRed/LeafGreen's 15, Ruby/Sapphire's none, or Emerald's own larger set — whose move the species can be taught in any game (628 species on FireRed/LeafGreen) |
 | Egg moves | Egg moves Gen 3 has (315 species; many modern egg moves don't exist in Gen 3) |
-| Abilities | PokéAPI abilities that exist in Gen 3 (ids 1–76) |
+| Abilities | Gen 3 abilities only: the cart's own (ids 1–75 and Air Lock at 77) are kept, and each newer ability is mapped to the closest Gen 3 one (`tools/ability_map.py`), e.g. Simple → Own Tempo, Moxie → Guts. The Gen 3 battle engine cannot take new abilities from a mod, so a species shows and behaves like the Gen 3 ability it was given, not its real one |
 | Evolutions | Level, item, friendship and trade steps between species 1–1025 |
 | Evolutions from the cart's species | Steps from the cart's own species into new ones, such as Magneton → Magnezone and Nosepass → Probopass with a Thunder Stone |
 
-**An item-gated evolution is never dropped for missing an item — it waits.**
-No Gen 3 game has every item PokéAPI's evolutions call for (Dusk Stone,
-Protector, and so on; Ruby/Sapphire have fewer items than FireRed/LeafGreen/
-Emerald besides); a step needing one is kept, unresolved, and this mod checks
-the running game's item registry again every time the engine loads its
-species tables — at boot and on every reload — regardless of whether the
-item-adding mod loads before or after this one. The moment *any* installed
-mod registers a matching item, the evolution goes live with no changes to
-either mod. Until then it simply doesn't fire, the same as if the game had
-never heard of it.
+**Evolution items.** No Gen 3 game has every item PokéAPI's evolutions call
+for, so this mod registers the 19 it needs itself (Dusk Stone, Dawn Stone,
+Shiny Stone, Ice Stone, Protector, Electirizer, Magmarizer, Dubious Disc,
+Reaper Cloth, Sachet, Whipped Dream, Tart/Sweet/Syrupy Apple, Auspicious/
+Malicious Armor, Metal Alloy, Black Augurite and Peat Block) at indices
+900–918. They sit in the Items pocket and have no other use. All have a Bag
+icon (24×24, from the third-party pokesprite pack plus six added by hand, in
+`assets/items/`). The Bag icons are not yet verified in-game.
+
+A step whose item still doesn't exist is never dropped — it waits. The mod
+checks the running game's item registry again every time the engine loads
+its species tables, so if another mod registers a matching item the
+evolution goes live with no changes to either mod. If another mod registers
+one of the same items, whichever loads first (lower manifest priority
+number) keeps the slot and the evolution works either way.
 
 When the engine reloads its species tables, the mod also repairs two other
 things: evolution targets (the engine's registry write can point them at
@@ -89,8 +95,10 @@ them. When it's installed, this mod registers nothing and reports
 - **Without an art provider, battles show whatever the engine decodes for an
   unknown slot**: a wrong or garbled picture, which the engine may cache. Pair
   this mod with a sprite mod.
-- No party icons and no cries (silent). The engine has no sanctioned path for
-  either on Gen 3.
+- No party icons. The engine has no sanctioned path for them on Gen 3.
+- Cries play for every new species (`assets/cries/cries.pak`, from the Gen 9
+  pack), by wrapping `Audio.playCry`. Not yet verified in-game; the cart's
+  pitch/pan modes and the music duck are not reproduced.
 - **The native Pokédex list now includes #387–1025 in National mode, without
   art.** This mod raises the engine's `Dex.NATIONAL_MAX` (386) to 1025 — the
   same value 1025Dex sets — because a mod that enumerates species up to that
@@ -105,30 +113,12 @@ them. When it's installed, this mod registers nothing and reports
   vanilla FireRed/LeafGreen/Emerald. (Ruby and Sapphire never had a National
   Dex at all in the original games; this still works there because
   gen1recomp's own National Dex support isn't gated on the cart.)
-- Evolutions that need an item the running game doesn't have (Dusk Stone,
-  Dawn Stone, Shiny Stone, Protector, Electirizer, Magmarizer, Dubious Disc,
-  Reaper Cloth, Black Augurite, Peat Block, …) don't fire *yet* — see above;
-  they activate the moment some mod adds the item, with no update to this
-  mod. Right now, nothing does. (The Gen 1 mod `g9-battle-engine` takes a
-  different approach for the same problem on Red: rather than wait for a
-  companion mod, it registers its own replacement items directly. This mod
-  stays data-only and doesn't do that.) Of the 15 evolutions the cart's own
-  species could gain into #387–1025, 2 are already live on every Gen 3 game
-  because all of them have the item (Magneton → Magnezone and Nosepass →
-  Probopass, both Thunder Stone); the other 13 are waiting: Rhydon →
-  Rhyperior, Scyther → Kleavor, Electabuzz → Electivire, Magmar → Magmortar,
-  Togetic → Togekiss, Murkrow → Honchkrow, Misdreavus → Mismagius,
-  Ursaring → Ursaluna, Porygon2 → Porygon-Z, Kirlia → Gallade,
-  Roselia → Roserade, Dusclops → Dusknoir, Snorunt → Froslass.
-- Of the new species' own 224 possible evolution steps, 211 are already live
-  on every Gen 3 game (most item evolutions resolve fine: all five games
-  have the Thunder, Fire, Water, Leaf, Sun and Moon Stones). 13 are waiting
-  the same way: Minccino → Cinccino (Shiny Stone), Lampent → Chandelure and
-  Doublade → Aegislash (Dusk Stone), Crabrawler → Crabominable and
-  Cetoddle → Cetitan (Ice Stone), Applin's three evolutions (Tart, Sweet and
-  Syrupy Apple), Duraludon → Archaludon (Metal Alloy), Charcadet's two
-  evolutions (Auspicious/Malicious Armor), and Spritzee → Aromatisse /
-  Swirlix → Slurpuff (trade holding Sachet / Whipped Dream).
+- Every item evolution this mod generates is live, because the mod provides
+  the items (see above): the 15 steps from the cart's own species (Magneton
+  → Magnezone, Rhydon → Rhyperior, Scyther → Kleavor, …) and the new
+  species' own item steps. Nothing in the world gives you these items yet:
+  this mod only registers them, so players need another mod (or a cheat) to
+  obtain one.
 - **Held-item level-ups, and other conditions no Gen 3 game has a trigger
   for at all** (location, a known move, gender, and similar) — Happiny →
   Chansey (Oval Stone, by day), Gligar → Gliscor (Razor Fang, at night),
@@ -156,6 +146,10 @@ them. When it's installed, this mod registers nothing and reports
   tutor move) is counted against FireRed/LeafGreen's 15 tutors; it's lower
   on Ruby/Sapphire (no tutors at all) and may be higher on Emerald, whose
   own, larger tutor set this mod reads live rather than assumes.
+
+## Credits
+
+Cries and item sprites are fan-made; see [CREDITS.md](CREDITS.md).
 
 ## Regenerating the data
 

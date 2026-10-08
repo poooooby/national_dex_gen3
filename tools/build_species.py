@@ -14,7 +14,9 @@ Only what Gen 3 can express is kept:
     has any, restricted to move ids 1-354 (Gen 3's move table), shipped as
     move NUMBERS -- the mod resolves them to the running game's own move
     names from its move registry;
-  * abilities: PokéAPI ability ids 1-76 (Gen 3's own numbering), as numbers;
+  * abilities: the cart's own ability ids, as numbers -- newer abilities are
+    mapped to the closest one it has (tools/ability_map.py), since the Gen 3
+    battle engine cannot take a new ability from a mod;
   * evolutions: level-up with a minimum level, item use, trade and friendship
     steps between species #1-1025, targets as dex numbers.
 
@@ -41,13 +43,14 @@ from typing import Any
 
 import requests
 
+import ability_map
+
 BASE_URL = "https://pokeapi.co/api/v2"
 ROOT = Path(__file__).resolve().parent.parent
 FIRST_DEX, LAST_DEX = 387, 1025
 SLOT_OFFSET = 64          # Gen 3 slot = dex + 64 (451..1089), above every ROM slot
 SHARD_SIZE = 80
 MAX_MOVE_ID = 354         # Gen 3's move table
-MAX_ABILITY_ID = 76       # Gen 3's abilities
 
 # Newest first. Legends: Arceus is left out: its move system is its own.
 VERSION_GROUPS = [
@@ -184,15 +187,35 @@ def moves_by_method(pokemon: dict[str, Any], methods: set[str]) -> list[int]:
     return sorted(found)
 
 
+# Every ability the species use, for the mapping report: slug -> (PokéAPI id,
+# hidden?, species names). Filled by abilities_for.
+SEEN_ABILITIES: dict[str, dict[str, Any]] = {}
+
+
 def abilities_for(pokemon: dict[str, Any]) -> list[int]:
-    ids = []
-    for entry in sorted(pokemon["abilities"], key=lambda a: a["slot"]):
-        if entry.get("is_hidden"):
-            continue
-        ability_id = id_from_url(entry["ability"]["url"])
-        if ability_id <= MAX_ABILITY_ID and ability_id not in ids:
-            ids.append(ability_id)
-    return ids[:2]
+    """Cart ability ids (tools/ability_map.py): each non-hidden slot mapped to
+    the closest Gen 3 ability, de-duplicated, at most two. A species whose
+    regular abilities all map to nothing falls back to its hidden one."""
+    entries = sorted(pokemon["abilities"], key=lambda a: a["slot"])
+    for entry in entries:
+        slug = entry["ability"]["name"]
+        row = SEEN_ABILITIES.setdefault(
+            slug, {"id": id_from_url(entry["ability"]["url"]), "hidden": True, "species": []})
+        row["hidden"] = row["hidden"] and bool(entry.get("is_hidden"))
+        row["species"].append(pokemon.get("name", "?"))
+
+    def mapped(hidden: bool) -> list[int]:
+        out: list[int] = []
+        for entry in entries:
+            if bool(entry.get("is_hidden")) != hidden:
+                continue
+            cart = ability_map.cart_id(id_from_url(entry["ability"]["url"]),
+                                       entry["ability"]["name"])
+            if cart and cart not in out:
+                out.append(cart)
+        return out
+
+    return (mapped(False) or mapped(True))[:2]
 
 
 def evolution_steps(chain: dict[str, Any]) -> dict[int, list[dict[str, Any]]]:
@@ -339,6 +362,20 @@ def write(records: list[dict[str, Any]], crossgen: list[dict[str, Any]], out_dir
         + "return {\n" + body + (",\n" if body else "") + "}\n", encoding="utf-8")
 
 
+def ability_report(records: list[dict[str, Any]]) -> None:
+    """What the ability mapping left over: abilities with no cart equivalent
+    mapped yet, and how many species end up with none."""
+    unmapped = {slug: row for slug, row in SEEN_ABILITIES.items()
+                if ability_map.cart_id(row["id"], slug) is None}
+    bare = [r["id"] for r in records if not r["abilities"]]
+    print(f"abilities: {len(SEEN_ABILITIES)} seen, {len(unmapped)} unmapped; "
+          f"{len(bare)} of {len(records)} species end up with none")
+    for slug, row in sorted(unmapped.items(), key=lambda kv: kv[1]["id"]):
+        names = sorted(set(row["species"]))
+        print(f"  {row['id']:>3} {slug}{' (hidden only)' if row['hidden'] else ''}: "
+              f"{len(names)} species, e.g. {', '.join(names[:3])}")
+
+
 def main() -> None:
     p = argparse.ArgumentParser()
     p.add_argument("--cache", type=Path, default=ROOT / "tools" / ".cache")
@@ -348,6 +385,7 @@ def main() -> None:
     args = p.parse_args()
     records, crossgen = build(API(args.cache, args.refresh), args.workers)
     write(records, crossgen, args.out)
+    ability_report(records)
     moves = sum(len(r["learnset"]) for r in records)
     teach = sum(len(r["teach"]) for r in records)
     eggs = sum(len(r["eggMoves"]) for r in records)
