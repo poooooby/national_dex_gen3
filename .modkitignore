@@ -13,3 +13,4 @@ tests/fixtures/1025dex/manifest.json
 tests/companion_item_test.lua
 tests/fixtures/item_mod/main.lua
 tests/fixtures/item_mod/manifest.json
+tests/dex_entries_test.lua

@@ -196,9 +196,43 @@ function Fixups.new(registered, itemIndex, bridges, log)
     end
   end
 
+  -- Emerald's Pokedex entries (category / size / text per internal slot) are
+  -- read, fresh each call, through Mapsec.readLua; its table ends at slot 411.
+  -- A mod that walks every National number and asserts an entry exists for
+  -- each (Kanto Gear's species cache, once Dex.NATIONAL_MAX covers #387+)
+  -- errors on the first species past it, so every species this mod registers
+  -- gets an entry, keyed by slot like the cart's own. Category, height and
+  -- weight come from PokeAPI; there is no flavor text, so it is blank. The
+  -- other games' lookups fall back to a blank entry on their own and need no
+  -- help (and are keyed by National number where it matters, so injecting
+  -- slot-keyed rows there would label the wrong species).
+  local function installDexEntries()
+    local ok, Mapsec = pcall(require, "src.ui.game3.rse.mapsec")
+    if not (ok and type(Mapsec) == "table" and type(Mapsec.readLua) == "function")
+      or Mapsec.__nationalDexGen3 then
+      return
+    end
+    Mapsec.__nationalDexGen3 = true
+    local original = Mapsec.readLua
+    Mapsec.readLua = function(rel, ...)
+      local out = original(rel, ...)
+      if rel == "pokemon/pokedex/entries.lua" and type(out) == "table" then
+        for _, r in ipairs(registered) do
+          if out[r.slot] == nil then
+            local d = r.dexEntry or {}
+            out[r.slot] = { category = d.kind or "", height = d.height or 0,
+              weight = d.weight or 0, description = "", description2 = "" }
+          end
+        end
+      end
+      return out
+    end
+  end
+
   function self.install(_)
     installTutors()
     raiseNationalMax()
+    installDexEntries()
     local ok, P = pcall(require, "src.core.game3.pokemon")
     if not (ok and type(P) == "table") then return false end
     self.apply(P)

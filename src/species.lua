@@ -261,7 +261,7 @@ function Species.register(mod, payload, crossgen)
       registered[#registered + 1] = {
         id = r.id, dex = r.dex, slot = r.slot, name = r.name,
         legendary = r.legendary, mythical = r.mythical, evolutions = evolutions,
-        teach = r.teach or {},
+        teach = r.teach or {}, dexEntry = r.dexEntry,
       }
     else
       failed = failed + 1
