@@ -7,40 +7,40 @@
 -- registers each at its own fixed slot (index = 900 + position here). price is
 -- the shop price from tools/item_prices.json (Bulbapedia): 2x the earliest sell price.
 return {
-  { slug = "dawn-stone", id = "DAWN_STONE", name = "Dawn Stone", index = 900, price = 2100 }, -- 2x sell price 1050 (DPPtHGSS,W,XYORAS,BDSP)
-  { slug = "dubious-disc", id = "DUBIOUS_DISC", name = "Dubious Disc", index = 901, price = 2100 }, -- 2x sell price 1050 (DPPtHGSS,BW,XYORAS,BDSP)
-  { slug = "dusk-stone", id = "DUSK_STONE", name = "Dusk Stone", index = 902, price = 2100 }, -- 2x sell price 1050 (DPPtHGSS,WW2,XYORAS,BDSP)
-  { slug = "electirizer", id = "ELECTIRIZER", name = "Electirizer", index = 903, price = 2100 }, -- 2x sell price 1050 (DPPtHGSS,BWB2W2,XYORAS,BDSP)
-  { slug = "ice-stone", id = "ICE_STONE", name = "Ice Stone", index = 904, price = 3000 }, -- 2x sell price 1500 (SMUSUM,SwSh)
-  { slug = "magmarizer", id = "MAGMARIZER", name = "Magmarizer", index = 905, price = 2100 }, -- 2x sell price 1050 (DPPtHGSS,BWB2W2,XYORAS,BDSP)
-  { slug = "protector", id = "PROTECTOR", name = "Protector", index = 906, price = 2100 }, -- 2x sell price 1050 (DPPtHGSS,BW,XYORAS,BDSP)
-  { slug = "reaper-cloth", id = "REAPER_CLOTH", name = "Reaper Cloth", index = 907, price = 2100 }, -- 2x sell price 1050 (DPPtHGSS,BWB2W2,XYORAS,BDSP)
-  { slug = "sachet", id = "SACHET", name = "Sachet", index = 908, price = 2100 }, -- 2x sell price 1050 (XYORAS)
-  { slug = "shiny-stone", id = "SHINY_STONE", name = "Shiny Stone", index = 909, price = 2100 }, -- 2x sell price 1050 (DPPtHGSS,W,XYORAS,BDSP)
-  { slug = "sweet-apple", id = "SWEET_APPLE", name = "Sweet Apple", index = 910, price = 2100 }, -- no price data; classic stone price
-  { slug = "tart-apple", id = "TART_APPLE", name = "Tart Apple", index = 911, price = 2100 }, -- no price data; classic stone price
-  { slug = "whipped-dream", id = "WHIPPED_DREAM", name = "Whipped Dream", index = 912, price = 2100 }, -- 2x sell price 1050 (XYORAS)
-  { slug = "auspicious-armor", id = "AUSPICIOUS_ARMOR", name = "Auspicious Armor", index = 913, price = 2100 }, -- no price data; classic stone price
-  { slug = "black-augurite", id = "BLACK_AUGURITE", name = "Black Augurite", index = 914, price = 1000 }, -- 2x sell price 500 (LA)
-  { slug = "malicious-armor", id = "MALICIOUS_ARMOR", name = "Malicious Armor", index = 915, price = 2100 }, -- no price data; classic stone price
-  { slug = "metal-alloy", id = "METAL_ALLOY", name = "Metal Alloy", index = 916, price = 3000 }, -- 2x sell price 1500 (SV)
-  { slug = "peat-block", id = "PEAT_BLOCK", name = "Peat Block", index = 917, price = 1000 }, -- 2x sell price 500 (LA)
-  { slug = "syrupy-apple", id = "SYRUPY_APPLE", name = "Syrupy Apple", index = 918, price = 2100 }, -- no price data; classic stone price
-  { slug = "cracked-pot", id = "CRACKED_POT", name = "Cracked Pot", index = 919, price = 3000 }, -- Bulbapedia buy price
-  { slug = "chipped-pot", id = "CHIPPED_POT", name = "Chipped Pot", index = 920, price = 3000 }, -- Bulbapedia buy price
-  { slug = "unremarkable-teacup", id = "UNREMARKABLE_TEACUP", name = "Unremarkable Teacup", index = 921, price = 2100 }, -- no price data; classic stone price
-  { slug = "masterpiece-teacup", id = "MASTERPIECE_TEACUP", name = "Masterpiece Teacup", index = 922, price = 2100 }, -- no price data; classic stone price
-  { slug = "strawberry-sweet", id = "STRAWBERRY_SWEET", name = "Strawberry Sweet", index = 923, price = 2100 }, -- no price data; classic stone price
-  { slug = "berry-sweet", id = "BERRY_SWEET", name = "Berry Sweet", index = 924, price = 2100 }, -- no price data; classic stone price
-  { slug = "love-sweet", id = "LOVE_SWEET", name = "Love Sweet", index = 925, price = 2100 }, -- no price data; classic stone price
-  { slug = "star-sweet", id = "STAR_SWEET", name = "Star Sweet", index = 926, price = 2100 }, -- no price data; classic stone price
-  { slug = "clover-sweet", id = "CLOVER_SWEET", name = "Clover Sweet", index = 927, price = 2100 }, -- no price data; classic stone price
-  { slug = "flower-sweet", id = "FLOWER_SWEET", name = "Flower Sweet", index = 928, price = 2100 }, -- no price data; classic stone price
-  { slug = "ribbon-sweet", id = "RIBBON_SWEET", name = "Ribbon Sweet", index = 929, price = 2100 }, -- no price data; classic stone price
-  { slug = "razor-claw", id = "RAZOR_CLAW", name = "Razor Claw", index = 930, price = 2100 }, -- 2x sell price 1050 (DPPtHGSS,BWB2W2,XYORAS,BDSP)
-  { slug = "razor-fang", id = "RAZOR_FANG", name = "Razor Fang", index = 931, price = 2100 }, -- 2x sell price 1050 (DPPtHGSS,BWB2W2,XYORAS,BDSP)
-  { slug = "oval-stone", id = "OVAL_STONE", name = "Oval Stone", index = 932, price = 2100 }, -- 2x sell price 1050 (DPPtHGSS,W,XYORAS,BDSP)
-  { slug = "leaders-crest", id = "LEADERS_CREST", name = "Leader's Crest", index = 933, price = 2100 }, -- no price data; classic stone price
-  { slug = "scroll-of-darkness", id = "SCROLL_OF_DARKNESS", name = "Scroll of Darkness", index = 934, price = 2100 }, -- no price data; classic stone price
-  { slug = "scroll-of-waters", id = "SCROLL_OF_WATERS", name = "Scroll of Waters", index = 935, price = 2100 }, -- no price data; classic stone price
+  { slug = "dawn-stone", id = "DAWN_STONE", name = "DAWN STONE", index = 900, price = 2100 }, -- 2x sell price 1050 (DPPtHGSS,W,XYORAS,BDSP)
+  { slug = "dubious-disc", id = "DUBIOUS_DISC", name = "DUBIOUS DISC", index = 901, price = 2100 }, -- 2x sell price 1050 (DPPtHGSS,BW,XYORAS,BDSP)
+  { slug = "dusk-stone", id = "DUSK_STONE", name = "DUSK STONE", index = 902, price = 2100 }, -- 2x sell price 1050 (DPPtHGSS,WW2,XYORAS,BDSP)
+  { slug = "electirizer", id = "ELECTIRIZER", name = "ELECTIRIZER", index = 903, price = 2100 }, -- 2x sell price 1050 (DPPtHGSS,BWB2W2,XYORAS,BDSP)
+  { slug = "ice-stone", id = "ICE_STONE", name = "ICE STONE", index = 904, price = 3000 }, -- 2x sell price 1500 (SMUSUM,SwSh)
+  { slug = "magmarizer", id = "MAGMARIZER", name = "MAGMARIZER", index = 905, price = 2100 }, -- 2x sell price 1050 (DPPtHGSS,BWB2W2,XYORAS,BDSP)
+  { slug = "protector", id = "PROTECTOR", name = "PROTECTOR", index = 906, price = 2100 }, -- 2x sell price 1050 (DPPtHGSS,BW,XYORAS,BDSP)
+  { slug = "reaper-cloth", id = "REAPER_CLOTH", name = "REAPER CLOTH", index = 907, price = 2100 }, -- 2x sell price 1050 (DPPtHGSS,BWB2W2,XYORAS,BDSP)
+  { slug = "sachet", id = "SACHET", name = "SACHET", index = 908, price = 2100 }, -- 2x sell price 1050 (XYORAS)
+  { slug = "shiny-stone", id = "SHINY_STONE", name = "SHINY STONE", index = 909, price = 2100 }, -- 2x sell price 1050 (DPPtHGSS,W,XYORAS,BDSP)
+  { slug = "sweet-apple", id = "SWEET_APPLE", name = "SWEET APPLE", index = 910, price = 2100 }, -- no price data; classic stone price
+  { slug = "tart-apple", id = "TART_APPLE", name = "TART APPLE", index = 911, price = 2100 }, -- no price data; classic stone price
+  { slug = "whipped-dream", id = "WHIPPED_DREAM", name = "WHIPPED DREAM", index = 912, price = 2100 }, -- 2x sell price 1050 (XYORAS)
+  { slug = "auspicious-armor", id = "AUSPICIOUS_ARMOR", name = "AUSPIC. ARMOR", index = 913, price = 2100 }, -- no price data; classic stone price
+  { slug = "black-augurite", id = "BLACK_AUGURITE", name = "BLACK AUGURITE", index = 914, price = 1000 }, -- 2x sell price 500 (LA)
+  { slug = "malicious-armor", id = "MALICIOUS_ARMOR", name = "MALIC. ARMOR", index = 915, price = 2100 }, -- no price data; classic stone price
+  { slug = "metal-alloy", id = "METAL_ALLOY", name = "METAL ALLOY", index = 916, price = 3000 }, -- 2x sell price 1500 (SV)
+  { slug = "peat-block", id = "PEAT_BLOCK", name = "PEAT BLOCK", index = 917, price = 1000 }, -- 2x sell price 500 (LA)
+  { slug = "syrupy-apple", id = "SYRUPY_APPLE", name = "SYRUPY APPLE", index = 918, price = 2100 }, -- no price data; classic stone price
+  { slug = "cracked-pot", id = "CRACKED_POT", name = "CRACKED POT", index = 919, price = 3000 }, -- Bulbapedia buy price
+  { slug = "chipped-pot", id = "CHIPPED_POT", name = "CHIPPED POT", index = 920, price = 3000 }, -- Bulbapedia buy price
+  { slug = "unremarkable-teacup", id = "UNREMARKABLE_TEACUP", name = "UNREMARK. CUP", index = 921, price = 2100 }, -- no price data; classic stone price
+  { slug = "masterpiece-teacup", id = "MASTERPIECE_TEACUP", name = "MASTERPC. CUP", index = 922, price = 2100 }, -- no price data; classic stone price
+  { slug = "strawberry-sweet", id = "STRAWBERRY_SWEET", name = "STRAWBRY SWEET", index = 923, price = 2100 }, -- no price data; classic stone price
+  { slug = "berry-sweet", id = "BERRY_SWEET", name = "BERRY SWEET", index = 924, price = 2100 }, -- no price data; classic stone price
+  { slug = "love-sweet", id = "LOVE_SWEET", name = "LOVE SWEET", index = 925, price = 2100 }, -- no price data; classic stone price
+  { slug = "star-sweet", id = "STAR_SWEET", name = "STAR SWEET", index = 926, price = 2100 }, -- no price data; classic stone price
+  { slug = "clover-sweet", id = "CLOVER_SWEET", name = "CLOVER SWEET", index = 927, price = 2100 }, -- no price data; classic stone price
+  { slug = "flower-sweet", id = "FLOWER_SWEET", name = "FLOWER SWEET", index = 928, price = 2100 }, -- no price data; classic stone price
+  { slug = "ribbon-sweet", id = "RIBBON_SWEET", name = "RIBBON SWEET", index = 929, price = 2100 }, -- no price data; classic stone price
+  { slug = "razor-claw", id = "RAZOR_CLAW", name = "RAZOR CLAW", index = 930, price = 2100 }, -- 2x sell price 1050 (DPPtHGSS,BWB2W2,XYORAS,BDSP)
+  { slug = "razor-fang", id = "RAZOR_FANG", name = "RAZOR FANG", index = 931, price = 2100 }, -- 2x sell price 1050 (DPPtHGSS,BWB2W2,XYORAS,BDSP)
+  { slug = "oval-stone", id = "OVAL_STONE", name = "OVAL STONE", index = 932, price = 2100 }, -- 2x sell price 1050 (DPPtHGSS,W,XYORAS,BDSP)
+  { slug = "leaders-crest", id = "LEADERS_CREST", name = "LEADER'S CREST", index = 933, price = 2100 }, -- no price data; classic stone price
+  { slug = "scroll-of-darkness", id = "SCROLL_OF_DARKNESS", name = "DARK SCROLL", index = 934, price = 2100 }, -- no price data; classic stone price
+  { slug = "scroll-of-waters", id = "SCROLL_OF_WATERS", name = "WATER SCROLL", index = 935, price = 2100 }, -- no price data; classic stone price
 }

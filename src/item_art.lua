@@ -30,6 +30,7 @@ local function loadAtlas(mod, load)
     if pageFailed then return nil end
     local ok, img = pcall(love.graphics.newImage, mod.path .. "/assets/items/icons.png")
     if ok and img then
+      pcall(img.setFilter, img, "nearest", "nearest")   -- the cells are pixel art
       page = img
       return page
     end

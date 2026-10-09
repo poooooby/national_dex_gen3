@@ -70,12 +70,16 @@ def engine_id(slug: str) -> str:
     return slug.upper().replace("-", "_")
 
 
-NAME_OVERRIDES = {"leaders-crest": "Leader's Crest", "scroll-of-darkness": "Scroll of Darkness",
-                  "scroll-of-waters": "Scroll of Waters"}
+# The cart's item names hold 14 characters, so the longer ones are abbreviated.
+NAME_OVERRIDES = {"leaders-crest": "Leader's Crest", "scroll-of-darkness": "Dark Scroll",
+                  "scroll-of-waters": "Water Scroll", "auspicious-armor": "Auspic. Armor",
+                  "malicious-armor": "Malic. Armor", "unremarkable-teacup": "Unremark. Cup",
+                  "masterpiece-teacup": "Masterpc. Cup", "strawberry-sweet": "Strawbry Sweet"}
 
 
 def display_name(slug: str) -> str:
-    return NAME_OVERRIDES.get(slug) or slug.replace("-", " ").title()
+    # all caps, like the cart's own item names (THUNDERSTONE, KING'S ROCK)
+    return (NAME_OVERRIDES.get(slug) or slug.replace("-", " ").title()).upper()
 
 
 def find_icon(icons_root: Path, slug: str) -> Path | None:
@@ -129,6 +133,23 @@ def write_items(path: Path, prices: dict) -> None:
     path.write_text("\n".join(lines), encoding="utf-8")
 
 
+def fit_cell(icon: Image.Image) -> Image.Image:
+    """The icon in a 24x24 cell without blurring a pixel. The art has empty margin, so it is
+    cropped to its content and centred 1:1 when that fits; only larger art is scaled, with
+    nearest neighbour (no resampling filter: a smoothing one rings and bleeds at the edges)."""
+    box = icon.getchannel("A").getbbox()
+    cell = Image.new("RGBA", (ICON_SIZE, ICON_SIZE), (0, 0, 0, 0))
+    if box is None:
+        return cell
+    art = icon.crop(box)
+    longest = max(art.size)
+    if longest > ICON_SIZE:
+        scale = ICON_SIZE / longest
+        art = art.resize((max(1, round(art.width * scale)), max(1, round(art.height * scale))), Image.NEAREST)
+    cell.paste(art, ((ICON_SIZE - art.width) // 2, (ICON_SIZE - art.height) // 2))
+    return cell
+
+
 def build_icons(icons_root: Path | None, out_png: Path, out_lua: Path,
                 extra_root: Path | None = None) -> None:
     found: dict[str, Path] = {}
@@ -150,9 +171,7 @@ def build_icons(icons_root: Path | None, out_png: Path, out_lua: Path,
     cells: dict[int, tuple[int, int]] = {}
     for i, slug in enumerate(s for s in ORDER if s in found):
         with Image.open(found[slug]) as im:
-            icon = im.convert("RGBA")
-            if icon.size != (ICON_SIZE, ICON_SIZE):
-                icon = icon.resize((ICON_SIZE, ICON_SIZE), Image.LANCZOS)
+            icon = fit_cell(im.convert("RGBA"))
         x, y = (i % cols) * ICON_SIZE, (i // cols) * ICON_SIZE
         sheet.paste(icon, (x, y))
         cells[ORDER.index(slug)] = (x, y)
