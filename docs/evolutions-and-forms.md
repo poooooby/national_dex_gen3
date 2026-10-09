@@ -6,6 +6,13 @@ that work differently from the games you know. For every Pokémon's stats and mo
 
 *This page is written by hand; the two pages above are generated from the mod's data.*
 
+**How do I catch them?** None of the five games has a Gen 4-9 Pokémon (or any alternate form)
+in its own wild encounter tables, so this mod only adds them to the game. A mod that changes
+the spawn tables puts them in the wild: [Modern Spawns](https://github.com/poooooby/g1r_modern_spawns)
+re-picks the species on every map and also places the wild forms, and any other mod that edits
+the encounter tables can do the same. **You do not need a save editor** to catch them, to find
+the forms that appear in the wild, or to evolve them.
+
 **Contents**
 
 - [Which clock the game reads](#which-clock-the-game-reads)
@@ -100,8 +107,9 @@ each item goes with one of the two looks of the Pokémon, and it evolves into th
 | Poltchageist (the normal, counterfeit look) | Unremarkable Teacup | Sinistcha |
 | Poltchageist (Artisan) | Masterpiece Teacup | Sinistcha (Masterpiece) |
 
-The Antique and Artisan looks are [forms](#alternate-forms), so they come from the save
-editor; the wrong item does nothing.
+The Antique and Artisan looks are [forms](#alternate-forms): they can turn up in the wild
+with Modern Spawns (see [Alternate forms](#alternate-forms)), or come from the save editor. The
+wrong item does nothing.
 
 ## Original Pokémon with new evolutions
 
@@ -164,7 +172,7 @@ with a Dusk Stone, or Doublade → Aegislash). They are listed under each item i
   takes none). A male becomes Basculegion and a female the female Basculegion, which has her own
   stats. It evolves at the end of the battle in which it reaches 294 (a battle you win), like a
   level-up evolution. Only the white-striped Basculin does this; the normal red-striped one never
-  evolves. The white-striped form comes from the save editor.
+  evolves. The white-striped form can turn up in the wild with Modern Spawns, or come from the save editor.
 - **Friendship at day or night.** Budew → Roselia and Riolu → Lucario need friendship in the
   daytime, and Chingling → Chimecho and Snom → Frosmoth need it at night (friendship 220 or
   more). They follow [the clock the game reads](#which-clock-the-game-reads), so they work in all
@@ -230,11 +238,18 @@ A form is a Pokémon of its own with its own stats, typing and moves, but it cou
 base Pokémon in the Pokédex. For example Darumaka (Galar) is Darumaka #554, and marking
 it seen or caught also marks Darumaka. Forms never add to the Pokédex totals.
 
-**How to get them.** No game puts a form in the wild, and the games have no way to change
-one Pokémon into a form. A form can come from:
+**How to get them.** None of the games has a form in its own wild tables, and the games have
+no way to change one Pokémon into a form. A form can come from:
 
+- **The wild**, with a spawn mod. [Modern Spawns](https://github.com/poooooby/g1r_modern_spawns)
+  places the forms that are wild Pokémon in the real games: the Galarian and Hisuian forms
+  (Darumaka, Darmanitan, Yamask, Stunfisk, Zorua, Zoroark, Lilligant, Braviary, Sliggoo, Goodra,
+  Avalugg) and the looks of Rotom, Oricorio, Pumpkaboo, Gourgeist, Wormadam, Lycanroc (Midnight),
+  Flabébé, Floette, Florges, Alcremie, Shellos, Gastrodon, Basculin, Basculegion and the tea set.
+  A species with several looks shows up as itself or one of them with equal odds. Any other mod
+  that edits the spawn tables can add forms the same way.
 - **Evolution**, for the forms in the next table, and
-- the gen1recomp **save editor**, which can create any form.
+- the gen1recomp **save editor**, which can create any form, but is **not required**.
 
 | Form | How |
 |---|---|
@@ -249,8 +264,13 @@ one Pokémon into a form. A form can come from:
 | Basculegion (female) | Evolve a female white-striped Basculin, see [above](#other-evolutions-worth-knowing) |
 | Floette and Florges in yellow, orange, blue and white | Evolve the same-colour Flabébé (level 19) and Floette (Shiny Stone) |
 
-Everything else needs the save editor, including the starting forms Darumaka (Galar),
-Zorua (Hisui), Shellos (East), the Antique Sinistea, the Artisan Poltchageist, the white-striped Basculin and the yellow, orange, blue and white Flabébé.
+The starting forms of those lines (Darumaka (Galar), Zorua (Hisui), Shellos (East), the Antique
+Sinistea, the Artisan Poltchageist, the white-striped Basculin and the yellow, orange, blue and
+white Flabébé) are all forms Modern Spawns can put in the wild, so you can catch them and evolve
+them. Only the forms that are not wild Pokémon need the save editor or a mod that places them:
+the Origin, Therian, Black/White Kyurem, Crowned, Ogerpon-mask and other item or fusion forms,
+Floette (Eternal), Dusk Lycanroc, Bloodmoon Ursaluna, Rapid Strike Urshifu and the Hisuian
+Samurott and Decidueye.
 
 **All 84 forms**
 
