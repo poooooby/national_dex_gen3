@@ -175,6 +175,26 @@ T.eq(row and row.param, 96, "with FireRed's Thunder Stone")
 T.eq(#(run.loader.content.pokemon:get("SCYTHER").evolutions or {}), 2,
      "Scyther gains both Scizor (trade) and Kleavor (national_dex_gen3's own Black Augurite)")
 
+-- every item has a description for the Bag and the marts: at most 3 lines of 22 characters (the mart's box is about 21 wide)
+do
+  local itemsPayload = dofile("mods/national_dex_gen3/data/items.lua")
+  local without, tooLong = 0, 0
+  for _, r in ipairs(itemsPayload) do
+    local d = run.loader.content.items:get(r.id).description
+    if type(d) ~= "string" or d == "" then without = without + 1
+    else
+      local lines = 0
+      for line in (d .. "\n"):gmatch("(.-)\n") do
+        lines = lines + 1
+        if #line:gsub("é", "e") > 22 then tooLong = tooLong + 1 end
+      end
+      if lines > 3 then tooLong = tooLong + 1 end
+    end
+  end
+  T.eq(without, 0, "every registered item has a description")
+  T.eq(tooLong, 0, "and each fits 3 lines of 22 characters")
+end
+
 -- ------- evolutionsOf
 
 local grotle = api.evolutionsOf("GROTLE")

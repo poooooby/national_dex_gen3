@@ -26,11 +26,14 @@ from __future__ import annotations
 
 import argparse
 import json
+import sys
 from pathlib import Path
 
 from PIL import Image
 
 ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from desc_width import LIMIT, width  # noqa: E402
 INDEX_BASE = 900   # first slot; comfortably above every Gen 3 game's own
                    # item ids (the highest this engine knows of is 365)
 ICON_SIZE = 24     # the Bag's own icon slot, both FRLG's and RSE's bag_chrome
@@ -75,6 +78,55 @@ NAME_OVERRIDES = {"leaders-crest": "Leader's Crest", "scroll-of-darkness": "Dark
                   "scroll-of-waters": "Water Scroll", "auspicious-armor": "Auspic. Armor",
                   "malicious-armor": "Malic. Armor", "unremarkable-teacup": "Unremark. Cup",
                   "masterpiece-teacup": "Masterpc. Cup", "strawberry-sweet": "Strawbry Sweet"}
+
+
+# What the marts and the Bag show under each item: what the item is, in the cart's own style,
+# never what it is for. The mart's description box is about 21
+# characters wide and 3 lines high (anything wider runs under the item list), so every line
+# stays within LIMIT by tools/desc_width.py's estimate. A backslash-n separates lines.
+DESCRIPTIONS = {
+    "dawn-stone": "A peculiar stone\nthat sparkles like\na glittering eye.",
+    "dubious-disc": "A transparent\ndevice overflowing\nwith dubious data.",
+    "dusk-stone": "A peculiar stone, as\ndark as dark can be.",
+    "electirizer": "A box packed with\nelectric energy.",
+    "ice-stone": "A peculiar stone\nwith a snowflake\npattern.",
+    "magmarizer": "A box packed with\nfire energy.",
+    "protector": "Protective gear\nthat is very hard.",
+    "reaper-cloth": "A cloth imbued with\nhorrifying energy.",
+    "sachet": "A sachet filled with\nlovely perfume.",
+    "shiny-stone": "A peculiar stone\nthat shines.",
+    "sweet-apple": "A very sweet apple.",
+    "tart-apple": "A very tart apple.",
+    "whipped-dream": "A soft and sweet\ntreat of sugar.",
+    "auspicious-armor": "Armor fit for a\nchampion.",
+    "black-augurite": "A black, glossy\nstone.",
+    "malicious-armor": "Armor filled\nwith spite.",
+    "metal-alloy": "A mysterious metal\nof fused metals.",
+    "peat-block": "Plant matter that\nsmolders eerily.",
+    "syrupy-apple": "A very syrupy\napple.",
+    "cracked-pot": "A cracked,\nworthless pot.",
+    "chipped-pot": "A chipped antique\npot.",
+    "unremarkable-teacup": "A plain, ordinary\nteacup.",
+    "masterpiece-teacup": "A splendid teacup, a\nwork of art.",
+    "strawberry-sweet": "A sweet with a\nstrawberry on top.",
+    "berry-sweet": "A sweet with a\nberry on top.",
+    "love-sweet": "A sweet with a\nheart on top.",
+    "star-sweet": "A sweet with a\nstar on top.",
+    "clover-sweet": "A sweet with a\nclover on top.",
+    "flower-sweet": "A sweet with a\nflower on top.",
+    "ribbon-sweet": "A sweet with a\nribbon on top.",
+    "razor-claw": "A sharply hooked\nclaw.",
+    "razor-fang": "A sharp, hard fang.",
+    "oval-stone": "A peculiar,\negg-shaped stone.",
+    "leaders-crest": "A crest worn by\na leader.",
+    "scroll-of-darkness": "A scroll of the\ndark style.",
+    "scroll-of-waters": "A scroll of the\nwater style.",
+}
+
+for _slug, _text in DESCRIPTIONS.items():
+    _lines = _text.split("\n")
+    assert len(_lines) <= 3, _slug
+    assert all(width(_l) <= LIMIT for _l in _lines), (_slug, _text)
 
 
 def display_name(slug: str) -> str:
@@ -128,7 +180,7 @@ def write_items(path: Path, prices: dict) -> None:
         price, why = derive_price(slug, prices)
         lines.append(f'  {{ slug = "{slug}", id = "{engine_id(slug)}", '
                      f'name = "{display_name(slug)}", index = {INDEX_BASE + i}, '
-                     f'price = {price} }}, -- {why}')
+                     f'price = {price}, description = {json.dumps(DESCRIPTIONS[slug], ensure_ascii=False)} }}, -- {why}')
     lines += ["}", ""]
     path.write_text("\n".join(lines), encoding="utf-8")
 

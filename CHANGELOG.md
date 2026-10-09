@@ -3,6 +3,21 @@
 All notable changes to this mod are documented here, in
 [keep a changelog](https://keepachangelog.com/en/1.1.0/) format.
 
+## [0.6.2] - 2026-10-09
+
+### Added
+
+- **Item descriptions** for the 36 evolution items, shown in the marts and the Bag: what the item is,
+  in the cart's style, within the mart's 3 lines of about 21 characters.
+
+### Changed
+
+- **Item names** are in capitals like the cart's, and the long ones are abbreviated to the cart's 14
+  characters (UNREMARK. CUP, MASTERPC. CUP, AUSPIC. ARMOR, MALIC. ARMOR, STRAWBRY SWEET, DARK SCROLL,
+  WATER SCROLL).
+- **Item icons** are no longer resampled (a smoothing filter left ghosting at the edges): the art is
+  cropped and centred in its 24x24 cell, and only larger art is scaled, with nearest neighbour.
+
 ## [0.6.1] - 2026-10-09
 
 ### Added
