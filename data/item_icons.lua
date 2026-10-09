@@ -23,5 +23,16 @@ return {
     [916] = { x = 0, y = 24 }, -- metal-alloy
     [917] = { x = 24, y = 24 }, -- peat-block
     [918] = { x = 48, y = 24 }, -- syrupy-apple
+    [919] = { x = 72, y = 24 }, -- cracked-pot
+    [920] = { x = 96, y = 24 }, -- chipped-pot
+    [921] = { x = 120, y = 24 }, -- unremarkable-teacup
+    [922] = { x = 144, y = 24 }, -- masterpiece-teacup
+    [923] = { x = 168, y = 24 }, -- strawberry-sweet
+    [924] = { x = 192, y = 24 }, -- berry-sweet
+    [925] = { x = 216, y = 24 }, -- love-sweet
+    [926] = { x = 240, y = 24 }, -- star-sweet
+    [927] = { x = 264, y = 24 }, -- clover-sweet
+    [928] = { x = 288, y = 24 }, -- flower-sweet
+    [929] = { x = 312, y = 24 }, -- ribbon-sweet
   },
 }

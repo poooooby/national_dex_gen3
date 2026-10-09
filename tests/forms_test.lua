@@ -21,9 +21,9 @@ local api = run.loader.exports.national_dex_gen3
 -- ------- registration
 
 local forms = api.listForms()
-T.eq(#forms, 56, "56 alternate forms are registered")
+T.eq(#forms, 84, "84 alternate forms are registered")
 T.eq(forms[1].slot, 1090, "the first form is slot 1090")
-T.eq(forms[#forms].slot, 1145, "the last is 1145")
+T.eq(forms[#forms].slot, 1173, "the last is 1173")
 local seen, ordered = {}, true
 for i, f in ipairs(forms) do
   if seen[f.slot] or f.slot ~= 1089 + i then ordered = false end
@@ -76,7 +76,7 @@ T.check(api.apiVersion >= 2, "apiVersion is 2 or more")
 -- ------- abilities and moves: only what the cart has
 
 local bad = 0
-for slot = 1090, 1145 do
+for slot = 1090, 1173 do
   local pair = P._abilities[slot] or {}
   for _, id in ipairs({ pair[1] or 0, pair[2] or 0 }) do
     if id ~= 0 and (id < 1 or id > 77 or id == 76) then bad = bad + 1 end
@@ -110,7 +110,7 @@ T.eq(#(P._evolutions[1090 + 9] or {}), 0, "a form with no expressible evolution 
 
 local cries = dofile("mods/national_dex_gen3/data/cries.lua")
 local missing = 0
-for slot = 1090, 1145 do if not cries[slot] then missing = missing + 1 end end
+for slot = 1090, 1173 do if not cries[slot] then missing = missing + 1 end end
 T.eq(missing, 0, "every form slot has a cry")
 
 -- ------- the Pokedex

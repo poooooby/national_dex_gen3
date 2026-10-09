@@ -7,13 +7,63 @@ All notable changes to this mod are documented here, in
 
 ### Added
 
-- **56 alternate forms** (`tools/form_list.py`), each registered as a species of its
-  own at slots 1090-1145 (`SLOT_CAP` is now 1200), using the original `national_dex`
+- **The tea set looks**: 4 forms (`SINISTEA_ANTIQUE`, `POLTEAGEIST_ANTIQUE`,
+  `POLTCHAGEIST_ARTISAN`, `SINISTCHA_MASTERPIECE`, slots 1170-1173; 84 forms in all) and the item
+  rule now matches the real games: Cracked Pot evolves the normal Sinistea, Chipped Pot the
+  Antique one, Unremarkable Teacup the normal Poltchageist and Masterpiece Teacup the Artisan one,
+  each into the same look. Before, either item of a pair worked on either look.
+- **Basculin -> Basculegion by recoil** (`src/recoil.lua`): the recoil damage a Pokemon takes
+  (a quarter or a third of a recoil move's damage, from the `battle.damage_dealt` event; none
+  with Rock Head) is added to a `recoilTaken` total on the party Pokemon, saved with it. At
+  294 the white-striped Basculin (new form `BASCULIN_WHITE_STRIPED`) is marked for the
+  end-of-battle evolution check and becomes Basculegion (male) or the new
+  `BASCULEGION_FEMALE` form. 80 forms now, slots 1090-1169.
+- **More form-dependent evolutions.** 14 new forms (`tools/form_list.py`, slots 1154-1167):
+  the east-sea Shellos and Gastrodon, and Flabébé, Floette and Florges in yellow, orange,
+  blue and white; each evolves into its own kind (Shellos 30, Flabébé 19, Floette with a Shiny
+  Stone). Pumpkaboo (average) now trades into Gourgeist (average) like the other sizes. Deerling
+  -> Sawsbuck (spring), Scatterbug -> Spewpa -> Vivillon (base) now evolve. A female Burmy's
+  Wormadam cloak follows the terrain of its last battle (`when.terrain`: grass / water Plant,
+  sand / mountain / cave Sandy, buildings Trash, from `src.core.game3.battle.bg`).
+  Meowstic and Oinkologne have a female look in the sprite mod only.
+- **Gender-dependent evolutions** (`when.gender` in `src/conditional_evos.lua`): only female
+  Combee -> Vespiquen and Salandit -> Salazzle; Burmy -> Wormadam (female, Plant Cloak) or
+  Mothim (male); male Kirlia -> Gallade and female Snorunt -> Froslass with a Dawn Stone
+  (item evolutions have no hook, so `Evolution.targetSpecies` is wrapped to veto the wrong
+  gender); Espurr -> Meowstic and Lechonk -> Oinkologne, which reach the same species for
+  both genders. Before, gender was ignored and either gender evolved.
+- **Device clock for time-of-day evolutions** (`src/clock.lua`, `options.lua`). FireRed
+  and LeafGreen, which have no clock, now use the device's; Ruby, Sapphire and Emerald get a
+  **Clock Source** option (In-game, the default, or Device). Night is 20:00-04:00, dusk is
+  19:00-20:00 and day is every other hour (dusk counts as day). The friendship day/night evolutions (Budew, Riolu, Chingling, Snom, and
+  Eevee where the cart has them) are decided by this clock too, so they now work on
+  FireRed and LeafGreen and use these hours instead of the engine's noon/midnight split.
+- **Evolution and forms guide** (`docs/evolutions-and-forms.md`, written by hand) for players,
+  and `docs/items.md` now lists held-item evolutions (Dusk Lycanroc, Alcremie) under their items.
+- Cracked Pot and Chipped Pot cost 3000 (Bulbapedia's buy price).
+- **Tea evolutions**: Cracked Pot / Chipped Pot (Sinistea -> Polteageist) and
+  Unremarkable Teacup / Masterpiece Teacup (Poltchageist -> Sinistcha) are registered
+  as items (indices 919-922, with Bag icons; see the tea set looks entry above for which goes with which). Item steps
+  now ignore PokéAPI's form tags, which also gives Floette -> Florges (Shiny Stone)
+  and Eevee -> Leafeon / Glaceon (Leaf / Ice Stone).
+- **Milcery -> Alcremie** at level 25 while holding any of seven new sweets
+  (Strawberry, Berry, Love, Star, Clover, Flower, Ribbon; items 923-929, with Bag
+  icons): one of four creams by day (Vanilla, Ruby, Matcha, Mint) or four by night
+  (Lemon, Salted, Ruby Swirl, Caramel Swirl), each 1 in 4 from the Pokemon's personality,
+  or Rainbow Swirl at dusk (19:00-20:00). Day is 04:00-20:00 (see the
+  clock entry above). The sweet is not consumed.
+- The tea and sweet items are sold at the Gen 8-9 marts (Six Island, Mossdeep, Sootopolis).
+- **Rockruff -> Lycanroc by the clock** (`src/conditional_evos.lua`,
+  wrapping the `evolution.check` hook): at level 25 it becomes Midday Lycanroc,
+  Midnight Lycanroc at night (20:00-04:00) or Dusk Lycanroc at dusk (19:00-20:00);
+  no held item is needed.
+- **64 alternate forms** (`tools/form_list.py`; see the entry above for the 14 added later), each registered as a species of its
+  own at slots 1090-1153 (`SLOT_CAP` is now 1200), using the original `national_dex`
   mod's ids (`WORMADAM_SANDY`, `DARUMAKA_GALAR`, ...) so the sprite pack and other
   mods keyed to national_dex link up: 13 Galarian/Hisuian forms, 19 permanent forms
   (Wormadam cloaks, Rotom appliances, Oricorio styles, Pumpkaboo/Gourgeist sizes,
   Lycanroc Midnight/Dusk, Urshifu Rapid Strike) and 24 legendary item/fusion forms
-  (Origin, Therian, Black/White Kyurem, Crowned, ...). Megas, Gigantamax and
+  (Origin, Therian, Black/White Kyurem, Crowned, ...) and Alcremie's eight other creams. Megas, Gigantamax and
   in-battle/cosmetic forms are out. A form's slot is saved in player saves, so the
   list is append-only. Native saves are safe (a species is a plain number); a save
   holding a form still needs this mod on, as it already does for the 639.

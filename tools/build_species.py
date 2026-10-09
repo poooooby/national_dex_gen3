@@ -247,6 +247,11 @@ def abilities_for(pokemon: dict[str, Any]) -> list[int]:
     return (mapped(False) or mapped(True))[:2]
 
 
+# Kubfu's Isle of Armor scrolls: key items this mod doesn't register, so the
+# step could never fire (Urshifu's Rapid Strike form is a form entry instead).
+NOT_REGISTERED_ITEMS = {"scroll-of-darkness", "scroll-of-waters"}
+
+
 def evolution_steps(chain: dict[str, Any]) -> dict[int, list[dict[str, Any]]]:
     """dex -> steps FROM that species, in the Gen 3-expressible subset."""
     steps: dict[int, list[dict[str, Any]]] = {}
@@ -260,11 +265,15 @@ def evolution_steps(chain: dict[str, Any]) -> dict[int, list[dict[str, Any]]]:
                              key=lambda d: 0 if d.get("is_default") else 1)
             for detail in details:
                 trigger = detail["trigger"]["name"]
+                # which form a Pokemon is in is no condition Gen 3 can check, but an
+                # item step names exactly what it needs, so the form tags are
+                # ignored there (Sinistea's phony/antique pots, Poltchageist's teacups)
+                ignored = ("required_pokemon_form", "evolved_pokemon_form")                     if trigger == "use-item" else ()
                 others = {k: v for k, v in detail.items()
                           if v not in (None, False, "", 0) and k not in (
                               "trigger", "min_level", "item", "min_happiness",
                               "time_of_day", "held_item", "gender",
-                              "version_group", "is_default")}
+                              "version_group", "is_default") + ignored}
                 step = None
                 if trigger == "level-up" and detail.get("min_level") and not others:
                     step = {"method": "EVO_LEVEL", "level": detail["min_level"]}
@@ -273,16 +282,23 @@ def evolution_steps(chain: dict[str, Any]) -> dict[int, list[dict[str, Any]]]:
                     method = {"day": "EVO_FRIENDSHIP_DAY",
                               "night": "EVO_FRIENDSHIP_NIGHT"}.get(time_of_day, "EVO_FRIENDSHIP")
                     step = {"method": method}
-                elif trigger == "use-item" and detail.get("item") and not others:
+                elif (trigger == "use-item" and detail.get("item") and not others
+                        and detail["item"]["name"] not in NOT_REGISTERED_ITEMS):
                     step = {"method": "EVO_ITEM", "item": detail["item"]["name"]}
+                    if detail.get("gender"):     # Kirlia -> Gallade (male), Snorunt -> Froslass (female)
+                        step["gender"] = {1: "F", 2: "M"}[detail["gender"]]
                 elif trigger == "trade" and not others:
                     held = detail.get("held_item")
                     step = ({"method": "EVO_TRADE_ITEM", "item": held["name"]} if held
                             else {"method": "EVO_TRADE"})
                 if step and 1 <= target <= LAST_DEX:
                     step["target"] = target
-                    steps.setdefault(source, []).append(step)
-                    break
+                    rows = steps.setdefault(source, [])
+                    if step in rows:
+                        continue
+                    rows.append(step)
+                    if step["method"] != "EVO_ITEM":
+                        break      # one item per detail: Sinistea takes either pot
             walk(child)
 
     walk(chain["chain"])
@@ -325,7 +341,8 @@ def build(api: API, workers: int, cart_dir: Path) -> tuple[list[dict[str, Any]],
     form_items = fetch_forms(api, fetched, workers)
     mapper = build_mapper(api, fetched + form_items, cart_dir, workers)
     records = [species_record(item["species"], item["pokemon"], item["dex"], mapper,
-                              steps.get(item["dex"], []))
+                              form_list.CONDITIONAL_EVOLUTIONS.get(item["dex"])
+                              or steps.get(item["dex"], []))
                for item in fetched]
     forms = [form_record(item, mapper) for item in form_items]
     return records, crossgen, mapper, forms
@@ -404,6 +421,7 @@ def form_record(item: dict[str, Any], mapper: "move_map.MoveMapper") -> dict[str
         elif method == "EVO_ITEM":
             step["item"] = arg
         evolutions.append(step)
+    evolutions += form_list.FORM_CONDITIONAL_EVOLUTIONS.get(item["id"], [])
     rec = species_record(item["species"], item["pokemon"], item["dex"], mapper, evolutions)
     rec.update({
         "id": item["id"], "slot": item["slot"], "baseSpecies": item["base"],

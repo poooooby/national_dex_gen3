@@ -45,7 +45,17 @@ ORDER = [
     # checkout; registered regardless (see ORDER's own docstring above)
     "auspicious-armor", "black-augurite", "malicious-armor", "metal-alloy",
     "peat-block", "syrupy-apple",
+    # Sinistea / Poltchageist: two items each (phony/antique, counterfeit/artisan)
+    "cracked-pot", "chipped-pot", "unremarkable-teacup", "masterpiece-teacup",
+    # Milcery -> Alcremie: any one of the seven sweets, held
+    "strawberry-sweet", "berry-sweet", "love-sweet", "star-sweet", "clover-sweet",
+    "flower-sweet", "ribbon-sweet",
 ]
+
+# slug -> file stem when the pack spells the item differently (pokesprite
+# calls the teacups "teapot")
+ICON_ALIASES = {"unremarkable-teacup": "unremarkable-teapot",
+                "masterpiece-teacup": "masterpiece-teapot"}
 
 
 def engine_id(slug: str) -> str:
@@ -58,7 +68,8 @@ def display_name(slug: str) -> str:
 
 def find_icon(icons_root: Path, slug: str) -> Path | None:
     # pokesprite names files with hyphens; hand-added ones may use underscores
-    for name in (slug, slug.replace("-", "_")):
+    alias = ICON_ALIASES.get(slug, slug)
+    for name in (slug, slug.replace("-", "_"), alias, alias.replace("-", "_")):
         hit = sorted(icons_root.rglob(f"{name}.png"))
         if hit:
             return hit[0]
@@ -68,10 +79,17 @@ def find_icon(icons_root: Path, slug: str) -> Path | None:
 DEFAULT_PRICE = 2100   # the classic Gen 3 evolution stone price, when the wiki has none
 
 
+# Shop prices Bulbapedia lists directly as the buy price, where 2x the sell price would
+# be wrong (the Chipped Pot sells for 19,000 but is bought for 3,000).
+BUY_PRICES = {"cracked-pot": 3000, "chipped-pot": 3000}
+
+
 def derive_price(slug: str, prices: dict) -> tuple[int, str]:
     """Shop buy price: twice the sell price of the earliest game that lists
     one (a shop buys at half what it sells for), from tools/item_prices.json
     (tools/fetch_item_prices.py, Bulbapedia). Returns (price, why)."""
+    if slug in BUY_PRICES:
+        return BUY_PRICES[slug], "Bulbapedia buy price"
     for row in (prices.get(slug) or {}).get("prices", []):
         if row.get("sell"):
             return row["sell"] * 2, "2x sell price %d (%s)" % (row["sell"], ",".join(row["games"]))

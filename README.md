@@ -30,9 +30,9 @@ companion mods [below](#companion-mods-recommended).
   Dubious Disc and 16 more), and **sells them in shops**: stones and trade items
   in Celadon's and Lilycove's department stores, the newest items in late-game
   marts. See [the item guide](docs/items.md) for prices and locations.
-- **Adds 56 alternate forms** as Pokémon of their own: Galarian and Hisuian forms (Darumaka,
+- **Adds 84 alternate forms** as Pokémon of their own: Galarian and Hisuian forms (Darumaka,
   Zorua, Goodra and more), Wormadam's cloaks, the five Rotom appliances, Oricorio's styles, Gourgeist
-  and Pumpkaboo sizes, Lycanroc, Urshifu Rapid Strike, and legendary forms like Giratina Origin and
+  and Pumpkaboo sizes, Lycanroc, Alcremie's creams, Urshifu Rapid Strike, and legendary forms like Giratina Origin and
   Kyurem Black. They show their normal Pokémon's Pokédex number. See [the forms guide](docs/pokemon/forms.md).
 - **Adds cries** for all 639 Pokémon, and for each form.
 - **Adds them to the Pokédex.** They appear in the National Pokédex list.
@@ -105,7 +105,9 @@ mod to know the new Pokémon on Gen 3 games.
   LeafGreen and Ruby / Sapphire / Emerald, and which Pokémon evolve with it.
 - [Added Pokémon](docs/pokemon.md): all 639 Pokémon by generation, with typing,
   the Gen 3 ability each has in this game, and its level-up moves.
-- [Alternate forms](docs/pokemon/forms.md): the 56 forms, with the same details.
+- [Alternate forms](docs/pokemon/forms.md): the 84 forms, with the same details.
+- [Evolution and forms guide](docs/evolutions-and-forms.md): the special evolutions (Rockruff,
+  Milcery, Sinistea and more), which evolutions do not work, and how to get each form.
 
 ## Credits
 

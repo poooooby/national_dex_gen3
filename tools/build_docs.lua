@@ -32,6 +32,7 @@ end
 local items = load("data/items.lua")
 local shops = load("data/shops.lua")
 local crossgen = load("data/species/crossgen.lua")
+local forms = load("data/species/forms.lua")
 local index = load("data/species/index.lua")
 local species = {}
 for _, shard in ipairs(index.shards) do
@@ -79,17 +80,48 @@ end
 -- slug -> list of "Source -> Target (how)"
 local uses = {}
 local METHOD = { EVO_ITEM = "use it on", EVO_TRADE_ITEM = "trade holding it" }
-local function addUse(slug, source, target, method)
+local function addUse(slug, source, target, method, note)
   uses[slug] = uses[slug] or {}
-  table.insert(uses[slug], string.format("%s → %s (%s)", source, target, METHOD[method] or method))
+  table.insert(uses[slug], string.format("%s → %s (%s%s)", source, target, METHOD[method] or method,
+    note and (", " .. note) or ""))
+end
+-- a level-up that needs a held item (src/conditional_evos.lua: Dusk Lycanroc, Alcremie)
+local seenHold = {}
+local function addHoldUse(slug, r, e)
+  local base = e.target and byDex[e.target]
+  local form
+  if e.targetForm then
+    for _, f in ipairs(forms) do
+      if f.id == e.targetForm then base, form = byDex[f.baseDex], f.form break end
+    end
+  end
+  base = base or ("#" .. tostring(e.target))
+  -- one outcome of several (the held item alone picks it): name the form; when any of a
+  -- list of items will do, the evolution is just Source -> Species
+  local label = (form and type(e.when.hold) == "string") and
+    (base .. " (" .. title((form:gsub("_", " "))) .. ")") or base
+  local text = string.format("%s → %s (hold it while it reaches level %d)", title(r.name), label, e.level or 0)
+  if not seenHold[slug .. text] then
+    seenHold[slug .. text] = true
+    uses[slug] = uses[slug] or {}
+    table.insert(uses[slug], text)
+  end
 end
 for _, r in ipairs(species) do
   for _, e in ipairs(r.evolutions or {}) do
     if e.item then addUse(e.item, title(r.name), byDex[e.target] or ("#" .. e.target), e.method) end
+    local hold = e.when and e.when.hold
+    if type(hold) == "string" then addHoldUse(hold, r, e)
+    elseif type(hold) == "table" then
+      for _, slug in ipairs(hold) do addHoldUse(slug, r, e) end
+    end
   end
 end
 for _, e in ipairs(crossgen) do
-  if e.item then addUse(e.item, byDex[e.source] or ("#" .. e.source), byDex[e.target] or ("#" .. e.target), e.method) end
+  if e.item then
+    addUse(e.item, byDex[e.source] or ("#" .. e.source), byDex[e.target] or ("#" .. e.target), e.method,
+      e.gender == "M" and "male only" or e.gender == "F" and "female only" or nil)
+  end
 end
 
 local function join(list, sep) return table.concat(list, sep) end
@@ -258,7 +290,7 @@ end
 
 -- ---- forms
 
-local forms = load("data/species/forms.lua")
+-- (forms is loaded with the other data above)
 local function formName(r)
   local label = tostring(r.form):gsub("_", " ")
   return string.format("%s (%s)", title(r.baseSpecies:gsub("_", " ")), title(label))

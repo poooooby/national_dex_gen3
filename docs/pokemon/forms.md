@@ -1,6 +1,6 @@
 # Alternate forms
 
-National Dex Gen 3 adds 56 alternate forms. Each is a Pokémon of its own with its own
+National Dex Gen 3 adds 84 alternate forms. Each is a Pokémon of its own with its own
 stats, typing, ability and moves, and shows its base Pokémon's Pokédex number. Seeing or catching a
 form also counts the base Pokémon in your Pokédex.
 
@@ -351,4 +351,172 @@ form also counts the base Pokémon in your Pokédex.
 - Type: Normal
 - Ability: Shield Dust
 - Learnset: 1 Vine Whip · 1 Tackle · 1 Pound · 6 Scratch · 10 Safeguard · 15 Razor Leaf · 20 Wish · 25 Magical Leaf · 27 Spore · 33 Leaf Blade · 38 Aromatherapy · 43 Softboiled · 46 Crush Claw · 50 Hyper Beam · 51 Petal Dance · 58 Solarbeam
+
+### Floette (Yellow) — #670
+
+- Type: Normal
+- Ability: Shield Dust
+- Learnset: 1 Vine Whip · 1 Tackle · 1 Pound · 10 Safeguard · 15 Razor Leaf · 20 Wish · 25 Magical Leaf · 27 Spore · 33 Leaf Blade · 38 Synthesis · 43 Softboiled · 46 Crush Claw · 51 Petal Dance · 58 Solarbeam
+
+### Floette (Orange) — #670
+
+- Type: Normal
+- Ability: Shield Dust
+- Learnset: 1 Vine Whip · 1 Tackle · 1 Pound · 10 Safeguard · 15 Razor Leaf · 20 Wish · 25 Magical Leaf · 27 Spore · 33 Leaf Blade · 38 Synthesis · 43 Softboiled · 46 Crush Claw · 51 Petal Dance · 58 Solarbeam
+
+### Floette (Blue) — #670
+
+- Type: Normal
+- Ability: Shield Dust
+- Learnset: 1 Vine Whip · 1 Tackle · 1 Pound · 10 Safeguard · 15 Razor Leaf · 20 Wish · 25 Magical Leaf · 27 Spore · 33 Leaf Blade · 38 Synthesis · 43 Softboiled · 46 Crush Claw · 51 Petal Dance · 58 Solarbeam
+
+### Floette (White) — #670
+
+- Type: Normal
+- Ability: Shield Dust
+- Learnset: 1 Vine Whip · 1 Tackle · 1 Pound · 10 Safeguard · 15 Razor Leaf · 20 Wish · 25 Magical Leaf · 27 Spore · 33 Leaf Blade · 38 Synthesis · 43 Softboiled · 46 Crush Claw · 51 Petal Dance · 58 Solarbeam
+
+### Alcremie (Ruby Cream) — #869
+
+- Type: Normal
+- Ability: Insomnia
+- Learnset: 1 Tackle · 1 Sweet Kiss · 1 Sweet Scent · 1 Minimize · 1 Double Team · 15 Uproar · 20 Charm · 25 Attract · 30 Acid Armor · 35 Razor Wind · 40 Recover · 45 Softboiled · 50 Belly Drum
+
+### Alcremie (Matcha Cream) — #869
+
+- Type: Normal
+- Ability: Insomnia
+- Learnset: 1 Tackle · 1 Sweet Kiss · 1 Sweet Scent · 1 Minimize · 1 Double Team · 15 Uproar · 20 Charm · 25 Attract · 30 Acid Armor · 35 Razor Wind · 40 Recover · 45 Softboiled · 50 Belly Drum
+
+### Alcremie (Mint Cream) — #869
+
+- Type: Normal
+- Ability: Insomnia
+- Learnset: 1 Tackle · 1 Sweet Kiss · 1 Sweet Scent · 1 Minimize · 1 Double Team · 15 Uproar · 20 Charm · 25 Attract · 30 Acid Armor · 35 Razor Wind · 40 Recover · 45 Softboiled · 50 Belly Drum
+
+### Alcremie (Lemon Cream) — #869
+
+- Type: Normal
+- Ability: Insomnia
+- Learnset: 1 Tackle · 1 Sweet Kiss · 1 Sweet Scent · 1 Minimize · 1 Double Team · 15 Uproar · 20 Charm · 25 Attract · 30 Acid Armor · 35 Razor Wind · 40 Recover · 45 Softboiled · 50 Belly Drum
+
+### Alcremie (Salted Cream) — #869
+
+- Type: Normal
+- Ability: Insomnia
+- Learnset: 1 Tackle · 1 Sweet Kiss · 1 Sweet Scent · 1 Minimize · 1 Double Team · 15 Uproar · 20 Charm · 25 Attract · 30 Acid Armor · 35 Razor Wind · 40 Recover · 45 Softboiled · 50 Belly Drum
+
+### Alcremie (Ruby Swirl) — #869
+
+- Type: Normal
+- Ability: Insomnia
+- Learnset: 1 Tackle · 1 Sweet Kiss · 1 Sweet Scent · 1 Minimize · 1 Double Team · 15 Uproar · 20 Charm · 25 Attract · 30 Acid Armor · 35 Razor Wind · 40 Recover · 45 Softboiled · 50 Belly Drum
+
+### Alcremie (Caramel Swirl) — #869
+
+- Type: Normal
+- Ability: Insomnia
+- Learnset: 1 Tackle · 1 Sweet Kiss · 1 Sweet Scent · 1 Minimize · 1 Double Team · 15 Uproar · 20 Charm · 25 Attract · 30 Acid Armor · 35 Razor Wind · 40 Recover · 45 Softboiled · 50 Belly Drum
+
+### Alcremie (Rainbow Swirl) — #869
+
+- Type: Normal
+- Ability: Insomnia
+- Learnset: 1 Tackle · 1 Sweet Kiss · 1 Sweet Scent · 1 Minimize · 1 Double Team · 15 Uproar · 20 Charm · 25 Attract · 30 Acid Armor · 35 Razor Wind · 40 Recover · 45 Softboiled · 50 Belly Drum
+
+### Shellos (East) — #422
+
+- Type: Water
+- Ability: Sticky Hold / Water Absorb
+- Learnset: 1 Water Gun · 1 Mud-Slap · 5 Harden · 10 Recover · 15 Water Pulse · 20 Ancientpower · 25 Body Slam · 31 Muddy Water · 35 Earthquake · 40 Rain Dance · 45 Memento
+
+### Gastrodon (East) — #423
+
+- Type: Water / Ground
+- Ability: Sticky Hold / Water Absorb
+- Learnset: 1 Water Gun · 1 Recover · 1 Harden · 1 Mud-Slap · 15 Water Pulse · 20 Ancientpower · 25 Body Slam · 33 Muddy Water · 39 Earthquake · 46 Rain Dance · 53 Memento
+
+### Flabebe (Yellow) — #669
+
+- Type: Normal
+- Ability: Shield Dust
+- Learnset: 1 Vine Whip · 1 Tackle · 6 Pound · 10 Safeguard · 15 Razor Leaf · 20 Wish · 22 Magical Leaf · 24 Spore · 28 Leaf Blade · 33 Synthesis · 37 Softboiled · 41 Crush Claw · 45 Petal Dance · 48 Solarbeam
+
+### Flabebe (Orange) — #669
+
+- Type: Normal
+- Ability: Shield Dust
+- Learnset: 1 Vine Whip · 1 Tackle · 6 Pound · 10 Safeguard · 15 Razor Leaf · 20 Wish · 22 Magical Leaf · 24 Spore · 28 Leaf Blade · 33 Synthesis · 37 Softboiled · 41 Crush Claw · 45 Petal Dance · 48 Solarbeam
+
+### Flabebe (Blue) — #669
+
+- Type: Normal
+- Ability: Shield Dust
+- Learnset: 1 Vine Whip · 1 Tackle · 6 Pound · 10 Safeguard · 15 Razor Leaf · 20 Wish · 22 Magical Leaf · 24 Spore · 28 Leaf Blade · 33 Synthesis · 37 Softboiled · 41 Crush Claw · 45 Petal Dance · 48 Solarbeam
+
+### Flabebe (White) — #669
+
+- Type: Normal
+- Ability: Shield Dust
+- Learnset: 1 Vine Whip · 1 Tackle · 6 Pound · 10 Safeguard · 15 Razor Leaf · 20 Wish · 22 Magical Leaf · 24 Spore · 28 Leaf Blade · 33 Synthesis · 37 Softboiled · 41 Crush Claw · 45 Petal Dance · 48 Solarbeam
+
+### Florges (Yellow) — #671
+
+- Type: Normal
+- Ability: Shield Dust
+- Learnset: 1 Solarbeam · 1 Petal Dance · 1 Safeguard · 1 Synthesis · 1 Wish · 1 Magical Leaf · 1 Needle Arm · 1 Leaf Blade · 1 Snore · 1 Spore · 1 Softboiled · 5 Crush Claw
+
+### Florges (Orange) — #671
+
+- Type: Normal
+- Ability: Shield Dust
+- Learnset: 1 Solarbeam · 1 Petal Dance · 1 Safeguard · 1 Synthesis · 1 Wish · 1 Magical Leaf · 1 Needle Arm · 1 Leaf Blade · 1 Snore · 1 Spore · 1 Softboiled · 5 Crush Claw
+
+### Florges (Blue) — #671
+
+- Type: Normal
+- Ability: Shield Dust
+- Learnset: 1 Solarbeam · 1 Petal Dance · 1 Safeguard · 1 Synthesis · 1 Wish · 1 Magical Leaf · 1 Needle Arm · 1 Leaf Blade · 1 Snore · 1 Spore · 1 Softboiled · 5 Crush Claw
+
+### Florges (White) — #671
+
+- Type: Normal
+- Ability: Shield Dust
+- Learnset: 1 Solarbeam · 1 Petal Dance · 1 Safeguard · 1 Synthesis · 1 Wish · 1 Magical Leaf · 1 Needle Arm · 1 Leaf Blade · 1 Snore · 1 Spore · 1 Softboiled · 5 Crush Claw
+
+### Basculin (White Striped) — #550
+
+- Type: Water
+- Ability: Run Away / Hustle
+- Learnset: 1 Tail Whip · 1 Water Gun · 4 Tackle · 8 Flail · 12 Dive · 16 Bite · 20 Scary Face · 24 Headbutt · 28 Water Sport · 32 Crunch · 36 Take Down · 40 Uproar · 44 Hydro Pump · 48 Thrash · 52 Double-Edge · 56 Rock Slide
+
+### Basculegion (Female) — #902
+
+- Type: Water / Ghost
+- Ability: Swift Swim / Hustle
+- Learnset: 1 Tail Whip · 1 Water Gun · 1 Shadow Ball · 1 Night Shade · 4 Tackle · 8 Flail · 12 Dive · 16 Bite · 20 Scary Face · 24 Headbutt · 28 Water Sport · 32 Crunch · 36 Take Down · 40 Uproar · 44 Hydro Pump · 48 Thrash · 52 Double-Edge · 56 Rock Slide
+
+### Sinistea (Antique) — #854
+
+- Type: Ghost
+- Ability: Sturdy
+- Learnset: 1 Withdraw · 1 Astonish · 6 Minimize · 12 Mega Drain · 24 Faint Attack · 30 Sweet Scent · 36 Giga Drain · 42 Fake Tears · 48 Shadow Ball · 54 Memento · 60 Belly Drum
+
+### Polteageist (Antique) — #855
+
+- Type: Ghost
+- Ability: Sturdy
+- Learnset: 1 Mega Drain · 1 Withdraw · 1 Astonish · 1 Minimize · 1 Aromatherapy · 1 Belly Drum · 18 Protect · 24 Faint Attack · 30 Sweet Scent · 36 Giga Drain · 42 Fake Tears · 48 Shadow Ball · 54 Memento · 60 Pain Split · 66 Curse
+
+### Poltchageist (Artisan) — #1012
+
+- Type: Grass / Ghost
+- Ability: Shed Skin
+- Learnset: 1 Stun Spore · 1 Withdraw · 1 Astonish · 6 Absorb · 12 Rain Dance · 18 Faint Attack · 24 Mega Drain · 30 Shadow Punch · 36 Spider Web · 42 Giga Drain · 48 Shadow Ball · 54 Memento · 60 Solarbeam
+
+### Sinistcha (Masterpiece) — #1013
+
+- Type: Grass / Ghost
+- Ability: Shed Skin
+- Learnset: 1 Stun Spore · 1 Withdraw · 1 Astonish · 1 Leaf Blade · 6 Absorb · 12 Rain Dance · 18 Faint Attack · 24 Mega Drain · 30 Shadow Punch · 36 Spider Web · 42 Aromatherapy · 48 Shadow Ball · 54 Memento · 60 Solarbeam
 

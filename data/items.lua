@@ -26,4 +26,15 @@ return {
   { slug = "metal-alloy", id = "METAL_ALLOY", name = "Metal Alloy", index = 916, price = 3000 }, -- 2x sell price 1500 (SV)
   { slug = "peat-block", id = "PEAT_BLOCK", name = "Peat Block", index = 917, price = 1000 }, -- 2x sell price 500 (LA)
   { slug = "syrupy-apple", id = "SYRUPY_APPLE", name = "Syrupy Apple", index = 918, price = 2100 }, -- no price data; classic stone price
+  { slug = "cracked-pot", id = "CRACKED_POT", name = "Cracked Pot", index = 919, price = 3000 }, -- Bulbapedia buy price
+  { slug = "chipped-pot", id = "CHIPPED_POT", name = "Chipped Pot", index = 920, price = 3000 }, -- Bulbapedia buy price
+  { slug = "unremarkable-teacup", id = "UNREMARKABLE_TEACUP", name = "Unremarkable Teacup", index = 921, price = 2100 }, -- no price data; classic stone price
+  { slug = "masterpiece-teacup", id = "MASTERPIECE_TEACUP", name = "Masterpiece Teacup", index = 922, price = 2100 }, -- no price data; classic stone price
+  { slug = "strawberry-sweet", id = "STRAWBERRY_SWEET", name = "Strawberry Sweet", index = 923, price = 2100 }, -- no price data; classic stone price
+  { slug = "berry-sweet", id = "BERRY_SWEET", name = "Berry Sweet", index = 924, price = 2100 }, -- no price data; classic stone price
+  { slug = "love-sweet", id = "LOVE_SWEET", name = "Love Sweet", index = 925, price = 2100 }, -- no price data; classic stone price
+  { slug = "star-sweet", id = "STAR_SWEET", name = "Star Sweet", index = 926, price = 2100 }, -- no price data; classic stone price
+  { slug = "clover-sweet", id = "CLOVER_SWEET", name = "Clover Sweet", index = 927, price = 2100 }, -- no price data; classic stone price
+  { slug = "flower-sweet", id = "FLOWER_SWEET", name = "Flower Sweet", index = 928, price = 2100 }, -- no price data; classic stone price
+  { slug = "ribbon-sweet", id = "RIBBON_SWEET", name = "Ribbon Sweet", index = 929, price = 2100 }, -- no price data; classic stone price
 }

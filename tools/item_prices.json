@@ -500,5 +500,65 @@
  "syrupy-apple": {
   "title": "Syrupy Apple",
   "prices": []
+ },
+ "cracked-pot": {
+  "title": "Cracked Pot",
+  "prices": [
+   {
+    "games": [
+     "SwSh"
+    ],
+    "buy": 3000,
+    "sell": 800
+   }
+  ]
+ },
+ "chipped-pot": {
+  "title": "Chipped Pot",
+  "prices": [
+   {
+    "games": [
+     "SwSh"
+    ],
+    "buy": 3000,
+    "sell": 19000
+   }
+  ]
+ },
+ "unremarkable-teacup": {
+  "title": "Unremarkable Teacup",
+  "prices": []
+ },
+ "masterpiece-teacup": {
+  "title": "Masterpiece Teacup",
+  "prices": []
+ },
+ "strawberry-sweet": {
+  "title": "Strawberry Sweet",
+  "prices": []
+ },
+ "berry-sweet": {
+  "title": "Berry Sweet",
+  "prices": []
+ },
+ "love-sweet": {
+  "title": "Love Sweet",
+  "prices": []
+ },
+ "star-sweet": {
+  "title": "Star Sweet",
+  "prices": []
+ },
+ "clover-sweet": {
+  "title": "Clover Sweet",
+  "prices": []
+ },
+ "flower-sweet": {
+  "title": "Flower Sweet",
+  "prices": []
+ },
+ "ribbon-sweet": {
+  "title": "Ribbon Sweet",
+  "prices": []
  }
 }

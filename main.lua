@@ -21,6 +21,11 @@
 --                    Bag's own icon draw directly -- see its own header)
 --   src/shops.lua    puts those items on sale (data/shops.lua; wraps Marts.itemsFor)
 --   src/cry_art.lua  cries for #387-1025 (wraps Audio.playCry; assets/cries/cries.pak)
+--   src/conditional_evos.lua  Rockruff's Midday/Midnight/Dusk Lycanroc, Milcery's Alcremie and
+--                    the friendship day/night evolutions (evolution.check hook)
+--   src/recoil.lua  the recoil damage a Pokemon has taken, for Basculin's evolution
+--   src/clock.lua    the hour for those rules: the device clock, or on Ruby/Sapphire/Emerald
+--                    the player's choice of device or in-game (options.lua)
 --   src/art.lua      pokemon.sprite seam for art providers
 --   src/api.lua      mod.exports
 --
@@ -54,8 +59,11 @@ return function(mod)
   local CryArt = loadSibling(mod, "src/cry_art.lua")
   local Shops = loadSibling(mod, "src/shops.lua")
   local Art = loadSibling(mod, "src/art.lua")
+  local ConditionalEvos = loadSibling(mod, "src/conditional_evos.lua")
+  local Clock = loadSibling(mod, "src/clock.lua")
+  local Recoil = loadSibling(mod, "src/recoil.lua")
   local Api = loadSibling(mod, "src/api.lua")
-  if not (Species and Fixups and Items and ItemArt and CryArt and Shops and Art and Api) then return end
+  if not (Species and Fixups and Items and ItemArt and CryArt and Shops and Art and ConditionalEvos and Clock and Recoil and Api) then return end
 
   local read = function(path) return loadSibling(mod, path) end
 
@@ -89,6 +97,7 @@ return function(mod)
   -- its re-apply of registry data does not undo these repairs
   mod.events:on("game.ready", function(ev)
     fixups.install(ev and ev.game or mod.game)
+    ConditionalEvos.installItemGender(bridges)
     ItemArt.install(mod, read)
     CryArt.install(mod, read)
     Shops.install(read("data/shops.lua") or {}, Species.itemIndex(mod), function()
@@ -102,5 +111,28 @@ return function(mod)
   for _, r in ipairs(registered) do everySpecies[#everySpecies + 1] = r end
   for _, r in ipairs(registeredForms) do everySpecies[#everySpecies + 1] = r end
   local art = Art.install(mod, everySpecies)
+  -- the player's clock choice (options.lua); not defined, "game" is the default
+  local okOptions, optionsSource = pcall(function() return mod:read("options.lua") end)
+  if okOptions and optionsSource then
+    local chunk = load(optionsSource, "@" .. mod.path .. "/options.lua")
+    local okSchema, schema = pcall(chunk or function() end)
+    if okSchema and type(schema) == "table" then pcall(function() mod.options:define(schema) end) end
+  end
+  local function clockSource()
+    local okGet, value = pcall(function() return mod.options:get("clock_source") end)
+    return okGet and value or "game"
+  end
+  -- species with an evolution that wants recoil damage: slot -> the total it needs
+  local needsRecoil = {}
+  for _, r in ipairs(everySpecies) do
+    for _, step in ipairs(r.evolutions or {}) do
+      if step.when and step.when.recoil then needsRecoil[r.slot] = step.when.recoil end
+    end
+  end
+  Recoil.install(mod, needsRecoil)
+  ConditionalEvos.install(mod, everySpecies, Species.itemIndex(mod), {
+    isNight = function(session) return Clock.isNight(session, clockSource()) end,
+    isDusk = function(session) return Clock.isDusk(session, clockSource()) end,
+  })
   Api(mod, { active = true, species = registered, forms = registeredForms, bridges = bridges, art = art })
 end

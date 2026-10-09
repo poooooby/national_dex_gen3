@@ -73,6 +73,13 @@ for _, game in ipairs({ "emerald", "ruby", "sapphire" }) do
   end
   T.check(toMagnezone, game .. ": MAGNETON gains an evolution into MAGNEZONE")
 
+  -- the clock option (tests/clock_test.lua covers what it does): defined, defaulting to the cart's clock
+  local schema = run.loader.optionSchemas.national_dex_gen3
+  T.check(schema and schema[1] and schema[1].key == "clock_source" and schema[1].default == "game",
+          game .. ": the clock source option is defined and defaults to the in-game clock")
+  local rockruff = api.slotOf("ROCKRUFF")
+  T.eq(#(data.gen3Pokemon._evolutions[rockruff] or {}), 3, game .. ": Rockruff has its three Lycanroc outcomes")
+
   run.release()
 end
 

@@ -142,7 +142,7 @@ local function evolutionStep(step, byDex, formById)
   local target = targetOf(step, byDex, formById)
   if not target then return nil end
   return { method = step.method, level = step.level, item = step.item,
-           species = target.id }, target.slot
+           when = step.when, gender = step.gender, species = target.id }, target.slot
 end
 
 local function moveNames(ids, moveName)
@@ -218,7 +218,7 @@ local function crossGeneration(mod, steps, itemId, byDex)
         applied[#applied + 1] = { sourceId = source.id, sourceSlot = source.slot,
                                   sourceDex = step.source,
                                   method = ev.method, level = ev.level, item = ev.item,
-                                  species = ev.species, targetSlot = targetSlot }
+                                  species = ev.species, gender = ev.gender, targetSlot = targetSlot }
       end
       local row = evolutionRow(step, itemId, byDex)
       if row then
@@ -254,7 +254,7 @@ function Species.register(mod, payload, crossgen, forms)
   for _, f in ipairs(forms or {}) do formById[f.id] = { id = f.id, slot = f.slot } end
   local registered, failed, firstError = {}, 0, nil
   for _, r in ipairs(payload) do
-    local record = toRecord(r, moveName, itemId, byDex)
+    local record = toRecord(r, moveName, itemId, byDex, formById)
     local ok, err = pcall(function() mod.content.pokemon:register(record.id, record) end)
     if ok then
       -- Bookkeeping for fixups, built from the PAYLOAD's own evolution list
@@ -264,10 +264,11 @@ function Species.register(mod, payload, crossgen, forms)
       -- resolve on a later apply() once some mod adds that item.
       local evolutions = {}
       for _, step in ipairs(r.evolutions or {}) do
-        local ev, targetSlot = evolutionStep(step, byDex)
+        local ev, targetSlot = evolutionStep(step, byDex, formById)
         if ev then
           evolutions[#evolutions + 1] = { method = ev.method, level = ev.level,
                                            item = ev.item, species = ev.species,
+                                           when = ev.when,
                                            targetSlot = targetSlot }
         end
       end
@@ -303,6 +304,7 @@ function Species.register(mod, payload, crossgen, forms)
         if ev then
           evolutions[#evolutions + 1] = { method = ev.method, level = ev.level,
                                            item = ev.item, species = ev.species,
+                                           when = ev.when,
                                            targetSlot = targetSlot }
         end
       end

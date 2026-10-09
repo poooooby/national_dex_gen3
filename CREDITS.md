@@ -33,6 +33,8 @@ ships are fan-made, and the credits below belong to their authors.
 - **Metal Alloy:** Wooble
 - **Peat Block:** Wooble
 - **Syrupy Apple:** Wooble
+- **Unremarkable Teacup:** Wooble
+- **Masterpiece Teacup:** Wooble
 
 ## Shop prices
 

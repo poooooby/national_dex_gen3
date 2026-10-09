@@ -19,7 +19,11 @@ titles = {
  "ice-stone":"Ice Stone","magmarizer":"Magmarizer","protector":"Protector","reaper-cloth":"Reaper Cloth",
  "sachet":"Sachet","shiny-stone":"Shiny Stone","sweet-apple":"Sweet Apple","tart-apple":"Tart Apple",
  "whipped-dream":"Whipped Dream","auspicious-armor":"Auspicious Armor","black-augurite":"Black Augurite",
- "malicious-armor":"Malicious Armor","metal-alloy":"Metal Alloy","peat-block":"Peat Block","syrupy-apple":"Syrupy Apple"}
+ "malicious-armor":"Malicious Armor","metal-alloy":"Metal Alloy","peat-block":"Peat Block","syrupy-apple":"Syrupy Apple",
+ "cracked-pot":"Cracked Pot","chipped-pot":"Chipped Pot","unremarkable-teacup":"Unremarkable Teacup",
+ "masterpiece-teacup":"Masterpiece Teacup","strawberry-sweet":"Strawberry Sweet","berry-sweet":"Berry Sweet",
+ "love-sweet":"Love Sweet","star-sweet":"Star Sweet","clover-sweet":"Clover Sweet",
+ "flower-sweet":"Flower Sweet","ribbon-sweet":"Ribbon Sweet"}
 out = {}
 for slug, title in titles.items():
     url = "https://bulbapedia.bulbagarden.net/w/api.php?" + urllib.parse.urlencode(
