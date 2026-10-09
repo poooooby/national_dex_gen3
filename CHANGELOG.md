@@ -5,6 +5,12 @@ All notable changes to this mod are documented here, in
 
 ## [0.6.0] - 2026-10-08
 
+### Removed
+
+- **1025Dex compatibility.** 1025Dex is now a manifest conflict, so this mod no longer checks
+  for it and no longer steps aside; `isActive()` is always `true` and `provider()` always
+  `"national_dex_gen3"`.
+
 ### Added
 
 - **The tea set looks**: 4 forms (`SINISTEA_ANTIQUE`, `POLTEAGEIST_ANTIQUE`,

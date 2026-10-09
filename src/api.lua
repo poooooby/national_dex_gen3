@@ -62,10 +62,9 @@ return function(mod, state)
   -- in version 1 changed meaning.
   exports.apiVersion = 2
 
-  -- false when 1025Dex is installed (it provides the species instead)
-  exports.isActive = function() return state.active == true end
-  -- "national_dex_gen3" or the mod that provides species in its place
-  exports.provider = function() return state.provider or "national_dex_gen3" end
+  -- Both are constants now, kept so a caller written against version 1 keeps working.
+  exports.isActive = function() return true end
+  exports.provider = function() return "national_dex_gen3" end
 
   -- { { dex, id, slot, name, legendary, mythical }, ... } ascending by dex
   exports.listSpecies = function()

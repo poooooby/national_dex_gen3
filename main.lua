@@ -30,7 +30,7 @@
 --   src/api.lua      mod.exports
 --
 -- Slot numbering: species dex + 64 (451..1089), above every ROM slot, the
--- same numbering 1025Dex uses, so a save moves between the two intact.
+-- dex + 64 numbering, so a save's species numbers never move.
 
 local function loadSibling(mod, name)
   local source = mod:read(name)
@@ -66,16 +66,6 @@ return function(mod)
   if not (Species and Fixups and Items and ItemArt and CryArt and Shops and Art and ConditionalEvos and Clock and Recoil and Api) then return end
 
   local read = function(path) return loadSibling(mod, path) end
-
-  -- 1025Dex registers the same species into the same slots with its own art;
-  -- two registrations of one slot would fight. It wins; this mod steps aside.
-  local ok, other = pcall(function() return mod:find("1025dex") end)
-  if ok and other then
-    mod.log:info("1025Dex is installed and provides species #387-1025 -- "
-      .. "national_dex_gen3 registers nothing")
-    Api(mod, { active = false, provider = "1025dex" })
-    return
-  end
 
   local payload = Species.loadPayload(read)
   if not payload then
@@ -134,5 +124,5 @@ return function(mod)
     isNight = function(session) return Clock.isNight(session, clockSource()) end,
     isDusk = function(session) return Clock.isDusk(session, clockSource()) end,
   })
-  Api(mod, { active = true, species = registered, forms = registeredForms, bridges = bridges, art = art })
+  Api(mod, { species = registered, forms = registeredForms, bridges = bridges, art = art })
 end

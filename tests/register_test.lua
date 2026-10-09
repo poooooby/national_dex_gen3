@@ -17,7 +17,7 @@ T.eq(#run.errors, 0, "loads clean: every move, item and species reference resolv
 local mod = run.mods.national_dex_gen3
 T.check(mod and mod.state == "loaded", "loaded on FireRed")
 local api = run.loader.exports.national_dex_gen3
-T.check(api.isActive(), "active without 1025Dex")
+T.check(api.isActive(), "active")
 
 -- ------- registration
 

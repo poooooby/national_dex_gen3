@@ -199,7 +199,7 @@ function Fixups.new(registered, itemIndex, bridges, log, forms)
   -- that reads it to enumerate species -- Kanto Gear's wild-encounter guide
   -- builds its species cache over 1..NATIONAL_MAX -- never sees species past
   -- it, so a spawn mod's #387+ rows silently vanish from that guide. Raised,
-  -- never lowered (1025Dex sets the same value). SIDE EFFECT, deliberate:
+  -- never lowered. SIDE EFFECT, deliberate:
   -- the native Pokedex list in National mode also uses this bound, so it now
   -- lists #387-1025, without art unless a sprite mod provides it.
   local DEX_TOP = 1025

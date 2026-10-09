@@ -60,8 +60,6 @@ companion mods [below](#companion-mods-recommended).
   Happiny → Chansey.
 - **TM, tutor and egg moves stay limited to what Gen 3 has.** Only the
   level-up moves are swapped for stand-ins.
-- **It does nothing if 1025Dex is installed.** 1025Dex adds the same Pokémon
-  itself, so this mod steps aside.
 
 ## Companion mods (recommended)
 
@@ -134,7 +132,7 @@ python tools/modkit.py lint mods/national_dex_gen3
 Each species is registered through the running game's own species registry
 — one schema shared by FireRed, LeafGreen, Ruby, Sapphire and Emerald — at
 slot **dex + 64** (451–1089). That's above every slot the cart uses, and it's
-the same numbering 1025Dex uses, so a save moves between the two intact.
+the same numbering throughout, so a save's species numbers never move.
 
 | Field | Source |
 |---|---|
@@ -201,18 +199,12 @@ end
 `side` is `"front"` or `"back"`. Return a PNG path (the engine centres and
 crops it to 64×64), or nil to let the next provider answer.
 
-## Beside 1025Dex
-
-1025Dex registers the same species into the same slots and ships art for
-them. When it's installed, this mod registers nothing and reports
-`provider() == "1025dex"`.
-
 ## API (`mod.exports`, `apiVersion = 1`)
 
 | Export | Returns |
 |---|---|
-| `isActive()` | false when 1025Dex provides the species instead |
-| `provider()` | `"national_dex_gen3"` or `"1025dex"` |
+| `isActive()` | always `true` (kept for callers of version 1) |
+| `provider()` | always `"national_dex_gen3"` (same) |
 | `listSpecies()` | `{ { dex, id, slot, name, legendary, mythical } }` |
 | `slotOf(idOrDex)` | the running game's slot |
 | `evolutionsOf(idOrDex)` | national_dex's shape: `{ id, dex, evolvesFrom = { id, methods }, evolvesInto = { … } }`. Works for a cart species (#1–386) that gains a step into a new one, e.g. `evolutionsOf("RHYDON")`, not only for #387–1025. Lists a step whether or not its item currently resolves — this call doesn't say which |
@@ -228,8 +220,7 @@ them. When it's installed, this mod registers nothing and reports
   pack), by wrapping `Audio.playCry`. Not yet verified in-game; the cart's
   pitch/pan modes and the music duck are not reproduced.
 - **The native Pokédex list now includes #387–1025 in National mode, without
-  art.** This mod raises the engine's `Dex.NATIONAL_MAX` (386) to 1025 — the
-  same value 1025Dex sets — because a mod that enumerates species up to that
+  art.** This mod raises the engine's `Dex.NATIONAL_MAX` (386) to 1025 because a mod that enumerates species up to that
   bound (Kanto Gear's wild-encounter guide builds its species cache that way)
   otherwise never sees a new species and silently drops its rows. The
   Pokédex list uses the same bound, so without a sprite mod those entries

@@ -16,10 +16,12 @@
   ],
   "dependencies": [],
   "optional_dependencies": [
+    "g9-battle-sprites-gen3"
+  ],
+  "conflicts": [
     "1025dex"
   ],
-  "conflicts": [],
   "options_schema": "options.lua",
-  "description": "FireRed, LeafGreen, Ruby, Sapphire and Emerald: registers National Dex species #387-1025 (Gen 4-9) as data -- stats, typing, Gen 3-expressible learnsets, abilities and evolutions, generated from PokéAPI. An evolution gated on an item still missing waits rather than drops, and activates if any mod adds it. Also registers the 19 evolution items Gen 3 lacks (with Bag icons). Ships cries for every species. A framework, not an art pack: no species sprites or party icons ship; sprite mods plug in through setArtProvider. Steps aside when 1025Dex is installed.",
+  "description": "FireRed, LeafGreen, Ruby, Sapphire and Emerald: registers National Dex species #387-1025 (Gen 4-9) as data -- stats, typing, Gen 3-expressible learnsets, abilities and evolutions, generated from PokéAPI. An evolution gated on an item still missing waits rather than drops, and activates if any mod adds it. Also registers the 19 evolution items Gen 3 lacks (with Bag icons). Ships cries for every species. A framework, not an art pack: no species sprites or party icons ship; sprite mods plug in through setArtProvider.",
   "github": "poooooby/national_dex_gen3"
 }
