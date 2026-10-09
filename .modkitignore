@@ -32,3 +32,4 @@ tests/lycanroc_test.lua
 docs/evolutions-and-forms.md
 tests/gender_test.lua
 tests/editor_learnset_test.lua
+tests/editor_sprite_box_test.lua
