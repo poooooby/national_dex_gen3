@@ -269,8 +269,8 @@ Sinistea, the Artisan Poltchageist, the white-striped Basculin and the yellow, o
 white Flabébé) are all forms Modern Spawns can put in the wild, so you can catch them and evolve
 them. Only the forms that are not wild Pokémon need the save editor or a mod that places them:
 the Origin, Therian, Black/White Kyurem, Crowned, Ogerpon-mask and other item or fusion forms,
-Floette (Eternal), Dusk Lycanroc, Bloodmoon Ursaluna, Rapid Strike Urshifu and the Hisuian
-Samurott and Decidueye.
+Floette (Eternal), Bloodmoon Ursaluna, Rapid Strike Urshifu and the Hisuian Samurott and
+Decidueye. (Dusk Lycanroc is not on that list: evolve a Rockruff at dusk.)
 
 **All 84 forms**
 
