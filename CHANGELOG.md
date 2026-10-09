@@ -3,7 +3,7 @@
 All notable changes to this mod are documented here, in
 [keep a changelog](https://keepachangelog.com/en/1.1.0/) format.
 
-## [Unreleased]
+## [0.6.1] - 2026-10-09
 
 ### Added
 
@@ -24,6 +24,20 @@ All notable changes to this mod are documented here, in
 - **Manaphy lays a Phione egg** (`src/breeding.lua`).
 - `src/counters.lua` replaces `src/recoil.lua` (recoil, Rage uses, steps as lead, coins).
 - Tests: `known_move_test.lua`, `counters_test.lua`.
+- **National Dex option**: turns the National Pokedex on without the story unlock (`src/national_unlock.lua`).
+  Nothing is written to the save.
+- **Register Owned option** (on by default): opening the Pokedex marks every party and PC Pokemon as seen and
+  caught, so Pokemon added with a save editor register (`src/dex_sync.lua`).
+- **Pokedex summaries** for every added species (newest English PokeAPI entry that fits the Gen 3 text box)
+  on FireRed, LeafGreen, Ruby, Sapphire and Emerald, plus category, height and weight on FRLG.
+- **Pokedex on Ruby/Sapphire/Emerald scrolls past #386.** `fixups.installRseDexOrders` extends the cart's
+  National / A-Z / weight / height orders; `src/dex_patch.lua` swaps the two literal `386`s in the
+  engine's own `rse/pokedex.lua` (read as source) and merges a patched copy into the live module.
+  Silent fallback to the stock Pokedex if the source is unreadable or different, with a logged
+  warning. The A-Z, weight and height lists include the added species on all five games. Test:
+  `rse_dex_patch_test.lua`.
+- **FireRed / LeafGreen Pokedex**: left and right page the list instead of switching between the Kanto and
+  National lists, which left the screen blank after pressing left (`DexPatch.installFrlg`).
 
 ## [0.6.0] - 2026-10-08
 

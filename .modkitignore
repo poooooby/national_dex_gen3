@@ -35,3 +35,6 @@ tests/editor_learnset_test.lua
 tests/editor_sprite_box_test.lua
 tests/known_move_test.lua
 tests/counters_test.lua
+tests/rse_dex_patch_test.lua
+tests/national_unlock_test.lua
+tests/dex_sync_test.lua

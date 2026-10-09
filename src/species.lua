@@ -181,7 +181,8 @@ local function toRecord(r, moveName, itemId, byDex, formById)
     -- the ones that are its TMs/HMs (the tutors are src/fixups.lua's job)
     tmhm = moveNames(r.teach, moveName),
     eggMoves = moveNames(r.eggMoves, moveName),
-    dexEntry = r.dexEntry,
+    -- the Pokedex summary (`text`) is not a registry field; src/fixups.lua adds it to the Pokedex data
+    dexEntry = r.dexEntry and { kind = r.dexEntry.kind, height = r.dexEntry.height, weight = r.dexEntry.weight } or nil,
     -- The engine's OWN default pic path for the slot (Schemas G3.vanillaSprite),
     -- so the registry records no sprite override and art providers answer
     -- through the pokemon.sprite hook (src/art.lua). Nothing is shipped or

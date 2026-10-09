@@ -140,6 +140,60 @@ def english(entries: list[dict[str, Any]], key: str) -> str | None:
     return None
 
 
+# Newest game first: the text the Pokedex shows is the newest entry that fits.
+FLAVOR_VERSIONS = ["scarlet", "violet", "shield", "sword", "lets-go-pikachu", "lets-go-eevee",
+                   "ultra-moon", "ultra-sun", "moon", "sun", "alpha-sapphire", "omega-ruby", "y", "x",
+                   "white-2", "black-2", "white", "black", "soulsilver", "heartgold", "platinum",
+                   "pearl", "diamond", "legends-arceus", "brilliant-diamond", "shining-pearl"]
+FLAVOR_COLUMNS, FLAVOR_LINES = 38, 3        # what the Gen 3 Pokedex text box holds
+
+
+def _flavor_clean(text: str) -> str:
+    for old in ("­", "\f", "\n", "\r"):
+        text = text.replace(old, " " if old != "­" else "")
+    for old, new in (("’", "'"), ("‘", "'"), ("“", '"'), ("”", '"'),
+                     ("—", " - "), ("–", "-"), ("…", "..."),
+                     ("Pokémon", "POKéMON"), ("Pok�mon", "POKéMON"), ("�", "e")):
+        text = text.replace(old, new)
+    return re.sub(r"\s+", " ", text).strip()
+
+
+def _wrap(text: str) -> list[str]:
+    lines, line = [], ""
+    for word in text.split(" "):
+        if line and len(line) + 1 + len(word) > FLAVOR_COLUMNS:
+            lines.append(line)
+            line = word
+        else:
+            line = f"{line} {word}".strip()
+    return lines + ([line] if line else [])
+
+
+def flavor_text(species: dict[str, Any]) -> str:
+    """The Pokedex text for a species: PokeAPI's newest English entry that fits the Gen 3 text
+    box (3 lines of 38 columns), else the shortest one cut at a sentence end. Lines joined by a
+    newline."""
+    found: dict[str, str] = {}
+    for entry in species.get("flavor_text_entries", []):
+        if entry.get("language", {}).get("name") == "en":
+            found[entry["version"]["name"]] = _flavor_clean(entry["flavor_text"])
+    if not found:
+        return ""
+    order = [v for v in FLAVOR_VERSIONS if v in found] + [v for v in found if v not in FLAVOR_VERSIONS]
+    for version in order:
+        lines = _wrap(found[version])
+        if len(lines) <= FLAVOR_LINES:
+            return "\n".join(lines)
+    text = min(found.values(), key=len)
+    while len(_wrap(text)) > FLAVOR_LINES:
+        cut = text.rfind(". ", 0, len(text) - 2)
+        if cut < 0:
+            text = text[:FLAVOR_COLUMNS * FLAVOR_LINES].rsplit(" ", 1)[0]
+            break
+        text = text[:cut + 1]
+    return "\n".join(_wrap(text))
+
+
 def gender_ratio(rate: int | None) -> int:
     # PokéAPI: eighths female, -1 genderless. Gen 3: 255 genderless,
     # 254 always female, 0 always male, otherwise a threshold out of 256.
@@ -385,6 +439,7 @@ def species_record(species: dict[str, Any], pokemon: dict[str, Any], dex: int,
             "kind": re.sub(r"\s*Pok[eé]mon$", "", genus).upper(),
             "height": pokemon.get("height") or 0,   # decimetres, as Gen 3 stores it
             "weight": pokemon.get("weight") or 0,   # hectograms, as Gen 3 stores it
+            "text": flavor_text(species),           # the Pokedex summary, lines joined by newlines
         },
     }
 

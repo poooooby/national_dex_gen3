@@ -26,6 +26,9 @@
 --   src/counters.lua  recoil taken, move uses, steps led and coins spent, for the evolutions that
 --                    ask for them (Basculin, Primeape, Pawmo, Gimmighoul)
 --   src/breeding.lua  a bred Manaphy lays a Phione egg
+--   src/national_unlock.lua  the "National Dex" option: the National Pokedex without the story unlock
+--   src/dex_sync.lua  the "Register Owned" option: party and PC Pokemon count as seen and caught when the Pokedex opens
+--   src/dex_patch.lua Ruby/Sapphire/Emerald's Pokedex list past #386 (patched copy of the engine screen)
 --   src/clock.lua    the hour for those rules: the device clock, or on Ruby/Sapphire/Emerald
 --                    the player's choice of device or in-game (options.lua)
 --   src/art.lua      pokemon.sprite seam for art providers
@@ -65,8 +68,11 @@ return function(mod)
   local Clock = loadSibling(mod, "src/clock.lua")
   local Counters = loadSibling(mod, "src/counters.lua")
   local Breeding = loadSibling(mod, "src/breeding.lua")
+  local DexPatch = loadSibling(mod, "src/dex_patch.lua")
+  local NationalUnlock = loadSibling(mod, "src/national_unlock.lua")
+  local DexSync = loadSibling(mod, "src/dex_sync.lua")
   local Api = loadSibling(mod, "src/api.lua")
-  if not (Species and Fixups and Items and ItemArt and CryArt and Shops and Art and ConditionalEvos and Clock and Counters and Breeding and Api) then return end
+  if not (Species and Fixups and Items and ItemArt and CryArt and Shops and Art and ConditionalEvos and Clock and Counters and Breeding and DexPatch and NationalUnlock and DexSync and Api) then return end
 
   local read = function(path) return loadSibling(mod, path) end
 
@@ -109,8 +115,32 @@ return function(mod)
   mod.events:on("game.ready", function(ev)
     fixups.install(ev and ev.game or mod.game)
     ConditionalEvos.installItemGender(bridges)
+    NationalUnlock.install(function()
+      local okGet, value = pcall(function() return mod.options:get("unlock_national") end)
+      return okGet and value == true
+    end)
+    -- the Pokedex screens (src/dex_patch.lua): RSE's list past #386, FRLG's blank screen after left
+    local okV, GV = pcall(require, "src.core.GameVersion")
+    local current = okV and GV and tostring(GV.current) or ""
+    local patchOpts = {
+      read = function(path)
+        local okB, Blob = pcall(require, "src.import.CacheBlob")
+        return okB and Blob and Blob.readFs and Blob.readFs(path) or nil
+      end,
+      load = load, require = require, log = mod.log,
+    }
+    if current:find("firered", 1, true) or current:find("leafgreen", 1, true) then
+      DexPatch.installFrlg(patchOpts)
+    else
+      DexPatch.install(patchOpts)
+    end
     Breeding.install(manaphySlot, phioneSlot)
     ItemArt.install(mod, read)
+    -- after DexPatch, which replaces the RSE screen's functions with its patched copy's
+    DexSync.install(function()
+      local okGet, value = pcall(function() return mod.options:get("register_owned") end)
+      return okGet and value ~= false
+    end, mod.log)
     CryArt.install(mod, read, cryAliases)
     Shops.install(read("data/shops.lua") or {}, Species.itemIndex(mod), function()
       local okV, GV = pcall(require, "src.core.GameVersion")

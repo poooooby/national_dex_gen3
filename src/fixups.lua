@@ -243,7 +243,7 @@ function Fixups.new(registered, itemIndex, bridges, log, forms)
           if out[r.slot] == nil then
             local d = r.dexEntry or entryOf[r.baseSpecies] or {}
             out[r.slot] = { category = d.kind or "", height = d.height or 0,
-              weight = d.weight or 0, description = "", description2 = "" }
+              weight = d.weight or 0, description = d.text or "", description2 = "" }
           end
         end
       end
@@ -309,11 +309,132 @@ function Fixups.new(registered, itemIndex, bridges, log, forms)
     end
   end
 
+  -- Ruby/Sapphire/Emerald's Pokedex lists species from orders packs extracted from the cart
+  -- (numerical_national, atoz, lightest, smallest: arrays of National numbers) and sizes its
+  -- National list by `#numerical_national`, so it stops at #386. Extend the orders with the
+  -- species this mod registered: numerical by number, A-Z by name, weight / height by their
+  -- own value (Gfx.orders caches, so the extended copy is built once). Bases only.
+  local function installRseDexOrders()
+    local okG, Gfx = pcall(require, "src.ui.game3.rse.pokedex_gfx")
+    if not (okG and type(Gfx) == "table" and type(Gfx.orders) == "function") or Gfx.__nationalDexGen3 then
+      return
+    end
+    Gfx.__nationalDexGen3 = true
+    local original = Gfx.orders
+    local extended
+    Gfx.orders = function(...)
+      local base = original(...)
+      if extended and extended.__source == base then return extended end
+      local okP, Pokemon = pcall(require, "src.core.game3.pokemon")
+      local okM, Mapsec = pcall(require, "src.ui.game3.rse.mapsec")
+      if not (okP and okM and type(base) == "table" and type(base.numerical_national) == "table") then
+        return base
+      end
+      local entries = Mapsec.readLua("pokemon/pokedex/entries.lua") or {}
+      local out = {}
+      for k, v in pairs(base) do out[k] = v end
+      local top = #base.numerical_national
+      local added = {}
+      for _, b in ipairs(registered) do
+        if b.dex > top and b.dex <= 1025 then added[#added + 1] = b end
+      end
+      table.sort(added, function(a, b) return a.dex < b.dex end)
+      local function copy(list) local c = {} for i, v in ipairs(list or {}) do c[i] = v end return c end
+      local function slotOfNat(nat) return Pokemon.speciesFromNational and Pokemon.speciesFromNational(nat) end
+      -- insert every added species into a sorted list by key (stable, after equals)
+      local function merge(list, key)
+        local c = copy(list)
+        for _, b in ipairs(added) do
+          local k = key(b.slot)
+          local at = #c + 1
+          for i = 1, #c do
+            local ck = key(slotOfNat(c[i]))
+            if ck ~= nil and k < ck then at = i break end
+          end
+          table.insert(c, at, b.dex)
+        end
+        return c
+      end
+      out.numerical_national = copy(base.numerical_national)
+      for _, b in ipairs(added) do out.numerical_national[#out.numerical_national + 1] = b.dex end
+      local function nameKey(slot) local n = slot and Pokemon.name(slot); return n and tostring(n):upper() or nil end
+      local function field(name) return function(slot)
+        local e = slot and entries[slot]; return e and tonumber(e[name]) or nil end end
+      if base.atoz then out.atoz = merge(base.atoz, nameKey) end
+      if base.lightest then out.lightest = merge(base.lightest, field("weight")) end
+      if base.smallest then out.smallest = merge(base.smallest, field("height")) end
+      out.__source = base
+      extended = out
+      return out
+    end
+  end
+
+  -- FireRed/LeafGreen's Pokedex reads PokedexData._entries (keyed by slot, built once by
+  -- PokedexData.init) and answers a placeholder ("newly discovered POKéMON", UNKNOWN) for a
+  -- slot it has no row for, and its A-Z / weight / height orders (PokedexData._orders, arrays
+  -- of National numbers) stop at #386. Add a row for every species and form this mod registered
+  -- and merge them into those orders. Installed once, repeated safely.
+  local function installFrlgDexData()
+    local okD, PokedexData = pcall(require, "src.core.game3.pokedex_data")
+    if not (okD and type(PokedexData) == "table" and type(PokedexData.init) == "function")
+      or PokedexData.__nationalDexGen3 then
+      return
+    end
+    PokedexData.__nationalDexGen3 = true
+    local original = PokedexData.init
+    local done
+    PokedexData.init = function(...)
+      local out = original(...)
+      local entries, orders = PokedexData._entries, PokedexData._orders
+      if type(entries) ~= "table" or done == entries then return out end
+      done = entries
+      local okP, Pokemon = pcall(require, "src.core.game3.pokemon")
+      if not okP then return out end
+      local entryOf, added = {}, {}
+      for _, b in ipairs(registered) do entryOf[b.id] = b.dexEntry end
+      for _, r in ipairs(all) do
+        if entries[r.slot] == nil then
+          local d = r.dexEntry or entryOf[r.baseSpecies] or {}
+          entries[r.slot] = { category = d.kind or "", height = d.height or 0, weight = d.weight or 0,
+            description = d.text or "", description2 = "", pokemonScale = 256, pokemonOffset = 0,
+            trainerScale = 256, trainerOffset = 0 }
+        end
+        if not r.form and r.dex > 386 then added[#added + 1] = r end
+      end
+      if type(orders) ~= "table" then return out end
+      table.sort(added, function(a, b) return a.dex < b.dex end)
+      local function merge(list, key)
+        local c = {}
+        for i, v in ipairs(list or {}) do c[i] = v end
+        for _, r in ipairs(added) do
+          local k = key(r.slot)
+          local at = #c + 1
+          for i = 1, #c do
+            local slot = Pokemon.speciesFromNational and Pokemon.speciesFromNational(c[i])
+            local ck = slot and key(slot)
+            if ck ~= nil and k < ck then at = i break end
+          end
+          table.insert(c, at, r.dex)
+        end
+        return c
+      end
+      local function nameKey(slot) local n = Pokemon.name(slot); return n and tostring(n):upper() or nil end
+      local function field(name) return function(slot)
+        local e = entries[slot]; return e and tonumber(e[name]) or nil end end
+      if orders.atoz then orders.atoz = merge(orders.atoz, nameKey) end
+      if orders.lightest then orders.lightest = merge(orders.lightest, field("weight")) end
+      if orders.smallest then orders.smallest = merge(orders.smallest, field("height")) end
+      return out
+    end
+  end
+
   function self.install(_)
     installTutors()
     raiseNationalMax()
     installFormDex()
     installDexEntries()
+    installRseDexOrders()
+    installFrlgDexData()
     local ok, P = pcall(require, "src.core.game3.pokemon")
     if not (ok and type(P) == "table") then return false end
     self.apply(P)

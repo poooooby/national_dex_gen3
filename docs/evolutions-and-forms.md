@@ -26,6 +26,10 @@ the forms that appear in the wild, or to evolve them.
 - [Evolutions that do not work](#evolutions-that-do-not-work)
 - [Alternate forms](#alternate-forms)
 
+**National Pokédex.** The added Pokémon only show in the National Pokédex, which the story
+unlocks late. To skip the wait, open the mod's settings in the Mod Manager and turn on
+**National Dex**. It writes nothing to your save, so turning it off puts things back.
+
 ## Which clock the game reads
 
 Some evolutions depend on the time of day: Midnight Lycanroc, the day and night Alcremie
