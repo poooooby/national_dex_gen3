@@ -218,9 +218,11 @@ local function crossGeneration(mod, steps, itemId, byDex)
         applied[#applied + 1] = { sourceId = source.id, sourceSlot = source.slot,
                                   sourceDex = step.source,
                                   method = ev.method, level = ev.level, item = ev.item,
-                                  species = ev.species, gender = ev.gender, targetSlot = targetSlot }
+                                  species = ev.species, gender = ev.gender, when = ev.when, targetSlot = targetSlot }
       end
-      local row = evolutionRow(step, itemId, byDex)
+      -- a step with conditions is written live from `applied` (fixups.applyBridges); a name-target
+      -- row in the registry would be an unresolved duplicate that overwrites the real target
+      local row = not step.when and evolutionRow(step, itemId, byDex) or nil
       if row then
         bySource[source.id] = bySource[source.id] or {}
         bySource[source.id][#bySource[source.id] + 1] = row

@@ -34,5 +34,11 @@ return {
     [927] = { x = 264, y = 24 }, -- clover-sweet
     [928] = { x = 288, y = 24 }, -- flower-sweet
     [929] = { x = 312, y = 24 }, -- ribbon-sweet
+    [930] = { x = 336, y = 24 }, -- razor-claw
+    [931] = { x = 360, y = 24 }, -- razor-fang
+    [932] = { x = 0, y = 48 }, -- oval-stone
+    [933] = { x = 24, y = 48 }, -- leaders-crest
+    [934] = { x = 48, y = 48 }, -- scroll-of-darkness
+    [935] = { x = 72, y = 48 }, -- scroll-of-waters
   },
 }

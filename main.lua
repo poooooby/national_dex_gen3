@@ -23,7 +23,9 @@
 --   src/cry_art.lua  cries for #387-1025 (wraps Audio.playCry; assets/cries/cries.pak)
 --   src/conditional_evos.lua  Rockruff's Midday/Midnight/Dusk Lycanroc, Milcery's Alcremie and
 --                    the friendship day/night evolutions (evolution.check hook)
---   src/recoil.lua  the recoil damage a Pokemon has taken, for Basculin's evolution
+--   src/counters.lua  recoil taken, move uses, steps led and coins spent, for the evolutions that
+--                    ask for them (Basculin, Primeape, Pawmo, Gimmighoul)
+--   src/breeding.lua  a bred Manaphy lays a Phione egg
 --   src/clock.lua    the hour for those rules: the device clock, or on Ruby/Sapphire/Emerald
 --                    the player's choice of device or in-game (options.lua)
 --   src/art.lua      pokemon.sprite seam for art providers
@@ -61,9 +63,10 @@ return function(mod)
   local Art = loadSibling(mod, "src/art.lua")
   local ConditionalEvos = loadSibling(mod, "src/conditional_evos.lua")
   local Clock = loadSibling(mod, "src/clock.lua")
-  local Recoil = loadSibling(mod, "src/recoil.lua")
+  local Counters = loadSibling(mod, "src/counters.lua")
+  local Breeding = loadSibling(mod, "src/breeding.lua")
   local Api = loadSibling(mod, "src/api.lua")
-  if not (Species and Fixups and Items and ItemArt and CryArt and Shops and Art and ConditionalEvos and Clock and Recoil and Api) then return end
+  if not (Species and Fixups and Items and ItemArt and CryArt and Shops and Art and ConditionalEvos and Clock and Counters and Breeding and Api) then return end
 
   local read = function(path) return loadSibling(mod, path) end
 
@@ -83,13 +86,32 @@ return function(mod)
   local forms = Species.loadForms(read)
   local registered, bridges, registeredForms = Species.register(mod, payload, crossgen, forms)
   local fixups = Fixups.new(registered, Species.itemIndex(mod), bridges, mod.log, registeredForms)
+  -- a bred Manaphy lays a Phione egg (src/breeding.lua)
+  local manaphySlot, phioneSlot
+  for _, r in ipairs(registered) do
+    if r.id == "MANAPHY" then manaphySlot = r.slot elseif r.id == "PHIONE" then phioneSlot = r.slot end
+  end
+  -- a form of a cart species (Hisuian Qwilfish) has no cry of its own: it plays its base's
+  local cryAliases = {}
+  do
+    local okN, PokemonG3 = pcall(require, "src.core.game3.pokemon")
+    local isRegistered = {}
+    for _, r in ipairs(registered) do isRegistered[r.id] = true end
+    for _, f in ipairs(registeredForms) do
+      if okN and not isRegistered[f.baseSpecies] then
+        local base = PokemonG3.speciesFromName and PokemonG3.speciesFromName(f.baseSpecies)
+        if base then cryAliases[f.slot] = base end
+      end
+    end
+  end
   -- after Gen3Compat's own reload hook (registered while the game boots), so
   -- its re-apply of registry data does not undo these repairs
   mod.events:on("game.ready", function(ev)
     fixups.install(ev and ev.game or mod.game)
     ConditionalEvos.installItemGender(bridges)
+    Breeding.install(manaphySlot, phioneSlot)
     ItemArt.install(mod, read)
-    CryArt.install(mod, read)
+    CryArt.install(mod, read, cryAliases)
     Shops.install(read("data/shops.lua") or {}, Species.itemIndex(mod), function()
       local okV, GV = pcall(require, "src.core.GameVersion")
       return okV and GV and GV.current or nil
@@ -112,15 +134,25 @@ return function(mod)
     local okGet, value = pcall(function() return mod.options:get("clock_source") end)
     return okGet and value or "game"
   end
-  -- species with an evolution that wants recoil damage: slot -> the total it needs
-  local needsRecoil = {}
-  for _, r in ipairs(everySpecies) do
-    for _, step in ipairs(r.evolutions or {}) do
-      if step.when and step.when.recoil then needsRecoil[r.slot] = step.when.recoil end
+  -- what each species' evolutions count: slot -> { recoil, uses, steps, coins } (src/counters.lua)
+  local needs = {}
+  local function collect(slot, step)
+    local when = step.when
+    if not (slot and when) then return end
+    if when.recoil or when.uses or when.steps or when.coins then
+      local need = needs[slot] or {}
+      need.recoil, need.uses = when.recoil or need.recoil, when.uses or need.uses
+      need.steps, need.coins = when.steps or need.steps, when.coins or need.coins
+      needs[slot] = need
     end
   end
-  Recoil.install(mod, needsRecoil)
+  for _, r in ipairs(everySpecies) do
+    for _, step in ipairs(r.evolutions or {}) do collect(r.slot, step) end
+  end
+  for _, b in ipairs(bridges) do collect(b.sourceSlot, b) end
+  Counters.install(mod, needs)
   ConditionalEvos.install(mod, everySpecies, Species.itemIndex(mod), {
+    bridges = bridges,
     isNight = function(session) return Clock.isNight(session, clockSource()) end,
     isDusk = function(session) return Clock.isDusk(session, clockSource()) end,
   })

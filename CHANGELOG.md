@@ -3,6 +3,28 @@
 All notable changes to this mod are documented here, in
 [keep a changelog](https://keepachangelog.com/en/1.1.0/) format.
 
+## [Unreleased]
+
+### Added
+
+- **Evolutions Gen 3 could not express**, decided by the `evolution.check` hook
+  (`src/conditional_evos.lua`) with new `when` keys: `knows` (a move; real, or a TM / level-up
+  stand-in the Pokemon can already learn), `party` (a species or a type), `weather` (rain),
+  `uses` (Rage x20), `steps` (1000 as lead), `coins` (999, spent on evolving). Covers Lickitung,
+  Piloswine, Tangela, Yanma, Aipom, Girafarig, Dunsparce, Bonsly, Mime Jr., Steenee, Clobbopus,
+  Poipole, Dipplin, Eevee -> Sylveon, Mantyke, Pancham, Sliggoo, Primeape, Pawmo, Bramblin,
+  Rellor, Gimmighoul, Sneasel, Gligar, Happiny and Bisharp. Cart species gain steps through
+  `data/species/crossgen.lua`; no cart learnset changes.
+- **Plain level-ups** for Stantler (31), Meltan (40), Karrablast and Shelmet (37), Toxel, Tandemaus,
+  Inkay and Finizen.
+- **6 items** (36 in all, indices 930-935): Razor Claw, Razor Fang, Oval Stone, Leader's Crest,
+  Scroll of Darkness, Scroll of Waters, sold in the same stores as the other held and trade items.
+  Kubfu -> Urshifu with a scroll (Waters gives Rapid Strike).
+- **Qwilfish (Hisui)** form (`QWILFISH_HISUI`, slot 1174; 85 forms) evolving into Overqwil at 28.
+- **Manaphy lays a Phione egg** (`src/breeding.lua`).
+- `src/counters.lua` replaces `src/recoil.lua` (recoil, Rage uses, steps as lead, coins).
+- Tests: `known_move_test.lua`, `counters_test.lua`.
+
 ## [0.6.0] - 2026-10-08
 
 ### Removed

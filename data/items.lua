@@ -37,4 +37,10 @@ return {
   { slug = "clover-sweet", id = "CLOVER_SWEET", name = "Clover Sweet", index = 927, price = 2100 }, -- no price data; classic stone price
   { slug = "flower-sweet", id = "FLOWER_SWEET", name = "Flower Sweet", index = 928, price = 2100 }, -- no price data; classic stone price
   { slug = "ribbon-sweet", id = "RIBBON_SWEET", name = "Ribbon Sweet", index = 929, price = 2100 }, -- no price data; classic stone price
+  { slug = "razor-claw", id = "RAZOR_CLAW", name = "Razor Claw", index = 930, price = 2100 }, -- 2x sell price 1050 (DPPtHGSS,BWB2W2,XYORAS,BDSP)
+  { slug = "razor-fang", id = "RAZOR_FANG", name = "Razor Fang", index = 931, price = 2100 }, -- 2x sell price 1050 (DPPtHGSS,BWB2W2,XYORAS,BDSP)
+  { slug = "oval-stone", id = "OVAL_STONE", name = "Oval Stone", index = 932, price = 2100 }, -- 2x sell price 1050 (DPPtHGSS,W,XYORAS,BDSP)
+  { slug = "leaders-crest", id = "LEADERS_CREST", name = "Leader's Crest", index = 933, price = 2100 }, -- no price data; classic stone price
+  { slug = "scroll-of-darkness", id = "SCROLL_OF_DARKNESS", name = "Scroll of Darkness", index = 934, price = 2100 }, -- no price data; classic stone price
+  { slug = "scroll-of-waters", id = "SCROLL_OF_WATERS", name = "Scroll of Waters", index = 935, price = 2100 }, -- no price data; classic stone price
 }

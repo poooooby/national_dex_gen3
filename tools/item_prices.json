@@ -560,5 +560,150 @@
  "ribbon-sweet": {
   "title": "Ribbon Sweet",
   "prices": []
+ },
+ "razor-claw": {
+  "title": "Razor Claw",
+  "prices": [
+   {
+    "games": [
+     "DPPtHGSS",
+     "BWB2W2",
+     "XYORAS",
+     "BDSP"
+    ],
+    "buy": null,
+    "sell": 1050
+   },
+   {
+    "games": [
+     "SMUSUM"
+    ],
+    "buy": null,
+    "sell": 2500
+   },
+   {
+    "games": [
+     "SwSh"
+    ],
+    "buy": 3000,
+    "sell": 2500
+   },
+   {
+    "games": [
+     "LA"
+    ],
+    "buy": 10000,
+    "sell": 500
+   }
+  ]
+ },
+ "razor-fang": {
+  "title": "Razor Fang",
+  "prices": [
+   {
+    "games": [
+     "DPPtHGSS",
+     "BWB2W2",
+     "XYORAS",
+     "BDSP"
+    ],
+    "buy": null,
+    "sell": 1050
+   },
+   {
+    "games": [
+     "SMUSUM"
+    ],
+    "buy": null,
+    "sell": 2500
+   },
+   {
+    "games": [
+     "LA"
+    ],
+    "buy": 10000,
+    "sell": 500
+   },
+   {
+    "games": [
+     "SV"
+    ],
+    "buy": null,
+    "sell": 1000
+   }
+  ]
+ },
+ "oval-stone": {
+  "title": "Oval Stone",
+  "prices": [
+   {
+    "games": [
+     "DPPtHGSS",
+     "W",
+     "XYORAS",
+     "BDSP"
+    ],
+    "buy": null,
+    "sell": 1050
+   },
+   {
+    "games": [
+     "B"
+    ],
+    "buy": 10000,
+    "sell": 1050
+   },
+   {
+    "games": [
+     "B2W2"
+    ],
+    "buy": 6000,
+    "sell": 1050
+   },
+   {
+    "games": [
+     "SMUSUM",
+     "SwSh"
+    ],
+    "buy": null,
+    "sell": 1000
+   },
+   {
+    "games": [
+     "LA",
+     "SV"
+    ],
+    "buy": null,
+    "sell": 500
+   }
+  ]
+ },
+ "leaders-crest": {
+  "title": "Leader's Crest",
+  "prices": []
+ },
+ "scroll-of-darkness": {
+  "title": "Scroll of Darkness",
+  "prices": [
+   {
+    "games": [
+     "SV"
+    ],
+    "buy": null,
+    "sell": null
+   }
+  ]
+ },
+ "scroll-of-waters": {
+  "title": "Scroll of Waters",
+  "prices": [
+   {
+    "games": [
+     "SV"
+    ],
+    "buy": null,
+    "sell": null
+   }
+  ]
  }
 }

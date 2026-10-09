@@ -88,6 +88,7 @@ end
 -- a level-up that needs a held item (src/conditional_evos.lua: Dusk Lycanroc, Alcremie)
 local seenHold = {}
 local function addHoldUse(slug, r, e)
+  -- r: the source species record, or a { name = ... } stand-in for a cart species
   local base = e.target and byDex[e.target]
   local form
   if e.targetForm then
@@ -100,7 +101,8 @@ local function addHoldUse(slug, r, e)
   -- list of items will do, the evolution is just Source -> Species
   local label = (form and type(e.when.hold) == "string") and
     (base .. " (" .. title((form:gsub("_", " "))) .. ")") or base
-  local text = string.format("%s → %s (hold it while it reaches level %d)", title(r.name), label, e.level or 0)
+  local when = e.when and e.when.time and (e.when.time == "night" and ", at night" or ", by day") or ""
+  local text = string.format("%s → %s (hold it while it levels up%s)", title(r.name), label, when)
   if not seenHold[slug .. text] then
     seenHold[slug .. text] = true
     uses[slug] = uses[slug] or {}
@@ -109,7 +111,17 @@ local function addHoldUse(slug, r, e)
 end
 for _, r in ipairs(species) do
   for _, e in ipairs(r.evolutions or {}) do
-    if e.item then addUse(e.item, title(r.name), byDex[e.target] or ("#" .. e.target), e.method) end
+    if e.item then
+      local target = e.target and (byDex[e.target] or ("#" .. e.target)) or "?"
+      if e.targetForm then
+        for _, f in ipairs(forms) do
+          if f.id == e.targetForm then
+            target = (byDex[f.baseDex] or "?") .. " (" .. title((f.form:gsub("_", " "))) .. ")"
+          end
+        end
+      end
+      addUse(e.item, title(r.name), target, e.method)
+    end
     local hold = e.when and e.when.hold
     if type(hold) == "string" then addHoldUse(hold, r, e)
     elseif type(hold) == "table" then
@@ -121,6 +133,10 @@ for _, e in ipairs(crossgen) do
   if e.item then
     addUse(e.item, byDex[e.source] or ("#" .. e.source), byDex[e.target] or ("#" .. e.target), e.method,
       e.gender == "M" and "male only" or e.gender == "F" and "female only" or nil)
+  end
+  local hold = e.when and e.when.hold
+  if type(hold) == "string" then
+    addHoldUse(hold, { name = byDex[e.source] or ("#" .. e.source) }, e)
   end
 end
 

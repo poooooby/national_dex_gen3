@@ -119,6 +119,8 @@ FORMS = [
     ("POLTEAGEIST_ANTIQUE", "POLTEAGEIST", "ANTIQUE", "polteageist"),
     ("POLTCHAGEIST_ARTISAN", "POLTCHAGEIST", "ARTISAN", "poltchageist"),
     ("SINISTCHA_MASTERPIECE", "SINISTCHA", "MASTERPIECE", "sinistcha"),
+    # Qwilfish's Hisuian look is the one that evolves (into Overqwil); the normal one never does
+    ("QWILFISH_HISUI", "QWILFISH", "HISUI", "qwilfish-hisui"),
 ]
 
 # The evolutions between FORMS that Gen 3 can express (level, item or trade).
@@ -148,7 +150,13 @@ FORM_EVOLUTIONS = [
 #   pick        [i, n]: the mon's personality falls in bucket i of n, a stable
 #               "1 in n" that does not change between checks
 #   gender      "F" or "M": the Pokemon's gender (from its personality)
-#   recoil      the recoil damage the Pokemon has taken in battle, in total (src/recoil.lua)
+#   recoil      the recoil damage the Pokemon has taken in battle, in total (src/counters.lua)
+#   knows       a list of move ids: the Pokemon knows any one of them
+#   party       { species = "REMORAID" } or { type = "DARK" }: another Pokemon in the party
+#   weather     "rain": the overworld weather (rain, thunderstorm, downpour)
+#   uses        { move = 99, count = 20 }: it has used that move that many times in battle
+#   steps       steps walked while it was first in the party
+#   coins       Coin Case coins needed (and spent on evolving)
 #   terrain     "plant", "sandy" or "trash": where its last battle was fought, see
 #               src/conditional_evos.lua (grass and water, sand / mountain / cave, buildings)
 #   priority    the highest-priority step whose conditions hold wins (default 0)
@@ -159,6 +167,14 @@ SWEETS = ["strawberry-sweet", "berry-sweet", "love-sweet", "star-sweet",
 
 def _cream(bucket: int, time: str) -> dict:
     return {"hold": SWEETS, "time": time, "pick": [bucket, 4], "priority": 1}
+
+
+def _when(level: int, target: int | str, **conditions) -> dict:
+    """A level-up step with conditions (see the list above)."""
+    step: dict = {"method": "EVO_LEVEL", "level": level}
+    step["targetForm" if isinstance(target, str) else "target"] = target
+    step["when"] = conditions
+    return step
 
 
 def _plain(level: int, target: int | str, gender: str | None = None, terrain: str | None = None) -> dict:
@@ -182,6 +198,33 @@ CONDITIONAL_EVOLUTIONS = {
     757: [_plain(33, 758, "F")],                          # Salandit -> Salazzle (female only)
     677: [_plain(25, 678)],                               # Espurr -> Meowstic
     915: [_plain(18, 916)],                               # Lechonk -> Oinkologne
+    # Evolutions whose real condition Gen 3 cannot check; src/conditional_evos.lua adds it.
+    # Level 1 steps are "level up while X"; a higher level is a floor (a move a TM teaches,
+    # or one the species already knows at level 1, would otherwise evolve it at once).
+    438: [_when(1, 185, knows=[102])],                    # Bonsly -> Sudowoodo, knowing Mimic
+    439: [_when(1, 122, knows=[102])],                    # Mime Jr. -> Mr. Mime, knowing Mimic
+    762: [_when(1, 763, knows=[23])],                     # Steenee -> Tsareena, knowing Stomp
+    852: [_when(1, 853, knows=[269])],                    # Clobbopus -> Grapploct, knowing Taunt
+    803: [_when(40, 804, knows=[200])],                   # Poipole -> Naganadel (Outrage stands in for Dragon Pulse)
+    1011: [_when(35, 1019, knows=[225])],                 # Dipplin -> Hydrapple (Dragonbreath stands in for Dragon Cheer)
+    458: [_when(1, 226, party={"species": "REMORAID"})],  # Mantyke -> Mantine, Remoraid in the party
+    674: [_when(32, 675, party={"type": "DARK"})],        # Pancham -> Pangoro, a Dark-type in the party
+    705: [_when(50, 706, weather="rain")],                # Sliggoo -> Goodra in the rain
+    922: [_when(1, 923, steps=1000)],                     # Pawmo -> Pawmot
+    946: [_when(1, 947, steps=1000)],                     # Bramblin -> Brambleghast
+    953: [_when(1, 954, steps=1000)],                     # Rellor -> Rabsca
+    999: [_when(1, 1000, coins=999)],                     # Gimmighoul -> Gholdengo, 999 coins
+    808: [_plain(40, 809)],                               # Meltan -> Melmetal
+    440: [_when(1, 113, hold="oval-stone", time="day")],  # Happiny -> Chansey
+    625: [_when(1, 983, hold="leaders-crest")],           # Bisharp -> Kingambit
+    891: [{"method": "EVO_ITEM", "item": "scroll-of-darkness", "target": 892},          # Kubfu -> Urshifu
+          {"method": "EVO_ITEM", "item": "scroll-of-waters", "targetForm": "URSHIFU_RAPID_STRIKE"}],
+    588: [_plain(37, 589)],                               # Karrablast -> Escavalier
+    616: [_plain(37, 617)],                               # Shelmet -> Accelgor
+    848: [_plain(30, 849)],                               # Toxel -> Toxtricity
+    924: [_plain(25, 925)],                               # Tandemaus -> Maushold
+    686: [_plain(30, 687)],                               # Inkay -> Malamar
+    963: [_plain(38, 964)],                               # Finizen -> Palafin
     # The spring Sawsbuck, the base Spewpa / Vivillon: the other looks are not modelled
     585: [_plain(34, 586)],                               # Deerling -> Sawsbuck
     664: [_plain(9, 665)],                                # Scatterbug -> Spewpa
@@ -218,6 +261,7 @@ CONDITIONAL_EVOLUTIONS = {
 # Basculin (white-striped) -> Basculegion after 294 recoil damage, by gender. The engine
 # needs a level to evolve at, so it is level 1: the recoil total is the real condition.
 FORM_CONDITIONAL_EVOLUTIONS = {
+    "QWILFISH_HISUI": [{"method": "EVO_LEVEL", "level": 28, "target": 904}],     # -> Overqwil
     "BASCULIN_WHITE_STRIPED": [
         {"method": "EVO_LEVEL", "level": 1, "target": 902,
          "when": {"gender": "M", "recoil": 294}},
@@ -226,6 +270,28 @@ FORM_CONDITIONAL_EVOLUTIONS = {
     ],
 }
 
-assert len(FORMS) == 84, len(FORMS)
+# Evolutions OF the cart's own species (#1-386) into the new ones that Gen 3 cannot check
+# on its own. They go into data/species/crossgen.lua, and no cart species is otherwise
+# changed: where Gen 3 gives a species no way to learn the real move, a move its TMs
+# already teach stands in for it (Rock Tomb for Rollout / Ancient Power, Giga Drain for
+# Tangela's, Aerial Ace for Yanma's); Fury Swipes, Psybeam and Take Down are learned by
+# level-up. source dex -> step (the step's `target` is the new species' dex).
+CONDITIONAL_CROSSGEN = [
+    dict(_when(30, 463, knows=[317]), source=108),        # Lickitung -> Lickilicky (Rock Tomb)
+    dict(_when(34, 473, knows=[317]), source=221),        # Piloswine -> Mamoswine (Rock Tomb)
+    dict(_when(34, 465, knows=[202]), source=114),        # Tangela -> Tangrowth (Giga Drain)
+    dict(_when(33, 469, knows=[332]), source=193),        # Yanma -> Yanmega (Aerial Ace)
+    dict(_when(32, 424, knows=[154]), source=190),        # Aipom -> Ambipom (Fury Swipes)
+    dict(_when(32, 981, knows=[60]), source=203),         # Girafarig -> Farigiraf (Psybeam)
+    dict(_when(32, 982, knows=[36]), source=206),         # Dunsparce -> Dudunsparce (Take Down)
+    dict(_when(35, 979, uses={"move": 99, "count": 20}), source=57),   # Primeape -> Annihilape (Rage x20)
+    {"method": "EVO_FRIENDSHIP", "target": 700, "source": 133,         # Eevee -> Sylveon
+     "when": {"knows": [204, 186]}},                                    # (Charm or Sweet Kiss)
+    dict(_when(1, 461, hold="razor-claw", time="night"), source=215),  # Sneasel -> Weavile
+    dict(_when(1, 472, hold="razor-fang", time="night"), source=207),  # Gligar -> Gliscor
+    {"method": "EVO_LEVEL", "level": 31, "target": 899, "source": 234},  # Stantler -> Wyrdeer
+]
+
+assert len(FORMS) == 85, len(FORMS)
 assert len({f[0] for f in FORMS}) == len(FORMS), "duplicate form id"
 assert FIRST_FORM_SLOT + len(FORMS) - 1 < SLOT_CAP

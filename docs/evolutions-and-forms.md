@@ -22,6 +22,7 @@ the forms that appear in the wild, or to evolve them.
 - [Sinistea and Poltchageist](#sinistea-and-poltchageist)
 - [Original Pokémon with new evolutions](#original-pokémon-with-new-evolutions)
 - [Other evolutions worth knowing](#other-evolutions-worth-knowing)
+- [Evolutions adapted for Gen 3](#evolutions-adapted-for-gen-3)
 - [Evolutions that do not work](#evolutions-that-do-not-work)
 - [Alternate forms](#alternate-forms)
 
@@ -41,13 +42,13 @@ hour of the day, so anything that asks for "day" also works at dusk.
 ## Getting the evolution items
 
 Most of the newer evolutions need an item that none of the five games has. The mod adds
-30 of them and puts them on sale, by kind and by how far into the game the store is:
+36 of them and puts them on sale, by kind and by how far into the game the store is:
 
 | Kind of item | FireRed / LeafGreen | Ruby / Sapphire / Emerald |
 |---|---|---|
 | Stones, Sachet, Whipped Dream | Celadon Dept. Store 4F | Lilycove Dept. Store (supplements) |
-| Trade items (Protector, Electirizer, Magmarizer, Dubious Disc, Reaper Cloth) | Celadon Dept. Store 5F | Lilycove Dept. Store (battle items) |
-| Apples, pots, sweets | Six Island Mart | Mossdeep City Mart |
+| Trade and held items (Protector, Electirizer, Magmarizer, Dubious Disc, Reaper Cloth, Razor Claw, Razor Fang, Oval Stone, Leader's Crest) | Celadon Dept. Store 5F | Lilycove Dept. Store (battle items) |
+| Apples, pots, sweets, scrolls | Six Island Mart | Mossdeep City Mart |
 | Armors, Metal Alloy, teacups | Six Island Mart | Sootopolis City Mart |
 | Black Augurite, Peat Block | Six Island Mart | Ever Grande City Pokémon League mart |
 
@@ -178,59 +179,70 @@ with a Dusk Stone, or Doublade → Aegislash). They are listed under each item i
   more). They follow [the clock the game reads](#which-clock-the-game-reads), so they work in all
   five games. The same goes for Eevee → Espeon or Umbreon where the game has that evolution.
 
-## Evolutions that do not work
+## Evolutions adapted for Gen 3
 
 Gen 3 can only evolve a Pokémon by level, a stone, a trade, trading with an item, or
-friendship, so these newer ways cannot be done and the Pokémon stays as it is.
+friendship. The mod adds the newer conditions on top, changed where Gen 3 has nothing to
+match, so they make sense in these games.
 
-**Needs to know a certain move**
+**Level up knowing a move.** Some of these use a move Gen 3 already has; where the real move
+does not exist (or the Pokémon could never learn it), a move it *can* get stands in. Every
+stand-in is a TM or a level-up move the Pokémon already has, so no learnset is changed.
 
-| Pokémon | Would evolve into | Needs |
+| Pokémon | Evolves into | Level up knowing |
 |---|---|---|
-| Lickitung | Lickilicky | Rollout |
-| Tangela | Tangrowth | Ancient Power |
-| Yanma | Yanmega | Ancient Power |
-| Piloswine | Mamoswine | Ancient Power |
-| Aipom | Ambipom | Double Hit |
-| Girafarig | Farigiraf | Twin Beam |
+| Lickitung (level 30+) | Lickilicky | Rock Tomb (TM39), for Rollout |
+| Piloswine (level 34+) | Mamoswine | Rock Tomb (TM39), for Ancient Power |
+| Tangela (level 34+) | Tangrowth | Giga Drain (TM19), for Ancient Power |
+| Yanma (level 33+) | Yanmega | Aerial Ace (TM40), for Ancient Power |
+| Aipom (level 32+) | Ambipom | Fury Swipes, for Double Hit |
+| Girafarig (level 32+) | Farigiraf | Psybeam, for Twin Beam |
+| Dunsparce (level 32+) | Dudunsparce | Take Down, for Hyper Drill |
 | Bonsly | Sudowoodo | Mimic |
 | Mime Jr. | Mr. Mime | Mimic |
 | Steenee | Tsareena | Stomp |
-| Poipole | Naganadel | Dragon Pulse |
 | Clobbopus | Grapploct | Taunt |
-| Dipplin | Hydrapple | Dragon Cheer |
+| Poipole (level 40+) | Naganadel | Outrage, for Dragon Pulse |
+| Dipplin (level 35+) | Hydrapple | Dragon Breath, for Dragon Cheer |
+| Eevee | Sylveon | Charm or Sweet Kiss (the moves that were Fairy), with high friendship |
 
-**Holding an item and leveling up at a time of day:** Sneasel → Weavile (Razor Claw,
-night), Gligar → Gliscor (Razor Fang, night) and Happiny → Chansey (Oval Stone, day).
+**Other conditions**
 
-**Needs a regional form of the original Pokémon** that this mod does not include:
-Meowth (Galar) → Perrserker, Farfetch'd (Galar) → Sirfetch'd, Mr. Mime (Galar) → Mr. Rime,
-Corsola (Galar) → Cursola, Linoone (Galar) → Obstagoon, Wooper (Paldea) → Clodsire,
-Qwilfish (Hisui) → Overqwil, Sneasel (Hisui) → Sneasler.
-Yamask (Galar) → Runerigus is also out, since it needs taking damage in a specific place.
-
-**Needs something Gen 3 has no way to check**
-
-| Pokémon | Would evolve into | Needs |
+| Pokémon | Evolves into | How |
 |---|---|---|
-| Eevee | Sylveon | A Fairy-type move and affection |
-| Mantyke | Mantine | A Remoraid in the party |
-| Pancham | Pangoro | A Dark-type Pokémon in the party |
-| Inkay | Malamar | The console held upside down |
-| Sliggoo | Goodra | Leveling up in rain |
-| Finizen | Palafin | Leveling up in multiplayer |
-| Karrablast / Shelmet | Escavalier / Accelgor | Trading with each other |
-| Pawmo, Bramblin, Rellor | Pawmot, Brambleghast, Rabsca | Walking a number of steps |
-| Gimmighoul | Gholdengo | Collecting coins |
-| Meltan | Melmetal | Special candies |
-| Bisharp | Kingambit | Beating three Bisharp |
-| Primeape | Annihilape | Using Rage Fist 20 times |
-| Stantler, Qwilfish (Hisui) | Wyrdeer, Overqwil | Special move styles |
-| Kubfu | Urshifu | Special scrolls and a tower |
-| Toxel | Toxtricity | Its nature |
-| Dunsparce, Tandemaus | Dudunsparce, Maushold | A hidden random value |
+| Mantyke | Mantine | Level up with a Remoraid in the party |
+| Pancham (level 32+) | Pangoro | Level up with a Dark-type Pokémon in the party |
+| Sliggoo (level 50+) | Goodra | Level up while it is raining (rain, thunderstorm or downpour) |
+| Primeape (level 35+) | Annihilape | Use Rage 20 times in battle, for Rage Fist |
+| Pawmo, Bramblin, Rellor | Pawmot, Brambleghast, Rabsca | Walk 1000 steps while first in the party |
+| Gimmighoul | Gholdengo | Level up with 999 coins in the Coin Case; the 999 are spent |
+| Sneasel | Weavile | Level up holding a Razor Claw, at night |
+| Gligar | Gliscor | Level up holding a Razor Fang, at night |
+| Happiny | Chansey | Level up holding an Oval Stone, by day |
+| Bisharp | Kingambit | Level up holding a Leader's Crest |
+| Kubfu | Urshifu | Use a Scroll of Darkness (Single Strike) or a Scroll of Waters (Rapid Strike) |
 
+Rage and step counters are kept on the Pokémon and saved with it. The evolution happens at the
+end of the next battle you win after the count is reached, like a level-up evolution. Held
+items are not used up.
 
+**Plain level-ups.** These asked for something the games here cannot do (a console trick, the
+other player, a hidden value, a tower), so they evolve by level alone: Stantler → Wyrdeer (31),
+Qwilfish (Hisui) → Overqwil (28), Meltan → Melmetal (40), Karrablast → Escavalier (37),
+Shelmet → Accelgor (37), Toxel → Toxtricity (30), Tandemaus → Maushold (25), Inkay → Malamar
+(30) and Finizen → Palafin (38). Toxel and Tandemaus always give the same form (Low Key and
+Family of Three are not modelled). Karrablast and Shelmet no longer need a trade with each other.
+
+**Phione and Manaphy.** Phione never evolves. A bred Manaphy (with a Ditto too) lays a Phione egg,
+as in the real games.
+
+## Evolutions that do not work
+
+These need a regional form of the original Pokémon that this mod does not include, so the
+Pokémon stays as it is: Meowth (Galar) → Perrserker, Farfetch'd (Galar) → Sirfetch'd,
+Mr. Mime (Galar) → Mr. Rime, Corsola (Galar) → Cursola, Linoone (Galar) → Obstagoon,
+Wooper (Paldea) → Clodsire and Sneasel (Hisui) → Sneasler. Yamask (Galar) → Runerigus is also
+out, since it needs taking damage in a specific place.
 
 ## Alternate forms
 
@@ -257,6 +269,7 @@ no way to change one Pokémon into a form. A form can come from:
 | The eight Alcremie creams past Vanilla | Evolve Milcery, see [above](#milcery--alcremie) |
 | Darmanitan (Galar, Standard) | Evolve Darumaka (Galar) with an Ice Stone |
 | Zoroark (Hisui) | Evolve Zorua (Hisui) at level 30 |
+| Urshifu (Rapid Strike) | Use a Scroll of Waters on Kubfu |
 | Gourgeist (small, large, super) | Trade the matching Pumpkaboo size |
 | Wormadam (Sandy, Trash) | Evolve a female Burmy after a battle in a cave or a building |
 | Gastrodon (East) | Evolve Shellos (East) at level 30 |
@@ -269,10 +282,10 @@ Sinistea, the Artisan Poltchageist, the white-striped Basculin and the yellow, o
 white Flabébé) are all forms Modern Spawns can put in the wild, so you can catch them and evolve
 them. Only the forms that are not wild Pokémon need the save editor or a mod that places them:
 the Origin, Therian, Black/White Kyurem, Crowned, Ogerpon-mask and other item or fusion forms,
-Floette (Eternal), Bloodmoon Ursaluna, Rapid Strike Urshifu and the Hisuian Samurott and
+Floette (Eternal), Bloodmoon Ursaluna, Hisuian Qwilfish and the Hisuian Samurott and
 Decidueye. (Dusk Lycanroc is not on that list: evolve a Rockruff at dusk.)
 
-**All 84 forms**
+**All 85 forms**
 
 | Group | Forms |
 |---|---|
@@ -280,6 +293,7 @@ Decidueye. (Dusk Lycanroc is not on that list: evolve a Rockruff at dusk.)
 | Permanent (19) | Wormadam (Sandy, Trash), Rotom (Heat, Wash, Frost, Fan, Mow), Oricorio (Pa'u, Pom-Pom, Sensu), Pumpkaboo and Gourgeist (small, large, super), Lycanroc (Midnight, Dusk), Urshifu (Rapid Strike) |
 | Alcremie (8) | Ruby Cream, Matcha Cream, Mint Cream, Lemon Cream, Salted Cream, Ruby Swirl, Caramel Swirl, Rainbow Swirl (Vanilla Cream is the normal Alcremie) |
 | Looks that stay one species (14) | Shellos and Gastrodon (East), Flabébé, Floette and Florges (yellow, orange, blue, white) |
+| Qwilfish (1) | Qwilfish (Hisui) |
 | Basculin line (2) | Basculin (White-Striped), Basculegion (Female) |
 | Tea set looks (4) | Sinistea (Antique), Polteageist (Antique), Poltchageist (Artisan), Sinistcha (Masterpiece) |
 | Legendary (24) | Giratina, Dialga and Palkia (Origin), Shaymin (Sky), Tornadus, Thundurus, Landorus and Enamorus (Therian), Kyurem (Black, White), Hoopa (Unbound), Necrozma (Dusk Mane, Dawn Wings), Calyrex (Ice Rider, Shadow Rider), Zacian and Zamazenta (Crowned), Ogerpon (Wellspring, Hearthflame, Cornerstone masks), Ursaluna (Bloodmoon), Zygarde (10%, Complete), Floette (Eternal) |

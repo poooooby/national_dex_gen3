@@ -30,7 +30,7 @@ companion mods [below](#companion-mods-recommended).
   Dubious Disc and 16 more), and **sells them in shops**: stones and trade items
   in Celadon's and Lilycove's department stores, the newest items in late-game
   marts. See [the item guide](docs/items.md) for prices and locations.
-- **Adds 84 alternate forms** as Pokémon of their own: Galarian and Hisuian forms (Darumaka,
+- **Adds 85 alternate forms** as Pokémon of their own: Galarian and Hisuian forms (Darumaka,
   Zorua, Goodra and more), Wormadam's cloaks, the five Rotom appliances, Oricorio's styles, Gourgeist
   and Pumpkaboo sizes, Lycanroc, Alcremie's creams, Urshifu Rapid Strike, and legendary forms like Giratina Origin and
   Kyurem Black. They show their normal Pokémon's Pokédex number. See [the forms guide](docs/pokemon/forms.md).
@@ -54,10 +54,12 @@ companion mods [below](#companion-mods-recommended).
   Gen 3 has, so a Pokémon plays like its modern self in spirit, not in detail.
 - **It does not change the 386 original Pokémon**, the story, the trainers or
   the maps. Original Pokémon only gain the new evolutions.
-- **It can't do every evolution.** Gen 3 can't check the time of day or a held
-  item at level-up, so a few lines have no way to evolve: Gligar → Gliscor,
-  Sneasel → Weavile, Eevee → Leafeon / Glaceon, Piloswine → Mamoswine,
-  Happiny → Chansey.
+- **A few evolutions are adapted.** Conditions Gen 3 can't check (a known move, a
+  party member, rain, steps walked, coins, a held item at a time of day) are
+  added on top and changed where needed, e.g. Piloswine → Mamoswine while
+  knowing Rock Tomb. Only evolutions needing a regional form this mod lacks
+  (Galarian Meowth and so on) do not work. See the
+  [guide](docs/evolutions-and-forms.md).
 - **TM, tutor and egg moves stay limited to what Gen 3 has.** Only the
   level-up moves are swapped for stand-ins.
 
@@ -103,7 +105,7 @@ mod to know the new Pokémon on Gen 3 games.
   LeafGreen and Ruby / Sapphire / Emerald, and which Pokémon evolve with it.
 - [Added Pokémon](docs/pokemon.md): all 639 Pokémon by generation, with typing,
   the Gen 3 ability each has in this game, and its level-up moves.
-- [Alternate forms](docs/pokemon/forms.md): the 84 forms, with the same details.
+- [Alternate forms](docs/pokemon/forms.md): the 85 forms, with the same details.
 - [Evolution and forms guide](docs/evolutions-and-forms.md): the special evolutions (Rockruff,
   Milcery, Sinistea and more), which evolutions do not work, and how to get each form.
 

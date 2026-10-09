@@ -61,7 +61,10 @@ local function loadPack(mod, load)
 end
 
 -- Installs over Audio.playCry. Safe to repeat. Returns true when wrapped.
-function CryArt.install(mod, load)
+-- aliases: { [form slot] = cart species slot } for forms of the cart's own species, which
+-- have no cry in the pack and play their base's through the original function.
+function CryArt.install(mod, load, aliases)
+  aliases = aliases or {}
   local ok, Audio = pcall(require, "src.core.game3.audio")
   if not (ok and type(Audio) == "table" and type(Audio.playCry) == "function")
     or ours[Audio.playCry] then
@@ -84,7 +87,7 @@ function CryArt.install(mod, load)
         return true
       end
     end
-    return orig(species, mode, pan)
+    return orig(aliases[slot or -1] or species, mode, pan)
   end
   ours[Audio.playCry] = true
   return true

@@ -1,6 +1,6 @@
 # Alternate forms
 
-National Dex Gen 3 adds 84 alternate forms. Each is a Pokémon of its own with its own
+National Dex Gen 3 adds 85 alternate forms. Each is a Pokémon of its own with its own
 stats, typing, ability and moves, and shows its base Pokémon's Pokédex number. Seeing or catching a
 form also counts the base Pokémon in your Pokédex.
 
@@ -519,4 +519,10 @@ form also counts the base Pokémon in your Pokédex.
 - Type: Grass / Ghost
 - Ability: Shed Skin
 - Learnset: 1 Stun Spore · 1 Withdraw · 1 Astonish · 1 Leaf Blade · 6 Absorb · 12 Rain Dance · 18 Faint Attack · 24 Mega Drain · 30 Shadow Punch · 36 Spider Web · 42 Aromatherapy · 48 Shadow Ball · 54 Memento · 60 Solarbeam
+
+### Qwilfish (Hisui) — #211
+
+- Type: Dark / Poison
+- Ability: Poison Point / Swift Swim
+- Learnset: 1 Tackle · 1 Poison Sting · 4 Harden · 8 Bite · 12 Silver Wind · 16 Minimize · 20 Spikes · 24 Dive · 28 Sludge · 32 Pin Missile · 36 Acid Armor · 40 Stockpile · 40 Spit Up · 44 Toxic · 48 Crunch · 52 Focus Energy · 56 Destiny Bond
 

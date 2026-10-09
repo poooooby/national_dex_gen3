@@ -50,7 +50,15 @@ ORDER = [
     # Milcery -> Alcremie: any one of the seven sweets, held
     "strawberry-sweet", "berry-sweet", "love-sweet", "star-sweet", "clover-sweet",
     "flower-sweet", "ribbon-sweet",
+    # held-item evolutions (Sneasel, Gligar, Happiny, Bisharp) and Kubfu's scrolls
+    "razor-claw", "razor-fang", "oval-stone", "leaders-crest",
+    "scroll-of-darkness", "scroll-of-waters",
 ]
+
+# Items whose icon is not in the pokesprite folder (--icons) but in the Gen 9 Pack's
+# Graphics/Items (--extra-icons, one 48x48 PNG per item, named without separators).
+EXTRA_ICON_FILES = {"leaders-crest": "LEADERSCREST", "scroll-of-darkness": "SCROLLOFDARKNESS",
+                    "scroll-of-waters": "SCROLLOFWATERS"}
 
 # slug -> file stem when the pack spells the item differently (pokesprite
 # calls the teacups "teapot")
@@ -62,8 +70,12 @@ def engine_id(slug: str) -> str:
     return slug.upper().replace("-", "_")
 
 
+NAME_OVERRIDES = {"leaders-crest": "Leader's Crest", "scroll-of-darkness": "Scroll of Darkness",
+                  "scroll-of-waters": "Scroll of Waters"}
+
+
 def display_name(slug: str) -> str:
-    return slug.replace("-", " ").title()
+    return NAME_OVERRIDES.get(slug) or slug.replace("-", " ").title()
 
 
 def find_icon(icons_root: Path, slug: str) -> Path | None:
@@ -117,13 +129,19 @@ def write_items(path: Path, prices: dict) -> None:
     path.write_text("\n".join(lines), encoding="utf-8")
 
 
-def build_icons(icons_root: Path | None, out_png: Path, out_lua: Path) -> None:
+def build_icons(icons_root: Path | None, out_png: Path, out_lua: Path,
+                extra_root: Path | None = None) -> None:
     found: dict[str, Path] = {}
     if icons_root and icons_root.is_dir():
         for slug in ORDER:
             hit = find_icon(icons_root, slug)
             if hit:
                 found[slug] = hit
+    if extra_root and extra_root.is_dir():
+        for slug, stem in EXTRA_ICON_FILES.items():
+            path = extra_root / f"{stem}.png"
+            if slug not in found and path.exists():
+                found[slug] = path
     missing = [s for s in ORDER if s not in found]
 
     cols = max(1, min(len(found), 16))
@@ -167,6 +185,9 @@ def main() -> None:
     ap.add_argument("--icons", type=Path, default=None,
                     help="root of a local pokesprite-style item icon pack "
                          "(searched recursively for <slug>.png); omit to skip icons")
+    ap.add_argument("--extra-icons", type=Path, default=None,
+                    help="the Gen 9 Pack's Graphics/Items folder, for the items the "
+                         "pokesprite pack has no icon for (Leader's Crest, the scrolls)")
     ap.add_argument("--out", type=Path, default=ROOT)
     args = ap.parse_args()
 
@@ -174,7 +195,7 @@ def main() -> None:
     prices = json.loads(price_file.read_text(encoding="utf-8")) if price_file.exists() else {}
     write_items(args.out / "data" / "items.lua", prices)
     build_icons(args.icons, args.out / "assets" / "items" / "icons.png",
-               args.out / "data" / "item_icons.lua")
+               args.out / "data" / "item_icons.lua", args.extra_icons)
     print("wrote", args.out / "data" / "items.lua")
 
 

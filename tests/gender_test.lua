@@ -126,8 +126,9 @@ if shiny then
   end
 end
 
--- Basculin (white-striped) -> Basculegion after 294 recoil damage (src/recoil.lua)
-local Recoil = dofile("mods/national_dex_gen3/src/recoil.lua")
+-- Basculin (white-striped) -> Basculegion after 294 recoil damage (src/counters.lua)
+local Recoil = dofile("mods/national_dex_gen3/src/counters.lua")
+Recoil.of = Recoil.recoil
 T.eq(Recoil.of(48, 100), 25, "a Take Down-style move recoils a quarter")
 T.eq(Recoil.of(198, 100), 33, "a Volt Tackle-style move a third")
 T.eq(Recoil.of(48, 2), 1, "and at least 1")

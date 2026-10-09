@@ -249,7 +249,7 @@ def abilities_for(pokemon: dict[str, Any]) -> list[int]:
 
 # Kubfu's Isle of Armor scrolls: key items this mod doesn't register, so the
 # step could never fire (Urshifu's Rapid Strike form is a form entry instead).
-NOT_REGISTERED_ITEMS = {"scroll-of-darkness", "scroll-of-waters"}
+NOT_REGISTERED_ITEMS: set[str] = set()
 
 
 def evolution_steps(chain: dict[str, Any]) -> dict[int, list[dict[str, Any]]]:
@@ -338,6 +338,7 @@ def build(api: API, workers: int, cart_dir: Path) -> tuple[list[dict[str, Any]],
                 for source, rows in sorted(steps.items()) if source < FIRST_DEX
                 for step in rows if step["target"] >= FIRST_DEX]
 
+    crossgen += [dict(step) for step in form_list.CONDITIONAL_CROSSGEN]
     form_items = fetch_forms(api, fetched, workers)
     mapper = build_mapper(api, fetched + form_items, cart_dir, workers)
     records = [species_record(item["species"], item["pokemon"], item["dex"], mapper,
@@ -396,7 +397,12 @@ def fetch_forms(api: API, fetched: list[dict[str, Any]], workers: int) -> list[d
 
     def fetch(entry: tuple[int, tuple]) -> dict[str, Any]:
         index, (fid, base, form, slug) = entry
-        base_item = by_id[base]
+        base_item = by_id.get(base)
+        if base_item is None:
+            # a form of one of the cart's own species (Hisuian Qwilfish): the base is not
+            # registered by this mod, but its PokeAPI species data is still needed
+            species = api.get(f"/pokemon-species/{base.lower().replace('_', '-')}")
+            base_item = {"dex": species["id"], "species": species}
         variety = next(v for v in base_item["species"]["varieties"] if v["pokemon"]["name"] == slug)
         return {"id": fid, "base": base, "form": form, "slot": form_list.FIRST_FORM_SLOT + index,
                 "dex": base_item["dex"], "species": base_item["species"],

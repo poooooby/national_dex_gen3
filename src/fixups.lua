@@ -66,6 +66,12 @@ function Fixups.new(registered, itemIndex, bridges, log, forms)
     for _, b in ipairs(registered) do
       if b.id == f.baseSpecies then baseSlotOf[f.slot] = b.slot end
     end
+    -- a form of the cart's own species (Hisuian Qwilfish): the base is the cart's slot
+    if not baseSlotOf[f.slot] then
+      local okP, PokemonG3 = pcall(require, "src.core.game3.pokemon")
+      local base = okP and PokemonG3.speciesFromName and PokemonG3.speciesFromName(f.baseSpecies)
+      if base then baseSlotOf[f.slot] = base end
+    end
   end
   local loggedWaiting = false
 

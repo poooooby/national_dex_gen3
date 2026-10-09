@@ -17,7 +17,13 @@
 --   pick        { i, n }: the Pokemon's personality falls in bucket i of n -- a
 --               stable "1 in n" that gives the same answer on every check
 --   gender      "F" or "M": the Pokemon's gender, from its personality
---   recoil      the recoil damage the Pokemon has taken in battle, in total (src/recoil.lua)
+--   recoil      the recoil damage the Pokemon has taken in battle, in total (src/counters.lua)
+--   knows       a list of move ids: the Pokemon knows any one of them
+--   party       { species = "REMORAID" } or { type = "DARK" }: another Pokemon in the party
+--   weather     "rain": the overworld weather is rain, a thunderstorm or a downpour
+--   uses        { move = 99, count = 20 }: it has used that move that many times in battle
+--   steps       steps walked while it was first in the party (src/counters.lua)
+--   coins       Coin Case coins needed; they are spent when it evolves (src/counters.lua)
 --   terrain     "plant", "sandy" or "trash": where the last battle was fought (below)
 --   priority    higher wins (default 0)
 -- The friendship day/night evolutions (Budew, Riolu, Chingling, Snom, ...) are
@@ -77,10 +83,39 @@ local function holds(want, held, itemIndex)
   return false
 end
 
--- Do a step's conditions hold? facts: { held, night, friendship, personality }
+local TYPE_IDS = {
+  NORMAL = 0, FIGHTING = 1, FLYING = 2, POISON = 3, GROUND = 4, ROCK = 5, BUG = 6, GHOST = 7,
+  STEEL = 8, FIRE = 10, WATER = 11, GRASS = 12, ELECTRIC = 13, PSYCHIC = 14, ICE = 15,
+  DRAGON = 16, DARK = 17,
+}
+
+-- Do a step's conditions hold? facts: { held, night, friendship, personality, gender,
+-- terrain, recoil, moves (set of move ids), partySpecies (set of slots), partyTypes (set of
+-- type ids), speciesSlot(name), rain, uses, steps, coins }
 function ConditionalEvos.qualifies(step, facts, itemIndex)
   local when = step.when
   if not when then return true end
+  if when.knows then
+    local known = false
+    for _, id in ipairs(when.knows) do
+      if facts.moves and facts.moves[id] then known = true break end
+    end
+    if not known then return false end
+  end
+  if when.party then
+    if when.party.species then
+      local slot = facts.speciesSlot and facts.speciesSlot(when.party.species)
+      if not (slot and facts.partySpecies and facts.partySpecies[slot]) then return false end
+    end
+    if when.party.type then
+      local id = TYPE_IDS[when.party.type]
+      if not (id and facts.partyTypes and facts.partyTypes[id]) then return false end
+    end
+  end
+  if when.weather == "rain" and not facts.rain then return false end
+  if when.uses and ((facts.uses and facts.uses[when.uses.move]) or 0) < when.uses.count then return false end
+  if when.steps and (facts.steps or 0) < when.steps then return false end
+  if when.coins and (facts.coins or 0) < when.coins then return false end
   if when.hold and not holds(when.hold, facts.held, itemIndex) then return false end
   if when.time == "night" and not facts.night then return false end
   if when.time == "day" and facts.night then return false end
@@ -108,30 +143,55 @@ function ConditionalEvos.winner(group, facts, itemIndex)
   return best
 end
 
--- species: every registered species and form (bookkeeping from Species.register).
--- A group is the level-up steps of one species at a level where any step has
--- conditions (the unconditioned ones, like Midday Lycanroc, compete too).
-function ConditionalEvos.groups(species)
+-- species: every registered species and form (bookkeeping from Species.register);
+-- bridges: the evolutions added to the cart's own species (Lickitung, Eevee ...), each
+-- { sourceSlot, targetSlot, method, level, when }.
+-- A group is the steps of one species that compete: every step with conditions, plus the
+-- unconditioned level-ups at a level where one of them has some (like Midday Lycanroc).
+function ConditionalEvos.groups(species, bridges)
   local out = {}
-  for _, r in ipairs(species) do
+  local function add(slot, list)
     local levels = {}
-    for _, step in ipairs(r.evolutions or {}) do
-      if step.when then levels[step.level or 0] = true end
+    for _, step in ipairs(list) do
+      if step.when and step.method == "EVO_LEVEL" then levels[step.level or 0] = true end
     end
-    for _, step in ipairs(r.evolutions or {}) do
-      if step.method == "EVO_LEVEL" and levels[step.level or 0] and step.targetSlot then
-        out[r.slot] = out[r.slot] or {}
-        table.insert(out[r.slot], step)
+    for _, step in ipairs(list) do
+      local gated = step.when ~= nil
+      local sibling = step.method == "EVO_LEVEL" and levels[step.level or 0]
+      if (gated or sibling) and step.targetSlot then
+        out[slot] = out[slot] or {}
+        table.insert(out[slot], step)
       end
     end
   end
+  for _, r in ipairs(species) do add(r.slot, r.evolutions or {}) end
+  local bySource = {}
+  for _, b in ipairs(bridges or {}) do
+    if b.sourceSlot then
+      bySource[b.sourceSlot] = bySource[b.sourceSlot] or {}
+      table.insert(bySource[b.sourceSlot], b)
+    end
+  end
+  for slot, list in pairs(bySource) do add(slot, list) end
   return out
+end
+
+local RAIN = { [3] = true, [5] = true, [13] = true }   -- Weather.RAIN, RAIN_THUNDERSTORM, DOWNPOUR
+
+local function isRaining()
+  local ok, Weather = pcall(require, "src.core.game3.weather")
+  if not (ok and type(Weather) == "table") then return false end
+  local okG, current = pcall(function()
+    if type(Weather.get) == "function" then Weather.get() end
+    return Weather.current
+  end)
+  return okG and RAIN[tonumber(current) or -1] == true
 end
 
 -- opts.isNight(session), opts.isDusk(session) -> boolean, from the clock the player chose
 -- (src/clock.lua)
 function ConditionalEvos.install(mod, species, itemIndex, opts)
-  local groups = ConditionalEvos.groups(species)
+  local groups = ConditionalEvos.groups(species, opts and opts.bridges)
   local isNight = opts and opts.isNight or function() return false end
   local isDusk = opts and opts.isDusk or function() return false end
   local okP, Pokemon = pcall(require, "src.core.game3.pokemon")
@@ -158,7 +218,32 @@ function ConditionalEvos.install(mod, species, itemIndex, opts)
     end
     if not mine then return matched end
     local personality = tonumber(mon.personality) or 0
+    -- what the conditions look at, gathered once per check
+    local moves, partySpecies, partyTypes = {}, {}, {}
+    if okP and Pokemon.moveIdAt then
+      for i = 1, 4 do
+        local okM, raw = pcall(Pokemon.moveIdAt, mon, i)
+        local id = okM and tonumber(raw) or nil
+        if id and id > 0 then moves[id] = true end
+      end
+    end
+    local session = ctx.session
+    for _, member in ipairs(type(session) == "table" and session.party or {}) do
+      if member ~= mon and okP and Pokemon.speciesOf then
+        local memberSlot = Pokemon.speciesOf(member)
+        if memberSlot then
+          partySpecies[memberSlot] = true
+          for _, typeId in ipairs(Pokemon.types(memberSlot)) do partyTypes[typeId] = true end
+        end
+      end
+    end
     local chosen = ConditionalEvos.winner(group, {
+      moves = moves, partySpecies = partySpecies, partyTypes = partyTypes,
+      speciesSlot = function(name) return okP and Pokemon.speciesFromName(name) or nil end,
+      rain = isRaining(),
+      uses = type(mon.moveUses) == "table" and mon.moveUses or {},
+      steps = tonumber(mon.stepsAsLead) or 0,
+      coins = tonumber(type(session) == "table" and session.coins) or 0,
       gender = okP and Pokemon.gender and Pokemon.gender(slot, personality) or nil,
       terrain = ConditionalEvos.terrain(),
       recoil = tonumber(mon.recoilTaken) or 0,

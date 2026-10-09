@@ -1,6 +1,6 @@
 # Added items
 
-National Dex Gen 3 adds 30 evolution items that no Gen 3 game has, so the Pokémon that
+National Dex Gen 3 adds 36 evolution items that no Gen 3 game has, so the Pokémon that
 need them can evolve. The real games sell almost none of these, so where each one is sold is a
 design choice: by item type, and by how far into the game the store is.
 
@@ -40,6 +40,12 @@ design choice: by item type, and by how far into the game the store is.
 | Clover Sweet | ₽2100 | Six Island Mart | Mossdeep City Mart |
 | Flower Sweet | ₽2100 | Six Island Mart | Mossdeep City Mart |
 | Ribbon Sweet | ₽2100 | Six Island Mart | Mossdeep City Mart |
+| Razor Claw | ₽2100 | Celadon Dept. Store 5F (battle items) | Lilycove Dept. Store (battle items) |
+| Razor Fang | ₽2100 | Celadon Dept. Store 5F (battle items) | Lilycove Dept. Store (battle items) |
+| Oval Stone | ₽2100 | Celadon Dept. Store 5F (battle items) | Lilycove Dept. Store (battle items) |
+| Leader's Crest | ₽2100 | Celadon Dept. Store 5F (battle items) | Lilycove Dept. Store (battle items) |
+| Scroll of Darkness | ₽2100 | Six Island Mart | Mossdeep City Mart |
+| Scroll of Waters | ₽2100 | Six Island Mart | Mossdeep City Mart |
 
 Prices are what a store charges; it buys the item back at half. They come from Bulbapedia
 (twice the sell price listed for the earliest game that has one), or ₽2100, the Gen 3
@@ -211,63 +217,105 @@ evolution stone price, where there is none. See [CREDITS](../CREDITS.md).
 - Price: ₽2100
 - FireRed / LeafGreen: Six Island Mart
 - Ruby / Sapphire / Emerald: Mossdeep City Mart
-- Evolves: Milcery → Alcremie (hold it while it reaches level 25)
+- Evolves: Milcery → Alcremie (hold it while it levels up, at night); Milcery → Alcremie (hold it while it levels up, by day)
 
 ### Berry Sweet
 
 - Price: ₽2100
 - FireRed / LeafGreen: Six Island Mart
 - Ruby / Sapphire / Emerald: Mossdeep City Mart
-- Evolves: Milcery → Alcremie (hold it while it reaches level 25)
+- Evolves: Milcery → Alcremie (hold it while it levels up, at night); Milcery → Alcremie (hold it while it levels up, by day)
 
 ### Love Sweet
 
 - Price: ₽2100
 - FireRed / LeafGreen: Six Island Mart
 - Ruby / Sapphire / Emerald: Mossdeep City Mart
-- Evolves: Milcery → Alcremie (hold it while it reaches level 25)
+- Evolves: Milcery → Alcremie (hold it while it levels up, at night); Milcery → Alcremie (hold it while it levels up, by day)
 
 ### Star Sweet
 
 - Price: ₽2100
 - FireRed / LeafGreen: Six Island Mart
 - Ruby / Sapphire / Emerald: Mossdeep City Mart
-- Evolves: Milcery → Alcremie (hold it while it reaches level 25)
+- Evolves: Milcery → Alcremie (hold it while it levels up, at night); Milcery → Alcremie (hold it while it levels up, by day)
 
 ### Clover Sweet
 
 - Price: ₽2100
 - FireRed / LeafGreen: Six Island Mart
 - Ruby / Sapphire / Emerald: Mossdeep City Mart
-- Evolves: Milcery → Alcremie (hold it while it reaches level 25)
+- Evolves: Milcery → Alcremie (hold it while it levels up, at night); Milcery → Alcremie (hold it while it levels up, by day)
 
 ### Flower Sweet
 
 - Price: ₽2100
 - FireRed / LeafGreen: Six Island Mart
 - Ruby / Sapphire / Emerald: Mossdeep City Mart
-- Evolves: Milcery → Alcremie (hold it while it reaches level 25)
+- Evolves: Milcery → Alcremie (hold it while it levels up, at night); Milcery → Alcremie (hold it while it levels up, by day)
 
 ### Ribbon Sweet
 
 - Price: ₽2100
 - FireRed / LeafGreen: Six Island Mart
 - Ruby / Sapphire / Emerald: Mossdeep City Mart
-- Evolves: Milcery → Alcremie (hold it while it reaches level 25)
+- Evolves: Milcery → Alcremie (hold it while it levels up, at night); Milcery → Alcremie (hold it while it levels up, by day)
+
+### Razor Claw
+
+- Price: ₽2100
+- FireRed / LeafGreen: Celadon Dept. Store 5F (battle items)
+- Ruby / Sapphire / Emerald: Lilycove Dept. Store (battle items)
+- Evolves: Sneasel → Weavile (hold it while it levels up, at night)
+
+### Razor Fang
+
+- Price: ₽2100
+- FireRed / LeafGreen: Celadon Dept. Store 5F (battle items)
+- Ruby / Sapphire / Emerald: Lilycove Dept. Store (battle items)
+- Evolves: Gligar → Gliscor (hold it while it levels up, at night)
+
+### Oval Stone
+
+- Price: ₽2100
+- FireRed / LeafGreen: Celadon Dept. Store 5F (battle items)
+- Ruby / Sapphire / Emerald: Lilycove Dept. Store (battle items)
+- Evolves: Happiny → Chansey (hold it while it levels up, by day)
+
+### Leader's Crest
+
+- Price: ₽2100
+- FireRed / LeafGreen: Celadon Dept. Store 5F (battle items)
+- Ruby / Sapphire / Emerald: Lilycove Dept. Store (battle items)
+- Evolves: Bisharp → Kingambit (hold it while it levels up)
+
+### Scroll of Darkness
+
+- Price: ₽2100
+- FireRed / LeafGreen: Six Island Mart
+- Ruby / Sapphire / Emerald: Mossdeep City Mart
+- Evolves: Kubfu → Urshifu (use it on)
+
+### Scroll of Waters
+
+- Price: ₽2100
+- FireRed / LeafGreen: Six Island Mart
+- Ruby / Sapphire / Emerald: Mossdeep City Mart
+- Evolves: Kubfu → Urshifu (Rapid Strike) (use it on)
 
 ## By store
 
 ### FireRed / LeafGreen
 
 - **Celadon Dept. Store 4F**: Dusk Stone (₽2100), Dawn Stone (₽2100), Shiny Stone (₽2100), Ice Stone (₽3000), Sachet (₽2100), Whipped Dream (₽2100)
-- **Celadon Dept. Store 5F (battle items)**: Protector (₽2100), Electirizer (₽2100), Magmarizer (₽2100), Dubious Disc (₽2100), Reaper Cloth (₽2100)
-- **Six Island Mart**: Metal Alloy (₽3000), Black Augurite (₽1000), Peat Block (₽1000), Auspicious Armor (₽2100), Malicious Armor (₽2100), Tart Apple (₽2100), Sweet Apple (₽2100), Syrupy Apple (₽2100), Cracked Pot (₽3000), Chipped Pot (₽3000), Unremarkable Teacup (₽2100), Masterpiece Teacup (₽2100), Strawberry Sweet (₽2100), Berry Sweet (₽2100), Love Sweet (₽2100), Star Sweet (₽2100), Clover Sweet (₽2100), Flower Sweet (₽2100), Ribbon Sweet (₽2100)
+- **Celadon Dept. Store 5F (battle items)**: Protector (₽2100), Electirizer (₽2100), Magmarizer (₽2100), Dubious Disc (₽2100), Reaper Cloth (₽2100), Razor Claw (₽2100), Razor Fang (₽2100), Oval Stone (₽2100), Leader's Crest (₽2100)
+- **Six Island Mart**: Metal Alloy (₽3000), Black Augurite (₽1000), Peat Block (₽1000), Auspicious Armor (₽2100), Malicious Armor (₽2100), Tart Apple (₽2100), Sweet Apple (₽2100), Syrupy Apple (₽2100), Cracked Pot (₽3000), Chipped Pot (₽3000), Unremarkable Teacup (₽2100), Masterpiece Teacup (₽2100), Strawberry Sweet (₽2100), Berry Sweet (₽2100), Love Sweet (₽2100), Star Sweet (₽2100), Clover Sweet (₽2100), Flower Sweet (₽2100), Ribbon Sweet (₽2100), Scroll of Darkness (₽2100), Scroll of Waters (₽2100)
 
 ### Ruby / Sapphire / Emerald
 
 - **Lilycove Dept. Store (supplements)**: Dusk Stone (₽2100), Dawn Stone (₽2100), Shiny Stone (₽2100), Ice Stone (₽3000), Sachet (₽2100), Whipped Dream (₽2100)
-- **Lilycove Dept. Store (battle items)**: Protector (₽2100), Electirizer (₽2100), Magmarizer (₽2100), Dubious Disc (₽2100), Reaper Cloth (₽2100)
-- **Mossdeep City Mart**: Tart Apple (₽2100), Sweet Apple (₽2100), Syrupy Apple (₽2100), Cracked Pot (₽3000), Chipped Pot (₽3000), Strawberry Sweet (₽2100), Berry Sweet (₽2100), Love Sweet (₽2100), Star Sweet (₽2100), Clover Sweet (₽2100), Flower Sweet (₽2100), Ribbon Sweet (₽2100)
+- **Lilycove Dept. Store (battle items)**: Protector (₽2100), Electirizer (₽2100), Magmarizer (₽2100), Dubious Disc (₽2100), Reaper Cloth (₽2100), Razor Claw (₽2100), Razor Fang (₽2100), Oval Stone (₽2100), Leader's Crest (₽2100)
+- **Mossdeep City Mart**: Tart Apple (₽2100), Sweet Apple (₽2100), Syrupy Apple (₽2100), Cracked Pot (₽3000), Chipped Pot (₽3000), Strawberry Sweet (₽2100), Berry Sweet (₽2100), Love Sweet (₽2100), Star Sweet (₽2100), Clover Sweet (₽2100), Flower Sweet (₽2100), Ribbon Sweet (₽2100), Scroll of Darkness (₽2100), Scroll of Waters (₽2100)
 - **Sootopolis City Mart**: Auspicious Armor (₽2100), Malicious Armor (₽2100), Metal Alloy (₽3000), Unremarkable Teacup (₽2100), Masterpiece Teacup (₽2100)
 - **Ever Grande City Pokemon League mart**: Black Augurite (₽1000), Peat Block (₽1000)
 
