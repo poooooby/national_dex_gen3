@@ -1,5 +1,6 @@
 # Excluded from the packaged mod (modkit matches exact relative paths).
 CLAUDE.md
+DEVELOPMENT.md
 tools/build_species.py
 tools/build_items.py
 tools/build_cries.py
@@ -31,8 +32,6 @@ tests/clock_test.lua
 tests/lycanroc_test.lua
 docs/evolutions-and-forms.md
 tests/gender_test.lua
-tests/editor_learnset_test.lua
-tests/editor_sprite_box_test.lua
 tests/known_move_test.lua
 tests/counters_test.lua
 tests/rse_dex_patch_test.lua
@@ -41,3 +40,10 @@ tests/dex_repeat_test.lua
 tests/national_unlock_test.lua
 tests/dex_sync_test.lua
 tests/dex_forms_test.lua
+tests/editor_stock_test.lua
+tools/build_dist.py
+tools/desc_width.py
+
+# dist/ (managed by tools/build_dist.py; do not edit)
+dist/national_dex_gen3-0.7.0.zip
+# end dist/

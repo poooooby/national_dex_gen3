@@ -1,0 +1,47 @@
+MIT License
+
+Copyright (c) 2026 poooooby (Wooble)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+-------------------------------------------------------------------------------
+What this license covers
+-------------------------------------------------------------------------------
+
+The MIT license above covers the original work in this repository: the mod's
+code (main.lua, options.lua, src/), the build tools (tools/), the tests
+(tests/), the hand-written documentation, and these item sprites by Wooble,
+which are part of assets/items/icons.png:
+
+  Auspicious Armor, Malicious Armor, Metal Alloy, Peat Block, Syrupy Apple,
+  Unremarkable Teacup, Masterpiece Teacup
+
+It does NOT cover the following, which belong to their own authors and are
+used here with credit (see CREDITS.md). They are not licensed to you by this
+file:
+
+  - The cries in assets/cries/ (fan-made, by the authors in CREDITS.md).
+  - Every other item sprite in assets/items/icons.png (fan-made, by the
+    authors in CREDITS.md).
+  - The Pokedex summaries in data/species/ (the games' own text, taken from
+    PokeAPI), and the names, statistics and other facts about Pokemon and
+    items in data/ and docs/, which come from PokeAPI and the games.
+  - Pokemon and all related names, characters and marks, which are the
+    property of Nintendo, Creatures Inc. and GAME FREAK inc. This is an
+    unofficial fan project and is not affiliated with or endorsed by them.

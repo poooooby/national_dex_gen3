@@ -1,0 +1,154 @@
+-- Standalone: luajit mods/national_dex_gen3/tests/editor_stock_test.lua (from the gen1recomp
+-- root; needs Pokemon FireRed imported under firered/ and the stock tools/save-editor).
+--
+-- The save editor loads mods without starting a game (src/editor.lua). Loaded the way the stock
+-- editor loads them (Data:load, Gen.bindGame3Data, then the mod loader), every species and form
+-- this mod registers must be in the editor's species list, with its own slot, name and moves.
+package.path = "./?.lua;./?/init.lua;./tools/save-editor/?.lua;./tools/save-editor/panels/?.lua;"
+  .. package.path
+local ok, Gen = pcall(require, "Gen")
+if not ok then print("skipped: the save editor is not in this checkout") os.exit(0) end
+
+local T = require("tests.modkit")
+love = love or require("tests.love_stub")
+local CacheBlob = require("src.import.CacheBlob")
+local function path(rel) return "firered/" .. rel end
+local reader = {
+  read = function(_, rel)
+    local f = io.open(path(rel), "rb")
+    if not f then return nil end
+    local data = f:read("*a"); f:close()
+    return CacheBlob.decode(rel, data)
+  end,
+  exists = function(_, rel)
+    local f = io.open(path(rel), "rb")
+    if f then f:close() return true end
+    return false
+  end,
+}
+if not reader:exists("data/generated/gba/pokemon/names.lua") then
+  print("skipped: FireRed is not imported")
+  os.exit(0)
+end
+
+require("src.core.GameVersion").set("firered")
+local Dataset = require("src.core.game3.dataset")
+Dataset.cache = function() return reader end
+local Data = require("src.core.Data")
+local MonOps = require("MonOps")
+local P = require("src.core.game3.pokemon")
+
+-- what App.load does, in its order
+Data:load()
+Gen.bindGame3Data(Data)
+local run = T.sdk.loadMods({ "mods/national_dex_gen3" }, { data = Data, generation = 3 })
+T.eq(#run.errors, 0, "the mod loads in the editor (" .. tostring(run.errors[1]) .. ")")
+
+for _, id in ipairs({ "TURTWIG", "ABOMASNOW", "PECHARUNT" }) do
+  local row = Data.pokemon[id]
+  T.check(row ~= nil, id .. " is in the editor's species list")
+  T.eq(row and row.speciesId, row and P.speciesFromName(id), id .. " has its own slot")
+  local mon = MonOps.create(Data, id, 30, 3)
+  T.eq(mon.speciesId, row and row.speciesId, id .. " made in the editor is that species, not Bulbasaur")
+  T.eq(mon.name, id, id .. " made in the editor has its name")
+  T.check(#mon.moves > 0, id .. " made in the editor has moves")
+end
+T.eq(Data.pokemon[P.speciesFromName("TURTWIG")], Data.pokemon.TURTWIG, "the list finds it by slot too")
+T.eq(Data.pokemon.TURTWIG.dex, 387, "and by its National number")
+
+local galar = Data.pokemon.DARUMAKA_GALAR
+T.check(galar ~= nil, "a form is in the list under its own id")
+T.eq(galar and galar.name, "DARUMAKA (GALAR)", "labelled with its form")
+T.eq(galar and galar.dex, 554, "with its base's National number")
+T.check(Data.pokemon.DARUMAKA and Data.pokemon.DARUMAKA ~= galar, "and the base keeps its own row")
+local formMon = MonOps.create(Data, "DARUMAKA_GALAR", 20, 3)
+T.eq(formMon.speciesId, galar and galar.speciesId, "a form made in the editor keeps its slot")
+T.check(#formMon.moves > 0, "and has moves")
+
+T.eq(P.national(P.speciesFromName("TURTWIG")), 387, "the live tables know its National number")
+T.check(Data.pokemon.BULBASAUR ~= nil, "the cart's own species are still listed")
+
+-- pictures: the editor asks Pokemon.frontPic for the species' slot, which a sprite mod
+-- (g9-battle-sprites-gen3) answers; here a stand-in records what was asked
+do
+  local MonEditor = require("MonEditor")
+  local asked = {}
+  local frontPic = P.frontPic
+  P.frontPic = function(slot, ...) asked[#asked + 1] = slot return { image = { slot = slot } } end
+  local S = { data = Data, save = { version = "firered", generation = 3 } }
+  local okGen = pcall(function() return Gen.ofState(S) end)
+  local turtwigPic = MonEditor.sprite(S, "TURTWIG", { personality = 0 })
+  local formPic = MonEditor.sprite(S, "DARUMAKA_GALAR", { personality = 0 })
+  P.frontPic = frontPic
+  T.check(okGen, "the editor state stand-in is accepted")
+  T.eq(turtwigPic and turtwigPic.slot, P.speciesFromName("TURTWIG"), "the editor asks for TURTWIG's own picture")
+  T.eq(formPic and formPic.slot, galar and galar.speciesId, "and the form's own picture")
+end
+
+-- learnsets: every species and form has the level-up moves this mod registered for it, row
+-- for row, on the live tables the editor reads (and a new one made there knows them)
+do
+  local registry = run.loader.content.pokemon
+  local index = dofile("mods/national_dex_gen3/data/species/index.lua")
+  local checked, wrong, empty = 0, {}, 0
+  local function compare(id)
+    local record = registry:get(id)
+    local slot = P.speciesFromName(id)
+    if not (record and slot) then wrong[#wrong + 1] = id .. " (missing)" return end
+    local want = record.learnset or {}
+    local have = P.learnset(slot) or {}
+    if #want == 0 then empty = empty + 1 end
+    if #have ~= #want then wrong[#wrong + 1] = id return end
+    for i, r in ipairs(want) do
+      local level = tonumber(r.level or r[1])
+      if tonumber(have[i] and have[i][1]) ~= level or not tonumber(have[i][2]) or have[i][2] == 0 then
+        wrong[#wrong + 1] = id .. " row " .. i
+        return
+      end
+    end
+    checked = checked + 1
+  end
+  local ids = {}
+  for _, shard in ipairs(index.shards) do
+    for _, r in ipairs(dofile("mods/national_dex_gen3/data/species/" .. shard)) do ids[#ids + 1] = r.id end
+  end
+  for _, f in ipairs(dofile("mods/national_dex_gen3/data/species/forms.lua")) do ids[#ids + 1] = f.id end
+  for _, id in ipairs(ids) do compare(id) end
+  T.eq(#wrong, 0, "every species and form has its full learnset in the editor (" .. table.concat(wrong, ", "):sub(1, 120) .. ")")
+  T.eq(checked, 639 + 85, "all 639 species and 85 forms checked")
+  T.eq(empty, 0, "none of them is empty")
+  -- what the editor gives a new one: the last four moves it knows at that level
+  local row = P.learnset(P.speciesFromName("TURTWIG"))
+  local mon = MonOps.create(Data, "TURTWIG", 30, 3)
+  local learnt = {}
+  for _, m in ipairs(mon.moves) do learnt[tonumber(m.moveId or m.id or m)] = true end
+  local expect = 0
+  for _, r in ipairs(row) do if r[1] <= 30 then expect = expect + 1 end end
+  T.eq(#mon.moves, math.min(4, expect), "a level 30 TURTWIG made in the editor knows its last four moves")
+  T.check(learnt[row[1][2]] ~= nil or expect > 4, "taken from its own learnset")
+end
+
+-- items: this mod's items (index 900+) are in the editor's item list, by name and by number
+do
+  local ItemsData = require("src.core.game3.items_data")
+  local items = dofile("mods/national_dex_gen3/data/items.lua")
+  local missing = {}
+  for _, it in ipairs(items) do
+    local row = Data.items[it.index]
+    if not (row and row.itemId == it.index and row.name == it.name and Data.items[row.id] == row) then
+      missing[#missing + 1] = it.id
+    end
+  end
+  T.eq(#missing, 0, "every item is in the editor's item list (" .. table.concat(missing, ", ") .. ")")
+  T.eq(Data.items.DAWN_STONE and Data.items.DAWN_STONE.itemId, 900, "found by name (DAWN_STONE)")
+  T.eq(Data.items.LEADER_S_CREST and Data.items.LEADER_S_CREST.name, "LEADER'S CREST", "a name with an apostrophe")
+  T.eq(ItemsData.info(900) and ItemsData.info(900).name, "DAWN STONE", "and the item data answers for it")
+  local found = false
+  for _, id in ipairs(require("Catalog").build(Data, { version = "firered", generation = 3 }, "firered").items) do
+    if Data.items[id] and Data.items[id].itemId == 935 then found = true end
+  end
+  T.check(found, "the editor's item picker lists the last of them (935)")
+end
+
+run.release()
+T.finish("national_dex_gen3 stock save editor")

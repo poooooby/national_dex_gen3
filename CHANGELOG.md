@@ -41,6 +41,18 @@ All notable changes to this mod are documented here, in
   they no longer match exactly, only this feature is skipped, with one warning; the list fix still
   goes in.
 
+## [Unreleased]
+
+### Added
+
+- **Save editor support** on stock gen1recomp (`src/editor.lua`): when the save editor is the host,
+  the mod hands the dataset the move and item modules before registering, and on `mods.loaded`
+  applies the registries to the live tables and runs its own repairs (what a game does before and
+  on `game.ready`), then lists every species and form in the editor's picker (a form labelled, e.g.
+  "DARUMAKA (GALAR)") and its 36 items in the item list. New Pokemon can be picked, keep their names and get their moves; pictures
+  come from G9 Battle Sprites. No engine patch needed. Test: `editor_stock_test.lua` (replaces the
+  fork-only `editor_learnset_test.lua` and `editor_sprite_box_test.lua`).
+
 ## [0.6.2] - 2026-10-09
 
 ### Added

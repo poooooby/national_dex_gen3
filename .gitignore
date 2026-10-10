@@ -5,3 +5,6 @@ CLAUDE.md
 /tools/.cache/
 __pycache__/
 *.pyc
+
+# test builds (tools/build_dist.py)
+/dist/

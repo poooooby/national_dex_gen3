@@ -74,8 +74,9 @@ return function(mod)
   local DexRepeat = loadSibling(mod, "src/dex_repeat.lua")
   -- optional: without it the Pokedex has no FORMS page
   local DexForms = loadSibling(mod, "src/dex_forms.lua")
+  local Editor = loadSibling(mod, "src/editor.lua")
   local Api = loadSibling(mod, "src/api.lua")
-  if not (Species and Fixups and Items and ItemArt and CryArt and Shops and Art and ConditionalEvos and Clock and Counters and Breeding and DexPatch and NationalUnlock and DexSync and DexRepeat and Api) then return end
+  if not (Species and Fixups and Items and ItemArt and CryArt and Shops and Art and ConditionalEvos and Clock and Counters and Breeding and DexPatch and NationalUnlock and DexSync and DexRepeat and Editor and Api) then return end
 
   local read = function(path) return loadSibling(mod, path) end
 
@@ -88,8 +89,13 @@ return function(mod)
   -- before species registration, so Species.register's own eager item lookup
   -- (species.lua's evolutionRow, a load-time snapshot) sees these too, not
   -- only the live bookkeeping path fixups drives
+  -- the save editor loads mods without starting a game (src/editor.lua): hand the dataset the
+  -- move and item modules first, as a game does, so the registration below resolves moves
+  local inEditor = Editor.detect(require)
+  if inEditor then Editor.bindModules(require("src.core.Data"), require) end
+
   local itemPayload = Items.loadPayload(read)
-  Items.register(mod, itemPayload)
+  local registeredItems = Items.register(mod, itemPayload)
 
   local crossgen = Species.loadCrossGeneration(read)
   local forms = Species.loadForms(read)
@@ -101,6 +107,17 @@ return function(mod)
     if r.id == "MANAPHY" then manaphySlot = r.slot elseif r.id == "PHIONE" then phioneSlot = r.slot end
   end
   -- a form of a cart species (Hisuian Qwilfish) has no cry of its own: it plays its base's
+  -- in the save editor, do on mods.loaded what a game does before game.ready, plus this mod's
+  -- own repairs, and list every species and form in the editor's picker
+  if inEditor then
+    mod.events:on("mods.loaded", function(ev)
+      Editor.prepare(ev, require, function() fixups.install(nil) end, mod.log)
+      local n = Editor.addToCatalog(ev and ev.data, registered, registeredForms, mod.content.pokemon)
+      local items = Editor.addItems(ev and ev.data, registeredItems, require)
+      mod.log:info("save editor: %d species and forms, %d items listed", n, items)
+    end)
+  end
+
   local cryAliases = {}
   do
     local okN, PokemonG3 = pcall(require, "src.core.game3.pokemon")
