@@ -36,8 +36,6 @@ companion mods [below](#companion-mods-recommended).
   Kyurem Black. They show their normal Pokémon's Pokédex number. See [the forms guide](docs/pokemon/forms.md).
 - **Adds cries** for all 639 Pokémon, and for each form.
 - **Adds them to the Pokédex.** They appear in the National Pokédex list.
-- **Pokédex pictures for every species, animated.** Every Pokédex entry, #1–1025 and each form,
-  shows its sprite (from pokeemerald-expansion) centred and moving between its two frames.
 - **A FORMS page in the Pokédex** for species with alternate forms: each form's picture with its
   name. On Ruby/Sapphire/Emerald choose FORMS (where CANCEL usually is); on FireRed/LeafGreen
   press A on the size/area page.
@@ -77,10 +75,10 @@ Pokémon will be missing or unseen.
 
 ### [G9 Battle Sprites (Gen 3)](https://github.com/poooooby/g9-battle-sprites-gen3)
 
-**Why you need it: it adds the battle pictures.** This mod draws the Pokédex
-pictures itself but ships no battle artwork. G9 Battle Sprites (Gen 3) gives every
-new Pokémon animated battle sprites (front and back, normal and shiny), its summary
-picture, and a party-menu icon. The original 386 Pokémon keep the game's own sprites. It's a
+**Why you need it: it adds the pictures.** This mod ships no Pokémon artwork. G9 Battle
+Sprites (Gen 3) gives every Pokémon animated battle sprites (front and back, normal and
+shiny), its summary picture, its Pokédex pictures (the cart-style ones on Ruby/Sapphire/Emerald),
+and a party-menu icon for the new ones. It's a
 Gen 3 rewrite of [g9-battle-sprites](https://github.com/tectorifter/g9-battle-sprites)
 by tectorifter.
 
@@ -198,8 +196,7 @@ tutor data each time the engine loads it.
 
 ## Art
 
-This mod draws the Pokédex pictures itself (every species and form; see CREDITS.md). Battle
-sprites come from a sprite mod:
+Pictures (battle, summary and Pokédex) come from a sprite mod:
 
 ```lua
 local dex = mod:find("national_dex_gen3")
@@ -237,8 +234,7 @@ crops it to 64×64), or nil to let the next provider answer.
 - **The native Pokédex list now includes #387–1025 in National mode.** This mod raises the engine's `Dex.NATIONAL_MAX` (386) to 1025 because a mod that enumerates species up to that
   bound (Kanto Gear's wild-encounter guide builds its species cache that way)
   otherwise never sees a new species and silently drops its rows. The
-  Pokédex list uses the same bound; this mod draws those entries' pictures
-  itself. On Emerald this mod also supplies a
+  Pokédex list uses the same bound; a sprite mod draws those entries' pictures. On Emerald this mod also supplies a
   Pokédex entry (category and size; no flavor text) for each new species,
   since a mod walking every National number asserts one exists. Seen/caught counting is unaffected
   (plain tables, no size limit).

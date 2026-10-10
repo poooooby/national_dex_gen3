@@ -22,18 +22,6 @@ ships are fan-made, and the credits below belong to their authors.
   Pokemon Legends Z-A - ALL MEGA EVOLUTION CRIES (Includes MEGA DIMENSION)
   video: <https://www.youtube.com/watch?v=RICm--Uowf8>
 
-## Pokédex sprites
-
-The Pokédex pictures (assets/dex/, every species #1–1025 and every form) are
-the front sprites of [pokeemerald-expansion](https://github.com/rh-hideout/pokeemerald-expansion),
-packed by tools/build_dex_atlas.py. That project credits them to these sprite
-resources and their artists:
-
-- [Sugimori Palettes and Sprites](https://www.pokecommunity.com/showthread.php?t=336945)
-- [DS Style Gen VI Sprites](https://www.pokecommunity.com/showthread.php?t=314422)
-- [Gen VII and Beyond Sprites](https://www.pokecommunity.com/showthread.php?t=368703)
-- the pokeemerald-expansion contributors (its CREDITS.md)
-
 ## Item sprites
 
 - **Gen 9 item sprites:** lichenprincess, Caruban, jinxed

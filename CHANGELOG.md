@@ -7,13 +7,6 @@ All notable changes to this mod are documented here, in
 
 ### Added
 
-- **Pokédex art for every species, animated.** The Pokédex had no pictures for #387–1025, and
-  with a battle-sprite mod installed every entry showed a battle-animation frame, often off
-  centre. Every Pokédex picture (#1–1025 and all 85 forms) now comes from this mod's own atlas of
-  pokeemerald-expansion's front sprites, centred in the cart's 64x64 box and alternating its two
-  frames (889 species have two; the rest are still). Battle sprites are untouched, and Spinda
-  keeps the game's (its spots depend on the Pokémon). Built by `tools/build_dex_atlas.py`; see
-  CREDITS.md.
 - **A FORMS page in the Pokédex.** A species with alternate forms shows each one's picture with
   its name underneath (Galarian, Wash, Ruby Cream, ...), the pictures shrinking to fit as there
   are more (Alcremie's 8 fit on one page). On Ruby/Sapphire/Emerald the entry's CANCEL tab reads

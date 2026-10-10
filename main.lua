@@ -72,8 +72,7 @@ return function(mod)
   local NationalUnlock = loadSibling(mod, "src/national_unlock.lua")
   local DexSync = loadSibling(mod, "src/dex_sync.lua")
   local DexRepeat = loadSibling(mod, "src/dex_repeat.lua")
-  -- optional: without them the Pokedex keeps the game's (or a sprite mod's) pictures and no FORMS
-  local DexArt = loadSibling(mod, "src/dex_art.lua")
+  -- optional: without it the Pokedex has no FORMS page
   local DexForms = loadSibling(mod, "src/dex_forms.lua")
   local Api = loadSibling(mod, "src/api.lua")
   if not (Species and Fixups and Items and ItemArt and CryArt and Shops and Art and ConditionalEvos and Clock and Counters and Breeding and DexPatch and NationalUnlock and DexSync and DexRepeat and Api) then return end
@@ -142,23 +141,23 @@ return function(mod)
     ItemArt.install(mod, read)
     -- after DexPatch, which replaces the RSE screen's functions (and its Host) with its copy's
     DexRepeat.install(require)
-    -- Pokedex art (src/dex_art.lua) and the FORMS page (src/dex_forms.lua): after DexPatch,
-    -- whose patches FORMS needs, and late enough to sit outside a battle-sprite mod's frontPic
-    if DexArt and DexForms then
-      local okArt, artErr = pcall(function()
-        local index = read("data/dex_atlas_index.lua")
-        if type(index) ~= "table" then return end
-        local formIdBySlot, dexBySlot = {}, {}
-        for _, f in ipairs(registeredForms) do formIdBySlot[f.slot] = f.id end
-        for _, r in ipairs(registered) do dexBySlot[r.slot] = r.dex end
+    -- the FORMS page (src/dex_forms.lua): after DexPatch, whose patches it needs. Each form's
+    -- picture is the Pokedex picture the game (or a sprite mod, g9-battle-sprites-gen3) gives
+    -- its slot; this mod ships no Pokedex art of its own
+    if DexForms then
+      local okForms, formsErr = pcall(function()
+        local slotById = {}
+        for _, f in ipairs(registeredForms) do slotById[f.id] = f.slot end
         local PokemonG3 = require("src.core.game3.pokemon")
-        local art = DexArt.new(DexArt.loveOptions(mod.path, index, mod.log))
-        DexArt.install({ art = art, keyOf = DexArt.keyResolver(formIdBySlot, function(slot)
-          return dexBySlot[slot] or PokemonG3.national(slot)
-        end) }, require)
-        DexForms.install({ byDex = DexForms.byDex(registeredForms), artFor = art.entry, log = mod.log }, require)
+        local function artFor(id)
+          local slot = slotById[id]
+          if not slot then return nil end
+          local ok, entry = pcall(PokemonG3.frontPic, slot, 0, false, 0, "dex")
+          return ok and type(entry) == "table" and entry.image and entry or nil
+        end
+        DexForms.install({ byDex = DexForms.byDex(registeredForms), artFor = artFor, log = mod.log }, require)
       end)
-      if not okArt then mod.log:warn("Pokedex art and FORMS are off: %s", tostring(artErr)) end
+      if not okForms then mod.log:warn("the Pokedex FORMS page is off: %s", tostring(formsErr)) end
     end
     DexSync.install(function()
       local okGet, value = pcall(function() return mod.options:get("register_owned") end)

@@ -14,9 +14,9 @@ return {
       "a FORMS page in the Pokedex for species with alternate forms (the CANCEL tab on Ruby/Sapphire/Emerald, a third page on FireRed/LeafGreen)",
     },
     known = {
-      "ships Pokedex pictures (animated, every species and form) and cries, but no battle sprites or party icons: pair with a sprite mod through setArtProvider",
+      "ships cries, but no battle sprites, Pokedex pictures or party icons: pair with a sprite mod through setArtProvider",
       "Fairy typing is dropped (Gen 3 has no Fairy type)",
-      "raises Dex.NATIONAL_MAX to 1025, so the National Pokedex list shows #387-1025, each with its own Pokedex picture",
+      "raises Dex.NATIONAL_MAX to 1025, so the National Pokedex list shows #387-1025",
       "Ruby/Sapphire never had move tutors at all (Emerald and FireRed/LeafGreen added them), so tutor compatibility there is correctly empty, not broken",
       "held-item + time-of-day evolutions (Happiny, Gligar, Sneasel) need a new engine trigger, not just an item, so no item mod can unlock them",
     },
