@@ -3,6 +3,51 @@
 All notable changes to this mod are documented here, in
 [keep a changelog](https://keepachangelog.com/en/1.1.0/) format.
 
+## [0.7.0] - 2026-10-09
+
+### Added
+
+- **Pokédex art for every species, animated.** The Pokédex had no pictures for #387–1025, and
+  with a battle-sprite mod installed every entry showed a battle-animation frame, often off
+  centre. Every Pokédex picture (#1–1025 and all 85 forms) now comes from this mod's own atlas of
+  pokeemerald-expansion's front sprites, centred in the cart's 64x64 box and alternating its two
+  frames (889 species have two; the rest are still). Battle sprites are untouched, and Spinda
+  keeps the game's (its spots depend on the Pokémon). Built by `tools/build_dex_atlas.py`; see
+  CREDITS.md.
+- **A FORMS page in the Pokédex.** A species with alternate forms shows each one's picture with
+  its name underneath (Galarian, Wash, Ruby Cream, ...), the pictures shrinking to fit as there
+  are more (Alcremie's 8 fit on one page). On Ruby/Sapphire/Emerald the entry's CANCEL tab reads
+  FORMS for those species: A on it opens the page, A or B closes it, and B still leaves the entry
+  as before. On FireRed/LeafGreen it is a third page after the size/area one: A goes on to it, B
+  steps back. Never offered on an undiscovered entry.
+
+- **Fast scrolling in the Pokédex.** Hold Up, Down, Left or Right to keep moving instead of
+  pressing again for every step: after a quarter of a second it repeats about 14 times a second,
+  and about 33 once held for over a second. On FireRed/LeafGreen this covers the lists, the
+  habitat pages and stepping between entries; on Ruby/Sapphire/Emerald (whose list already
+  scrolls while Up/Down is held) the Left/Right page jumps and stepping between entries.
+
+- **Undiscovered Pokédex entries can be opened, for another mod to show where they live.** A new
+  export, `setDexPeek(fn)`: when `fn(speciesSlot)` answers true for an unseen species, its entry
+  opens in a limited view on Ruby/Sapphire/Emerald and FireRed/LeafGreen. The number shows; the
+  name is dashes, the picture is the cart's "?" one, no cry plays, and the Cry and Size pages stay
+  closed (category, height, weight and description were already owned-only), but the AREA page
+  shows. Up/down on the entry steps to the next entry that can be opened, and the numerical list
+  runs on to the last one. With no fn registered nothing changes. Modern Spawns registers one for
+  every species it places under the current settings.
+- **FireRed/LeafGreen AREA page draws the Sevii Islands.** The engine drew only the Kanto map, so
+  a Pokémon found only on the islands read AREA UNKNOWN, cart species included. The page now draws
+  each island the species lives on in the cart's own layout (pokefirered: island windows beside
+  and below Kanto, everything shifted up when islands 4-7 are shown) with its markers. The cart
+  shows the islands you have unlocked; the engine does not track that, so the islands where the
+  species has a marker are shown.
+  Each island map has its name (ONE to SEVEN) above it, since the cart's island art is just a
+  route line and they are hard to tell apart.
+- These are more text patches on the engine's own Pokédex screens, applied the same way as the
+  list fix (`src/dex_patch.lua`). They are a separate set: if the engine's screen has changed and
+  they no longer match exactly, only this feature is skipped, with one warning; the list fix still
+  goes in.
+
 ## [0.6.2] - 2026-10-09
 
 ### Added

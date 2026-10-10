@@ -149,6 +149,17 @@ return function(mod, state)
     return copy(out)
   end
 
+  -- Pokedex peek (src/dex_patch.lua): fn(speciesSlot) -> true lets that UNSEEN species open in a
+  -- limited view (no name, picture, cry or size; its AREA page shows) on Ruby/Sapphire/Emerald
+  -- and FireRed/LeafGreen, and runs the numerical list on to it. nil turns it off. Added in
+  -- 0.7.0; test for it by presence. Returns false when the screens could not be patched.
+  exports.setDexPeek = function(fn)
+    local patch = state.dexPatch
+    if not (patch and patch.setPeek) then return false end
+    patch.setPeek(fn)
+    return true
+  end
+
   -- Art seam (src/art.lua): fn(speciesId, side, slot) -> PNG path | nil.
   exports.setArtProvider = function(fn)
     return state.art ~= nil and state.art.add(fn) or false

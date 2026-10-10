@@ -36,6 +36,13 @@ companion mods [below](#companion-mods-recommended).
   Kyurem Black. They show their normal Pokémon's Pokédex number. See [the forms guide](docs/pokemon/forms.md).
 - **Adds cries** for all 639 Pokémon, and for each form.
 - **Adds them to the Pokédex.** They appear in the National Pokédex list.
+- **Pokédex pictures for every species, animated.** Every Pokédex entry, #1–1025 and each form,
+  shows its sprite (from pokeemerald-expansion) centred and moving between its two frames.
+- **A FORMS page in the Pokédex** for species with alternate forms: each form's picture with its
+  name. On Ruby/Sapphire/Emerald choose FORMS (where CANCEL usually is); on FireRed/LeafGreen
+  press A on the size/area page.
+- **Fast Pokédex scrolling.** Hold a direction to keep moving through the Pokédex, faster the
+  longer you hold it, instead of pressing again for every entry.
 - **Keeps each Pokémon's real typing.** Gen 3 has no Fairy type, so a Fairy half is
   dropped (a pure Fairy becomes Normal). Togekiss stays Normal / Flying.
 
@@ -70,10 +77,10 @@ Pokémon will be missing or unseen.
 
 ### [G9 Battle Sprites (Gen 3)](https://github.com/poooooby/g9-battle-sprites-gen3)
 
-**Why you need it: it adds the pictures.** This mod adds the Pokémon but ships no
-artwork. G9 Battle Sprites (Gen 3) gives every new Pokémon animated battle
-sprites (front and back, normal and shiny), its Pokédex and summary picture, and
-a party-menu icon. The original 386 Pokémon keep the game's own sprites. It's a
+**Why you need it: it adds the battle pictures.** This mod draws the Pokédex
+pictures itself but ships no battle artwork. G9 Battle Sprites (Gen 3) gives every
+new Pokémon animated battle sprites (front and back, normal and shiny), its summary
+picture, and a party-menu icon. The original 386 Pokémon keep the game's own sprites. It's a
 Gen 3 rewrite of [g9-battle-sprites](https://github.com/tectorifter/g9-battle-sprites)
 by tectorifter.
 
@@ -86,6 +93,10 @@ own encounter rates and levels, so the game feels the same, just with a modern
 roster. It has options for how many generations can appear, how often rosters
 change, and rare legendaries, in **OPTIONS → MODS → Modern Spawns**. It needs this
 mod to know the new Pokémon on Gen 3 games.
+
+With Modern Spawns installed, the Pokédex can also open a species you haven't
+seen yet, as long as Modern Spawns puts it somewhere: scroll to its number and
+press A. Its name and picture stay hidden, but its AREA page shows where it lives.
 
 **Suggested setup:** install all three (National Dex Gen 3, G9 Battle Sprites (Gen
 3), Modern Spawns) and start a new game or load an existing save.
@@ -187,7 +198,8 @@ tutor data each time the engine loads it.
 
 ## Art
 
-This mod draws nothing. A sprite mod supplies pictures:
+This mod draws the Pokédex pictures itself (every species and form; see CREDITS.md). Battle
+sprites come from a sprite mod:
 
 ```lua
 local dex = mod:find("national_dex_gen3")
@@ -211,6 +223,7 @@ crops it to 64×64), or nil to let the next provider answer.
 | `slotOf(idOrDex)` | the running game's slot |
 | `evolutionsOf(idOrDex)` | national_dex's shape: `{ id, dex, evolvesFrom = { id, methods }, evolvesInto = { … } }`. Works for a cart species (#1–386) that gains a step into a new one, e.g. `evolutionsOf("RHYDON")`, not only for #387–1025. Lists a step whether or not its item currently resolves — this call doesn't say which |
 | `setArtProvider(fn)` | registers an art provider |
+| `setDexPeek(fn)` | `fn(speciesSlot) -> true` lets that **unseen** species open in the Pokédex in a limited view: the number shows, the name is dashes, the picture is the "?" one, no cry plays, and the Cry and Size pages stay closed, but its AREA page shows. The numerical list runs on to the last entry that can be opened. `nil` turns it off. Modern Spawns uses it so you can look up where an undiscovered species lives. Since 0.7.0 |
 
 ## Known limits
 
@@ -221,12 +234,11 @@ crops it to 64×64), or nil to let the next provider answer.
 - Cries play for every new species (`assets/cries/cries.pak`, from the Gen 9
   pack), by wrapping `Audio.playCry`. Not yet verified in-game; the cart's
   pitch/pan modes and the music duck are not reproduced.
-- **The native Pokédex list now includes #387–1025 in National mode, without
-  art.** This mod raises the engine's `Dex.NATIONAL_MAX` (386) to 1025 because a mod that enumerates species up to that
+- **The native Pokédex list now includes #387–1025 in National mode.** This mod raises the engine's `Dex.NATIONAL_MAX` (386) to 1025 because a mod that enumerates species up to that
   bound (Kanto Gear's wild-encounter guide builds its species cache that way)
   otherwise never sees a new species and silently drops its rows. The
-  Pokédex list uses the same bound, so without a sprite mod those entries
-  show missing or garbled pictures. On Emerald this mod also supplies a
+  Pokédex list uses the same bound; this mod draws those entries' pictures
+  itself. On Emerald this mod also supplies a
   Pokédex entry (category and size; no flavor text) for each new species,
   since a mod walking every National number asserts one exists. Seen/caught counting is unaffected
   (plain tables, no size limit).

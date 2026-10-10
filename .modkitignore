@@ -36,5 +36,10 @@ tests/editor_sprite_box_test.lua
 tests/known_move_test.lua
 tests/counters_test.lua
 tests/rse_dex_patch_test.lua
+tests/dex_peek_test.lua
+tests/dex_repeat_test.lua
 tests/national_unlock_test.lua
 tests/dex_sync_test.lua
+tools/build_dex_atlas.py
+tests/dex_art_test.lua
+tests/dex_forms_test.lua
