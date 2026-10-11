@@ -19,7 +19,7 @@ species with a different sheet.
 """
 
 FIRST_FORM_SLOT = 1090
-SLOT_CAP = 1200          # headroom above the last form
+SLOT_CAP = 1300          # headroom above the last form
 
 FORMS = [
     # regional
@@ -121,6 +121,50 @@ FORMS = [
     ("SINISTCHA_MASTERPIECE", "SINISTCHA", "MASTERPIECE", "sinistcha"),
     # Qwilfish's Hisuian look is the one that evolves (into Overqwil); the normal one never does
     ("QWILFISH_HISUI", "QWILFISH", "HISUI", "qwilfish-hisui"),
+    # regional forms of the cart's own species (#1-386): Alola, Galar, Hisui, Paldea
+    ("RATTATA_ALOLA", "RATTATA", "ALOLA", "rattata-alola"),
+    ("RATICATE_ALOLA", "RATICATE", "ALOLA", "raticate-alola"),
+    ("RAICHU_ALOLA", "RAICHU", "ALOLA", "raichu-alola"),
+    ("SANDSHREW_ALOLA", "SANDSHREW", "ALOLA", "sandshrew-alola"),
+    ("SANDSLASH_ALOLA", "SANDSLASH", "ALOLA", "sandslash-alola"),
+    ("VULPIX_ALOLA", "VULPIX", "ALOLA", "vulpix-alola"),
+    ("NINETALES_ALOLA", "NINETALES", "ALOLA", "ninetales-alola"),
+    ("DIGLETT_ALOLA", "DIGLETT", "ALOLA", "diglett-alola"),
+    ("DUGTRIO_ALOLA", "DUGTRIO", "ALOLA", "dugtrio-alola"),
+    ("MEOWTH_ALOLA", "MEOWTH", "ALOLA", "meowth-alola"),
+    ("PERSIAN_ALOLA", "PERSIAN", "ALOLA", "persian-alola"),
+    ("GEODUDE_ALOLA", "GEODUDE", "ALOLA", "geodude-alola"),
+    ("GRAVELER_ALOLA", "GRAVELER", "ALOLA", "graveler-alola"),
+    ("GOLEM_ALOLA", "GOLEM", "ALOLA", "golem-alola"),
+    ("GRIMER_ALOLA", "GRIMER", "ALOLA", "grimer-alola"),
+    ("MUK_ALOLA", "MUK", "ALOLA", "muk-alola"),
+    ("EXEGGUTOR_ALOLA", "EXEGGUTOR", "ALOLA", "exeggutor-alola"),
+    ("MAROWAK_ALOLA", "MAROWAK", "ALOLA", "marowak-alola"),
+    ("MEOWTH_GALAR", "MEOWTH", "GALAR", "meowth-galar"),
+    ("PONYTA_GALAR", "PONYTA", "GALAR", "ponyta-galar"),
+    ("RAPIDASH_GALAR", "RAPIDASH", "GALAR", "rapidash-galar"),
+    ("SLOWPOKE_GALAR", "SLOWPOKE", "GALAR", "slowpoke-galar"),
+    ("SLOWBRO_GALAR", "SLOWBRO", "GALAR", "slowbro-galar"),
+    ("SLOWKING_GALAR", "SLOWKING", "GALAR", "slowking-galar"),
+    ("FARFETCHD_GALAR", "FARFETCHD", "GALAR", "farfetchd-galar"),
+    ("WEEZING_GALAR", "WEEZING", "GALAR", "weezing-galar"),
+    ("MR_MIME_GALAR", "MR_MIME", "GALAR", "mr-mime-galar"),
+    ("ARTICUNO_GALAR", "ARTICUNO", "GALAR", "articuno-galar"),
+    ("ZAPDOS_GALAR", "ZAPDOS", "GALAR", "zapdos-galar"),
+    ("MOLTRES_GALAR", "MOLTRES", "GALAR", "moltres-galar"),
+    ("CORSOLA_GALAR", "CORSOLA", "GALAR", "corsola-galar"),
+    ("ZIGZAGOON_GALAR", "ZIGZAGOON", "GALAR", "zigzagoon-galar"),
+    ("LINOONE_GALAR", "LINOONE", "GALAR", "linoone-galar"),
+    ("GROWLITHE_HISUI", "GROWLITHE", "HISUI", "growlithe-hisui"),
+    ("ARCANINE_HISUI", "ARCANINE", "HISUI", "arcanine-hisui"),
+    ("VOLTORB_HISUI", "VOLTORB", "HISUI", "voltorb-hisui"),
+    ("ELECTRODE_HISUI", "ELECTRODE", "HISUI", "electrode-hisui"),
+    ("TYPHLOSION_HISUI", "TYPHLOSION", "HISUI", "typhlosion-hisui"),
+    ("SNEASEL_HISUI", "SNEASEL", "HISUI", "sneasel-hisui"),
+    ("WOOPER_PALDEA", "WOOPER", "PALDEA", "wooper-paldea"),
+    ("TAUROS_PALDEA_COMBAT_BREED", "TAUROS", "PALDEA_COMBAT_BREED", "tauros-paldea-combat-breed"),
+    ("TAUROS_PALDEA_BLAZE_BREED", "TAUROS", "PALDEA_BLAZE_BREED", "tauros-paldea-blaze-breed"),
+    ("TAUROS_PALDEA_AQUA_BREED", "TAUROS", "PALDEA_AQUA_BREED", "tauros-paldea-aqua-breed"),
 ]
 
 # The evolutions between FORMS that Gen 3 can express (level, item or trade).
@@ -134,6 +178,20 @@ FORM_EVOLUTIONS = [
     ("SHELLOS_EAST", "GASTRODON_EAST", "EVO_LEVEL", 30),
     ("SINISTEA_ANTIQUE", "POLTEAGEIST_ANTIQUE", "EVO_ITEM", "chipped-pot"),
     ("POLTCHAGEIST_ARTISAN", "SINISTCHA_MASTERPIECE", "EVO_ITEM", "masterpiece-teacup"),
+    # a regional form evolves into the same region's form of its evolution
+    ("SANDSHREW_ALOLA", "SANDSLASH_ALOLA", "EVO_ITEM", "ice-stone"),
+    ("VULPIX_ALOLA", "NINETALES_ALOLA", "EVO_ITEM", "ice-stone"),
+    ("DIGLETT_ALOLA", "DUGTRIO_ALOLA", "EVO_LEVEL", 26),
+    ("MEOWTH_ALOLA", "PERSIAN_ALOLA", "EVO_FRIENDSHIP", None),
+    ("GEODUDE_ALOLA", "GRAVELER_ALOLA", "EVO_LEVEL", 25),
+    ("GRAVELER_ALOLA", "GOLEM_ALOLA", "EVO_TRADE", None),
+    ("GRIMER_ALOLA", "MUK_ALOLA", "EVO_LEVEL", 38),
+    ("PONYTA_GALAR", "RAPIDASH_GALAR", "EVO_LEVEL", 40),
+    ("SLOWPOKE_GALAR", "SLOWBRO_GALAR", "EVO_ITEM", "galarica-cuff"),
+    ("SLOWPOKE_GALAR", "SLOWKING_GALAR", "EVO_ITEM", "galarica-wreath"),
+    ("ZIGZAGOON_GALAR", "LINOONE_GALAR", "EVO_LEVEL", 20),
+    ("GROWLITHE_HISUI", "ARCANINE_HISUI", "EVO_ITEM", "fire-stone"),
+    ("VOLTORB_HISUI", "ELECTRODE_HISUI", "EVO_ITEM", "leaf-stone"),
 ] + [
     (f"FLABEBE_{c}", f"FLOETTE_{c}", "EVO_LEVEL", 19) for c in ("YELLOW", "ORANGE", "BLUE", "WHITE")
 ] + [
@@ -157,6 +215,8 @@ FORM_EVOLUTIONS = [
 #   uses        { move = 99, count = 20 }: it has used that move that many times in battle
 #   steps       steps walked while it was first in the party
 #   coins       Coin Case coins needed (and spent on evolving)
+#   crits       critical hits it landed in its current (or last) battle (src/counters.lua)
+#   hpLost      HP it is down (max HP - current HP) when it levels up
 #   terrain     "plant", "sandy" or "trash": where its last battle was fought, see
 #               src/conditional_evos.lua (grass and water, sand / mountain / cave, buildings)
 #   priority    the highest-priority step whose conditions hold wins (default 0)
@@ -262,6 +322,21 @@ CONDITIONAL_EVOLUTIONS = {
 # needs a level to evolve at, so it is level 1: the recoil total is the real condition.
 FORM_CONDITIONAL_EVOLUTIONS = {
     "QWILFISH_HISUI": [{"method": "EVO_LEVEL", "level": 28, "target": 904}],     # -> Overqwil
+    # regional forms into a new species, or with a condition Gen 3 cannot check
+    "RATTATA_ALOLA": [{"method": "EVO_LEVEL", "level": 20, "targetForm": "RATICATE_ALOLA",
+                       "when": {"time": "night"}}],
+    "MEOWTH_GALAR": [{"method": "EVO_LEVEL", "level": 28, "target": 863}],      # -> Perrserker
+    "FARFETCHD_GALAR": [{"method": "EVO_LEVEL", "level": 1, "target": 865,      # -> Sirfetch'd
+                         "when": {"crits": 3}}],           # 3 critical hits in one battle
+    "MR_MIME_GALAR": [{"method": "EVO_LEVEL", "level": 42, "target": 866}],     # -> Mr. Rime
+    "CORSOLA_GALAR": [{"method": "EVO_LEVEL", "level": 38, "target": 864}],     # -> Cursola
+    "LINOONE_GALAR": [{"method": "EVO_LEVEL", "level": 35, "target": 862,       # -> Obstagoon
+                       "when": {"time": "night"}}],
+    "YAMASK_GALAR": [{"method": "EVO_LEVEL", "level": 1, "target": 867,         # -> Runerigus
+                      "when": {"hpLost": 49}}],            # 49+ HP down when it levels up
+    "SNEASEL_HISUI": [{"method": "EVO_LEVEL", "level": 1, "target": 903,        # -> Sneasler
+                       "when": {"hold": "razor-claw", "time": "day"}}],
+    "WOOPER_PALDEA": [{"method": "EVO_LEVEL", "level": 20, "target": 980}],     # -> Clodsire
     "BASCULIN_WHITE_STRIPED": [
         {"method": "EVO_LEVEL", "level": 1, "target": 902,
          "when": {"gender": "M", "recoil": 294}},
@@ -292,6 +367,6 @@ CONDITIONAL_CROSSGEN = [
     {"method": "EVO_LEVEL", "level": 31, "target": 899, "source": 234},  # Stantler -> Wyrdeer
 ]
 
-assert len(FORMS) == 85, len(FORMS)
+assert len(FORMS) == 128, len(FORMS)
 assert len({f[0] for f in FORMS}) == len(FORMS), "duplicate form id"
 assert FIRST_FORM_SLOT + len(FORMS) - 1 < SLOT_CAP

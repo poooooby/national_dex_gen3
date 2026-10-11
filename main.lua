@@ -28,6 +28,7 @@
 --   src/breeding.lua  a bred Manaphy lays a Phione egg
 --   src/national_unlock.lua  the "National Dex" option: the National Pokedex without the story unlock
 --   src/dex_sync.lua  the "Register Owned" option: party and PC Pokemon count as seen and caught when the Pokedex opens
+--   src/mon_anim.lua  a cart species' front animation for every species and form (none = softlock)
 --   src/dex_patch.lua Ruby/Sapphire/Emerald's Pokedex list past #386 (patched copy of the engine screen)
 --   src/clock.lua    the hour for those rules: the device clock, or on Ruby/Sapphire/Emerald
 --                    the player's choice of device or in-game (options.lua)
@@ -75,8 +76,9 @@ return function(mod)
   -- optional: without it the Pokedex has no FORMS page
   local DexForms = loadSibling(mod, "src/dex_forms.lua")
   local Editor = loadSibling(mod, "src/editor.lua")
+  local MonAnim = loadSibling(mod, "src/mon_anim.lua")
   local Api = loadSibling(mod, "src/api.lua")
-  if not (Species and Fixups and Items and ItemArt and CryArt and Shops and Art and ConditionalEvos and Clock and Counters and Breeding and DexPatch and NationalUnlock and DexSync and DexRepeat and Editor and Api) then return end
+  if not (Species and Fixups and Items and ItemArt and CryArt and Shops and Art and ConditionalEvos and Clock and Counters and Breeding and DexPatch and NationalUnlock and DexSync and DexRepeat and Editor and MonAnim and Api) then return end
 
   local read = function(path) return loadSibling(mod, path) end
 
@@ -134,6 +136,27 @@ return function(mod)
   -- its re-apply of registry data does not undo these repairs
   mod.events:on("game.ready", function(ev)
     fixups.install(ev and ev.game or mod.game)
+    -- every species and form gets a cart species' front animation (src/mon_anim.lua): without
+    -- one, a trainer leading with it stops the battle
+    do
+      local PokemonG3 = require("src.core.game3.pokemon")
+      local anim = { ours = {}, like = {}, dexOf = {} }
+      local slotOfId = {}
+      for _, r in ipairs(registered) do
+        anim.ours[r.slot], anim.dexOf[r.slot], slotOfId[r.id] = true, r.dex, r.slot
+      end
+      for _, f in ipairs(registeredForms) do
+        anim.ours[f.slot], anim.dexOf[f.slot] = true, f.baseDex or f.dex
+        anim.like[f.slot] = slotOfId[f.baseSpecies]
+          or (PokemonG3.speciesFromName and PokemonG3.speciesFromName(f.baseSpecies)) or nil
+      end
+      for _, b in ipairs(bridges) do
+        if b.targetSlot and b.sourceSlot and not anim.like[b.targetSlot] then
+          anim.like[b.targetSlot] = b.sourceSlot
+        end
+      end
+      MonAnim.install(anim, require)
+    end
     ConditionalEvos.installItemGender(bridges)
     NationalUnlock.install(function()
       local okGet, value = pcall(function() return mod.options:get("unlock_national") end)
@@ -208,10 +231,11 @@ return function(mod)
   local function collect(slot, step)
     local when = step.when
     if not (slot and when) then return end
-    if when.recoil or when.uses or when.steps or when.coins then
+    if when.recoil or when.uses or when.steps or when.coins or when.crits then
       local need = needs[slot] or {}
       need.recoil, need.uses = when.recoil or need.recoil, when.uses or need.uses
       need.steps, need.coins = when.steps or need.steps, when.coins or need.coins
+      need.crits = when.crits or need.crits
       needs[slot] = need
     end
   end

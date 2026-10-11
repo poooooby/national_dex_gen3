@@ -23,7 +23,7 @@ the forms that appear in the wild, or to evolve them.
 - [Original Pokémon with new evolutions](#original-pokémon-with-new-evolutions)
 - [Other evolutions worth knowing](#other-evolutions-worth-knowing)
 - [Evolutions adapted for Gen 3](#evolutions-adapted-for-gen-3)
-- [Evolutions that do not work](#evolutions-that-do-not-work)
+- [Regional forms of the original Pokémon](#regional-forms-of-the-original-pokémon)
 - [Alternate forms](#alternate-forms)
 
 **National Pokédex.** The added Pokémon only show in the National Pokédex, which the story
@@ -46,13 +46,13 @@ hour of the day, so anything that asks for "day" also works at dusk.
 ## Getting the evolution items
 
 Most of the newer evolutions need an item that none of the five games has. The mod adds
-36 of them and puts them on sale, by kind and by how far into the game the store is:
+38 of them and puts them on sale, by kind and by how far into the game the store is:
 
 | Kind of item | FireRed / LeafGreen | Ruby / Sapphire / Emerald |
 |---|---|---|
 | Stones, Sachet, Whipped Dream | Celadon Dept. Store 4F | Lilycove Dept. Store (supplements) |
 | Trade and held items (Protector, Electirizer, Magmarizer, Dubious Disc, Reaper Cloth, Razor Claw, Razor Fang, Oval Stone, Leader's Crest) | Celadon Dept. Store 5F | Lilycove Dept. Store (battle items) |
-| Apples, pots, sweets, scrolls | Six Island Mart | Mossdeep City Mart |
+| Apples, pots, sweets, scrolls, Galarica Cuff and Wreath | Six Island Mart | Mossdeep City Mart |
 | Armors, Metal Alloy, teacups | Six Island Mart | Sootopolis City Mart |
 | Black Augurite, Peat Block | Six Island Mart | Ever Grande City Pokémon League mart |
 
@@ -240,13 +240,42 @@ Family of Three are not modelled). Karrablast and Shelmet no longer need a trade
 **Phione and Manaphy.** Phione never evolves. A bred Manaphy (with a Ditto too) lays a Phione egg,
 as in the real games.
 
-## Evolutions that do not work
+## Regional forms of the original Pokémon
 
-These need a regional form of the original Pokémon that this mod does not include, so the
-Pokémon stays as it is: Meowth (Galar) → Perrserker, Farfetch'd (Galar) → Sirfetch'd,
-Mr. Mime (Galar) → Mr. Rime, Corsola (Galar) → Cursola, Linoone (Galar) → Obstagoon,
-Wooper (Paldea) → Clodsire and Sneasel (Hisui) → Sneasler. Yamask (Galar) → Runerigus is also
-out, since it needs taking damage in a specific place.
+The Alolan, Galarian, Hisuian and Paldean forms of the original Pokémon (#1–386) are Pokémon
+of their own. A regional form evolves into the same region's form of its evolution, and the
+original Pokémon is unchanged: an Alolan Sandshrew becomes an Alolan Sandslash, a normal
+Sandshrew still becomes a normal Sandslash.
+
+| Pokémon | Evolves into | How |
+|---|---|---|
+| Rattata (Alola) | Raticate (Alola) | Level 20, at night |
+| Sandshrew (Alola) | Sandslash (Alola) | Ice Stone |
+| Vulpix (Alola) | Ninetales (Alola) | Ice Stone |
+| Diglett (Alola) | Dugtrio (Alola) | Level 26 |
+| Meowth (Alola) | Persian (Alola) | High friendship |
+| Geodude (Alola) | Graveler (Alola) | Level 25 |
+| Graveler (Alola) | Golem (Alola) | Trade |
+| Grimer (Alola) | Muk (Alola) | Level 38 |
+| Meowth (Galar) | Perrserker | Level 28 |
+| Ponyta (Galar) | Rapidash (Galar) | Level 40 |
+| Slowpoke (Galar) | Slowbro (Galar) / Slowking (Galar) | Galarica Cuff / Galarica Wreath |
+| Farfetch'd (Galar) | Sirfetch'd | Land 3 critical hits in one battle (it evolves when the battle ends) |
+| Mr. Mime (Galar) | Mr. Rime | Level 42 |
+| Corsola (Galar) | Cursola | Level 38 |
+| Zigzagoon (Galar) | Linoone (Galar) | Level 20 |
+| Linoone (Galar) | Obstagoon | Level 35, at night |
+| Yamask (Galar) | Runerigus | Level up while down 49 HP or more |
+| Growlithe (Hisui) | Arcanine (Hisui) | Fire Stone |
+| Voltorb (Hisui) | Electrode (Hisui) | Leaf Stone |
+| Sneasel (Hisui) | Sneasler | Level up holding a Razor Claw, by day |
+| Wooper (Paldea) | Clodsire | Level 20 |
+
+Raichu, Exeggutor and Marowak (Alola), Weezing (Galar), Typhlosion (Hisui) and the three
+Paldean Tauros breeds have no evolution here: in the real games they come from an original
+Pokémon evolving in that region, and the regions are not part of these games. The Galarian
+birds (Articuno, Zapdos, Moltres) never evolve. Every regional form except the Galarian birds
+and Hisuian Typhlosion can turn up in the wild with Modern Spawns.
 
 ## Alternate forms
 
@@ -258,9 +287,9 @@ it seen or caught also marks Darumaka. Forms never add to the Pokédex totals.
 no way to change one Pokémon into a form. A form can come from:
 
 - **The wild**, with a spawn mod. [Modern Spawns](https://github.com/poooooby/g1r_modern_spawns)
-  places the forms that are wild Pokémon in the real games: the Galarian and Hisuian forms
-  (Darumaka, Darmanitan, Yamask, Stunfisk, Zorua, Zoroark, Lilligant, Braviary, Sliggoo, Goodra,
-  Avalugg) and the looks of Rotom, Oricorio, Pumpkaboo, Gourgeist, Wormadam, Lycanroc (Midnight),
+  places the forms that are wild Pokémon in the real games: the regional forms (see
+  [above](#regional-forms-of-the-original-pokémon), and Darumaka, Darmanitan, Yamask, Stunfisk,
+  Zorua, Zoroark, Lilligant, Braviary, Sliggoo, Goodra, Avalugg and Qwilfish) and the looks of Rotom, Oricorio, Pumpkaboo, Gourgeist, Wormadam, Lycanroc (Midnight),
   Flabébé, Floette, Florges, Alcremie, Shellos, Gastrodon, Basculin, Basculegion and the tea set.
   A species with several looks shows up as itself or one of them with equal odds. Any other mod
   that edits the spawn tables can add forms the same way.
@@ -286,14 +315,15 @@ Sinistea, the Artisan Poltchageist, the white-striped Basculin and the yellow, o
 white Flabébé) are all forms Modern Spawns can put in the wild, so you can catch them and evolve
 them. Only the forms that are not wild Pokémon need the save editor or a mod that places them:
 the Origin, Therian, Black/White Kyurem, Crowned, Ogerpon-mask and other item or fusion forms,
-Floette (Eternal), Bloodmoon Ursaluna, Hisuian Qwilfish and the Hisuian Samurott and
-Decidueye. (Dusk Lycanroc is not on that list: evolve a Rockruff at dusk.)
+Floette (Eternal), Bloodmoon Ursaluna, the Galarian birds, and the Hisuian Samurott, Decidueye
+and Typhlosion. (Dusk Lycanroc is not on that list: evolve a Rockruff at dusk.)
 
-**All 85 forms**
+**All 128 forms**
 
 | Group | Forms |
 |---|---|
 | Regional (13) | Darumaka (Galar), Darmanitan (Galar, Standard), Yamask (Galar), Stunfisk (Galar), Zorua (Hisui), Zoroark (Hisui), Samurott (Hisui), Lilligant (Hisui), Braviary (Hisui), Sliggoo (Hisui), Goodra (Hisui), Avalugg (Hisui), Decidueye (Hisui) |
+| Regional, of the original Pokémon (43) | Alola: Rattata, Raticate, Raichu, Sandshrew, Sandslash, Vulpix, Ninetales, Diglett, Dugtrio, Meowth, Persian, Geodude, Graveler, Golem, Grimer, Muk, Exeggutor, Marowak. Galar: Meowth, Ponyta, Rapidash, Slowpoke, Slowbro, Slowking, Farfetch'd, Weezing, Mr. Mime, Articuno, Zapdos, Moltres, Corsola, Zigzagoon, Linoone. Hisui: Growlithe, Arcanine, Voltorb, Electrode, Typhlosion, Sneasel. Paldea: Wooper, Tauros (Combat, Blaze, Aqua Breed) |
 | Permanent (19) | Wormadam (Sandy, Trash), Rotom (Heat, Wash, Frost, Fan, Mow), Oricorio (Pa'u, Pom-Pom, Sensu), Pumpkaboo and Gourgeist (small, large, super), Lycanroc (Midnight, Dusk), Urshifu (Rapid Strike) |
 | Alcremie (8) | Ruby Cream, Matcha Cream, Mint Cream, Lemon Cream, Salted Cream, Ruby Swirl, Caramel Swirl, Rainbow Swirl (Vanilla Cream is the normal Alcremie) |
 | Looks that stay one species (14) | Shellos and Gastrodon (East), Flabébé, Floette and Florges (yellow, orange, blue, white) |

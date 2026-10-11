@@ -56,11 +56,14 @@ ORDER = [
     # held-item evolutions (Sneasel, Gligar, Happiny, Bisharp) and Kubfu's scrolls
     "razor-claw", "razor-fang", "oval-stone", "leaders-crest",
     "scroll-of-darkness", "scroll-of-waters",
+    # Galarian Slowpoke -> Galarian Slowbro / Slowking
+    "galarica-cuff", "galarica-wreath",
 ]
 
 # Items whose icon is not in the pokesprite folder (--icons) but in the Gen 9 Pack's
 # Graphics/Items (--extra-icons, one 48x48 PNG per item, named without separators).
-EXTRA_ICON_FILES = {"leaders-crest": "LEADERSCREST", "scroll-of-darkness": "SCROLLOFDARKNESS",
+EXTRA_ICON_FILES = {"galarica-cuff": "GALARICACUFF", "galarica-wreath": "GALARICAWREATH",
+                    "leaders-crest": "LEADERSCREST", "scroll-of-darkness": "SCROLLOFDARKNESS",
                     "scroll-of-waters": "SCROLLOFWATERS"}
 
 # slug -> file stem when the pack spells the item differently (pokesprite
@@ -77,7 +80,8 @@ def engine_id(slug: str) -> str:
 NAME_OVERRIDES = {"leaders-crest": "Leader's Crest", "scroll-of-darkness": "Dark Scroll",
                   "scroll-of-waters": "Water Scroll", "auspicious-armor": "Auspic. Armor",
                   "malicious-armor": "Malic. Armor", "unremarkable-teacup": "Unremark. Cup",
-                  "masterpiece-teacup": "Masterpc. Cup", "strawberry-sweet": "Strawbry Sweet"}
+                  "masterpiece-teacup": "Masterpc. Cup", "strawberry-sweet": "Strawbry Sweet",
+                  "galarica-wreath": "Galar. Wreath"}
 
 
 # What the marts and the Bag show under each item: what the item is, in the cart's own style,
@@ -121,6 +125,8 @@ DESCRIPTIONS = {
     "leaders-crest": "A crest worn by\na leader.",
     "scroll-of-darkness": "A scroll of the\ndark style.",
     "scroll-of-waters": "A scroll of the\nwater style.",
+    "galarica-cuff": "A cuff woven from\nGalarica twigs.",
+    "galarica-wreath": "A wreath woven\nfrom Galarica\ntwigs.",
 }
 
 for _slug, _text in DESCRIPTIONS.items():

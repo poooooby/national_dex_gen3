@@ -45,6 +45,30 @@ All notable changes to this mod are documented here, in
 
 ### Added
 
+- **43 regional forms of the original Pokemon** (128 forms in all, slots 1175-1217; the form slot
+  cap is now 1300): Alolan Rattata, Raticate, Raichu, Sandshrew, Sandslash, Vulpix, Ninetales,
+  Diglett, Dugtrio, Meowth, Persian, Geodude, Graveler, Golem, Grimer, Muk, Exeggutor and Marowak;
+  Galarian Meowth, Ponyta, Rapidash, Slowpoke, Slowbro, Slowking, Farfetch'd, Weezing, Mr. Mime,
+  Articuno, Zapdos, Moltres, Corsola, Zigzagoon and Linoone; Hisuian Growlithe, Arcanine, Voltorb,
+  Electrode, Typhlosion and Sneasel; Paldean Wooper and the three Tauros breeds. Each evolves into
+  its own region's form (Alolan Sandshrew -> Alolan Sandslash) or into the species only that form
+  becomes: Perrserker, Sirfetch'd, Mr. Rime, Cursola, Obstagoon, Runerigus (Galarian Yamask, now
+  live), Sneasler, Clodsire. The original Pokemon are unchanged.
+- New `when` keys: `crits` (critical hits landed in one battle, counted by `src/counters.lua`)
+  and `hpLost` (HP down when it levels up).
+- **Galarica Cuff and Galarica Wreath** (38 items), sold with the apples.
+- Test: `regional_test.lua`.
+
+### Fixed
+
+- **A trainer leading with a Gen 4+ Pokemon no longer stops the battle** (Emerald: "mon_anim: no
+  port for anim function nil"). The cart's front-animation table ends at its own species, so
+  `src/mon_anim.lua` gives every species and form a cart species' entrance animation: a regional
+  form moves like its base, a new evolution of a cart species like that species (Rhyperior like
+  Rhydon), and the rest like a cart species of their primary type. Test: `mon_anim_test.lua`.
+- A form of an original Pokemon no longer takes that Pokemon's name in the species lookup (the
+  Galarian Mr. Mime answered for `MR_MIME`).
+
 - **Save editor support** on stock gen1recomp (`src/editor.lua`): when the save editor is the host,
   the mod hands the dataset the move and item modules before registering, and on `mods.loaded`
   applies the registries to the live tables and runs its own repairs (what a game does before and

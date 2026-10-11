@@ -115,7 +115,7 @@ do
   for _, f in ipairs(dofile("mods/national_dex_gen3/data/species/forms.lua")) do ids[#ids + 1] = f.id end
   for _, id in ipairs(ids) do compare(id) end
   T.eq(#wrong, 0, "every species and form has its full learnset in the editor (" .. table.concat(wrong, ", "):sub(1, 120) .. ")")
-  T.eq(checked, 639 + 85, "all 639 species and 85 forms checked")
+  T.eq(checked, 639 + 128, "all 639 species and 128 forms checked")
   T.eq(empty, 0, "none of them is empty")
   -- what the editor gives a new one: the last four moves it knows at that level
   local row = P.learnset(P.speciesFromName("TURTWIG"))

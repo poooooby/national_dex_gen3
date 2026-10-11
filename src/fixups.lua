@@ -25,7 +25,9 @@ local METHOD = {
 
 local function nameKeys(record)
   local keys = {}
-  for _, s in ipairs({ record.id, record.name }) do
+  -- a form shares its base's display name (MR. MIME); only its own id may name it, or a
+  -- form of a cart species would take that species' name (MR_MIME -> Galarian Mr. Mime)
+  for _, s in ipairs(record.form and { record.id } or { record.id, record.name }) do
     if type(s) == "string" then
       local k = s:upper():gsub("[%.']", ""):gsub("[%s%-]+", "_")
       keys[#keys + 1] = k

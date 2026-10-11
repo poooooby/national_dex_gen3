@@ -32,6 +32,16 @@ SWARM, ROCK_HEAD, DROUGHT, ARENA_TRAP, VITAL_SPIRIT, WHITE_SMOKE = 68, 69, 70, 7
 PURE_POWER, SHELL_ARMOR, AIR_LOCK = 74, 75, 77
 
 CLOSEST: dict[str, tuple[int, str]] = {
+    # regional forms of the cart's species
+    "quick-feet": (GUTS, "stronger when statused"),
+    "galvanize": (STATIC, "electric"),
+    "surge-surfer": (SWIFT_SWIM, "faster on a field"),
+    "tangling-hair": (STATIC, "punishes contact"),
+    "power-of-alchemy": (TRACE, "copies an ability"),
+    "neutralizing-gas": (CLOUD_NINE, "suppresses an effect"),
+    "pastel-veil": (IMMUNITY, "blocks poison"),
+    "quick-draw": (SPEED_BOOST, "acts sooner"),
+    "curious-medicine": (NATURAL_CURE, "heals"),
     "tangled-feet": (OWN_TEMPO, "confusion-related"),
     "motor-drive": (VOLT_ABSORB, "electric immunity"),
     "rivalry": (GUTS, "conditional damage boost"),

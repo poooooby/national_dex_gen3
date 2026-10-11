@@ -4,6 +4,8 @@
 --   recoilTaken  the recoil damage it has taken in battle, in total (Basculin: 294)
 --   moveUses     how often it has used a move (Primeape: Rage 20 times, for Rage Fist)
 --   stepsAsLead  steps walked while it was first in the party (Pawmo, Bramblin, Rellor: 1000)
+--   critsThisBattle  critical hits it landed in its current (or last) battle (Galarian
+--                Farfetch'd: 3), set back to 0 when a battle starts
 --
 -- plus the Coin Case coins Gimmighoul spends when it evolves.
 --
@@ -39,10 +41,11 @@ function Counters.met(mon, need)
     if (tonumber(uses[need.uses.move]) or 0) < need.uses.count then return false end
   end
   if need.steps and (tonumber(mon.stepsAsLead) or 0) < need.steps then return false end
+  if need.crits and (tonumber(mon.critsThisBattle) or 0) < need.crits then return false end
   return true
 end
 
--- needs: { [species slot] = { recoil?, uses?, steps?, coins? } }, from the evolution steps
+-- needs: { [species slot] = { recoil?, uses?, steps?, crits?, coins? } }, from the evolution steps
 function Counters.install(mod, needs)
   if next(needs) == nil then return end
   local okP, Pokemon = pcall(require, "src.core.game3.pokemon")
@@ -67,6 +70,10 @@ function Counters.install(mod, needs)
 
   mod.events:on("battle.damage_dealt", function(ev)
     local mon, need, index, slot = ours(ev)
+    if need and need.crits and ev.crit then
+      mon.critsThisBattle = (tonumber(mon.critsThisBattle) or 0) + 1
+      if Counters.met(mon, need) then mark(index) end
+    end
     if not (need and need.recoil) then return end
     local recoil = Counters.recoil(ev.move and ev.move.effect, ev.damage)
     if recoil == 0 then return end
@@ -81,6 +88,14 @@ function Counters.install(mod, needs)
     mon.moveUses = type(mon.moveUses) == "table" and mon.moveUses or {}
     mon.moveUses[need.uses.move] = (tonumber(mon.moveUses[need.uses.move]) or 0) + 1
     if Counters.met(mon, need) then mark(index) end
+  end)
+
+  -- critical hits are counted per battle
+  mod.events:on("battle.started", function(ev)
+    local party = ev and ev.battle and ev.battle.playerParty
+    for _, mon in ipairs(type(party) == "table" and party or {}) do
+      if type(mon) == "table" and mon.critsThisBattle then mon.critsThisBattle = 0 end
+    end
   end)
 
   -- steps walked while it is first in the party (it follows you)

@@ -11,7 +11,7 @@
 
 local Species = {}
 
-local SLOT_CAP = 1200 -- the last base species is slot 1089 (dex 1025 + 64); forms follow at
+local SLOT_CAP = 1300 -- the last base species is slot 1089 (dex 1025 + 64); forms follow at
                       -- 1090+ (tools/form_list.py), with headroom
 
 local function normalize(name)

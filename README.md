@@ -19,9 +19,10 @@ Paldea Pokémon can live in Kanto and Hoenn.
   battle with them. Each has its stats, typing, Pokédex entry and cry.
 - 🔄 **New evolutions for old favourites:** Rhydon into Rhyperior, Magneton into Magnezone,
   Nosepass into Probopass, Scyther into Kleavor, Togetic into Togekiss and more.
-- 💎 **The items to do it:** Dusk Stone, Protector, Dubious Disc and 16 more evolution items,
+- 💎 **The items to do it:** Dusk Stone, Protector, Dubious Disc and 35 more evolution items,
   sold in department stores and late-game marts.
-- 🌍 **85 alternate forms:** Galarian and Hisuian forms, Rotom's appliances, Wormadam's cloaks,
+- 🌍 **128 alternate forms:** Alolan, Galarian, Hisuian and Paldean forms (of the originals too,
+  each evolving into its own region's form), Rotom's appliances, Wormadam's cloaks,
   Oricorio's styles, Alcremie's creams, Giratina Origin, Kyurem Black and many more, each a
   Pokémon of its own.
 
@@ -84,7 +85,7 @@ This mod adds the Pokémon. Two companions bring them to life:
   with it.
 - [Added Pokémon](docs/pokemon.md): all 639 by generation, with typing, ability and level-up
   moves.
-- [Alternate forms](docs/pokemon/forms.md): the 85 forms.
+- [Alternate forms](docs/pokemon/forms.md): the 128 forms.
 - [Evolutions and forms](docs/evolutions-and-forms.md): special evolutions, which ones don't
   work, and how to get each form.
 

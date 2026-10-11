@@ -40,5 +40,7 @@ return {
     [933] = { x = 24, y = 48 }, -- leaders-crest
     [934] = { x = 48, y = 48 }, -- scroll-of-darkness
     [935] = { x = 72, y = 48 }, -- scroll-of-waters
+    [936] = { x = 96, y = 48 }, -- galarica-cuff
+    [937] = { x = 120, y = 48 }, -- galarica-wreath
   },
 }

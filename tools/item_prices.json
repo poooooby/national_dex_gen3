@@ -705,5 +705,13 @@
     "sell": null
    }
   ]
+ },
+ "galarica-cuff": {
+  "title": "Galarica Cuff",
+  "prices": []
+ },
+ "galarica-wreath": {
+  "title": "Galarica Wreath",
+  "prices": []
  }
 }

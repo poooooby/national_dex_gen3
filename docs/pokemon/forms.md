@@ -1,6 +1,6 @@
 # Alternate forms
 
-National Dex Gen 3 adds 85 alternate forms. Each is a Pokémon of its own with its own
+National Dex Gen 3 adds 128 alternate forms. Each is a Pokémon of its own with its own
 stats, typing, ability and moves, and shows its base Pokémon's Pokédex number. Seeing or catching a
 form also counts the base Pokémon in your Pokédex.
 
@@ -525,4 +525,262 @@ form also counts the base Pokémon in your Pokédex.
 - Type: Dark / Poison
 - Ability: Poison Point / Swift Swim
 - Learnset: 1 Tackle · 1 Poison Sting · 4 Harden · 8 Bite · 12 Silver Wind · 16 Minimize · 20 Spikes · 24 Dive · 28 Sludge · 32 Pin Missile · 36 Acid Armor · 40 Stockpile · 40 Spit Up · 44 Toxic · 48 Crunch · 52 Focus Energy · 56 Destiny Bond
+
+### Rattata (Alola) — #19
+
+- Type: Dark / Normal
+- Ability: Pickup / Hustle
+- Learnset: 1 Tackle · 1 Tail Whip · 4 Quick Attack · 7 Focus Energy · 10 Bite · 13 Pursuit · 16 Hyper Fang · 19 Faint Attack · 22 Crunch · 25 Thief · 28 Super Fang · 31 Double-Edge · 34 Endeavor
+
+### Raticate (Alola) — #20
+
+- Type: Dark / Normal
+- Ability: Pickup / Hustle
+- Learnset: 1 Swords Dance · 1 Tackle · 1 Tail Whip · 1 Quick Attack · 1 Focus Energy · 1 Scary Face · 4 Quick Attack · 7 Focus Energy · 10 Bite · 13 Pursuit · 16 Hyper Fang · 19 Faint Attack · 24 Crunch · 29 Thief · 34 Super Fang · 39 Double-Edge · 44 Endeavor
+
+### Raichu (Alola) — #26
+
+- Type: Electric / Psychic
+- Ability: Swift Swim
+- Learnset: 1 Tail Whip · 1 Growl · 1 Thundershock · 1 Thunder Wave · 1 Thunder · 1 Psychic · 1 Agility · 1 Quick Attack · 1 Double Team · 1 Light Screen · 1 Sweet Kiss · 1 Charm · 1 Spark · 1 Iron Tail · 1 Tackle · 1 Fake Tears · 1 Thunderpunch · 1 Shock Wave · 1 Minimize · 1 Volt Tackle · 5 Thunderbolt
+
+### Sandshrew (Alola) — #27
+
+- Type: Ice / Steel
+- Ability: Sand Veil
+- Learnset: 1 Scratch · 1 Defense Curl · 3 Mist · 6 Powder Snow · 9 Rollout · 12 Fury Cutter · 15 Rapid Spin · 18 Metal Claw · 21 Swift · 24 Fury Swipes · 27 Iron Defense · 30 Slash · 33 Steel Wing · 36 Meteor Mash · 39 Swords Dance · 42 Hail · 45 Blizzard
+
+### Sandslash (Alola) — #28
+
+- Type: Ice / Steel
+- Ability: Sand Veil
+- Learnset: 1 Swords Dance · 1 Slash · 1 Metal Claw · 1 Icicle Spear · 1 Ice Beam
+
+### Vulpix (Alola) — #37
+
+- Type: Ice
+- Ability: Sand Veil
+- Learnset: 1 Tail Whip · 1 Powder Snow · 4 Disable · 8 Ice Ball · 12 Spite · 16 Icy Wind · 20 Confuse Ray · 24 Aurora Beam · 28 Extrasensory · 32 Ice Beam · 36 Imprison · 40 Mist · 44 Haze · 48 Ice Punch · 52 Blizzard
+
+### Ninetales (Alola) — #38
+
+- Type: Ice
+- Ability: Sand Veil
+- Learnset: 1 Tail Whip · 1 Blizzard · 1 Icy Wind · 1 Imprison · 1 Razor Wind
+
+### Diglett (Alola) — #50
+
+- Type: Ground / Steel
+- Ability: Sand Veil / Static
+- Learnset: 1 Sand-Attack · 1 Metal Claw · 4 Growl · 8 Astonish · 12 Mud-Slap · 16 Mud Shot · 20 Faint Attack · 24 Steel Wing · 28 Sandstorm · 32 Dig · 36 Bone Club · 40 Earthquake · 44 Fissure
+
+### Dugtrio (Alola) — #51
+
+- Type: Ground / Steel
+- Ability: Sand Veil / Static
+- Learnset: 1 Sand-Attack · 1 Growl · 1 Tri Attack · 1 Metal Claw · 1 Astonish · 1 Sand Tomb · 1 Faint Attack · 12 Mud-Slap · 16 Mud Shot · 20 Bite · 24 Steel Wing · 30 Sandstorm · 36 Dig · 42 Bone Club · 48 Earthquake · 54 Fissure
+
+### Meowth (Alola) — #52
+
+- Type: Dark
+- Ability: Pickup / Hustle
+- Learnset: 1 Growl · 1 Fake Out · 4 Tackle · 8 Scratch · 12 Pay Day · 16 Bite · 20 Taunt · 24 Faint Attack · 29 Fury Swipes · 32 Screech · 36 Crunch · 40 Fake Tears · 44 Crush Claw
+
+### Meowth (Galar) — #52
+
+- Type: Steel
+- Ability: Pickup / Hustle
+- Learnset: 1 Growl · 1 Fake Out · 4 Fake Tears · 8 Scratch · 12 Pay Day · 16 Metal Claw · 20 Taunt · 24 Swagger · 29 Fury Swipes · 32 Screech · 36 Slash · 40 Metal Sound · 44 Thrash
+
+### Persian (Alola) — #53
+
+- Type: Dark
+- Ability: Marvel Scale / Hustle
+- Learnset: 1 Scratch · 1 Growl · 1 Fake Out · 1 Tackle · 1 Rock Slide · 1 Torment · 1 Flatter · 12 Pay Day · 16 Bite · 20 Taunt · 24 Faint Attack · 31 Fury Swipes · 36 Screech · 42 Crunch · 48 Fake Tears · 54 Crush Claw
+
+### Geodude (Alola) — #74
+
+- Type: Rock / Electric
+- Ability: Magnet Pull / Sturdy
+- Learnset: 1 Tackle · 1 Defense Curl · 4 Charge · 6 Sandstorm · 10 Rollout · 12 Spark · 16 Rock Throw · 18 Rock Tomb · 22 Thunderpunch · 24 Selfdestruct · 28 Reflect · 30 Rock Blast · 34 Thunderbolt · 36 Explosion · 40 Double-Edge · 42 Rock Slide
+
+### Graveler (Alola) — #75
+
+- Type: Rock / Electric
+- Ability: Magnet Pull / Sturdy
+- Learnset: 1 Tackle · 1 Defense Curl · 1 Charge · 1 Sandstorm · 10 Rollout · 12 Spark · 16 Rock Throw · 18 Rock Tomb · 22 Thunderpunch · 24 Selfdestruct · 30 Reflect · 34 Rock Blast · 40 Thunderbolt · 44 Explosion · 50 Double-Edge · 54 Rock Slide
+
+### Golem (Alola) — #76
+
+- Type: Rock / Electric
+- Ability: Magnet Pull / Sturdy
+- Learnset: 1 Tackle · 1 Defense Curl · 1 Charge · 1 Sandstorm · 1 Metal Claw · 12 Spark · 16 Rock Throw · 18 Rock Tomb · 22 Thunderpunch · 24 Selfdestruct · 30 Reflect · 34 Rock Blast · 40 Thunderbolt · 44 Explosion · 50 Double-Edge · 54 Rock Slide
+
+### Grimer (Alola) — #88
+
+- Type: Poison / Dark
+- Ability: Poison Point / Pickup
+- Learnset: 1 Pound · 1 Poison Gas · 4 Harden · 7 Bite · 12 Disable · 15 Acid · 18 Poison Fang · 21 Minimize · 26 Toxic · 29 Knock Off · 32 Crunch · 37 Screech · 40 Sludge Bomb · 43 Acid Armor · 46 Sludge · 48 Memento
+
+### Muk (Alola) — #89
+
+- Type: Poison / Dark
+- Ability: Poison Point / Pickup
+- Learnset: 1 Pound · 1 Bite · 1 Harden · 1 Poison Gas · 12 Disable · 15 Acid · 18 Poison Fang · 21 Minimize · 26 Toxic · 29 Knock Off · 32 Crunch · 37 Screech · 40 Sludge Bomb · 46 Acid Armor · 52 Sludge · 57 Memento
+
+### Exeggutor (Alola) — #103
+
+- Type: Grass / Dragon
+- Ability: Keen Eye
+- Learnset: 1 Absorb · 1 Mega Drain · 1 Leech Seed · 1 Solarbeam · 1 Confusion · 1 Hypnosis · 1 Reflect · 1 Giga Drain · 1 Synthesis · 1 Uproar · 1 Extrasensory · 1 Bullet Seed · 1 Aromatherapy · 1 Leaf Blade · 1 Frenzy Plant · 1 Petal Dance · 1 Psychic · 1 Outrage
+
+### Marowak (Alola) — #105
+
+- Type: Fire / Ghost
+- Ability: Effect Spore / Lightningrod
+- Learnset: 1 Headbutt · 1 Double-Edge · 1 Tail Whip · 1 Growl · 1 Fire Spin · 1 Focus Energy · 1 Mud-Slap · 1 False Swipe · 1 Slash · 1 Shadow Ball · 12 Flame Wheel · 16 Shadow Punch · 20 Thief · 24 Dig · 31 Bone Rush · 36 Will-O-Wisp · 42 Endeavor · 48 Bonemerang · 54 Thrash · 60 Fire Blast
+
+### Ponyta (Galar) — #77
+
+- Type: Psychic
+- Ability: Run Away / Immunity
+- Learnset: 1 Tackle · 1 Growl · 5 Tail Whip · 10 Confusion · 15 Pound · 20 Agility · 25 Psybeam · 30 Stomp · 35 Rest · 41 Take Down · 45 Razor Wind · 50 Psychic · 55 Trick
+
+### Rapidash (Galar) — #78
+
+- Type: Psychic
+- Ability: Run Away / Immunity
+- Learnset: 1 Tackle · 1 Tail Whip · 1 Growl · 1 Confusion · 1 Quick Attack · 1 Megahorn · 1 Extrasensory · 15 Pound · 20 Agility · 25 Psybeam · 30 Stomp · 35 Rest · 43 Take Down · 49 Razor Wind · 56 Psychic · 63 Trick
+
+### Slowpoke (Galar) — #79
+
+- Type: Psychic
+- Ability: Pickup / Own Tempo
+- Learnset: 1 Tackle · 1 Curse · 3 Growl · 6 Acid · 9 Yawn · 12 Confusion · 15 Disable · 18 Water Pulse · 21 Headbutt · 24 Extrasensory · 27 Amnesia · 30 Surf · 33 Slack Off · 36 Psychic · 39 Psych Up · 42 Rain Dance · 45 Rest
+
+### Slowbro (Galar) — #80
+
+- Type: Poison / Psychic
+- Ability: Speed Boost / Own Tempo
+- Learnset: 1 Tackle · 1 Growl · 1 Acid · 1 Withdraw · 1 Curse · 1 Sludge Bomb · 9 Yawn · 12 Confusion · 15 Disable · 18 Water Pulse · 21 Headbutt · 24 Extrasensory · 27 Amnesia · 30 Surf · 33 Slack Off · 36 Psychic · 39 Psych Up · 42 Rain Dance · 45 Rest
+
+### Slowking (Galar) — #199
+
+- Type: Poison / Psychic
+- Ability: Natural Cure / Own Tempo
+- Learnset: 1 Tackle · 1 Growl · 1 Acid · 1 Curse · 1 Swagger · 1 Rock Slide · 1 Fake Tears · 1 Extrasensory · 9 Yawn · 12 Confusion · 15 Disable · 18 Water Pulse · 21 Headbutt · 24 Psywave · 27 Amnesia · 30 Surf · 33 Slack Off · 36 Psychic · 39 Psych Up · 42 Rain Dance · 45 Rest
+
+### Farfetchd (Galar) — #83
+
+- Type: Fighting
+- Ability: Inner Focus
+- Learnset: 1 Sand-Attack · 1 Peck · 5 Leer · 10 Fury Cutter · 15 Rock Smash · 20 Faint Attack · 25 Detect · 30 Knock Off · 35 Featherdance · 40 Brick Break · 45 Swords Dance · 50 Slam · 55 Leaf Blade · 60 Reversal · 65 Sky Attack
+
+### Weezing (Galar) — #110
+
+- Type: Poison
+- Ability: Levitate / Cloud Nine
+- Learnset: 1 Tackle · 1 Smokescreen · 1 Haze · 1 Smog · 1 Poison Gas · 1 Heat Wave · 1 Featherdance · 1 Snore · 1 Minimize · 1 Body Slam · 12 Poison Fang · 16 Faint Attack · 20 Sludge · 24 Pound · 28 Selfdestruct · 32 Sludge Bomb · 38 Toxic · 44 Poison Tail · 50 Explosion · 56 Memento · 62 Destiny Bond · 68 Softboiled
+
+### Mr Mime (Galar) — #122
+
+- Type: Ice / Psychic
+- Ability: Vital Spirit / Own Tempo
+- Learnset: 1 Pound · 1 Mimic · 1 Light Screen · 1 Reflect · 1 Protect · 1 Safeguard · 1 Baton Pass · 1 Encore · 1 Rapid Spin · 1 Role Play · 1 Recycle · 1 Pain Split · 1 Powder Snow · 1 Softboiled · 1 Razor Wind · 12 Confusion · 16 Magic Coat · 20 Icy Wind · 24 Double Kick · 28 Psybeam · 32 Hypnosis · 36 Mirror Coat · 40 Faint Attack · 44 Ice Punch · 48 Psychic · 52 Teeter Dance
+
+### Articuno (Galar) — #144
+
+- Type: Psychic / Flying
+- Ability: White Smoke
+- Learnset: 1 Gust · 5 Confusion · 10 Reflect · 15 Hypnosis · 20 Agility · 25 Ancientpower · 30 Featherdance · 35 Extrasensory · 40 Recover · 45 Psychic · 50 Dream Eater · 55 Bounce · 60 Double Team · 65 Future Sight · 70 Rest
+
+### Zapdos (Galar) — #145
+
+- Type: Fighting / Flying
+- Ability: White Smoke
+- Learnset: 1 Peck · 1 Focus Energy · 5 Rock Smash · 10 Light Screen · 15 Aerial Ace · 20 Agility · 25 Ancientpower · 30 Brick Break · 35 Drill Peck · 40 Reflect · 45 Sky Uppercut · 50 Bulk Up · 55 Counter · 60 Detect · 65 Cross Chop · 70 Reversal
+
+### Moltres (Galar) — #146
+
+- Type: Dark / Flying
+- Ability: Guts
+- Learnset: 1 Gust · 1 Leer · 5 Faint Attack · 10 Safeguard · 15 Wing Attack · 20 Agility · 25 Ancientpower · 30 Bite · 35 Fly · 40 Belly Drum · 45 Crunch · 50 Fake Tears · 55 Bounce · 60 Endure · 65 Memento · 70 Sky Attack
+
+### Corsola (Galar) — #222
+
+- Type: Ghost
+- Ability: Sturdy
+- Learnset: 1 Tackle · 1 Harden · 5 Astonish · 10 Disable · 15 Spite · 20 Ancientpower · 25 Shadow Punch · 30 Curse · 35 Aromatherapy · 40 Rock Slide · 45 Night Shade · 50 Grudge · 55 Mirror Coat
+
+### Zigzagoon (Galar) — #263
+
+- Type: Dark / Normal
+- Ability: Pickup
+- Learnset: 1 Tackle · 1 Leer · 3 Sand-Attack · 6 Lick · 9 Crunch · 12 Headbutt · 15 Swords Dance · 18 Pin Missile · 21 Rest · 24 Take Down · 27 Scary Face · 30 Counter · 33 Taunt · 36 Double-Edge
+
+### Linoone (Galar) — #264
+
+- Type: Dark / Normal
+- Ability: Pickup
+- Learnset: 1 Sand-Attack · 1 Tackle · 1 Pin Missile · 1 Leer · 1 Lick · 1 Faint Attack · 1 Torment · 1 Swords Dance · 9 Crunch · 12 Headbutt · 15 Fake Tears · 18 Fury Swipes · 23 Rest · 28 Take Down · 33 Scary Face · 38 Counter · 43 Taunt · 48 Double-Edge
+
+### Growlithe (Hisui) — #58
+
+- Type: Fire / Rock
+- Ability: Intimidate / Flash Fire
+- Learnset: 1 Leer · 1 Ember · 4 Howl · 8 Bite · 12 Flame Wheel · 16 Helping Hand · 24 Fire Punch · 28 Headbutt · 32 Crunch · 36 Take Down · 40 Flamethrower · 44 Roar · 48 Rock Slide · 52 Reversal · 56 Fire Blast
+
+### Arcanine (Hisui) — #59
+
+- Type: Fire / Rock
+- Ability: Intimidate / Flash Fire
+- Learnset: 1 Take Down · 1 Leer · 1 Bite · 1 Roar · 1 Ember · 1 Rock Throw · 1 Agility · 1 Rock Slide · 1 Flame Wheel · 1 Reversal · 1 Crunch · 1 Extremespeed · 1 Helping Hand · 1 Howl · 1 Fire Blast · 1 Fire Punch · 1 Headbutt · 5 Flamethrower · 64 Overheat
+
+### Voltorb (Hisui) — #100
+
+- Type: Electric / Grass
+- Ability: Soundproof / Static
+- Learnset: 1 Tackle · 1 Charge · 4 Thundershock · 6 Stun Spore · 9 Bullet Seed · 11 Rollout · 13 Screech · 16 Shock Wave · 20 Swift · 22 Thunderpunch · 26 Selfdestruct · 29 Leaf Blade · 34 Petal Dance · 34 Thunderbolt · 41 Explosion · 46 Metal Claw · 50 Spore
+
+### Electrode (Hisui) — #101
+
+- Type: Electric / Grass
+- Ability: Soundproof / Static
+- Learnset: 1 Tackle · 1 Charge · 1 Frenzy Plant · 4 Thundershock · 6 Stun Spore · 9 Bullet Seed · 11 Rollout · 13 Screech · 16 Shock Wave · 20 Swift · 22 Thunderpunch · 26 Selfdestruct · 29 Leaf Blade · 34 Petal Dance · 34 Thunderbolt · 41 Explosion · 46 Metal Claw · 50 Spore
+
+### Typhlosion (Hisui) — #157
+
+- Type: Fire / Ghost
+- Ability: Blaze
+- Learnset: 1 Tackle · 1 Double-Edge · 1 Leer · 1 Ember · 1 Smokescreen · 1 Eruption · 1 Metal Claw · 1 Shadow Punch · 13 Quick Attack · 20 Flame Wheel · 24 Defense Curl · 31 Swift · 35 Fire Punch · 43 Blaze Kick · 48 Flamethrower · 56 Heat Wave · 61 Rollout · 74 Overheat
+
+### Sneasel (Hisui) — #215
+
+- Type: Fighting / Poison
+- Ability: Inner Focus / Keen Eye
+- Learnset: 1 Scratch · 1 Leer · 1 Rock Smash · 6 Taunt · 12 Quick Attack · 18 Metal Claw · 24 Sludge Bomb · 30 Brick Break · 36 Fake Tears · 42 Slash · 48 Agility · 54 Screech · 60 Cross Chop
+
+### Wooper (Paldea) — #194
+
+- Type: Poison / Ground
+- Ability: Poison Point / Water Absorb
+- Learnset: 1 Tail Whip · 1 Mud Shot · 4 Tackle · 8 Poison Tail · 12 Acid Armor · 16 Slam · 21 Yawn · 24 Sludge Bomb · 28 Sludge · 32 Amnesia · 36 Toxic · 40 Earthquake
+
+### Tauros (Paldea Combat Breed) — #128
+
+- Type: Fighting
+- Ability: Intimidate / Guts
+- Learnset: 1 Tackle · 1 Tail Whip · 5 Swords Dance · 10 Double Kick · 15 Faint Attack · 20 Headbutt · 25 Scary Face · 30 Extrasensory · 35 Hyper Voice · 40 Rest · 45 Swagger · 50 Thrash · 55 Double-Edge · 60 Cross Chop
+
+### Tauros (Paldea Blaze Breed) — #128
+
+- Type: Fighting / Fire
+- Ability: Intimidate / Guts
+- Learnset: 1 Tackle · 1 Tail Whip · 5 Swords Dance · 10 Double Kick · 15 Flame Wheel · 20 Headbutt · 25 Scary Face · 30 Extrasensory · 35 Hyper Voice · 40 Rest · 45 Swagger · 50 Thrash · 55 Fire Blast · 60 Cross Chop
+
+### Tauros (Paldea Aqua Breed) — #128
+
+- Type: Fighting / Water
+- Ability: Intimidate / Guts
+- Learnset: 1 Tackle · 1 Tail Whip · 5 Swords Dance · 10 Double Kick · 15 Water Gun · 20 Headbutt · 25 Scary Face · 30 Extrasensory · 35 Hyper Voice · 40 Rest · 45 Swagger · 50 Thrash · 55 Hydro Pump · 60 Cross Chop
 

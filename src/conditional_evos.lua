@@ -18,6 +18,8 @@
 --               stable "1 in n" that gives the same answer on every check
 --   gender      "F" or "M": the Pokemon's gender, from its personality
 --   recoil      the recoil damage the Pokemon has taken in battle, in total (src/counters.lua)
+--   crits       critical hits it landed in its current (or last) battle (src/counters.lua)
+--   hpLost      HP it is down (max HP - current HP) when it levels up
 --   knows       a list of move ids: the Pokemon knows any one of them
 --   party       { species = "REMORAID" } or { type = "DARK" }: another Pokemon in the party
 --   weather     "rain": the overworld weather is rain, a thunderstorm or a downpour
@@ -124,6 +126,8 @@ function ConditionalEvos.qualifies(step, facts, itemIndex)
   if when.gender and facts.gender ~= when.gender then return false end
   if when.terrain and facts.terrain ~= when.terrain then return false end
   if when.recoil and facts.recoil < when.recoil then return false end
+  if when.crits and (facts.crits or 0) < when.crits then return false end
+  if when.hpLost and (facts.hpLost or 0) < when.hpLost then return false end
   if when.pick then
     local upper = math.floor(facts.personality / 65536) % 65536
     if upper % when.pick[2] ~= when.pick[1] then return false end
@@ -247,6 +251,8 @@ function ConditionalEvos.install(mod, species, itemIndex, opts)
       gender = okP and Pokemon.gender and Pokemon.gender(slot, personality) or nil,
       terrain = ConditionalEvos.terrain(),
       recoil = tonumber(mon.recoilTaken) or 0,
+      crits = tonumber(mon.critsThisBattle) or 0,
+      hpLost = math.max(0, (tonumber(mon.maxHp or mon.maxhp) or 0) - (tonumber(mon.hp) or 0)),
       held = heldNumber(mon),
       night = isNight(ctx.session),
       dusk = isDusk(ctx.session),

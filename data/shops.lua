@@ -35,7 +35,7 @@ return {
             "cracked-pot", "chipped-pot", "unremarkable-teacup", "masterpiece-teacup",
             "strawberry-sweet", "berry-sweet", "love-sweet", "star-sweet",
             "clover-sweet", "flower-sweet", "ribbon-sweet",
-            "scroll-of-darkness", "scroll-of-waters" } },
+            "scroll-of-darkness", "scroll-of-waters", "galarica-cuff", "galarica-wreath" } },
 
   { games = { "ruby", "sapphire", "emerald" }, store = "Lilycove Dept. Store (supplements)",
     match = { 77, 79, 75, 76, 74, 73, 78 },
@@ -49,7 +49,7 @@ return {
     add = { "tart-apple", "sweet-apple", "syrupy-apple", "cracked-pot", "chipped-pot",
             "strawberry-sweet", "berry-sweet", "love-sweet", "star-sweet",
             "clover-sweet", "flower-sweet", "ribbon-sweet",
-            "scroll-of-darkness", "scroll-of-waters" } },
+            "scroll-of-darkness", "scroll-of-waters", "galarica-cuff", "galarica-wreath" } },
   { games = { "ruby", "sapphire", "emerald" }, store = "Sootopolis City Mart",
     match = { 2, 21, 20, 23, 24, 84, 75, 76, 128 },
     add = { "auspicious-armor", "malicious-armor", "metal-alloy",

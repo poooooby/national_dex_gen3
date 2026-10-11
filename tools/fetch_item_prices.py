@@ -25,7 +25,8 @@ titles = {
  "love-sweet":"Love Sweet","star-sweet":"Star Sweet","clover-sweet":"Clover Sweet",
  "flower-sweet":"Flower Sweet","ribbon-sweet":"Ribbon Sweet",
  "razor-claw":"Razor Claw","razor-fang":"Razor Fang","oval-stone":"Oval Stone","leaders-crest":"Leader's Crest",
- "scroll-of-darkness":"Scroll of Darkness","scroll-of-waters":"Scroll of Waters"}
+ "scroll-of-darkness":"Scroll of Darkness","scroll-of-waters":"Scroll of Waters",
+ "galarica-cuff":"Galarica Cuff","galarica-wreath":"Galarica Wreath"}
 out = {}
 for slug, title in titles.items():
     url = "https://bulbapedia.bulbagarden.net/w/api.php?" + urllib.parse.urlencode(

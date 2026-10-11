@@ -43,4 +43,6 @@ return {
   { slug = "leaders-crest", id = "LEADERS_CREST", name = "LEADER'S CREST", index = 933, price = 2100, description = "A crest worn by\na leader." }, -- no price data; classic stone price
   { slug = "scroll-of-darkness", id = "SCROLL_OF_DARKNESS", name = "DARK SCROLL", index = 934, price = 2100, description = "A scroll of the\ndark style." }, -- no price data; classic stone price
   { slug = "scroll-of-waters", id = "SCROLL_OF_WATERS", name = "WATER SCROLL", index = 935, price = 2100, description = "A scroll of the\nwater style." }, -- no price data; classic stone price
+  { slug = "galarica-cuff", id = "GALARICA_CUFF", name = "GALARICA CUFF", index = 936, price = 2100, description = "A cuff woven from\nGalarica twigs." }, -- no price data; classic stone price
+  { slug = "galarica-wreath", id = "GALARICA_WREATH", name = "GALAR. WREATH", index = 937, price = 2100, description = "A wreath woven\nfrom Galarica\ntwigs." }, -- no price data; classic stone price
 }
