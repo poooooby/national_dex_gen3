@@ -332,7 +332,7 @@
 - Ability: Sturdy
 - Learnset: 1 Tackle · 1 Disable · 1 Harden · 1 Perish Song · 1 Astonish · 15 Spite · 20 Ancientpower · 25 Shadow Punch · 30 Curse · 35 Aromatherapy · 40 Rock Slide · 45 Night Shade · 50 Grudge · 55 Mirror Coat
 
-### #865 Sirfetch’D
+### #865 Sirfetch'd
 
 - Type: Fighting
 - Ability: Inner Focus

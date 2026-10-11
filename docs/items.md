@@ -88,7 +88,7 @@ evolution stone price, where there is none. See [CREDITS](../CREDITS.md).
 - Price: ₽3000
 - FireRed / LeafGreen: Celadon Dept. Store 4F
 - Ruby / Sapphire / Emerald: Lilycove Dept. Store (supplements)
-- Evolves: Cetoddle → Cetitan (use it on); Crabrawler → Crabominable (use it on); Eevee → Glaceon (use it on)
+- Evolves: Cetoddle → Cetitan (use it on); Crabrawler → Crabominable (use it on); Darumaka (Galar) → Darmanitan (Galar Standard) (use it on); Eevee → Glaceon (use it on); Sandshrew (Alola) → Sandslash (Alola) (use it on); Vulpix (Alola) → Ninetales (Alola) (use it on)
 
 ### MAGMARIZER
 
@@ -123,7 +123,7 @@ evolution stone price, where there is none. See [CREDITS](../CREDITS.md).
 - Price: ₽2100
 - FireRed / LeafGreen: Celadon Dept. Store 4F
 - Ruby / Sapphire / Emerald: Lilycove Dept. Store (supplements)
-- Evolves: Floette → Florges (use it on); Minccino → Cinccino (use it on); Roselia → Roserade (use it on); Togetic → Togekiss (use it on)
+- Evolves: Floette (Blue) → Florges (Blue) (use it on); Floette (Orange) → Florges (Orange) (use it on); Floette (White) → Florges (White) (use it on); Floette (Yellow) → Florges (Yellow) (use it on); Floette → Florges (use it on); Minccino → Cinccino (use it on); Roselia → Roserade (use it on); Togetic → Togekiss (use it on)
 
 ### SWEET APPLE
 
@@ -200,6 +200,7 @@ evolution stone price, where there is none. See [CREDITS](../CREDITS.md).
 - Price: ₽3000
 - FireRed / LeafGreen: Six Island Mart
 - Ruby / Sapphire / Emerald: Mossdeep City Mart
+- Evolves: Sinistea (Antique) → Polteageist (Antique) (use it on)
 
 ### UNREMARK. CUP
 
@@ -213,6 +214,7 @@ evolution stone price, where there is none. See [CREDITS](../CREDITS.md).
 - Price: ₽2100
 - FireRed / LeafGreen: Six Island Mart
 - Ruby / Sapphire / Emerald: Sootopolis City Mart
+- Evolves: Poltchageist (Artisan) → Sinistcha (Masterpiece) (use it on)
 
 ### STRAWBRY SWEET
 
@@ -268,7 +270,7 @@ evolution stone price, where there is none. See [CREDITS](../CREDITS.md).
 - Price: ₽2100
 - FireRed / LeafGreen: Celadon Dept. Store 5F (battle items)
 - Ruby / Sapphire / Emerald: Lilycove Dept. Store (battle items)
-- Evolves: Sneasel → Weavile (hold it while it levels up, at night)
+- Evolves: Sneasel (Hisui) → Sneasler (hold it while it levels up, by day); Sneasel → Weavile (hold it while it levels up, at night)
 
 ### RAZOR FANG
 
@@ -310,12 +312,14 @@ evolution stone price, where there is none. See [CREDITS](../CREDITS.md).
 - Price: ₽2100
 - FireRed / LeafGreen: Six Island Mart
 - Ruby / Sapphire / Emerald: Mossdeep City Mart
+- Evolves: Slowpoke (Galar) → Slowbro (Galar) (use it on)
 
 ### GALAR. WREATH
 
 - Price: ₽2100
 - FireRed / LeafGreen: Six Island Mart
 - Ruby / Sapphire / Emerald: Mossdeep City Mart
+- Evolves: Slowpoke (Galar) → Slowking (Galar) (use it on)
 
 ## By store
 

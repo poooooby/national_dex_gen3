@@ -23,7 +23,7 @@ local national = load(cart .. "/national.lua")
 
 -- "ROCK HEAD" -> "Rock Head", "DOUBLE-EDGE" -> "Double-Edge", "MR. MIME" -> "Mr. Mime"
 local function title(s)
-  s = tostring(s):lower()
+  s = tostring(s):lower():gsub("\226\128\153", "'")   -- a curly apostrophe is a plain one
   return (s:gsub("(%a)([%w']*)", function(a, b) return a:upper() .. b end))
 end
 
@@ -126,6 +126,31 @@ for _, r in ipairs(species) do
     if type(hold) == "string" then addHoldUse(hold, r, e)
     elseif type(hold) == "table" then
       for _, slug in ipairs(hold) do addHoldUse(slug, r, e) end
+    end
+  end
+end
+-- a form's own label: "Slowpoke (Galar)"
+local formById = {}
+for _, f in ipairs(forms) do formById[f.id] = f end
+local function formLabel(f)
+  return string.format("%s (%s)", title(f.name or f.baseSpecies:gsub("_", " ")), title((tostring(f.form):gsub("_", " "))))
+end
+local function stepTarget(e)
+  if e.targetForm and formById[e.targetForm] then return formLabel(formById[e.targetForm]) end
+  return e.target and (byDex[e.target] or ("#" .. e.target)) or "?"
+end
+for _, f in ipairs(forms) do
+  for _, e in ipairs(f.evolutions or {}) do
+    if e.item then addUse(e.item, formLabel(f), stepTarget(e), e.method) end
+    local hold = e.when and e.when.hold
+    if type(hold) == "string" then
+      local when = e.when.time and (e.when.time == "night" and ", at night" or ", by day") or ""
+      local text = string.format("%s → %s (hold it while it levels up%s)", formLabel(f), stepTarget(e), when)
+      if not seenHold[hold .. text] then
+        seenHold[hold .. text] = true
+        uses[hold] = uses[hold] or {}
+        table.insert(uses[hold], text)
+      end
     end
   end
 end
@@ -279,7 +304,7 @@ end
 I[#I + 1] = ""
 I[#I + 1] = "## Alternate forms"
 I[#I + 1] = ""
-I[#I + 1] = "- [Forms](pokemon/forms.md): Galarian and Hisuian forms, Wormadam's cloaks, the Rotom appliances,"
+I[#I + 1] = "- [Forms](pokemon/forms.md): Alolan, Galarian, Hisuian and Paldean forms, Wormadam's cloaks, the Rotom appliances,"
 I[#I + 1] = "  the Therian and Origin forms and more, each a Pokémon of its own."
 out("docs/pokemon.md", I)
 
@@ -307,9 +332,39 @@ end
 -- ---- forms
 
 -- (forms is loaded with the other data above)
+-- the item's full name (the in-game one may be abbreviated to fit 14 characters)
+local FULL_NAME = { ["leaders-crest"] = "Leader's Crest", ["scroll-of-darkness"] = "Scroll of Darkness",
+                    ["scroll-of-waters"] = "Scroll of Waters" }
+local function itemText(slug) return FULL_NAME[slug] or title((slug:gsub("-", " "))) end
+-- how a form evolves, in words: "into Sandslash (Alola) with an Ice Stone"
+local function evolvesText(r)
+  local parts = {}
+  for _, e in ipairs(r.evolutions or {}) do
+    local how
+    if e.method == "EVO_ITEM" then how = "use " .. itemText(e.item)
+    elseif e.method == "EVO_TRADE" then how = "trade"
+    elseif e.method == "EVO_TRADE_ITEM" then how = "trade holding " .. itemText(e.item)
+    elseif e.method == "EVO_FRIENDSHIP" then how = "high friendship"
+    else
+      local w = e.when or {}
+      local bits = {}
+      if (e.level or 1) > 1 then bits[#bits + 1] = "level " .. e.level end
+      if w.hold then bits[#bits + 1] = "holding " .. itemText(type(w.hold) == "string" and w.hold or w.hold[1]) end
+      if w.crits then bits[#bits + 1] = "after " .. w.crits .. " critical hits in one battle" end
+      if w.hpLost then bits[#bits + 1] = "leveling up " .. w.hpLost .. "+ HP down" end
+      if w.recoil then bits[#bits + 1] = "after " .. w.recoil .. " recoil damage" end
+      if w.gender then bits[#bits + 1] = (w.gender == "F" and "female" or "male") end
+      if w.time == "night" then bits[#bits + 1] = "at night" elseif w.time == "day" then bits[#bits + 1] = "by day" end
+      how = #bits > 0 and table.concat(bits, ", ") or "level up"
+    end
+    parts[#parts + 1] = string.format("into %s (%s)", stepTarget(e), how)
+  end
+  return #parts > 0 and table.concat(parts, "; ") or nil
+end
+
 local function formName(r)
   local label = tostring(r.form):gsub("_", " ")
-  return string.format("%s (%s)", title(r.baseSpecies:gsub("_", " ")), title(label))
+  return string.format("%s (%s)", title(r.name or r.baseSpecies:gsub("_", " ")), title(label))
 end
 local F = {
   "# Alternate forms",
@@ -322,10 +377,10 @@ local F = {
   "",
   "## How to read the entries",
   "",
-  "- **Where do they come from?** Nothing places them in the wild yet, and Gen 3 can't change a Pokémon's",
-  "  form (no Gracidea, Reveal Glass, Griseous Orb or Rotom Catalog). They can be added with a save editor,",
-  "  and a few evolve into each other (Galarian Darumaka → Galarian Darmanitan with an Ice Stone,",
-  "  Hisuian Zorua → Hisuian Zoroark at level 30, Pumpkaboo → Gourgeist of the same size by trade).",
+  "- **Where do they come from?** A spawn mod puts the ones that are wild in the real games in the wild",
+  "  ([Modern Spawns](https://github.com/poooooby/g1r_modern_spawns) does), and many evolve from another form:",
+  "  see each form's *Evolves* line and the [evolution and forms guide](../evolutions-and-forms.md). Any form",
+  "  can also be made with the save editor.",
   "- Ability, typing and moves follow the same rules as the other Pokémon (see the [index](../pokemon.md)).",
   "- Left out: Mega Evolutions, Gigantamax forms, forms that only exist during a battle, cosmetic forms and",
   "  gender differences (those use the same Pokémon with a different picture).",
@@ -344,6 +399,8 @@ for _, base in ipairs(group) do
     F[#F + 1] = "- Type: " .. typesText(r)
     F[#F + 1] = "- Ability: " .. abilityText(r)
     F[#F + 1] = "- Learnset: " .. learnsetText(r)
+    local evo = evolvesText(r)
+    if evo then F[#F + 1] = "- Evolves: " .. evo end
     F[#F + 1] = ""
   end
 end

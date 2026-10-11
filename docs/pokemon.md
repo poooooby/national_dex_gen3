@@ -29,5 +29,5 @@ has in this game, and its level-up learnset (`level move`).
 
 ## Alternate forms
 
-- [Forms](pokemon/forms.md): Galarian and Hisuian forms, Wormadam's cloaks, the Rotom appliances,
+- [Forms](pokemon/forms.md): Alolan, Galarian, Hisuian and Paldean forms, Wormadam's cloaks, the Rotom appliances,
   the Therian and Origin forms and more, each a Pokémon of its own.

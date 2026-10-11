@@ -73,8 +73,8 @@ This mod adds the Pokémon. Two companions bring them to life:
   from a save editor, plus a few that evolve into each other. Megas and Gigantamax forms aren't
   included.
 - **Some evolutions are adapted.** Conditions Gen 3 can't check (a known move, rain, a held item
-  at a time of day ...) get stand-ins, e.g. Piloswine → Mamoswine while knowing Rock Tomb. Only
-  evolutions needing a regional form this mod lacks (Galarian Meowth and so on) don't work.
+  at a time of day ...) get stand-ins, e.g. Piloswine → Mamoswine while knowing Rock Tomb, and
+  Galarian Farfetch'd → Sirfetch'd after 3 critical hits in one battle.
 - **TM, tutor and egg moves** are limited to what Gen 3 has.
 - **The original 386 Pokémon,** the story, trainers and maps are unchanged; the originals only
   gain their new evolutions.

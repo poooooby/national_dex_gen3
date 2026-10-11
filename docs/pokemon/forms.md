@@ -8,10 +8,10 @@ form also counts the base Pokémon in your Pokédex.
 
 ## How to read the entries
 
-- **Where do they come from?** Nothing places them in the wild yet, and Gen 3 can't change a Pokémon's
-  form (no Gracidea, Reveal Glass, Griseous Orb or Rotom Catalog). They can be added with a save editor,
-  and a few evolve into each other (Galarian Darumaka → Galarian Darmanitan with an Ice Stone,
-  Hisuian Zorua → Hisuian Zoroark at level 30, Pumpkaboo → Gourgeist of the same size by trade).
+- **Where do they come from?** A spawn mod puts the ones that are wild in the real games in the wild
+  ([Modern Spawns](https://github.com/poooooby/g1r_modern_spawns) does), and many evolve from another form:
+  see each form's *Evolves* line and the [evolution and forms guide](../evolutions-and-forms.md). Any form
+  can also be made with the save editor.
 - Ability, typing and moves follow the same rules as the other Pokémon (see the [index](../pokemon.md)).
 - Left out: Mega Evolutions, Gigantamax forms, forms that only exist during a battle, cosmetic forms and
   gender differences (those use the same Pokémon with a different picture).
@@ -21,6 +21,7 @@ form also counts the base Pokémon in your Pokédex.
 - Type: Ice
 - Ability: Hustle
 - Learnset: 1 Tackle · 1 Powder Snow · 4 Taunt · 8 Bite · 12 Aurora Beam · 16 Swords Dance · 20 Ice Beam · 24 Headbutt · 28 Ice Punch · 32 Uproar · 36 Belly Drum · 40 Blizzard · 44 Thrash · 48 Superpower
+- Evolves: into Darmanitan (Galar Standard) (use Ice Stone)
 
 ### Darmanitan (Galar Standard) — #555
 
@@ -33,6 +34,7 @@ form also counts the base Pokémon in your Pokédex.
 - Type: Ground / Ghost
 - Ability: Rough Skin
 - Learnset: 1 Protect · 1 Astonish · 4 Haze · 8 Night Shade · 12 Disable · 16 Faint Attack · 20 Safeguard · 24 Shadow Punch · 28 Mean Look · 32 Slam · 36 Curse · 40 Shadow Ball · 44 Earthquake · 48 Rest · 48 Trick · 52 Destiny Bond
+- Evolves: into Runerigus (leveling up 49+ HP down)
 
 ### Stunfisk (Galar) — #618
 
@@ -45,6 +47,7 @@ form also counts the base Pokémon in your Pokédex.
 - Type: Normal / Ghost
 - Ability: Color Change
 - Learnset: 1 Scratch · 1 Leer · 4 Torment · 8 Fake Tears · 12 Astonish · 16 Curse · 20 Taunt · 24 Knock Off · 28 Spite · 32 Agility · 36 Shadow Ball · 40 Shadow Punch · 44 Flatter · 48 Faint Attack
+- Evolves: into Zoroark (Hisui) (level 30)
 
 ### Zoroark (Hisui) — #571
 
@@ -159,18 +162,21 @@ form also counts the base Pokémon in your Pokédex.
 - Type: Ghost / Grass
 - Ability: Pickup / Keen Eye
 - Learnset: 1 Astonish · 1 Spite · 4 Shadow Punch · 8 Confuse Ray · 12 Razor Leaf · 12 Nightmare · 16 Leech Seed · 20 Bullet Seed · 24 Scary Face · 24 Taunt · 28 Aromatherapy · 32 Leaf Blade · 36 Shadow Ball · 36 Refresh · 40 Trick · 44 Pain Split
+- Evolves: into Gourgeist (Small) (trade)
 
 ### Pumpkaboo (Large) — #710
 
 - Type: Ghost / Grass
 - Ability: Pickup / Keen Eye
 - Learnset: 1 Astonish · 1 Spite · 4 Shadow Punch · 8 Confuse Ray · 12 Razor Leaf · 12 Nightmare · 16 Leech Seed · 20 Bullet Seed · 24 Scary Face · 24 Taunt · 28 Aromatherapy · 32 Leaf Blade · 36 Shadow Ball · 36 Refresh · 40 Trick · 44 Pain Split
+- Evolves: into Gourgeist (Large) (trade)
 
 ### Pumpkaboo (Super) — #710
 
 - Type: Ghost / Grass
 - Ability: Pickup / Keen Eye
 - Learnset: 1 Astonish · 1 Spite · 4 Shadow Punch · 8 Confuse Ray · 12 Razor Leaf · 12 Nightmare · 16 Leech Seed · 20 Bullet Seed · 24 Scary Face · 24 Taunt · 28 Aromatherapy · 32 Leaf Blade · 36 Shadow Ball · 36 Refresh · 40 Trick · 44 Pain Split
+- Evolves: into Gourgeist (Super) (trade)
 
 ### Gourgeist (Small) — #711
 
@@ -357,24 +363,28 @@ form also counts the base Pokémon in your Pokédex.
 - Type: Normal
 - Ability: Shield Dust
 - Learnset: 1 Vine Whip · 1 Tackle · 1 Pound · 10 Safeguard · 15 Razor Leaf · 20 Wish · 25 Magical Leaf · 27 Spore · 33 Leaf Blade · 38 Synthesis · 43 Softboiled · 46 Crush Claw · 51 Petal Dance · 58 Solarbeam
+- Evolves: into Florges (Yellow) (use Shiny Stone)
 
 ### Floette (Orange) — #670
 
 - Type: Normal
 - Ability: Shield Dust
 - Learnset: 1 Vine Whip · 1 Tackle · 1 Pound · 10 Safeguard · 15 Razor Leaf · 20 Wish · 25 Magical Leaf · 27 Spore · 33 Leaf Blade · 38 Synthesis · 43 Softboiled · 46 Crush Claw · 51 Petal Dance · 58 Solarbeam
+- Evolves: into Florges (Orange) (use Shiny Stone)
 
 ### Floette (Blue) — #670
 
 - Type: Normal
 - Ability: Shield Dust
 - Learnset: 1 Vine Whip · 1 Tackle · 1 Pound · 10 Safeguard · 15 Razor Leaf · 20 Wish · 25 Magical Leaf · 27 Spore · 33 Leaf Blade · 38 Synthesis · 43 Softboiled · 46 Crush Claw · 51 Petal Dance · 58 Solarbeam
+- Evolves: into Florges (Blue) (use Shiny Stone)
 
 ### Floette (White) — #670
 
 - Type: Normal
 - Ability: Shield Dust
 - Learnset: 1 Vine Whip · 1 Tackle · 1 Pound · 10 Safeguard · 15 Razor Leaf · 20 Wish · 25 Magical Leaf · 27 Spore · 33 Leaf Blade · 38 Synthesis · 43 Softboiled · 46 Crush Claw · 51 Petal Dance · 58 Solarbeam
+- Evolves: into Florges (White) (use Shiny Stone)
 
 ### Alcremie (Ruby Cream) — #869
 
@@ -429,6 +439,7 @@ form also counts the base Pokémon in your Pokédex.
 - Type: Water
 - Ability: Sticky Hold / Water Absorb
 - Learnset: 1 Water Gun · 1 Mud-Slap · 5 Harden · 10 Recover · 15 Water Pulse · 20 Ancientpower · 25 Body Slam · 31 Muddy Water · 35 Earthquake · 40 Rain Dance · 45 Memento
+- Evolves: into Gastrodon (East) (level 30)
 
 ### Gastrodon (East) — #423
 
@@ -436,29 +447,33 @@ form also counts the base Pokémon in your Pokédex.
 - Ability: Sticky Hold / Water Absorb
 - Learnset: 1 Water Gun · 1 Recover · 1 Harden · 1 Mud-Slap · 15 Water Pulse · 20 Ancientpower · 25 Body Slam · 33 Muddy Water · 39 Earthquake · 46 Rain Dance · 53 Memento
 
-### Flabebe (Yellow) — #669
+### FlabÉBÉ (Yellow) — #669
 
 - Type: Normal
 - Ability: Shield Dust
 - Learnset: 1 Vine Whip · 1 Tackle · 6 Pound · 10 Safeguard · 15 Razor Leaf · 20 Wish · 22 Magical Leaf · 24 Spore · 28 Leaf Blade · 33 Synthesis · 37 Softboiled · 41 Crush Claw · 45 Petal Dance · 48 Solarbeam
+- Evolves: into Floette (Yellow) (level 19)
 
-### Flabebe (Orange) — #669
-
-- Type: Normal
-- Ability: Shield Dust
-- Learnset: 1 Vine Whip · 1 Tackle · 6 Pound · 10 Safeguard · 15 Razor Leaf · 20 Wish · 22 Magical Leaf · 24 Spore · 28 Leaf Blade · 33 Synthesis · 37 Softboiled · 41 Crush Claw · 45 Petal Dance · 48 Solarbeam
-
-### Flabebe (Blue) — #669
+### FlabÉBÉ (Orange) — #669
 
 - Type: Normal
 - Ability: Shield Dust
 - Learnset: 1 Vine Whip · 1 Tackle · 6 Pound · 10 Safeguard · 15 Razor Leaf · 20 Wish · 22 Magical Leaf · 24 Spore · 28 Leaf Blade · 33 Synthesis · 37 Softboiled · 41 Crush Claw · 45 Petal Dance · 48 Solarbeam
+- Evolves: into Floette (Orange) (level 19)
 
-### Flabebe (White) — #669
+### FlabÉBÉ (Blue) — #669
 
 - Type: Normal
 - Ability: Shield Dust
 - Learnset: 1 Vine Whip · 1 Tackle · 6 Pound · 10 Safeguard · 15 Razor Leaf · 20 Wish · 22 Magical Leaf · 24 Spore · 28 Leaf Blade · 33 Synthesis · 37 Softboiled · 41 Crush Claw · 45 Petal Dance · 48 Solarbeam
+- Evolves: into Floette (Blue) (level 19)
+
+### FlabÉBÉ (White) — #669
+
+- Type: Normal
+- Ability: Shield Dust
+- Learnset: 1 Vine Whip · 1 Tackle · 6 Pound · 10 Safeguard · 15 Razor Leaf · 20 Wish · 22 Magical Leaf · 24 Spore · 28 Leaf Blade · 33 Synthesis · 37 Softboiled · 41 Crush Claw · 45 Petal Dance · 48 Solarbeam
+- Evolves: into Floette (White) (level 19)
 
 ### Florges (Yellow) — #671
 
@@ -489,6 +504,7 @@ form also counts the base Pokémon in your Pokédex.
 - Type: Water
 - Ability: Run Away / Hustle
 - Learnset: 1 Tail Whip · 1 Water Gun · 4 Tackle · 8 Flail · 12 Dive · 16 Bite · 20 Scary Face · 24 Headbutt · 28 Water Sport · 32 Crunch · 36 Take Down · 40 Uproar · 44 Hydro Pump · 48 Thrash · 52 Double-Edge · 56 Rock Slide
+- Evolves: into Basculegion (after 294 recoil damage, male); into Basculegion (Female) (after 294 recoil damage, female)
 
 ### Basculegion (Female) — #902
 
@@ -501,6 +517,7 @@ form also counts the base Pokémon in your Pokédex.
 - Type: Ghost
 - Ability: Sturdy
 - Learnset: 1 Withdraw · 1 Astonish · 6 Minimize · 12 Mega Drain · 24 Faint Attack · 30 Sweet Scent · 36 Giga Drain · 42 Fake Tears · 48 Shadow Ball · 54 Memento · 60 Belly Drum
+- Evolves: into Polteageist (Antique) (use Chipped Pot)
 
 ### Polteageist (Antique) — #855
 
@@ -513,6 +530,7 @@ form also counts the base Pokémon in your Pokédex.
 - Type: Grass / Ghost
 - Ability: Shed Skin
 - Learnset: 1 Stun Spore · 1 Withdraw · 1 Astonish · 6 Absorb · 12 Rain Dance · 18 Faint Attack · 24 Mega Drain · 30 Shadow Punch · 36 Spider Web · 42 Giga Drain · 48 Shadow Ball · 54 Memento · 60 Solarbeam
+- Evolves: into Sinistcha (Masterpiece) (use Masterpiece Teacup)
 
 ### Sinistcha (Masterpiece) — #1013
 
@@ -525,12 +543,14 @@ form also counts the base Pokémon in your Pokédex.
 - Type: Dark / Poison
 - Ability: Poison Point / Swift Swim
 - Learnset: 1 Tackle · 1 Poison Sting · 4 Harden · 8 Bite · 12 Silver Wind · 16 Minimize · 20 Spikes · 24 Dive · 28 Sludge · 32 Pin Missile · 36 Acid Armor · 40 Stockpile · 40 Spit Up · 44 Toxic · 48 Crunch · 52 Focus Energy · 56 Destiny Bond
+- Evolves: into Overqwil (level 28)
 
 ### Rattata (Alola) — #19
 
 - Type: Dark / Normal
 - Ability: Pickup / Hustle
 - Learnset: 1 Tackle · 1 Tail Whip · 4 Quick Attack · 7 Focus Energy · 10 Bite · 13 Pursuit · 16 Hyper Fang · 19 Faint Attack · 22 Crunch · 25 Thief · 28 Super Fang · 31 Double-Edge · 34 Endeavor
+- Evolves: into Raticate (Alola) (level 20, at night)
 
 ### Raticate (Alola) — #20
 
@@ -549,6 +569,7 @@ form also counts the base Pokémon in your Pokédex.
 - Type: Ice / Steel
 - Ability: Sand Veil
 - Learnset: 1 Scratch · 1 Defense Curl · 3 Mist · 6 Powder Snow · 9 Rollout · 12 Fury Cutter · 15 Rapid Spin · 18 Metal Claw · 21 Swift · 24 Fury Swipes · 27 Iron Defense · 30 Slash · 33 Steel Wing · 36 Meteor Mash · 39 Swords Dance · 42 Hail · 45 Blizzard
+- Evolves: into Sandslash (Alola) (use Ice Stone)
 
 ### Sandslash (Alola) — #28
 
@@ -561,6 +582,7 @@ form also counts the base Pokémon in your Pokédex.
 - Type: Ice
 - Ability: Sand Veil
 - Learnset: 1 Tail Whip · 1 Powder Snow · 4 Disable · 8 Ice Ball · 12 Spite · 16 Icy Wind · 20 Confuse Ray · 24 Aurora Beam · 28 Extrasensory · 32 Ice Beam · 36 Imprison · 40 Mist · 44 Haze · 48 Ice Punch · 52 Blizzard
+- Evolves: into Ninetales (Alola) (use Ice Stone)
 
 ### Ninetales (Alola) — #38
 
@@ -573,6 +595,7 @@ form also counts the base Pokémon in your Pokédex.
 - Type: Ground / Steel
 - Ability: Sand Veil / Static
 - Learnset: 1 Sand-Attack · 1 Metal Claw · 4 Growl · 8 Astonish · 12 Mud-Slap · 16 Mud Shot · 20 Faint Attack · 24 Steel Wing · 28 Sandstorm · 32 Dig · 36 Bone Club · 40 Earthquake · 44 Fissure
+- Evolves: into Dugtrio (Alola) (level 26)
 
 ### Dugtrio (Alola) — #51
 
@@ -585,12 +608,14 @@ form also counts the base Pokémon in your Pokédex.
 - Type: Dark
 - Ability: Pickup / Hustle
 - Learnset: 1 Growl · 1 Fake Out · 4 Tackle · 8 Scratch · 12 Pay Day · 16 Bite · 20 Taunt · 24 Faint Attack · 29 Fury Swipes · 32 Screech · 36 Crunch · 40 Fake Tears · 44 Crush Claw
+- Evolves: into Persian (Alola) (high friendship)
 
 ### Meowth (Galar) — #52
 
 - Type: Steel
 - Ability: Pickup / Hustle
 - Learnset: 1 Growl · 1 Fake Out · 4 Fake Tears · 8 Scratch · 12 Pay Day · 16 Metal Claw · 20 Taunt · 24 Swagger · 29 Fury Swipes · 32 Screech · 36 Slash · 40 Metal Sound · 44 Thrash
+- Evolves: into Perrserker (level 28)
 
 ### Persian (Alola) — #53
 
@@ -603,12 +628,14 @@ form also counts the base Pokémon in your Pokédex.
 - Type: Rock / Electric
 - Ability: Magnet Pull / Sturdy
 - Learnset: 1 Tackle · 1 Defense Curl · 4 Charge · 6 Sandstorm · 10 Rollout · 12 Spark · 16 Rock Throw · 18 Rock Tomb · 22 Thunderpunch · 24 Selfdestruct · 28 Reflect · 30 Rock Blast · 34 Thunderbolt · 36 Explosion · 40 Double-Edge · 42 Rock Slide
+- Evolves: into Graveler (Alola) (level 25)
 
 ### Graveler (Alola) — #75
 
 - Type: Rock / Electric
 - Ability: Magnet Pull / Sturdy
 - Learnset: 1 Tackle · 1 Defense Curl · 1 Charge · 1 Sandstorm · 10 Rollout · 12 Spark · 16 Rock Throw · 18 Rock Tomb · 22 Thunderpunch · 24 Selfdestruct · 30 Reflect · 34 Rock Blast · 40 Thunderbolt · 44 Explosion · 50 Double-Edge · 54 Rock Slide
+- Evolves: into Golem (Alola) (trade)
 
 ### Golem (Alola) — #76
 
@@ -621,6 +648,7 @@ form also counts the base Pokémon in your Pokédex.
 - Type: Poison / Dark
 - Ability: Poison Point / Pickup
 - Learnset: 1 Pound · 1 Poison Gas · 4 Harden · 7 Bite · 12 Disable · 15 Acid · 18 Poison Fang · 21 Minimize · 26 Toxic · 29 Knock Off · 32 Crunch · 37 Screech · 40 Sludge Bomb · 43 Acid Armor · 46 Sludge · 48 Memento
+- Evolves: into Muk (Alola) (level 38)
 
 ### Muk (Alola) — #89
 
@@ -645,6 +673,7 @@ form also counts the base Pokémon in your Pokédex.
 - Type: Psychic
 - Ability: Run Away / Immunity
 - Learnset: 1 Tackle · 1 Growl · 5 Tail Whip · 10 Confusion · 15 Pound · 20 Agility · 25 Psybeam · 30 Stomp · 35 Rest · 41 Take Down · 45 Razor Wind · 50 Psychic · 55 Trick
+- Evolves: into Rapidash (Galar) (level 40)
 
 ### Rapidash (Galar) — #78
 
@@ -657,6 +686,7 @@ form also counts the base Pokémon in your Pokédex.
 - Type: Psychic
 - Ability: Pickup / Own Tempo
 - Learnset: 1 Tackle · 1 Curse · 3 Growl · 6 Acid · 9 Yawn · 12 Confusion · 15 Disable · 18 Water Pulse · 21 Headbutt · 24 Extrasensory · 27 Amnesia · 30 Surf · 33 Slack Off · 36 Psychic · 39 Psych Up · 42 Rain Dance · 45 Rest
+- Evolves: into Slowbro (Galar) (use Galarica Cuff); into Slowking (Galar) (use Galarica Wreath)
 
 ### Slowbro (Galar) — #80
 
@@ -670,11 +700,12 @@ form also counts the base Pokémon in your Pokédex.
 - Ability: Natural Cure / Own Tempo
 - Learnset: 1 Tackle · 1 Growl · 1 Acid · 1 Curse · 1 Swagger · 1 Rock Slide · 1 Fake Tears · 1 Extrasensory · 9 Yawn · 12 Confusion · 15 Disable · 18 Water Pulse · 21 Headbutt · 24 Psywave · 27 Amnesia · 30 Surf · 33 Slack Off · 36 Psychic · 39 Psych Up · 42 Rain Dance · 45 Rest
 
-### Farfetchd (Galar) — #83
+### Farfetch'd (Galar) — #83
 
 - Type: Fighting
 - Ability: Inner Focus
 - Learnset: 1 Sand-Attack · 1 Peck · 5 Leer · 10 Fury Cutter · 15 Rock Smash · 20 Faint Attack · 25 Detect · 30 Knock Off · 35 Featherdance · 40 Brick Break · 45 Swords Dance · 50 Slam · 55 Leaf Blade · 60 Reversal · 65 Sky Attack
+- Evolves: into Sirfetch'd (after 3 critical hits in one battle)
 
 ### Weezing (Galar) — #110
 
@@ -682,11 +713,12 @@ form also counts the base Pokémon in your Pokédex.
 - Ability: Levitate / Cloud Nine
 - Learnset: 1 Tackle · 1 Smokescreen · 1 Haze · 1 Smog · 1 Poison Gas · 1 Heat Wave · 1 Featherdance · 1 Snore · 1 Minimize · 1 Body Slam · 12 Poison Fang · 16 Faint Attack · 20 Sludge · 24 Pound · 28 Selfdestruct · 32 Sludge Bomb · 38 Toxic · 44 Poison Tail · 50 Explosion · 56 Memento · 62 Destiny Bond · 68 Softboiled
 
-### Mr Mime (Galar) — #122
+### Mr. Mime (Galar) — #122
 
 - Type: Ice / Psychic
 - Ability: Vital Spirit / Own Tempo
 - Learnset: 1 Pound · 1 Mimic · 1 Light Screen · 1 Reflect · 1 Protect · 1 Safeguard · 1 Baton Pass · 1 Encore · 1 Rapid Spin · 1 Role Play · 1 Recycle · 1 Pain Split · 1 Powder Snow · 1 Softboiled · 1 Razor Wind · 12 Confusion · 16 Magic Coat · 20 Icy Wind · 24 Double Kick · 28 Psybeam · 32 Hypnosis · 36 Mirror Coat · 40 Faint Attack · 44 Ice Punch · 48 Psychic · 52 Teeter Dance
+- Evolves: into Mr. Rime (level 42)
 
 ### Articuno (Galar) — #144
 
@@ -711,24 +743,28 @@ form also counts the base Pokémon in your Pokédex.
 - Type: Ghost
 - Ability: Sturdy
 - Learnset: 1 Tackle · 1 Harden · 5 Astonish · 10 Disable · 15 Spite · 20 Ancientpower · 25 Shadow Punch · 30 Curse · 35 Aromatherapy · 40 Rock Slide · 45 Night Shade · 50 Grudge · 55 Mirror Coat
+- Evolves: into Cursola (level 38)
 
 ### Zigzagoon (Galar) — #263
 
 - Type: Dark / Normal
 - Ability: Pickup
 - Learnset: 1 Tackle · 1 Leer · 3 Sand-Attack · 6 Lick · 9 Crunch · 12 Headbutt · 15 Swords Dance · 18 Pin Missile · 21 Rest · 24 Take Down · 27 Scary Face · 30 Counter · 33 Taunt · 36 Double-Edge
+- Evolves: into Linoone (Galar) (level 20)
 
 ### Linoone (Galar) — #264
 
 - Type: Dark / Normal
 - Ability: Pickup
 - Learnset: 1 Sand-Attack · 1 Tackle · 1 Pin Missile · 1 Leer · 1 Lick · 1 Faint Attack · 1 Torment · 1 Swords Dance · 9 Crunch · 12 Headbutt · 15 Fake Tears · 18 Fury Swipes · 23 Rest · 28 Take Down · 33 Scary Face · 38 Counter · 43 Taunt · 48 Double-Edge
+- Evolves: into Obstagoon (level 35, at night)
 
 ### Growlithe (Hisui) — #58
 
 - Type: Fire / Rock
 - Ability: Intimidate / Flash Fire
 - Learnset: 1 Leer · 1 Ember · 4 Howl · 8 Bite · 12 Flame Wheel · 16 Helping Hand · 24 Fire Punch · 28 Headbutt · 32 Crunch · 36 Take Down · 40 Flamethrower · 44 Roar · 48 Rock Slide · 52 Reversal · 56 Fire Blast
+- Evolves: into Arcanine (Hisui) (use Fire Stone)
 
 ### Arcanine (Hisui) — #59
 
@@ -741,6 +777,7 @@ form also counts the base Pokémon in your Pokédex.
 - Type: Electric / Grass
 - Ability: Soundproof / Static
 - Learnset: 1 Tackle · 1 Charge · 4 Thundershock · 6 Stun Spore · 9 Bullet Seed · 11 Rollout · 13 Screech · 16 Shock Wave · 20 Swift · 22 Thunderpunch · 26 Selfdestruct · 29 Leaf Blade · 34 Petal Dance · 34 Thunderbolt · 41 Explosion · 46 Metal Claw · 50 Spore
+- Evolves: into Electrode (Hisui) (use Leaf Stone)
 
 ### Electrode (Hisui) — #101
 
@@ -759,12 +796,14 @@ form also counts the base Pokémon in your Pokédex.
 - Type: Fighting / Poison
 - Ability: Inner Focus / Keen Eye
 - Learnset: 1 Scratch · 1 Leer · 1 Rock Smash · 6 Taunt · 12 Quick Attack · 18 Metal Claw · 24 Sludge Bomb · 30 Brick Break · 36 Fake Tears · 42 Slash · 48 Agility · 54 Screech · 60 Cross Chop
+- Evolves: into Sneasler (holding Razor Claw, by day)
 
 ### Wooper (Paldea) — #194
 
 - Type: Poison / Ground
 - Ability: Poison Point / Water Absorb
 - Learnset: 1 Tail Whip · 1 Mud Shot · 4 Tackle · 8 Poison Tail · 12 Acid Armor · 16 Slam · 21 Yawn · 24 Sludge Bomb · 28 Sludge · 32 Amnesia · 36 Toxic · 40 Earthquake
+- Evolves: into Clodsire (level 20)
 
 ### Tauros (Paldea Combat Breed) — #128
 
