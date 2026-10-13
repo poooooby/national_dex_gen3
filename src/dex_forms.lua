@@ -29,7 +29,7 @@ function DexForms.byDex(forms)
   return out
 end
 
-local WORDS = { GALAR = "GALARIAN", HISUI = "HISUIAN", ["10"] = "10%" }
+local WORDS = { ALOLA = "ALOLAN", GALAR = "GALARIAN", HISUI = "HISUIAN", PALDEA = "PALDEAN", ["10"] = "10%" }
 local DROP = { STANDARD = true, MASK = true }
 
 -- The name under a form's picture: its form, in words ("GALAR_STANDARD" -> "GALARIAN",

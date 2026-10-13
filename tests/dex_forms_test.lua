@@ -23,6 +23,8 @@ T.eq(#(byDex[211] or {}), 1, "a cart species with a form (Qwilfish) has it")
 
 T.eq(DexForms.label({ form = "GALAR_STANDARD" }), "GALARIAN", "Galarian Darmanitan")
 T.eq(DexForms.label({ form = "HISUI" }), "HISUIAN", "Hisuian")
+T.eq(DexForms.label({ form = "ALOLA" }), "ALOLAN", "Alolan, like Galarian beside it")
+T.eq(DexForms.label({ form = "PALDEA_AQUA_BREED" }), "PALDEAN AQUA BREED", "Paldean Tauros")
 T.eq(DexForms.label({ form = "WELLSPRING_MASK" }), "WELLSPRING", "Ogerpon's masks")
 T.eq(DexForms.label({ form = "RUBY_CREAM" }), "RUBY CREAM", "Alcremie's creams")
 T.eq(DexForms.label({ form = "10" }), "10%", "Zygarde 10%")

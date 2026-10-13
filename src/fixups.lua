@@ -218,25 +218,28 @@ function Fixups.new(registered, itemIndex, bridges, log, forms)
     end
   end
 
-  -- An Unown other than A is drawn from the cart's letter slots (SPECIES_UNOWN_B
-  -- 413 .. SPECIES_UNOWN_QMARK 439), which have no name. Once a mod hooks
-  -- pokemon.sprite (art.lua does), the engine names the slot for the hook's ctx
-  -- through Pokemon.name, which errors on a nameless slot and stops the game.
-  -- The letters answer the cart's Unown name; the names table is untouched, so
-  -- they never become species of their own. Installed once.
-  local UNOWN, UNOWN_B, UNOWN_QMARK = 201, 413, 439
-  local function installUnownNames()
+  -- The cart draws some pictures from slots that have no name: an egg from
+  -- SPECIES_EGG (412; Ruby/Sapphire's summary, for one) and an Unown other than A
+  -- from its letter slots (SPECIES_UNOWN_B 413 .. SPECIES_UNOWN_QMARK 439). Once a
+  -- mod hooks pokemon.sprite (art.lua does), the engine names the slot for the
+  -- hook's ctx through Pokemon.name, which errors on a nameless slot: the screen
+  -- goes blank or the game stops. The egg answers EGG and the letters the cart's
+  -- Unown name; the names table is untouched, so none of them becomes a species
+  -- of its own. Installed once.
+  local EGG, UNOWN, UNOWN_B, UNOWN_QMARK = 412, 201, 413, 439
+  local function installNamelessSlots()
     local ok, P = pcall(require, "src.core.game3.pokemon")
-    if not (ok and type(P) == "table" and type(P.name) == "function") or P.__nationalDexUnown then
+    if not (ok and type(P) == "table" and type(P.name) == "function") or P.__nationalDexNamelessSlots then
       return
     end
-    P.__nationalDexUnown = true
+    P.__nationalDexNamelessSlots = true
     local original = P.name
     P.name = function(species, ...)
       local ok2, out = pcall(original, species, ...)
       if ok2 then return out end
       local n = tonumber(species)
       if n and n >= UNOWN_B and n <= UNOWN_QMARK then return original(UNOWN) end
+      if n == (tonumber(P.SPECIES_EGG) or EGG) then return "EGG" end
       error(out, 0)
     end
   end
@@ -456,7 +459,7 @@ function Fixups.new(registered, itemIndex, bridges, log, forms)
   function self.install(_)
     installTutors()
     raiseNationalMax()
-    installUnownNames()
+    installNamelessSlots()
     installFormDex()
     installDexEntries()
     installRseDexOrders()

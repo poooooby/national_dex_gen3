@@ -3,6 +3,16 @@
 All notable changes to this mod are documented here, in
 [keep a changelog](https://keepachangelog.com/en/1.1.0/) format.
 
+## [0.8.3] - 2026-10-13
+
+### Fixed
+
+- An egg's summary screen on Ruby and Sapphire is no longer blank: the cart draws the egg from a
+  picture slot with no name (412), and the sprite hook asked for one, the same fault 0.8.2 fixed
+  for Unown's letters. That slot now answers EGG.
+- The Pokedex FORMS page names Alolan and Paldean forms the way it names Galarian and Hisuian
+  ones ("ALOLAN", "PALDEAN AQUA BREED"), not "ALOLA" / "PALDEA".
+
 ## [0.8.2] - 2026-10-13
 
 ### Fixed

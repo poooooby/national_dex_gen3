@@ -15,6 +15,7 @@ local Pokemon = require("src.core.game3.pokemon")
 local Gen3Compat = require("src.mods.Gen3Compat")
 
 T.check(not pcall(Pokemon.name, 425), "unpatched, the cart has no name for Unown's letter slot 425")
+T.check(not pcall(Pokemon.name, 412), "nor for the egg picture slot 412")
 
 local run = T.sdk.loadMods({ "mods/national_dex_gen3" }, { data = data, generation = 3 })
 T.eq(#run.errors, 0, "loads clean (" .. tostring(run.errors[1]) .. ")")
@@ -31,6 +32,12 @@ T.eq(Pokemon.keyName(425), nil, "the letter slots are still not species of their
 T.eq(Pokemon.speciesFromName("UNOWN"), 201, "UNOWN is still the cart's Unown")
 T.eq(Pokemon.name(201), "UNOWN", "and keeps its name")
 T.check(not pcall(Pokemon.name, 445), "an unused slot still has no name")
+
+-- the egg picture slot (Ruby/Sapphire's summary draws an egg from it): blank before
+T.eq(Pokemon.name(412), "EGG", "the egg slot 412 answers EGG")
+T.eq(Gen3Compat.speciesName(412), "EGG", "so the sprite hook's ctx names it")
+T.eq(Pokemon.keyName(412), nil, "and it is still not a species of its own")
+T.eq(Pokemon.speciesFromName("EGG"), nil, "nothing resolves EGG to a species")
 T.eq(Pokemon.name(Pokemon.speciesFromName("TURTWIG")), "TURTWIG", "our species keep theirs")
 
 run.release()
