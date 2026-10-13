@@ -3,6 +3,14 @@
 All notable changes to this mod are documented here, in
 [keep a changelog](https://keepachangelog.com/en/1.1.0/) format.
 
+## [0.8.2] - 2026-10-13
+
+### Fixed
+
+- The game no longer stops when an Unown other than A appears (for example a wild Unown N):
+  the cart's Unown letter slots have no name of their own, and the sprite hook asked for one.
+  They now answer as Unown.
+
 ## [0.8.0] - 2026-10-10
 
 ### Added

@@ -218,6 +218,29 @@ function Fixups.new(registered, itemIndex, bridges, log, forms)
     end
   end
 
+  -- An Unown other than A is drawn from the cart's letter slots (SPECIES_UNOWN_B
+  -- 413 .. SPECIES_UNOWN_QMARK 439), which have no name. Once a mod hooks
+  -- pokemon.sprite (art.lua does), the engine names the slot for the hook's ctx
+  -- through Pokemon.name, which errors on a nameless slot and stops the game.
+  -- The letters answer the cart's Unown name; the names table is untouched, so
+  -- they never become species of their own. Installed once.
+  local UNOWN, UNOWN_B, UNOWN_QMARK = 201, 413, 439
+  local function installUnownNames()
+    local ok, P = pcall(require, "src.core.game3.pokemon")
+    if not (ok and type(P) == "table" and type(P.name) == "function") or P.__nationalDexUnown then
+      return
+    end
+    P.__nationalDexUnown = true
+    local original = P.name
+    P.name = function(species, ...)
+      local ok2, out = pcall(original, species, ...)
+      if ok2 then return out end
+      local n = tonumber(species)
+      if n and n >= UNOWN_B and n <= UNOWN_QMARK then return original(UNOWN) end
+      error(out, 0)
+    end
+  end
+
   -- Emerald's Pokedex entries (category / size / text per internal slot) are
   -- read, fresh each call, through Mapsec.readLua; its table ends at slot 411.
   -- A mod that walks every National number and asserts an entry exists for
@@ -433,6 +456,7 @@ function Fixups.new(registered, itemIndex, bridges, log, forms)
   function self.install(_)
     installTutors()
     raiseNationalMax()
+    installUnownNames()
     installFormDex()
     installDexEntries()
     installRseDexOrders()
