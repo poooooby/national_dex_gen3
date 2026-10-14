@@ -24,19 +24,19 @@
 
 - Type: Fire
 - Ability: Blaze
-- Learnset: 1 Scratch · 1 Leer · 7 Ember · 9 Taunt · 15 Fury Swipes · 17 Flame Wheel · 23 Fake Tears · 25 Torment · 31 Facade · 33 Fire Spin · 39 Air Cutter · 41 Slack Off · 47 Flamethrower
+- Learnset: 1 Scratch · 1 Leer · 7 Ember · 9 Taunt · 15 Fury Swipes · 17 Flame Wheel · 23 Nasty Plot · 25 Torment · 31 Facade · 33 Fire Spin · 39 Air Cutter · 41 Slack Off · 47 Flamethrower
 
 ### #391 Monferno
 
 - Type: Fire / Fighting
 - Ability: Blaze
-- Learnset: 1 Scratch · 1 Leer · 1 Ember · 1 Mach Punch · 9 Taunt · 16 Fury Swipes · 19 Flame Wheel · 26 Tackle · 29 Torment · 36 Cross Chop · 39 Fire Spin · 46 Air Cutter · 49 Slack Off · 56 Fire Blast
+- Learnset: 1 Scratch · 1 Leer · 1 Ember · 1 Mach Punch · 9 Taunt · 16 Fury Swipes · 19 Flame Wheel · 26 Tackle · 29 Torment · 36 Close Combat · 39 Fire Spin · 46 Air Cutter · 49 Slack Off · 56 Flare Blitz
 
 ### #392 Infernape
 
 - Type: Fire / Fighting
 - Ability: Blaze
-- Learnset: 1 Scratch · 1 Leer · 1 Ember · 1 Mach Punch · 1 Cross Chop · 16 Fury Swipes · 19 Flame Wheel · 26 Tackle · 29 Torment · 42 Fire Spin · 47 Fire Blast · 52 Air Cutter · 58 Calm Mind · 65 Overheat
+- Learnset: 1 Scratch · 1 Leer · 1 Ember · 1 Mach Punch · 1 Close Combat · 16 Fury Swipes · 19 Flame Wheel · 26 Tackle · 29 Torment · 42 Fire Spin · 47 Flare Blitz · 52 Air Cutter · 58 Calm Mind · 65 Fire Blast
 
 ### #393 Piplup
 
@@ -72,7 +72,7 @@
 
 - Type: Normal / Flying
 - Ability: Intimidate
-- Learnset: 1 Wing Attack · 1 Tackle · 1 Growl · 1 Quick Attack · 1 Cross Chop · 13 Double Team · 18 Endeavor · 23 Whirlwind · 28 Aerial Ace · 33 Take Down · 41 Agility · 49 Brave Bird · 57 Reversal
+- Learnset: 1 Wing Attack · 1 Tackle · 1 Growl · 1 Quick Attack · 1 Close Combat · 13 Double Team · 18 Endeavor · 23 Whirlwind · 28 Aerial Ace · 33 Take Down · 41 Agility · 49 Brave Bird · 57 Reversal
 
 ### #399 Bidoof
 
@@ -162,13 +162,13 @@
 
 - Type: Bug / Grass
 - Ability: Anticipation
-- Learnset: 1 Tackle · 1 Protect · 1 Faint Attack · 1 Silver Wind · 1 Tail Glow · 10 Protect · 15 Signal Beam · 20 Hidden Power · 23 Confusion · 26 Razor Leaf · 29 Growth · 32 Psybeam · 35 Minimize · 38 Flail · 41 Attract · 44 Psychic · 47 Leaf Storm · 50 Bug Buzz
+- Learnset: 1 Tackle · 1 Protect · 1 Faint Attack · 1 Silver Wind · 1 Quiver Dance · 10 Protect · 15 Signal Beam · 20 Hidden Power · 23 Confusion · 26 Razor Leaf · 29 Growth · 32 Psybeam · 35 Minimize · 38 Flail · 41 Attract · 44 Psychic · 47 Leaf Storm · 50 Bug Buzz
 
 ### #414 Mothim
 
 - Type: Bug / Flying
 - Ability: Swarm
-- Learnset: 1 Tackle · 1 Protect · 1 Signal Beam · 1 Tail Glow · 10 Protect · 15 Megahorn · 20 Hidden Power · 23 Confusion · 26 Gust · 29 Poisonpowder · 32 Psybeam · 35 Camouflage · 38 Silver Wind · 41 Air Slash · 44 Psychic · 47 Twineedle · 50 Bug Buzz
+- Learnset: 1 Tackle · 1 Protect · 1 Signal Beam · 1 Quiver Dance · 10 Protect · 15 Megahorn · 20 Hidden Power · 23 Confusion · 26 Gust · 29 Poisonpowder · 32 Psybeam · 35 Camouflage · 38 Silver Wind · 41 Air Slash · 44 Psychic · 47 Lunge · 50 Bug Buzz
 
 ### #415 Combee
 
@@ -198,7 +198,7 @@
 
 - Type: Water
 - Ability: Swift Swim
-- Learnset: 1 Growl · 1 Quick Attack · 1 Crunch · 1 Ice Punch · 1 Water Sport · 15 Water Gun · 18 Bite · 21 Swift · 24 Aqua Jet · 29 Double Hit · 35 Whirlpool · 41 Liquidation · 46 Aqua Tail · 51 Agility · 57 Hydro Pump · 62 Water Spout
+- Learnset: 1 Growl · 1 Quick Attack · 1 Crunch · 1 Ice Fang · 1 Water Sport · 15 Water Gun · 18 Bite · 21 Swift · 24 Aqua Jet · 29 Double Hit · 35 Whirlpool · 41 Liquidation · 46 Aqua Tail · 51 Agility · 57 Hydro Pump · 62 Water Spout
 
 ### #420 Cherubi
 
@@ -228,7 +228,7 @@
 
 - Type: Normal
 - Ability: Technician / Pickup
-- Learnset: 1 Scratch · 1 Sand-Attack · 1 Tail Whip · 1 Astonish · 11 Baton Pass · 15 Tickle · 18 Fury Swipes · 22 Swift · 25 Screech · 29 Agility · 32 Double Hit · 36 Thief · 39 Fake Tears · 43 Hyper Beam
+- Learnset: 1 Scratch · 1 Sand-Attack · 1 Tail Whip · 1 Astonish · 11 Baton Pass · 15 Tickle · 18 Fury Swipes · 22 Swift · 25 Screech · 29 Agility · 32 Double Hit · 36 Thief · 39 Nasty Plot · 43 Hyper Beam
 
 ### #425 Drifloon
 
@@ -264,19 +264,19 @@
 
 - Type: Dark / Flying
 - Ability: Insomnia / Super Luck
-- Learnset: 1 Wing Attack · 1 Haze · 1 Astonish · 1 Faint Attack · 1 Night Slash · 1 Taunt · 25 Swagger · 35 Fake Tears · 45 Bite · 55 Dark Pulse · 65 Thief
+- Learnset: 1 Wing Attack · 1 Haze · 1 Astonish · 1 Faint Attack · 1 Night Slash · 1 Taunt · 25 Swagger · 35 Nasty Plot · 45 Bite · 55 Dark Pulse · 65 Thief
 
 ### #431 Glameow
 
 - Type: Normal
 - Ability: Limber / Own Tempo
-- Learnset: 1 Fake Out · 5 Scratch · 8 Growl · 13 Hypnosis · 17 Faint Attack · 20 Fury Swipes · 25 Charm · 29 Assist · 32 Minimize · 37 Slash · 41 Bite · 44 Attract · 48 Fake Tears · 50 Play Rough
+- Learnset: 1 Fake Out · 5 Scratch · 8 Growl · 13 Hypnosis · 17 Faint Attack · 20 Fury Swipes · 25 Charm · 29 Assist · 32 Minimize · 37 Slash · 41 Bite · 44 Attract · 48 Hone Claws · 50 Play Rough
 
 ### #432 Purugly
 
 - Type: Normal
 - Ability: Thick Fat / Own Tempo
-- Learnset: 1 Scratch · 1 Growl · 1 Swagger · 1 Fake Out · 5 Scratch · 8 Growl · 13 Hypnosis · 17 Faint Attack · 20 Fury Swipes · 25 Charm · 29 Assist · 32 Minimize · 37 Slash · 45 Body Slam · 52 Attract · 60 Fake Tears
+- Learnset: 1 Scratch · 1 Growl · 1 Swagger · 1 Fake Out · 5 Scratch · 8 Growl · 13 Hypnosis · 17 Faint Attack · 20 Fury Swipes · 25 Charm · 29 Assist · 32 Minimize · 37 Slash · 45 Body Slam · 52 Attract · 60 Hone Claws
 
 ### #433 Chingling
 
@@ -288,7 +288,7 @@
 
 - Type: Poison / Dark
 - Ability: Stench / Aftermath
-- Learnset: 1 Scratch · 1 Poison Gas · 3 Tackle · 6 Smokescreen · 9 Acid · 12 Fury Swipes · 15 Focus Energy · 18 Bite · 21 Sludge · 24 Screech · 27 Toxic · 30 Faint Attack · 33 Memento · 36 Night Slash · 39 Sludge Bomb · 42 Explosion
+- Learnset: 1 Scratch · 1 Poison Gas · 3 Tackle · 6 Smokescreen · 9 Acid Spray · 12 Fury Swipes · 15 Focus Energy · 18 Bite · 21 Sludge · 24 Screech · 27 Toxic · 30 Faint Attack · 33 Memento · 36 Night Slash · 39 Sludge Bomb · 42 Explosion
 
 ### #435 Skuntank
 
@@ -312,7 +312,7 @@
 
 - Type: Rock
 - Ability: Sturdy / Rock Head
-- Learnset: 1 Fake Tears · 1 Copycat · 4 Flail · 8 Rock Throw · 12 Block · 16 Mimic · 20 Rock Tomb · 24 Minimize · 28 Faint Attack · 32 Rock Slide · 36 Low Kick · 40 Counter · 44 Double-Edge
+- Learnset: 1 Fake Tears · 1 Copycat · 4 Flail · 8 Rock Throw · 12 Block · 16 Mimic · 20 Rock Tomb · 24 Tearful Look · 28 Faint Attack · 32 Rock Slide · 36 Low Kick · 40 Counter · 44 Double-Edge
 
 ### #439 Mime Jr.
 
@@ -330,13 +330,13 @@
 
 - Type: Normal / Flying
 - Ability: Keen Eye / Own Tempo
-- Learnset: 1 Peck · 1 Taunt · 1 Hyper Voice · 1 Aerial Ace · 1 Minimize · 5 Growl · 9 Mirror Move · 13 Sing · 17 Fury Attack · 21 Fly · 25 Taunt · 29 Swift · 33 Mimic · 37 Snore · 41 Roost · 45 Uproar · 49 Extrasensory · 50 Featherdance · 57 Hyper Voice
+- Learnset: 1 Peck · 1 Taunt · 1 Hyper Voice · 1 Chatter · 1 Confide · 5 Growl · 9 Mirror Move · 13 Sing · 17 Fury Attack · 21 Chatter · 25 Taunt · 29 Swift · 33 Mimic · 37 Snore · 41 Roost · 45 Uproar · 49 Extrasensory · 50 Featherdance · 57 Hyper Voice
 
 ### #442 Spiritomb
 
 - Type: Ghost / Dark
 - Ability: Pressure
-- Learnset: 1 Night Shade · 1 Confuse Ray · 5 Shadow Sneak · 10 Spite · 15 Faint Attack · 20 Fake Tears · 25 Shadow Punch · 30 Memento · 35 Bite · 40 Curse · 45 Shadow Ball · 50 Dark Pulse · 55 Hypnosis · 60 Dream Eater
+- Learnset: 1 Night Shade · 1 Confuse Ray · 5 Shadow Sneak · 10 Spite · 15 Faint Attack · 20 Nasty Plot · 25 Shadow Punch · 30 Memento · 35 Bite · 40 Curse · 45 Shadow Ball · 50 Dark Pulse · 55 Hypnosis · 60 Dream Eater
 
 ### #443 Gible
 
@@ -366,13 +366,13 @@
 
 - Type: Fighting
 - Ability: Inner Focus
-- Learnset: 1 Quick Attack · 1 Endure · 4 Tackle · 8 Metal Claw · 12 Counter · 16 Tail Whip · 20 Rock Smash · 24 Vacuum Wave · 28 Screech · 32 Detect · 36 Force Palm · 40 Swords Dance · 44 Helping Hand · 48 Copycat · 52 Brick Break · 56 Reversal
+- Learnset: 1 Quick Attack · 1 Endure · 4 Tackle · 8 Metal Claw · 12 Counter · 16 Work Up · 20 Rock Smash · 24 Vacuum Wave · 28 Screech · 32 Detect · 36 Force Palm · 40 Swords Dance · 44 Helping Hand · 48 Copycat · 52 Brick Break · 56 Reversal
 
 ### #448 Lucario
 
 - Type: Fighting / Steel
 - Ability: Inner Focus
-- Learnset: 1 Quick Attack · 1 Screech · 1 Reversal · 1 Detect · 1 Metal Claw · 1 Rock Smash · 1 Helping Hand · 1 Tackle · 1 Copycat · 1 Aura Sphere · 1 Vacuum Wave · 1 Brick Break · 1 Rain Dance · 12 Counter · 16 Tail Whip · 20 Force Palm · 24 Calm Mind · 28 Metal Sound · 32 Bulk Up · 36 Bone Rush · 40 Swords Dance · 44 Rest · 48 Meteor Mash · 52 Dragon Pulse · 56 Extremespeed · 60 Cross Chop
+- Learnset: 1 Quick Attack · 1 Screech · 1 Reversal · 1 Detect · 1 Metal Claw · 1 Rock Smash · 1 Helping Hand · 1 Tackle · 1 Copycat · 1 Aura Sphere · 1 Vacuum Wave · 1 Brick Break · 1 Life Dew · 12 Counter · 16 Work Up · 20 Force Palm · 24 Calm Mind · 28 Metal Sound · 32 Bulk Up · 36 Bone Rush · 40 Swords Dance · 44 Heal Pulse · 48 Meteor Mash · 52 Dragon Pulse · 56 Extremespeed · 60 Close Combat
 
 ### #449 Hippopotas
 
@@ -384,31 +384,31 @@
 
 - Type: Ground
 - Ability: Sand Stream
-- Learnset: 1 Sand-Attack · 1 Tackle · 1 Bite · 1 Yawn · 1 Spark · 1 Ice Punch · 1 Flame Wheel · 12 Sand Tomb · 16 Dig · 20 Crunch · 24 Sandstorm · 28 Take Down · 32 Roar · 38 Rest · 44 Earthquake · 50 Double-Edge · 56 Fissure · 62 Slack Off
+- Learnset: 1 Sand-Attack · 1 Tackle · 1 Bite · 1 Yawn · 1 Thunder Fang · 1 Ice Fang · 1 Fire Fang · 12 Sand Tomb · 16 Dig · 20 Crunch · 24 Sandstorm · 28 Take Down · 32 Roar · 38 Rest · 44 Earthquake · 50 Double-Edge · 56 Fissure · 62 Slack Off
 
 ### #451 Skorupi
 
 - Type: Poison / Bug
 - Ability: Battle Armor / Sniper
-- Learnset: 1 Poison Sting · 1 Leer · 3 Fake Tears · 6 Silver Wind · 9 Poison Fang · 12 Bite · 15 Acid Armor · 18 Signal Beam · 21 Sludge · 24 Knock Off · 27 Scary Face · 30 Pin Missile · 33 Toxic · 36 Night Slash · 39 Cross Poison · 42 X-Scissor · 45 Focus Energy · 48 Crunch
+- Learnset: 1 Poison Sting · 1 Leer · 3 Hone Claws · 6 Silver Wind · 9 Poison Fang · 12 Bite · 15 Acid Armor · 18 Signal Beam · 21 Sludge · 24 Knock Off · 27 Scary Face · 30 Pin Missile · 33 Toxic · 36 Night Slash · 39 Cross Poison · 42 X-Scissor · 45 Focus Energy · 48 Crunch
 
 ### #452 Drapion
 
 - Type: Poison / Dark
 - Ability: Battle Armor / Sniper
-- Learnset: 1 Poison Sting · 1 Leer · 1 Spark · 1 Ice Punch · 1 Flame Wheel · 1 Fake Tears · 1 Silver Wind · 9 Poison Fang · 12 Bite · 15 Acid Armor · 18 Signal Beam · 21 Sludge · 24 Knock Off · 27 Scary Face · 30 Pin Missile · 33 Toxic · 36 Night Slash · 39 Cross Poison · 44 X-Scissor · 49 Focus Energy · 54 Crunch
+- Learnset: 1 Poison Sting · 1 Leer · 1 Thunder Fang · 1 Ice Fang · 1 Fire Fang · 1 Hone Claws · 1 Silver Wind · 9 Poison Fang · 12 Bite · 15 Acid Armor · 18 Signal Beam · 21 Sludge · 24 Knock Off · 27 Scary Face · 30 Pin Missile · 33 Toxic · 36 Night Slash · 39 Cross Poison · 44 X-Scissor · 49 Focus Energy · 54 Crunch
 
 ### #453 Croagunk
 
 - Type: Poison / Fighting
 - Ability: Anticipation / Dry Skin
-- Learnset: 1 Poison Sting · 1 Mud-Slap · 4 Astonish · 8 Taunt · 12 Flatter · 16 Low Kick · 20 Sludge · 24 Faint Attack · 28 Swagger · 32 Poison Jab · 36 Toxic · 40 Fake Tears · 44 Sludge Bomb · 48 Poison Fang
+- Learnset: 1 Poison Sting · 1 Mud-Slap · 4 Astonish · 8 Taunt · 12 Flatter · 16 Low Kick · 20 Sludge · 24 Faint Attack · 28 Swagger · 32 Poison Jab · 36 Toxic · 40 Nasty Plot · 44 Sludge Bomb · 48 Poison Fang
 
 ### #454 Toxicroak
 
 - Type: Poison / Fighting
 - Ability: Anticipation / Dry Skin
-- Learnset: 1 Poison Sting · 1 Mud-Slap · 1 Taunt · 1 Astonish · 12 Flatter · 16 Low Kick · 20 Sludge · 24 Faint Attack · 28 Swagger · 32 Poison Jab · 36 Toxic · 42 Fake Tears · 48 Sludge Bomb · 54 Poison Fang
+- Learnset: 1 Poison Sting · 1 Mud-Slap · 1 Taunt · 1 Astonish · 12 Flatter · 16 Low Kick · 20 Sludge · 24 Faint Attack · 28 Swagger · 32 Poison Jab · 36 Toxic · 42 Nasty Plot · 48 Sludge Bomb · 54 Poison Fang
 
 ### #455 Carnivine
 
@@ -450,7 +450,7 @@
 
 - Type: Dark / Ice
 - Ability: Pressure
-- Learnset: 1 Scratch · 1 Leer · 1 Agility · 1 Quick Attack · 1 Slash · 1 Beat Up · 1 Taunt · 1 Faint Attack · 1 Ice Shard · 18 Metal Claw · 24 Icy Wind · 30 Fury Swipes · 36 Fake Tears · 42 Thief · 48 Torment · 54 Screech · 60 Night Slash · 66 Dark Pulse
+- Learnset: 1 Scratch · 1 Leer · 1 Agility · 1 Quick Attack · 1 Slash · 1 Beat Up · 1 Taunt · 1 Faint Attack · 1 Ice Shard · 18 Metal Claw · 24 Icy Wind · 30 Fury Swipes · 36 Hone Claws · 42 Thief · 48 Nasty Plot · 54 Screech · 60 Night Slash · 66 Dark Pulse
 
 ### #462 Magnezone
 
@@ -468,7 +468,7 @@
 
 - Type: Ground / Rock
 - Ability: Lightningrod / Solid Rock
-- Learnset: 1 Tackle · 1 Tail Whip · 1 Cross Chop · 1 Rock Throw · 1 Bulldoze · 15 Horn Attack · 20 Scary Face · 25 Stomp · 30 Rock Blast · 35 Drill Run · 40 Take Down · 47 Earthquake · 54 Stone Edge · 61 Megahorn · 68 Horn Drill · 75 Rock Wrecker
+- Learnset: 1 Tackle · 1 Tail Whip · 1 Hammer Arm · 1 Rock Throw · 1 Bulldoze · 15 Horn Attack · 20 Scary Face · 25 Stomp · 30 Rock Blast · 35 Drill Run · 40 Take Down · 47 Earthquake · 54 Stone Edge · 61 Megahorn · 68 Horn Drill · 75 Rock Wrecker
 
 ### #465 Tangrowth
 
@@ -492,7 +492,7 @@
 
 - Type: Fairy / Flying
 - Ability: Hustle / Serene Grace
-- Learnset: 1 Pound · 1 Double-Edge · 1 Growl · 1 Metronome · 1 Sky Attack · 1 Tri Attack · 1 Sweet Kiss · 1 Charm · 1 Safeguard · 1 Baton Pass · 1 Extremespeed · 1 Ancientpower · 1 Follow Me · 1 Wish · 1 Yawn · 1 Hyper Beam · 1 Aura Sphere · 1 Air Slash · 1 Belly Drum · 1 Fairy Wind · 1 Rain Dance
+- Learnset: 1 Pound · 1 Double-Edge · 1 Growl · 1 Metronome · 1 Sky Attack · 1 Tri Attack · 1 Sweet Kiss · 1 Charm · 1 Safeguard · 1 Baton Pass · 1 Extremespeed · 1 Ancientpower · 1 Follow Me · 1 Wish · 1 Yawn · 1 Hyper Beam · 1 Aura Sphere · 1 Air Slash · 1 Belly Drum · 1 Fairy Wind · 1 Life Dew
 
 ### #469 Yanmega
 
@@ -510,31 +510,31 @@
 
 - Type: Ice
 - Ability: Snow Cloak
-- Learnset: 1 Tackle · 1 Take Down · 1 Double-Edge · 1 Tail Whip · 1 Growl · 1 Swift · 1 Icy Wind · 1 Charm · 1 Baton Pass · 1 Helping Hand · 1 Covet · 1 Copycat · 5 Sand-Attack · 10 Quick Attack · 15 Baby-Doll Eyes · 20 Ice Shard · 25 Bite · 30 Ice Punch · 35 Hail · 40 Ice Beam · 45 Mirror Coat · 50 Blizzard · 55 Hyper Beam
+- Learnset: 1 Tackle · 1 Take Down · 1 Double-Edge · 1 Tail Whip · 1 Growl · 1 Swift · 1 Icy Wind · 1 Charm · 1 Baton Pass · 1 Helping Hand · 1 Covet · 1 Copycat · 5 Sand-Attack · 10 Quick Attack · 15 Baby-Doll Eyes · 20 Ice Shard · 25 Bite · 30 Ice Fang · 35 Hail · 40 Freeze-Dry · 45 Mirror Coat · 50 Blizzard · 55 Hyper Beam
 
 ### #472 Gliscor
 
 - Type: Ground / Flying
 - Ability: Hyper Cutter / Sand Veil
-- Learnset: 1 Sand-Attack · 1 Harden · 1 Poison Jab · 1 Spark · 1 Ice Punch · 1 Flame Wheel · 13 Quick Attack · 16 Fury Cutter · 19 Knock Off · 22 Air Cutter · 27 Night Slash · 30 Signal Beam · 35 Screech · 40 X-Scissor · 45 Crabhammer · 50 Swords Dance
+- Learnset: 1 Sand-Attack · 1 Harden · 1 Poison Jab · 1 Thunder Fang · 1 Ice Fang · 1 Fire Fang · 13 Quick Attack · 16 Fury Cutter · 19 Knock Off · 22 Air Cutter · 27 Night Slash · 30 Signal Beam · 35 Screech · 40 X-Scissor · 45 Crabhammer · 50 Swords Dance
 
 ### #473 Mamoswine
 
 - Type: Ice / Ground
 - Ability: Oblivious / Snow Cloak
-- Learnset: 1 Tackle · 1 Flail · 1 Powder Snow · 1 Mud-Slap · 1 Ancientpower · 1 Ice Punch · 1 Double Hit · 15 Ice Shard · 20 Mist · 25 Endure · 30 Icy Wind · 37 Amnesia · 44 Take Down · 51 Earthquake · 58 Blizzard · 65 Thrash
+- Learnset: 1 Tackle · 1 Flail · 1 Powder Snow · 1 Mud-Slap · 1 Ancientpower · 1 Ice Fang · 1 Double Hit · 15 Ice Shard · 20 Mist · 25 Endure · 30 Icy Wind · 37 Amnesia · 44 Take Down · 51 Earthquake · 58 Blizzard · 65 Thrash
 
 ### #474 Porygon-Z
 
 - Type: Normal
 - Ability: Adaptability / Trace
-- Learnset: 1 Tackle · 1 Defense Curl · 1 Conversion · 1 Recycle · 1 Thunder Wave · 1 Fake Tears · 1 Rest · 15 Thundershock · 20 Psybeam · 25 Conversion 2 · 30 Agility · 35 Recover · 40 Discharge · 45 Tri Attack · 50 Double-Edge · 55 Lock-On · 60 Zap Cannon · 65 Hyper Beam
+- Learnset: 1 Tackle · 1 Defense Curl · 1 Conversion · 1 Recycle · 1 Thunder Wave · 1 Nasty Plot · 1 Rest · 15 Thundershock · 20 Psybeam · 25 Conversion 2 · 30 Agility · 35 Recover · 40 Discharge · 45 Tri Attack · 50 Double-Edge · 55 Lock-On · 60 Zap Cannon · 65 Hyper Beam
 
 ### #475 Gallade
 
 - Type: Psychic / Fighting
 - Ability: Inner Focus / Guts
-- Learnset: 1 Leer · 1 Growl · 1 Psybeam · 1 Confusion · 1 Psychic · 1 Hypnosis · 1 Double Team · 1 Dream Eater · 1 Slash · 1 Charm · 1 Fury Cutter · 1 Future Sight · 1 Imprison · 1 Calm Mind · 1 Leaf Blade · 1 Night Slash · 1 Sky Uppercut · 1 Disarming Voice · 1 Uproar · 1 Rain Dance · 1 Bubblebeam · 9 Helping Hand · 12 Tackle · 15 Teleport · 18 Aerial Ace · 23 False Swipe · 28 Protect · 35 Swords Dance · 42 Psycho Cut · 49 Rest · 56 Sandstorm · 56 Detect · 63 Cross Chop
+- Learnset: 1 Leer · 1 Growl · 1 Psybeam · 1 Confusion · 1 Psychic · 1 Hypnosis · 1 Double Team · 1 Dream Eater · 1 Slash · 1 Charm · 1 Fury Cutter · 1 Future Sight · 1 Imprison · 1 Calm Mind · 1 Leaf Blade · 1 Night Slash · 1 Sky Uppercut · 1 Disarming Voice · 1 Draining Kiss · 1 Life Dew · 1 Bubblebeam · 9 Helping Hand · 12 Tackle · 15 Teleport · 18 Aerial Ace · 23 False Swipe · 28 Protect · 35 Swords Dance · 42 Psycho Cut · 49 Heal Pulse · 56 Sandstorm · 56 Detect · 63 Close Combat
 
 ### #476 Probopass
 
@@ -552,7 +552,7 @@
 
 - Type: Ice / Ghost
 - Ability: Snow Cloak
-- Learnset: 1 Headbutt · 1 Leer · 1 Bite · 1 Double Team · 1 Powder Snow · 1 Protect · 1 Destiny Bond · 1 Crunch · 1 Astonish · 1 Ice Punch · 1 Shadow Punch · 15 Ice Shard · 20 Uproar · 25 Icy Wind · 30 Aurora Beam · 35 Confuse Ray · 40 Hail · 47 Will-O-Wisp · 54 Mist · 61 Shadow Ball · 68 Blizzard
+- Learnset: 1 Headbutt · 1 Leer · 1 Bite · 1 Double Team · 1 Powder Snow · 1 Protect · 1 Destiny Bond · 1 Crunch · 1 Astonish · 1 Ice Fang · 1 Shadow Punch · 15 Ice Shard · 20 Draining Kiss · 25 Icy Wind · 30 Aurora Beam · 35 Confuse Ray · 40 Hail · 47 Will-O-Wisp · 54 Mist · 61 Shadow Ball · 68 Blizzard
 
 ### #479 Rotom
 
@@ -576,7 +576,7 @@
 
 - Type: Psychic
 - Ability: Levitate
-- Learnset: 1 Confusion · 1 Rest · 7 Swift · 14 Detect · 21 Psybeam · 28 Imprison · 35 Extrasensory · 42 Fake Tears · 49 Psychic · 56 Uproar · 63 Future Sight · 70 Hyper Beam · 77 Explosion · 84 Luster Purge
+- Learnset: 1 Confusion · 1 Rest · 7 Swift · 14 Detect · 21 Psybeam · 28 Imprison · 35 Extrasensory · 42 Nasty Plot · 49 Psychic · 56 Uproar · 63 Future Sight · 70 Hyper Beam · 77 Explosion · 84 Luster Purge
 
 ### #483 Dialga
 
@@ -594,13 +594,13 @@
 
 - Type: Fire / Steel
 - Ability: Flash Fire
-- Learnset: 1 Leer · 1 Fire Spin · 6 Metal Claw · 12 Ancientpower · 18 Flame Wheel · 24 Scary Face · 30 Iron Head · 36 Crunch · 42 Lava Plume · 48 Metal Sound · 54 Earth Power · 60 Heat Wave · 66 Stone Edge · 72 Magma Storm
+- Learnset: 1 Leer · 1 Fire Spin · 6 Metal Claw · 12 Ancientpower · 18 Fire Fang · 24 Scary Face · 30 Iron Head · 36 Crunch · 42 Lava Plume · 48 Metal Sound · 54 Earth Power · 60 Heat Wave · 66 Stone Edge · 72 Magma Storm
 
 ### #486 Regigigas
 
 - Type: Normal
 - Ability: Truant
-- Learnset: 1 Pound · 1 Confuse Ray · 6 Faint Attack · 12 Facade · 18 Stomp · 24 Protect · 30 Knock Off · 36 Mega Punch · 42 Brick Break · 48 Sandstorm · 54 Zen Headbutt · 60 Metal Claw · 66 Cross Chop · 72 Giga Impact · 78 Razor Wind
+- Learnset: 1 Pound · 1 Confuse Ray · 6 Faint Attack · 12 Facade · 18 Stomp · 24 Protect · 30 Knock Off · 36 Mega Punch · 42 Brick Break · 48 Sandstorm · 54 Zen Headbutt · 60 Metal Claw · 66 Hammer Arm · 72 Giga Impact · 78 Razor Wind
 
 ### #487 Giratina
 
@@ -630,13 +630,13 @@
 
 - Type: Dark
 - Ability: Insomnia
-- Learnset: 1 Disable · 11 Quick Attack · 20 Hypnosis · 29 Faint Attack · 38 Night Shade · 47 Double Team · 57 Haze · 66 Dark Void · 75 Fake Tears · 84 Dream Eater · 93 Dark Pulse
+- Learnset: 1 Disable · 11 Quick Attack · 20 Hypnosis · 29 Faint Attack · 38 Night Shade · 47 Double Team · 57 Haze · 66 Dark Void · 75 Nasty Plot · 84 Dream Eater · 93 Dark Pulse
 
 ### #492 Shaymin
 
 - Type: Grass
 - Ability: Natural Cure
-- Learnset: 1 Growth · 10 Magical Leaf · 19 Leech Seed · 28 Synthesis · 37 Sweet Scent · 46 Play Rough · 55 Aromatherapy · 64 Spore · 73 Energy Ball · 82 Sweet Kiss · 91 Rest · 100 Solarbeam
+- Learnset: 1 Growth · 10 Magical Leaf · 19 Leech Seed · 28 Synthesis · 37 Sweet Scent · 46 Play Rough · 55 Aromatherapy · 64 Spore · 73 Energy Ball · 82 Sweet Kiss · 91 Rest · 100 Seed Flare
 
 ### #493 Arceus
 

@@ -76,6 +76,19 @@ NAME_OVERRIDES: dict[str, str] = {
     "ASTRAL BARRAGE": "ASTRLBARRAGE",
     "NATURE'S MADNESS": "NATURMADNESS",
     "THOUSAND WAVES": "THOUSNDWAVES",
+    "DRAINING KISS": "DRAININGKISS",
+    "POWER-UP PUNCH": "POWERUPPUNCH",
+    "BREAKING SWIPE": "BREAKNGSWIPE",
+    "SKITTER SMACK": "SKITTERSMACK",
+    "PARABOLIC CHARGE": "PARABOLICCHG",
+    "EERIE IMPULSE": "EERIEIMPULSE",
+    "DIAMOND STORM": "DIAMONDSTORM",
+    "OBLIVION WING": "OBLIVIONWING",
+    "HYPERSPACE FURY": "HYPRSPACFURY",
+    "FLORAL HEALING": "FLORALHEALNG",
+    "CLANGING SCALES": "CLANGNGSCALE",
+    "SHELL SIDE ARM": "SHELLSIDEARM",
+    "THUNDEROUS KICK": "THUNDERSKICK",
 }
 
 # Summary text, in the Gen 3 manner, for moves whose official texts are too long for the
@@ -169,7 +182,97 @@ DESCRIPTIONS = {
     "FIERY_WRATH": "An aura of wrath hits the foes. May cause flinching.",
     "GLACIAL_LANCE": "Hurls a blizzard-cloaked lance of ice at the foes.",
     "ASTRAL_BARRAGE": "Sends out a frightful mass of small ghosts.",
+    "NASTY_PLOT": "Thinks bad thoughts. Sharply raises SP. ATK.",
+    "HONE_CLAWS": "Sharpens its claws. Raises ATTACK and accuracy.",
+    "CLOSE_COMBAT": "Fights up close. Lowers its own DEF and SP. DEF.",
+    "HEAL_PULSE": "Emits a healing pulse. Restores half the HP.",
+    "NOBLE_ROAR": "A noble roar. Lowers the foe's ATTACK and SP. ATK.",
+    "LIFE_DEW": "Scatters mystical water. Restores some HP.",
+    "TEARFUL_LOOK": "Gets teary. Lowers the foe's ATTACK and SP. ATK.",
+    "LUNGE": "Lunges at the foe with all its might. Lowers ATTACK.",
+    "POWER_UP_PUNCH": "Each hard punch raises the user's ATTACK.",
+    "AUTOTOMIZE": "Sheds part of its body. Sharply raises SPEED.",
+    "LOW_SWEEP": "A swift low attack. Lowers the foe's SPEED.",
+    "COTTON_GUARD": "Wraps itself in fluff. Drastically ups DEFENSE.",
+    "BREAKING_SWIPE": "Swings its tough tail. Lowers the foes' ATTACK.",
+    "SHIFT_GEAR": "Spins its gears. Raises ATTACK, sharply ups SPEED.",
+    "ELECTROWEB": "Traps the foes in an electric net. Lowers SPEED.",
+    "CONFIDE": "Tells the foe a secret. Lowers the foe's SP. ATK.",
+    "CHATTER": "Chatters noisily at the foe. It confuses the foe.",
+    "RELIC_SONG": "Sings an ancient song. It may put foes to sleep.",
+    "GLACIATE": "Blows freezing air at the foes. Lowers SPEED.",
+    "V_CREATE": "A fiery charge. Lowers its own DEF, SP. DEF, SPEED.",
+    "DIAMOND_STORM": "A storm of diamonds. May sharply raise DEFENSE.",
+    "HYPERSPACE_FURY": "Unleashes many arms in a flurry. Lowers its DEF.",
+    "FLORAL_HEALING": "Restores half the foe's HP with flowers.",
+    "TROP_KICK": "An intense tropical kick. Lowers the foe's ATTACK.",
+    "CLANGING_SCALES": "Rubs its scales loudly. Lowers its own DEFENSE.",
+    "AURA_WHEEL": "Fires its stored energy. Raises the user's SPEED.",
+    "APPLE_ACID": "Attacks with acidic apple juice. Lowers SP. DEF.",
+    "GRAV_APPLE": "Drops an apple from high up. Lowers DEFENSE.",
+    "SHELL_SIDE_ARM": "Fires a shell at the foe. It may poison the foe.",
+    "THUNDEROUS_KICK": "A lightning-fast kick. Lowers the foe's DEFENSE.",
 }
+
+# Moves whose effect Gen 3 lacks but whose PokeAPI `meta` describes it completely (stat changes,
+# a status chance, flinch, drain/recoil, healing): src/move_effects.lua runs that description.
+# A status move gets effect byte CUSTOM_EFFECT (unused by the cart, mapped to that handler);
+# an attack is a plain hit (effect 0) and its extra runs after the hit.
+CUSTOM_EFFECT = 250
+GENERIC_CATEGORIES = {"net-good-stats", "damage-raise", "damage-lower", "damage-ailment", "heal", "damage-heal"}
+# in those categories, but with a condition or mechanic the description leaves out
+GENERIC_EXCLUDE = {
+    "aromatic-mist", "decorate", "magnetic-flux", "gear-up",          # a partner only
+    "captivate", "venom-drench", "rototiller", "stuff-cheeks",         # conditions
+    "parting-shot", "throat-chop",                                     # switching, silencing
+    "geomancy", "freeze-shock", "ice-burn",                            # a charging turn
+    "clangorous-soul", "no-retreat",                                   # HP cost, trapping itself
+}
+STAT_KEY = {"attack": "attack", "defense": "defense", "special-attack": "spAtk",
+            "special-defense": "spDef", "speed": "speed", "accuracy": "accuracy", "evasion": "evasion"}
+AILMENT = {"burn": "BURN", "freeze": "FREEZE", "paralysis": "PARALYSIS", "poison": "POISON",
+           "sleep": "SLEEP", "confusion": "CONFUSION"}
+SELF_TARGETS = {"user", "user-and-allies", "users-field"}
+
+
+def generic_extra(m: dict[str, Any]) -> dict[str, Any] | None:
+    """The extra effect src/move_effects.lua runs, from PokeAPI's meta; None if it can't."""
+    if m["name"] in GENERIC_EXCLUDE:
+        return None
+    meta = m.get("meta") or {}
+    cat = (meta.get("category") or {}).get("name")
+    if cat not in GENERIC_CATEGORIES:
+        return None
+    changes = {}
+    for sc in m.get("stat_changes") or []:
+        key = STAT_KEY.get(sc["stat"]["name"])
+        if not key:
+            return None
+        changes[key] = sc["change"]
+    ail = (meta.get("ailment") or {}).get("name", "none")
+    if ail != "none" and ail not in AILMENT:
+        return None
+    extra: dict[str, Any] = {"kind": "hit" if (m["power"] or 0) > 0 else "status"}
+    selfish = cat == "damage-raise" or m["target"]["name"] in SELF_TARGETS
+    if changes:
+        extra["self" if selfish else "foe"] = changes
+        extra["chance"] = meta.get("stat_chance") or 100
+    if ail != "none":
+        extra["ailment"] = AILMENT[ail]
+        extra["ailmentChance"] = meta.get("ailment_chance") or 100
+    if meta.get("flinch_chance"):
+        extra["flinch"] = meta["flinch_chance"]
+    if meta.get("drain"):
+        extra["drain"] = meta["drain"]
+    if meta.get("healing"):
+        extra["heal"] = meta["healing"]
+        extra["healTarget"] = "self" if m["target"]["name"] in SELF_TARGETS else "foe"
+    if m["name"] == "shore-up":
+        extra["sandHeal"] = 67
+    if len(extra) == 1:
+        return None
+    return extra
+
 
 # PokeAPI contest_type -> the cart's contest category (pokeemerald CONTEST_CATEGORY_*)
 CONTEST_CATEGORY = {"cool": 0, "beauty": 1, "cute": 2, "smart": 3, "tough": 4}
@@ -344,13 +447,18 @@ def build(api: bs.API, cart_dir: Path, contest_path: Path, cache: Path, out: Pat
     for mid in sorted(use, key=lambda k: (-use[k], k)):
         m = api.get(f"/move/{mid}")
         text = effect_text(m)
-        if text not in effect_of or m["target"]["name"] not in target_of:
+        extra = None
+        effect = effect_of.get(text)
+        if effect is not None and ((m["power"] or 0) > 0) not in damaging[effect]:
+            # an attack must map onto an attacking effect, a status move onto a status one
+            # (Thousand Waves shares Mean Look's text, but Mean Look's effect deals no damage)
+            effect = None
+        if effect is None:
+            extra = generic_extra(m)
+            if extra:
+                effect = CUSTOM_EFFECT if extra["kind"] == "status" else 0
+        if effect is None or m["target"]["name"] not in target_of:
             skipped.append((use[mid], m["name"], text))
-            continue
-        # an attack must map onto an attacking effect, a status move onto a status one
-        # (Thousand Waves shares Mean Look's text, but Mean Look's effect deals no damage)
-        if ((m["power"] or 0) > 0) not in damaging[effect_of[text]]:
-            skipped.append((use[mid], m["name"], text + " [attack/status mismatch]"))
             continue
         s = sd.get(sd_key(m["name"]), {})
         f = s.get("flags", {})
@@ -366,7 +474,8 @@ def build(api: bs.API, cart_dir: Path, contest_path: Path, cache: Path, out: Pat
             "id": rid, "index": keep.get(rid, 0), "api": mid, "name": name,
             "full": (en(m["names"], "name") or m["name"]).replace("’", "'"),
             "type": mtype, "power": power, "accuracy": m["accuracy"] or 0, "pp": m["pp"] or 5,
-            "effect": effect_of[text], "secondaryChance": m.get("effect_chance") or 0,
+            "effect": effect, "secondaryChance": 0 if extra else (m.get("effect_chance") or 0),
+            "extra": extra,
             "target": target_of[m["target"]["name"]], "priority": m["priority"] or 0, "flags": flags,
             "frlg": text_for(rid, m, FRLG_COLS, FRLG_ROWS), "rse": text_for(rid, m, RSE_COLS, RSE_ROWS),
             "contest": {
@@ -382,6 +491,14 @@ def build(api: bs.API, cart_dir: Path, contest_path: Path, cache: Path, out: Pat
         rows.append(row)
     rows.sort(key=lambda r: r["index"])
     return rows, skipped
+
+
+def lua_value(v: Any) -> str:
+    if isinstance(v, dict):
+        return "{ " + ", ".join(f"{k} = {lua_value(x)}" for k, x in v.items()) + " }"
+    if isinstance(v, str):
+        return lua_str(v)
+    return str(v)
 
 
 def lua_str(s: str | None) -> str:
@@ -407,7 +524,8 @@ def write(rows: list[dict], path: Path) -> None:
             f'type = "{r["type"]}", power = {r["power"]}, accuracy = {r["accuracy"]}, pp = {r["pp"]}, '
             f'effect = {r["effect"]}, secondaryChance = {r["secondaryChance"]}, target = {r["target"]}, '
             f'priority = {r["priority"]}, flags = {r["flags"]}, look = {r["look"]}, '
-            f'contest = {{ category = {c["category"]}, effect = {c["effect"]} }},\n'
+            f'contest = {{ category = {c["category"]}, effect = {c["effect"]} }},'
+            + (f' extra = {lua_value(r["extra"])},' if r.get("extra") else '') + '\n'
             f'    frlg = {lua_str(r["frlg"])},\n    rse = {lua_str(r["rse"])} }},')
     lines.append("}")
     path.write_text("\n".join(lines) + "\n", encoding="utf-8", newline="\n")

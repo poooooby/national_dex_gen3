@@ -85,6 +85,8 @@ return function(mod)
   local TypeIcons = loadSibling(mod, "src/type_icons.lua")
   -- optional: without it every newer ability stays the closest Gen 3 one
   local RealAbilities = loadSibling(mod, "src/abilities.lua")
+  -- optional: without it the moves with new mechanics are plain hits or do nothing
+  local MoveEffects = loadSibling(mod, "src/move_effects.lua")
   if RealAbilities then RealAbilities.hooks(mod) end
   local Api = loadSibling(mod, "src/api.lua")
   if not (Species and Fixups and Items and ItemArt and CryArt and Shops and Art and ConditionalEvos and Clock and Counters and Breeding and DexPatch and NationalUnlock and DexSync and DexRepeat and Editor and MonAnim and Api) then return end
@@ -177,6 +179,11 @@ return function(mod)
       local okMoves, movesErr = pcall(NewMoves.install, { moves = registeredMoves, require = require, log = mod.log,
         family = (gameName:find("firered", 1, true) or gameName:find("leafgreen", 1, true)) and "frlg" or "rse" })
       if not okMoves then mod.log:warn("the new moves are incomplete: %s", tostring(movesErr)) end
+    end
+    -- the new moves' mechanics Gen 3 lacks (src/move_effects.lua)
+    if MoveEffects then
+      local okFx, fxErr = pcall(MoveEffects.install, { moves = registeredMoves, require = require, log = mod.log })
+      if not okFx then mod.log:warn("new move mechanics are off: %s", tostring(fxErr)) end
     end
     -- real abilities (src/abilities.lua): after the repairs, so National numbers resolve
     if RealAbilities then

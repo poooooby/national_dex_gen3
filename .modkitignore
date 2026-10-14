@@ -53,6 +53,7 @@ tools/build_moves.py
 tests/moves_test.lua
 tools/build_abilities.py
 tests/abilities_test.lua
+tests/move_effects_test.lua
 
 .claude/skills/lua-developer/SKILL.md
 

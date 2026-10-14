@@ -20,14 +20,14 @@ form also counts the base Pokémon in your Pokédex.
 
 - Type: Ice
 - Ability: Hustle
-- Learnset: 1 Tackle · 1 Powder Snow · 4 Taunt · 8 Bite · 12 Avalanche · 16 Swords Dance · 20 Aurora Beam · 24 Headbutt · 28 Ice Punch · 32 Uproar · 36 Belly Drum · 40 Blizzard · 44 Thrash · 48 Superpower
+- Learnset: 1 Tackle · 1 Powder Snow · 4 Taunt · 8 Bite · 12 Avalanche · 16 Work Up · 20 Ice Fang · 24 Headbutt · 28 Ice Punch · 32 Uproar · 36 Belly Drum · 40 Blizzard · 44 Thrash · 48 Superpower
 - Evolves: into Darmanitan (Galar Standard) (use Ice Stone)
 
 ### Darmanitan (Galar Standard) — #555
 
 - Type: Ice
 - Ability: Guts
-- Learnset: 1 Tackle · 1 Bite · 1 Powder Snow · 1 Taunt · 1 Icicle Crash · 12 Avalanche · 16 Swords Dance · 20 Aurora Beam · 24 Headbutt · 28 Ice Punch · 32 Uproar · 38 Belly Drum · 44 Blizzard · 50 Thrash · 56 Superpower
+- Learnset: 1 Tackle · 1 Bite · 1 Powder Snow · 1 Taunt · 1 Icicle Crash · 12 Avalanche · 16 Work Up · 20 Ice Fang · 24 Headbutt · 28 Ice Punch · 32 Uproar · 38 Belly Drum · 44 Blizzard · 50 Thrash · 56 Superpower
 
 ### Yamask (Galar) — #562
 
@@ -46,14 +46,14 @@ form also counts the base Pokémon in your Pokédex.
 
 - Type: Normal / Ghost
 - Ability: Color Change
-- Learnset: 1 Scratch · 1 Leer · 4 Torment · 8 Fake Tears · 12 Shadow Sneak · 16 Curse · 20 Taunt · 24 Knock Off · 28 Spite · 32 Agility · 36 Shadow Ball · 40 Shadow Punch · 44 Flatter · 48 Faint Attack
+- Learnset: 1 Scratch · 1 Leer · 4 Torment · 8 Hone Claws · 12 Shadow Sneak · 16 Curse · 20 Taunt · 24 Knock Off · 28 Spite · 32 Agility · 36 Shadow Ball · 40 Shadow Punch · 44 Nasty Plot · 48 Faint Attack
 - Evolves: into Zoroark (Hisui) (level 30)
 
 ### Zoroark (Hisui) — #571
 
 - Type: Normal / Ghost
 - Ability: Color Change
-- Learnset: 1 Scratch · 1 Leer · 1 Torment · 1 Signal Beam · 1 Shadow Claw · 1 Fake Tears · 12 Shadow Sneak · 16 Curse · 20 Taunt · 24 Knock Off · 28 Spite · 34 Agility · 40 Shadow Ball · 46 Shadow Punch · 52 Flatter · 58 Faint Attack
+- Learnset: 1 Scratch · 1 Leer · 1 Torment · 1 Signal Beam · 1 Shadow Claw · 1 Hone Claws · 12 Shadow Sneak · 16 Curse · 20 Taunt · 24 Knock Off · 28 Spite · 34 Agility · 40 Shadow Ball · 46 Shadow Punch · 52 Nasty Plot · 58 Faint Attack
 
 ### Samurott (Hisui) — #503
 
@@ -71,7 +71,7 @@ form also counts the base Pokémon in your Pokédex.
 
 - Type: Psychic / Flying
 - Ability: Keen Eye / Hustle
-- Learnset: 1 Wing Attack · 1 Leer · 1 Peck · 1 Sky Attack · 1 Superpower · 1 Fake Tears · 1 Extrasensory · 18 Featherdance · 24 Scary Face · 30 Aerial Ace · 36 Slash · 42 Whirlwind · 48 Crush Claw · 57 Air Slash · 64 Rest · 72 Thrash · 80 Hurricane
+- Learnset: 1 Wing Attack · 1 Leer · 1 Peck · 1 Sky Attack · 1 Superpower · 1 Hone Claws · 1 Extrasensory · 18 Featherdance · 24 Scary Face · 30 Aerial Ace · 36 Slash · 42 Whirlwind · 48 Crush Claw · 57 Air Slash · 64 Rest · 72 Thrash · 80 Hurricane
 
 ### Sliggoo (Hisui) — #705
 
@@ -83,13 +83,13 @@ form also counts the base Pokémon in your Pokédex.
 
 - Type: Steel / Dragon
 - Ability: Sap Sipper / Shell Armor
-- Learnset: 1 Tackle · 1 Water Gun · 1 Absorb · 1 Dragonbreath · 1 Iron Tail · 1 Fake Out · 1 Acid · 1 Minimize · 1 Iron Defense · 15 Protect · 20 Flail · 25 Water Pulse · 30 Rain Dance · 35 Dragon Pulse · 43 Curse · 49 Body Slam · 49 Iron Head · 58 Muddy Water · 67 Metal Claw
+- Learnset: 1 Tackle · 1 Water Gun · 1 Absorb · 1 Dragonbreath · 1 Iron Tail · 1 Fake Out · 1 Acid Spray · 1 Tearful Look · 1 Iron Defense · 15 Protect · 20 Flail · 25 Water Pulse · 30 Rain Dance · 35 Dragon Pulse · 43 Curse · 49 Body Slam · 49 Iron Head · 58 Muddy Water · 67 Metal Claw
 
 ### Avalugg (Hisui) — #713
 
 - Type: Ice / Rock
 - Ability: Strong Jaw / Ice Body
-- Learnset: 1 Tackle · 1 Harden · 1 Rock Slide · 1 Powder Snow · 1 Rapid Spin · 1 Sandstorm · 9 Curse · 12 Icy Wind · 15 Protect · 18 Avalanche · 21 Bite · 24 Ice Punch · 27 Iron Defense · 30 Recover · 33 Crunch · 36 Take Down · 41 Blizzard · 46 Double-Edge · 51 Stone Edge · 61 Ice Beam
+- Learnset: 1 Tackle · 1 Harden · 1 Rock Slide · 1 Powder Snow · 1 Rapid Spin · 1 Sandstorm · 9 Curse · 12 Icy Wind · 15 Protect · 18 Avalanche · 21 Bite · 24 Ice Fang · 27 Iron Defense · 30 Recover · 33 Crunch · 36 Take Down · 41 Blizzard · 46 Double-Edge · 51 Stone Edge · 61 Ice Beam
 
 ### Decidueye (Hisui) — #724
 
@@ -101,13 +101,13 @@ form also counts the base Pokémon in your Pokédex.
 
 - Type: Bug / Ground
 - Ability: Anticipation
-- Learnset: 1 Tackle · 1 Protect · 1 Faint Attack · 1 Silver Wind · 1 Tail Glow · 10 Protect · 15 Signal Beam · 20 Hidden Power · 23 Confusion · 26 Rock Blast · 29 Harden · 32 Psybeam · 35 Minimize · 38 Flail · 41 Attract · 44 Psychic · 47 Fissure · 50 Bug Buzz
+- Learnset: 1 Tackle · 1 Protect · 1 Faint Attack · 1 Silver Wind · 1 Quiver Dance · 10 Protect · 15 Signal Beam · 20 Hidden Power · 23 Confusion · 26 Rock Blast · 29 Harden · 32 Psybeam · 35 Minimize · 38 Flail · 41 Attract · 44 Psychic · 47 Fissure · 50 Bug Buzz
 
 ### Wormadam (Trash) — #413
 
 - Type: Bug / Steel
 - Ability: Anticipation
-- Learnset: 1 Tackle · 1 Protect · 1 Metal Claw · 1 Faint Attack · 1 Silver Wind · 1 Tail Glow · 10 Protect · 15 Signal Beam · 20 Hidden Power · 23 Confusion · 26 Mirror Shot · 29 Metal Sound · 32 Psybeam · 35 Minimize · 38 Flail · 41 Attract · 44 Psychic · 47 Iron Head · 50 Bug Buzz
+- Learnset: 1 Tackle · 1 Protect · 1 Metal Claw · 1 Faint Attack · 1 Silver Wind · 1 Quiver Dance · 10 Protect · 15 Signal Beam · 20 Hidden Power · 23 Confusion · 26 Mirror Shot · 29 Metal Sound · 32 Psybeam · 35 Minimize · 38 Flail · 41 Attract · 44 Psychic · 47 Iron Head · 50 Bug Buzz
 
 ### Rotom (Heat) — #479
 
@@ -212,7 +212,7 @@ form also counts the base Pokémon in your Pokédex.
 
 - Type: Fighting / Water
 - Ability: Guts
-- Learnset: 1 Leer · 1 Focus Energy · 1 Endure · 1 Rock Smash · 1 Aqua Jet · 1 Water Gun · 12 Aerial Ace · 16 Scary Face · 20 Headbutt · 24 Brick Break · 28 Detect · 32 Bulk Up · 36 Iron Head · 40 Dynamicpunch · 44 Counter · 48 Cross Chop · 52 Focus Punch
+- Learnset: 1 Leer · 1 Focus Energy · 1 Endure · 1 Rock Smash · 1 Aqua Jet · 1 Water Gun · 12 Aerial Ace · 16 Scary Face · 20 Headbutt · 24 Brick Break · 28 Detect · 32 Bulk Up · 36 Iron Head · 40 Dynamicpunch · 44 Counter · 48 Close Combat · 52 Focus Punch
 
 ### Giratina (Origin) — #487
 
@@ -236,121 +236,121 @@ form also counts the base Pokémon in your Pokédex.
 
 - Type: Grass / Flying
 - Ability: Serene Grace
-- Learnset: 1 Growth · 10 Magical Leaf · 19 Leech Seed · 28 Quick Attack · 37 Sweet Scent · 46 Play Rough · 55 Aromatherapy · 64 Air Slash · 73 Energy Ball · 82 Sweet Kiss · 91 Leaf Storm · 100 Solarbeam
+- Learnset: 1 Growth · 10 Magical Leaf · 19 Leech Seed · 28 Quick Attack · 37 Sweet Scent · 46 Play Rough · 55 Aromatherapy · 64 Air Slash · 73 Energy Ball · 82 Sweet Kiss · 91 Leaf Storm · 100 Seed Flare
 
 ### Tornadus (Therian) — #641
 
 - Type: Flying
 - Ability: Regenerator
-- Learnset: 1 Gust · 1 Astonish · 5 Leer · 10 Swagger · 15 Bite · 20 Air Cutter · 25 Agility · 30 Featherdance · 35 Air Slash · 40 Crunch · 45 Extrasensory · 50 Uproar · 55 Cross Chop · 60 Rain Dance · 65 Hurricane · 70 Thrash · 77 Aeroblast
+- Learnset: 1 Gust · 1 Astonish · 5 Leer · 10 Swagger · 15 Bite · 20 Air Cutter · 25 Agility · 30 Featherdance · 35 Air Slash · 40 Crunch · 45 Extrasensory · 50 Uproar · 55 Hammer Arm · 60 Rain Dance · 65 Hurricane · 70 Thrash · 77 Aeroblast
 
 ### Thundurus (Therian) — #642
 
 - Type: Electric / Flying
 - Ability: Volt Absorb
-- Learnset: 1 Thundershock · 1 Astonish · 5 Leer · 10 Swagger · 15 Bite · 20 Shock Wave · 25 Agility · 30 Charge · 35 Spark · 40 Crunch · 45 Discharge · 50 Uproar · 55 Cross Chop · 60 Rain Dance · 65 Thunder · 70 Thrash · 75 Zap Cannon
+- Learnset: 1 Thundershock · 1 Astonish · 5 Leer · 10 Swagger · 15 Bite · 20 Shock Wave · 25 Agility · 30 Charge · 35 Spark · 40 Crunch · 45 Discharge · 50 Uproar · 55 Hammer Arm · 60 Rain Dance · 65 Thunder · 70 Thrash · 75 Zap Cannon
 
 ### Landorus (Therian) — #645
 
 - Type: Ground / Flying
 - Ability: Intimidate
-- Learnset: 1 Sand Tomb · 1 Rock Throw · 5 Leer · 10 Block · 15 Bulldoze · 20 Rock Tomb · 30 Imprison · 35 Rock Slide · 40 Earth Power · 45 Extrasensory · 50 Stone Edge · 55 Cross Chop · 60 Sandstorm · 65 Earthquake · 70 Outrage · 75 Fissure · 80 Bone Club
+- Learnset: 1 Sand Tomb · 1 Rock Throw · 5 Leer · 10 Block · 15 Bulldoze · 20 Rock Tomb · 30 Imprison · 35 Rock Slide · 40 Earth Power · 45 Extrasensory · 50 Stone Edge · 55 Hammer Arm · 60 Sandstorm · 65 Earthquake · 70 Outrage · 75 Fissure · 80 Bone Club
 
 ### Enamorus (Therian) — #905
 
 - Type: Fairy / Flying
 - Ability: Shield Dust
-- Learnset: 1 Astonish · 1 Fairy Wind · 5 Torment · 10 Flatter · 15 Twister · 20 Weather Ball · 25 Iron Defense · 30 Imprison · 35 Mystical Fire · 40 Dazzling Gleam · 45 Extrasensory · 50 Uproar · 55 Superpower · 60 Rest · 65 Moonblast · 70 Outrage · 75 Egg Bomb
+- Learnset: 1 Astonish · 1 Fairy Wind · 5 Torment · 10 Flatter · 15 Twister · 20 Draining Kiss · 25 Iron Defense · 30 Imprison · 35 Mystical Fire · 40 Dazzling Gleam · 45 Extrasensory · 50 Uproar · 55 Superpower · 60 Rest · 65 Moonblast · 70 Outrage · 75 Egg Bomb
 
 ### Kyurem (Black) — #646
 
 - Type: Dragon / Ice
 - Ability: Pressure
-- Learnset: 1 Dragonbreath · 1 Ancientpower · 1 Swords Dance · 1 Ice Punch · 8 Slash · 16 Endeavor · 24 Dragon Pulse · 32 Ice Beam · 40 Hyper Voice · 48 Thunderbolt · 56 Blizzard · 64 Imprison · 72 Outrage · 80 Aurora Beam · 88 Sheer Cold
+- Learnset: 1 Dragonbreath · 1 Ancientpower · 1 Noble Roar · 1 Freeze-Dry · 8 Slash · 16 Endeavor · 24 Dragon Pulse · 32 Ice Beam · 40 Hyper Voice · 48 Thunderbolt · 56 Blizzard · 64 Imprison · 72 Outrage · 80 Ice Punch · 88 Sheer Cold
 
 ### Kyurem (White) — #646
 
 - Type: Dragon / Ice
 - Ability: Pressure
-- Learnset: 1 Dragonbreath · 1 Ancientpower · 1 Swords Dance · 1 Ice Punch · 8 Slash · 16 Endeavor · 24 Dragon Pulse · 32 Ice Beam · 40 Hyper Voice · 48 Sacred Fire · 56 Blizzard · 64 Imprison · 72 Outrage · 80 Aurora Beam · 88 Sheer Cold
+- Learnset: 1 Dragonbreath · 1 Ancientpower · 1 Noble Roar · 1 Freeze-Dry · 8 Slash · 16 Endeavor · 24 Dragon Pulse · 32 Ice Beam · 40 Hyper Voice · 48 Sacred Fire · 56 Blizzard · 64 Imprison · 72 Outrage · 80 Ice Punch · 88 Sheer Cold
 
 ### Hoopa (Unbound) — #720
 
 - Type: Psychic / Dark
 - Ability: Pickup
-- Learnset: 1 Confusion · 1 Destiny Bond · 1 Magic Coat · 6 Astonish · 10 Trick · 15 Light Screen · 19 Psybeam · 25 Skill Swap · 29 Rest · 29 Role Play · 46 Knock Off · 50 Imprison · 50 Reflect · 55 Dark Pulse · 75 Psychic · 85 Crunch
+- Learnset: 1 Confusion · 1 Destiny Bond · 1 Magic Coat · 6 Astonish · 10 Trick · 15 Light Screen · 19 Psybeam · 25 Skill Swap · 29 Rest · 29 Role Play · 46 Knock Off · 50 Imprison · 50 Reflect · 55 Dark Pulse · 75 Psychic · 85 Hyperspace Fury
 
 ### Necrozma (Dusk) — #800
 
 - Type: Psychic / Steel
 - Ability: Prism Armor
-- Learnset: 1 Confusion · 1 Metal Claw · 1 Morning Sun · 1 Moonlight · 1 Shock Wave · 8 Sandstorm · 16 Slash · 24 Night Slash · 32 Psycho Cut · 40 Psywave · 48 Rock Blast · 56 Iron Defense · 64 Power Gem · 72 Photon Geyser · 80 Rest · 88 Prismatic Laser
+- Learnset: 1 Confusion · 1 Metal Claw · 1 Morning Sun · 1 Moonlight · 1 Charge Beam · 8 Sandstorm · 16 Slash · 24 Night Slash · 32 Psycho Cut · 40 Psywave · 48 Rock Blast · 56 Iron Defense · 64 Power Gem · 72 Photon Geyser · 80 Rest · 88 Prismatic Laser
 
 ### Necrozma (Dawn) — #800
 
 - Type: Psychic / Ghost
 - Ability: Prism Armor
-- Learnset: 1 Confusion · 1 Metal Claw · 1 Morning Sun · 1 Moonlight · 1 Shock Wave · 8 Sandstorm · 16 Slash · 24 Night Slash · 32 Psycho Cut · 40 Psywave · 48 Rock Blast · 56 Iron Defense · 64 Power Gem · 72 Photon Geyser · 80 Rest · 88 Prismatic Laser
+- Learnset: 1 Confusion · 1 Metal Claw · 1 Morning Sun · 1 Moonlight · 1 Charge Beam · 8 Sandstorm · 16 Slash · 24 Night Slash · 32 Psycho Cut · 40 Psywave · 48 Rock Blast · 56 Iron Defense · 64 Power Gem · 72 Photon Geyser · 80 Rest · 88 Prismatic Laser
 
 ### Calyrex (Ice) — #898
 
 - Type: Psychic / Ice
 - Ability: Pressure
-- Learnset: 1 Pound · 1 Swords Dance · 1 Stomp · 1 Double Kick · 1 Tackle · 1 Take Down · 1 Thrash · 1 Double-Edge · 1 Tail Whip · 1 Mist · 1 Mega Drain · 1 Growth · 1 Confusion · 1 Torment · 1 Taunt · 1 Iron Defense · 1 Avalanche · 1 Icicle Crash · 1 Glacial Lance · 8 Rain Dance · 16 Giga Drain · 24 Extrasensory · 32 Helping Hand · 40 Spore · 40 Rest · 48 Energy Ball · 56 Psychic · 64 Leech Seed · 72 Trick · 80 Solarbeam · 88 Future Sight
+- Learnset: 1 Pound · 1 Swords Dance · 1 Stomp · 1 Double Kick · 1 Tackle · 1 Take Down · 1 Thrash · 1 Double-Edge · 1 Tail Whip · 1 Mist · 1 Mega Drain · 1 Growth · 1 Confusion · 1 Torment · 1 Taunt · 1 Iron Defense · 1 Avalanche · 1 Icicle Crash · 1 Glacial Lance · 8 Life Dew · 16 Giga Drain · 24 Extrasensory · 32 Helping Hand · 40 Spore · 40 Rest · 48 Energy Ball · 56 Psychic · 64 Leech Seed · 72 Heal Pulse · 80 Solarbeam · 88 Future Sight
 
 ### Calyrex (Shadow) — #898
 
 - Type: Psychic / Ghost
 - Ability: Pressure
-- Learnset: 1 Pound · 1 Stomp · 1 Double Kick · 1 Tackle · 1 Take Down · 1 Thrash · 1 Double-Edge · 1 Tail Whip · 1 Disable · 1 Mega Drain · 1 Growth · 1 Confusion · 1 Agility · 1 Confuse Ray · 1 Haze · 1 Shadow Ball · 1 Fake Tears · 1 Shadow Punch · 1 Astral Barrage · 8 Rain Dance · 16 Giga Drain · 24 Extrasensory · 32 Helping Hand · 40 Spore · 40 Rest · 48 Energy Ball · 56 Psychic · 64 Leech Seed · 72 Trick · 80 Solarbeam · 88 Future Sight
+- Learnset: 1 Pound · 1 Stomp · 1 Double Kick · 1 Tackle · 1 Take Down · 1 Thrash · 1 Double-Edge · 1 Tail Whip · 1 Disable · 1 Mega Drain · 1 Growth · 1 Confusion · 1 Agility · 1 Confuse Ray · 1 Haze · 1 Shadow Ball · 1 Nasty Plot · 1 Shadow Punch · 1 Astral Barrage · 8 Life Dew · 16 Giga Drain · 24 Extrasensory · 32 Helping Hand · 40 Spore · 40 Rest · 48 Energy Ball · 56 Psychic · 64 Leech Seed · 72 Heal Pulse · 80 Solarbeam · 88 Future Sight
 
 ### Zacian (Crowned) — #888
 
 - Type: Fairy / Steel
 - Ability: Intimidate
-- Learnset: 1 Bite · 1 Quick Attack · 1 Metal Claw · 1 Howl · 1 Detect · 1 Sky Uppercut · 11 Slash · 22 Swords Dance · 33 Iron Head · 44 Tail Whip · 55 Crunch · 66 Moonblast · 77 Cross Chop · 88 Giga Impact
+- Learnset: 1 Bite · 1 Quick Attack · 1 Metal Claw · 1 Howl · 1 Detect · 1 Sky Uppercut · 11 Slash · 22 Swords Dance · 33 Iron Head · 44 Noble Roar · 55 Crunch · 66 Moonblast · 77 Close Combat · 88 Giga Impact
 
 ### Zamazenta (Crowned) — #889
 
 - Type: Fighting / Steel
 - Ability: Clear Body
-- Learnset: 1 Bite · 1 Quick Attack · 1 Metal Claw · 1 Howl · 1 Sandstorm · 11 Slash · 22 Iron Defense · 33 Iron Head · 44 Meteor Mash · 55 Crunch · 66 Moonblast · 77 Cross Chop · 88 Giga Impact
+- Learnset: 1 Bite · 1 Quick Attack · 1 Metal Claw · 1 Howl · 1 Sandstorm · 11 Slash · 22 Iron Defense · 33 Iron Head · 44 Meteor Mash · 55 Crunch · 66 Moonblast · 77 Close Combat · 88 Giga Impact
 
 ### Ogerpon (Wellspring Mask) — #1017
 
 - Type: Grass / Water
 - Ability: Water Absorb
-- Learnset: 1 Vine Whip · 1 Leech Seed · 1 Quick Attack · 1 Follow Me · 6 Focus Energy · 12 Growth · 18 Slam · 24 Jump Kick · 30 Solarbeam · 36 Crunch · 42 Synthesis · 48 Aromatherapy · 54 Power Whip · 60 Superpower · 66 Wood Hammer
+- Learnset: 1 Vine Whip · 1 Leech Seed · 1 Quick Attack · 1 Follow Me · 6 Focus Energy · 12 Growth · 18 Slam · 24 Low Sweep · 30 Solarbeam · 36 Crunch · 42 Synthesis · 48 Aromatherapy · 54 Power Whip · 60 Superpower · 66 Wood Hammer
 
 ### Ogerpon (Hearthflame Mask) — #1017
 
 - Type: Grass / Fire
 - Ability: Hustle
-- Learnset: 1 Vine Whip · 1 Leech Seed · 1 Quick Attack · 1 Follow Me · 6 Focus Energy · 12 Growth · 18 Slam · 24 Jump Kick · 30 Solarbeam · 36 Crunch · 42 Synthesis · 48 Aromatherapy · 54 Power Whip · 60 Superpower · 66 Wood Hammer
+- Learnset: 1 Vine Whip · 1 Leech Seed · 1 Quick Attack · 1 Follow Me · 6 Focus Energy · 12 Growth · 18 Slam · 24 Low Sweep · 30 Solarbeam · 36 Crunch · 42 Synthesis · 48 Aromatherapy · 54 Power Whip · 60 Superpower · 66 Wood Hammer
 
 ### Ogerpon (Cornerstone Mask) — #1017
 
 - Type: Grass / Rock
 - Ability: Sturdy
-- Learnset: 1 Vine Whip · 1 Leech Seed · 1 Quick Attack · 1 Follow Me · 6 Focus Energy · 12 Growth · 18 Slam · 24 Jump Kick · 30 Solarbeam · 36 Crunch · 42 Synthesis · 48 Aromatherapy · 54 Power Whip · 60 Superpower · 66 Wood Hammer
+- Learnset: 1 Vine Whip · 1 Leech Seed · 1 Quick Attack · 1 Follow Me · 6 Focus Energy · 12 Growth · 18 Slam · 24 Low Sweep · 30 Solarbeam · 36 Crunch · 42 Synthesis · 48 Aromatherapy · 54 Power Whip · 60 Superpower · 66 Wood Hammer
 
 ### Ursaluna (Bloodmoon) — #901
 
 - Type: Ground / Normal
 - Ability: Keen Eye
-- Learnset: 1 Scratch · 1 Leer · 1 Lick · 1 Earthquake · 8 Fury Swipes · 13 Faint Attack · 17 Harden · 22 Slash · 25 Play Nice · 35 Scary Face · 41 Rest · 41 Snore · 48 Earth Power · 56 Moonblast · 64 Cross Chop · 70 Hyper Beam
+- Learnset: 1 Scratch · 1 Leer · 1 Lick · 1 Earthquake · 8 Fury Swipes · 13 Faint Attack · 17 Harden · 22 Slash · 25 Play Nice · 35 Scary Face · 41 Rest · 41 Snore · 48 Earth Power · 56 Moonblast · 64 Hammer Arm · 70 Hyper Beam
 
 ### Zygarde (10) — #718
 
 - Type: Dragon / Ground
 - Ability: Pressure
-- Learnset: 1 Bind · 1 Bite · 1 Dragonbreath · 1 Bulldoze · 1 Bone Club · 1 Magnitude · 1 Dragon Claw · 8 Haze · 16 Dig · 24 Safeguard · 32 Crunch · 40 Dragon Pulse · 48 Land's Wrath · 56 Glare · 64 Sandstorm · 72 Acid Armor · 80 Earthquake · 88 Outrage
+- Learnset: 1 Bind · 1 Bite · 1 Dragonbreath · 1 Bulldoze · 1 Bone Club · 1 Magnitude · 1 Dragon Claw · 8 Haze · 16 Dig · 24 Safeguard · 32 Crunch · 40 Dragon Pulse · 48 Land's Wrath · 56 Glare · 64 Sandstorm · 72 Coil · 80 Earthquake · 88 Outrage
 
 ### Zygarde (Complete) — #718
 
 - Type: Dragon / Ground
 - Ability: Pressure
-- Learnset: 1 Bind · 1 Bite · 1 Dragonbreath · 1 Bulldoze · 1 Bone Club · 1 Magnitude · 1 Dragon Claw · 8 Haze · 16 Dig · 24 Safeguard · 32 Crunch · 40 Dragon Pulse · 48 Land's Wrath · 56 Glare · 64 Sandstorm · 72 Acid Armor · 80 Earthquake · 88 Outrage
+- Learnset: 1 Bind · 1 Bite · 1 Dragonbreath · 1 Bulldoze · 1 Bone Club · 1 Magnitude · 1 Dragon Claw · 8 Haze · 16 Dig · 24 Safeguard · 32 Crunch · 40 Dragon Pulse · 48 Land's Wrath · 56 Glare · 64 Sandstorm · 72 Coil · 80 Earthquake · 88 Outrage
 
 ### Floette (Eternal) — #670
 
@@ -390,49 +390,49 @@ form also counts the base Pokémon in your Pokédex.
 
 - Type: Fairy
 - Ability: Sweet Veil
-- Learnset: 1 Tackle · 1 Sweet Kiss · 1 Sweet Scent · 1 Minimize · 1 Double Team · 15 Uproar · 20 Charm · 25 Attract · 30 Acid Armor · 35 Dazzling Gleam · 40 Recover · 45 Softboiled · 50 Belly Drum
+- Learnset: 1 Tackle · 1 Sweet Kiss · 1 Sweet Scent · 1 Minimize · 1 Double Team · 15 Draining Kiss · 20 Charm · 25 Attract · 30 Acid Armor · 35 Dazzling Gleam · 40 Recover · 45 Softboiled · 50 Belly Drum
 
 ### Alcremie (Matcha Cream) — #869
 
 - Type: Fairy
 - Ability: Sweet Veil
-- Learnset: 1 Tackle · 1 Sweet Kiss · 1 Sweet Scent · 1 Minimize · 1 Double Team · 15 Uproar · 20 Charm · 25 Attract · 30 Acid Armor · 35 Dazzling Gleam · 40 Recover · 45 Softboiled · 50 Belly Drum
+- Learnset: 1 Tackle · 1 Sweet Kiss · 1 Sweet Scent · 1 Minimize · 1 Double Team · 15 Draining Kiss · 20 Charm · 25 Attract · 30 Acid Armor · 35 Dazzling Gleam · 40 Recover · 45 Softboiled · 50 Belly Drum
 
 ### Alcremie (Mint Cream) — #869
 
 - Type: Fairy
 - Ability: Sweet Veil
-- Learnset: 1 Tackle · 1 Sweet Kiss · 1 Sweet Scent · 1 Minimize · 1 Double Team · 15 Uproar · 20 Charm · 25 Attract · 30 Acid Armor · 35 Dazzling Gleam · 40 Recover · 45 Softboiled · 50 Belly Drum
+- Learnset: 1 Tackle · 1 Sweet Kiss · 1 Sweet Scent · 1 Minimize · 1 Double Team · 15 Draining Kiss · 20 Charm · 25 Attract · 30 Acid Armor · 35 Dazzling Gleam · 40 Recover · 45 Softboiled · 50 Belly Drum
 
 ### Alcremie (Lemon Cream) — #869
 
 - Type: Fairy
 - Ability: Sweet Veil
-- Learnset: 1 Tackle · 1 Sweet Kiss · 1 Sweet Scent · 1 Minimize · 1 Double Team · 15 Uproar · 20 Charm · 25 Attract · 30 Acid Armor · 35 Dazzling Gleam · 40 Recover · 45 Softboiled · 50 Belly Drum
+- Learnset: 1 Tackle · 1 Sweet Kiss · 1 Sweet Scent · 1 Minimize · 1 Double Team · 15 Draining Kiss · 20 Charm · 25 Attract · 30 Acid Armor · 35 Dazzling Gleam · 40 Recover · 45 Softboiled · 50 Belly Drum
 
 ### Alcremie (Salted Cream) — #869
 
 - Type: Fairy
 - Ability: Sweet Veil
-- Learnset: 1 Tackle · 1 Sweet Kiss · 1 Sweet Scent · 1 Minimize · 1 Double Team · 15 Uproar · 20 Charm · 25 Attract · 30 Acid Armor · 35 Dazzling Gleam · 40 Recover · 45 Softboiled · 50 Belly Drum
+- Learnset: 1 Tackle · 1 Sweet Kiss · 1 Sweet Scent · 1 Minimize · 1 Double Team · 15 Draining Kiss · 20 Charm · 25 Attract · 30 Acid Armor · 35 Dazzling Gleam · 40 Recover · 45 Softboiled · 50 Belly Drum
 
 ### Alcremie (Ruby Swirl) — #869
 
 - Type: Fairy
 - Ability: Sweet Veil
-- Learnset: 1 Tackle · 1 Sweet Kiss · 1 Sweet Scent · 1 Minimize · 1 Double Team · 15 Uproar · 20 Charm · 25 Attract · 30 Acid Armor · 35 Dazzling Gleam · 40 Recover · 45 Softboiled · 50 Belly Drum
+- Learnset: 1 Tackle · 1 Sweet Kiss · 1 Sweet Scent · 1 Minimize · 1 Double Team · 15 Draining Kiss · 20 Charm · 25 Attract · 30 Acid Armor · 35 Dazzling Gleam · 40 Recover · 45 Softboiled · 50 Belly Drum
 
 ### Alcremie (Caramel Swirl) — #869
 
 - Type: Fairy
 - Ability: Sweet Veil
-- Learnset: 1 Tackle · 1 Sweet Kiss · 1 Sweet Scent · 1 Minimize · 1 Double Team · 15 Uproar · 20 Charm · 25 Attract · 30 Acid Armor · 35 Dazzling Gleam · 40 Recover · 45 Softboiled · 50 Belly Drum
+- Learnset: 1 Tackle · 1 Sweet Kiss · 1 Sweet Scent · 1 Minimize · 1 Double Team · 15 Draining Kiss · 20 Charm · 25 Attract · 30 Acid Armor · 35 Dazzling Gleam · 40 Recover · 45 Softboiled · 50 Belly Drum
 
 ### Alcremie (Rainbow Swirl) — #869
 
 - Type: Fairy
 - Ability: Sweet Veil
-- Learnset: 1 Tackle · 1 Sweet Kiss · 1 Sweet Scent · 1 Minimize · 1 Double Team · 15 Uproar · 20 Charm · 25 Attract · 30 Acid Armor · 35 Dazzling Gleam · 40 Recover · 45 Softboiled · 50 Belly Drum
+- Learnset: 1 Tackle · 1 Sweet Kiss · 1 Sweet Scent · 1 Minimize · 1 Double Team · 15 Draining Kiss · 20 Charm · 25 Attract · 30 Acid Armor · 35 Dazzling Gleam · 40 Recover · 45 Softboiled · 50 Belly Drum
 
 ### Shellos (East) — #422
 
@@ -516,27 +516,27 @@ form also counts the base Pokémon in your Pokédex.
 
 - Type: Ghost
 - Ability: Weak Armor
-- Learnset: 1 Withdraw · 1 Astonish · 6 Minimize · 12 Mega Drain · 24 Faint Attack · 30 Sweet Scent · 36 Giga Drain · 42 Fake Tears · 48 Shadow Ball · 54 Memento · 60 Belly Drum
+- Learnset: 1 Withdraw · 1 Astonish · 6 Minimize · 12 Mega Drain · 24 Faint Attack · 30 Sweet Scent · 36 Giga Drain · 42 Nasty Plot · 48 Shadow Ball · 54 Memento · 60 Belly Drum
 - Evolves: into Polteageist (Antique) (use Chipped Pot)
 
 ### Polteageist (Antique) — #855
 
 - Type: Ghost
 - Ability: Weak Armor
-- Learnset: 1 Mega Drain · 1 Withdraw · 1 Astonish · 1 Minimize · 1 Aromatherapy · 1 Belly Drum · 18 Protect · 24 Faint Attack · 30 Sweet Scent · 36 Giga Drain · 42 Fake Tears · 48 Shadow Ball · 54 Memento · 60 Pain Split · 66 Curse
+- Learnset: 1 Mega Drain · 1 Withdraw · 1 Astonish · 1 Minimize · 1 Aromatherapy · 1 Belly Drum · 18 Protect · 24 Faint Attack · 30 Sweet Scent · 36 Giga Drain · 42 Nasty Plot · 48 Shadow Ball · 54 Memento · 60 Pain Split · 66 Curse
 
 ### Poltchageist (Artisan) — #1012
 
 - Type: Grass / Ghost
 - Ability: Shed Skin
-- Learnset: 1 Stun Spore · 1 Withdraw · 1 Astonish · 6 Absorb · 12 Rain Dance · 18 Faint Attack · 24 Mega Drain · 30 Shadow Punch · 36 Rage Powder · 42 Giga Drain · 48 Shadow Ball · 54 Memento · 60 Leaf Storm
+- Learnset: 1 Stun Spore · 1 Withdraw · 1 Astonish · 6 Absorb · 12 Life Dew · 18 Faint Attack · 24 Mega Drain · 30 Shadow Punch · 36 Rage Powder · 42 Giga Drain · 48 Shadow Ball · 54 Memento · 60 Leaf Storm
 - Evolves: into Sinistcha (Masterpiece) (use Masterpiece Teacup)
 
 ### Sinistcha (Masterpiece) — #1013
 
 - Type: Grass / Ghost
 - Ability: Shed Skin
-- Learnset: 1 Stun Spore · 1 Withdraw · 1 Astonish · 1 Leaf Blade · 6 Absorb · 12 Rain Dance · 18 Faint Attack · 24 Mega Drain · 30 Shadow Punch · 36 Rage Powder · 42 Aromatherapy · 48 Shadow Ball · 54 Memento · 60 Leaf Storm
+- Learnset: 1 Stun Spore · 1 Withdraw · 1 Astonish · 1 Leaf Blade · 6 Absorb · 12 Life Dew · 18 Faint Attack · 24 Mega Drain · 30 Shadow Punch · 36 Rage Powder · 42 Aromatherapy · 48 Shadow Ball · 54 Memento · 60 Leaf Storm
 
 ### Qwilfish (Hisui) — #211
 
@@ -562,7 +562,7 @@ form also counts the base Pokémon in your Pokédex.
 
 - Type: Electric / Psychic
 - Ability: Swift Swim
-- Learnset: 1 Tail Whip · 1 Growl · 1 Thundershock · 1 Thunder Wave · 1 Thunder · 1 Psychic · 1 Agility · 1 Quick Attack · 1 Double Team · 1 Light Screen · 1 Sweet Kiss · 1 Charm · 1 Spark · 1 Iron Tail · 1 Tackle · 1 Fake Tears · 1 Discharge · 1 Shock Wave · 1 Play Nice · 1 Nuzzle · 5 Thunderbolt
+- Learnset: 1 Tail Whip · 1 Growl · 1 Thundershock · 1 Thunder Wave · 1 Thunder · 1 Psychic · 1 Agility · 1 Quick Attack · 1 Double Team · 1 Light Screen · 1 Sweet Kiss · 1 Charm · 1 Spark · 1 Iron Tail · 1 Tackle · 1 Nasty Plot · 1 Discharge · 1 Shock Wave · 1 Play Nice · 1 Nuzzle · 5 Thunderbolt
 
 ### Sandshrew (Alola) — #27
 
@@ -581,7 +581,7 @@ form also counts the base Pokémon in your Pokédex.
 
 - Type: Ice
 - Ability: Snow Cloak
-- Learnset: 1 Tail Whip · 1 Powder Snow · 4 Disable · 8 Ice Shard · 12 Spite · 16 Icy Wind · 20 Confuse Ray · 24 Aurora Beam · 28 Extrasensory · 32 Ice Beam · 36 Imprison · 40 Mist · 44 Haze · 48 Ice Punch · 52 Blizzard
+- Learnset: 1 Tail Whip · 1 Powder Snow · 4 Disable · 8 Ice Shard · 12 Spite · 16 Icy Wind · 20 Confuse Ray · 24 Aurora Beam · 28 Extrasensory · 32 Ice Beam · 36 Imprison · 40 Mist · 44 Haze · 48 Freeze-Dry · 52 Blizzard
 - Evolves: into Ninetales (Alola) (use Ice Stone)
 
 ### Ninetales (Alola) — #38
@@ -607,21 +607,21 @@ form also counts the base Pokémon in your Pokédex.
 
 - Type: Dark
 - Ability: Pickup / Technician
-- Learnset: 1 Growl · 1 Fake Out · 4 Tackle · 8 Scratch · 12 Pay Day · 16 Bite · 20 Taunt · 24 Faint Attack · 29 Fury Swipes · 32 Screech · 36 Night Slash · 40 Fake Tears · 44 Play Rough
+- Learnset: 1 Growl · 1 Fake Out · 4 Tackle · 8 Scratch · 12 Pay Day · 16 Bite · 20 Taunt · 24 Faint Attack · 29 Fury Swipes · 32 Screech · 36 Night Slash · 40 Nasty Plot · 44 Play Rough
 - Evolves: into Persian (Alola) (high friendship)
 
 ### Meowth (Galar) — #52
 
 - Type: Steel
 - Ability: Pickup / Tough Claws
-- Learnset: 1 Growl · 1 Fake Out · 4 Fake Tears · 8 Scratch · 12 Pay Day · 16 Metal Claw · 20 Taunt · 24 Swagger · 29 Fury Swipes · 32 Screech · 36 Slash · 40 Metal Sound · 44 Thrash
+- Learnset: 1 Growl · 1 Fake Out · 4 Hone Claws · 8 Scratch · 12 Pay Day · 16 Metal Claw · 20 Taunt · 24 Swagger · 29 Fury Swipes · 32 Screech · 36 Slash · 40 Metal Sound · 44 Thrash
 - Evolves: into Perrserker (level 28)
 
 ### Persian (Alola) — #53
 
 - Type: Dark
 - Ability: Marvel Scale / Technician
-- Learnset: 1 Scratch · 1 Growl · 1 Fake Out · 1 Tackle · 1 Power Gem · 1 Switcheroo · 1 Torment · 12 Pay Day · 16 Bite · 20 Taunt · 24 Faint Attack · 31 Fury Swipes · 36 Screech · 42 Night Slash · 48 Fake Tears · 54 Play Rough
+- Learnset: 1 Scratch · 1 Growl · 1 Fake Out · 1 Tackle · 1 Power Gem · 1 Switcheroo · 1 Torment · 12 Pay Day · 16 Bite · 20 Taunt · 24 Faint Attack · 31 Fury Swipes · 36 Screech · 42 Night Slash · 48 Nasty Plot · 54 Play Rough
 
 ### Geodude (Alola) — #74
 
@@ -647,14 +647,14 @@ form also counts the base Pokémon in your Pokédex.
 
 - Type: Poison / Dark
 - Ability: Poison Touch / Pickup
-- Learnset: 1 Pound · 1 Poison Gas · 4 Harden · 7 Bite · 12 Disable · 15 Acid · 18 Poison Fang · 21 Minimize · 26 Toxic · 29 Knock Off · 32 Crunch · 37 Screech · 40 Gunk Shot · 43 Acid Armor · 46 Sludge Bomb · 48 Memento
+- Learnset: 1 Pound · 1 Poison Gas · 4 Harden · 7 Bite · 12 Disable · 15 Acid Spray · 18 Poison Fang · 21 Minimize · 26 Toxic · 29 Knock Off · 32 Crunch · 37 Screech · 40 Gunk Shot · 43 Acid Armor · 46 Sludge Bomb · 48 Memento
 - Evolves: into Muk (Alola) (level 38)
 
 ### Muk (Alola) — #89
 
 - Type: Poison / Dark
 - Ability: Poison Touch / Pickup
-- Learnset: 1 Pound · 1 Bite · 1 Harden · 1 Poison Gas · 12 Disable · 15 Acid · 18 Poison Fang · 21 Minimize · 26 Toxic · 29 Knock Off · 32 Crunch · 37 Screech · 40 Gunk Shot · 46 Acid Armor · 52 Sludge Bomb · 57 Memento
+- Learnset: 1 Pound · 1 Bite · 1 Harden · 1 Poison Gas · 12 Disable · 15 Acid Spray · 18 Poison Fang · 21 Minimize · 26 Toxic · 29 Knock Off · 32 Crunch · 37 Screech · 40 Gunk Shot · 46 Acid Armor · 52 Sludge Bomb · 57 Memento
 
 ### Exeggutor (Alola) — #103
 
@@ -666,39 +666,39 @@ form also counts the base Pokémon in your Pokédex.
 
 - Type: Fire / Ghost
 - Ability: Effect Spore / Lightningrod
-- Learnset: 1 Headbutt · 1 Double-Edge · 1 Tail Whip · 1 Growl · 1 Fire Spin · 1 Focus Energy · 1 Mud-Slap · 1 False Swipe · 1 Slash · 1 Shadow Bone · 12 Flame Wheel · 16 Shadow Punch · 20 Thief · 24 Dig · 31 Bone Rush · 36 Will-O-Wisp · 42 Endeavor · 48 Bonemerang · 54 Thrash · 60 Fire Blast
+- Learnset: 1 Headbutt · 1 Double-Edge · 1 Tail Whip · 1 Growl · 1 Fire Spin · 1 Focus Energy · 1 Mud-Slap · 1 False Swipe · 1 Slash · 1 Shadow Bone · 12 Flame Wheel · 16 Shadow Punch · 20 Thief · 24 Dig · 31 Bone Rush · 36 Will-O-Wisp · 42 Endeavor · 48 Bonemerang · 54 Thrash · 60 Flare Blitz
 
 ### Ponyta (Galar) — #77
 
 - Type: Psychic
 - Ability: Run Away / Immunity
-- Learnset: 1 Tackle · 1 Growl · 5 Tail Whip · 10 Confusion · 15 Fairy Wind · 20 Agility · 25 Psybeam · 30 Stomp · 35 Rest · 41 Take Down · 45 Dazzling Gleam · 50 Psychic · 55 Trick
+- Learnset: 1 Tackle · 1 Growl · 5 Tail Whip · 10 Confusion · 15 Fairy Wind · 20 Agility · 25 Psybeam · 30 Stomp · 35 Heal Pulse · 41 Take Down · 45 Dazzling Gleam · 50 Psychic · 55 Rest
 - Evolves: into Rapidash (Galar) (level 40)
 
 ### Rapidash (Galar) — #78
 
 - Type: Psychic / Fairy
 - Ability: Run Away / Immunity
-- Learnset: 1 Tackle · 1 Tail Whip · 1 Growl · 1 Confusion · 1 Quick Attack · 1 Megahorn · 1 Psycho Cut · 15 Fairy Wind · 20 Agility · 25 Psybeam · 30 Stomp · 35 Rest · 43 Take Down · 49 Dazzling Gleam · 56 Psychic · 63 Trick
+- Learnset: 1 Tackle · 1 Tail Whip · 1 Growl · 1 Confusion · 1 Quick Attack · 1 Megahorn · 1 Psycho Cut · 15 Fairy Wind · 20 Agility · 25 Psybeam · 30 Stomp · 35 Heal Pulse · 43 Take Down · 49 Dazzling Gleam · 56 Psychic · 63 Rest
 
 ### Slowpoke (Galar) — #79
 
 - Type: Psychic
 - Ability: Pickup / Own Tempo
-- Learnset: 1 Tackle · 1 Curse · 3 Growl · 6 Acid · 9 Yawn · 12 Confusion · 15 Disable · 18 Water Pulse · 21 Headbutt · 24 Zen Headbutt · 27 Amnesia · 30 Surf · 33 Slack Off · 36 Psychic · 39 Psych Up · 42 Rain Dance · 45 Rest
+- Learnset: 1 Tackle · 1 Curse · 3 Growl · 6 Acid · 9 Yawn · 12 Confusion · 15 Disable · 18 Water Pulse · 21 Headbutt · 24 Zen Headbutt · 27 Amnesia · 30 Surf · 33 Slack Off · 36 Psychic · 39 Psych Up · 42 Rain Dance · 45 Heal Pulse
 - Evolves: into Slowbro (Galar) (use Galarica Cuff); into Slowking (Galar) (use Galarica Wreath)
 
 ### Slowbro (Galar) — #80
 
 - Type: Poison / Psychic
 - Ability: Speed Boost / Own Tempo
-- Learnset: 1 Tackle · 1 Growl · 1 Acid · 1 Withdraw · 1 Curse · 1 Sludge Bomb · 9 Yawn · 12 Confusion · 15 Disable · 18 Water Pulse · 21 Headbutt · 24 Zen Headbutt · 27 Amnesia · 30 Surf · 33 Slack Off · 36 Psychic · 39 Psych Up · 42 Rain Dance · 45 Rest
+- Learnset: 1 Tackle · 1 Growl · 1 Acid · 1 Withdraw · 1 Curse · 1 Shell Side Arm · 9 Yawn · 12 Confusion · 15 Disable · 18 Water Pulse · 21 Headbutt · 24 Zen Headbutt · 27 Amnesia · 30 Surf · 33 Slack Off · 36 Psychic · 39 Psych Up · 42 Rain Dance · 45 Heal Pulse
 
 ### Slowking (Galar) — #199
 
 - Type: Poison / Psychic
 - Ability: Natural Cure / Own Tempo
-- Learnset: 1 Tackle · 1 Growl · 1 Acid · 1 Curse · 1 Swagger · 1 Power Gem · 1 Fake Tears · 1 Extrasensory · 9 Yawn · 12 Confusion · 15 Disable · 18 Water Pulse · 21 Headbutt · 24 Zen Headbutt · 27 Amnesia · 30 Surf · 33 Slack Off · 36 Psychic · 39 Psych Up · 42 Rain Dance · 45 Rest
+- Learnset: 1 Tackle · 1 Growl · 1 Acid · 1 Curse · 1 Swagger · 1 Power Gem · 1 Nasty Plot · 1 Extrasensory · 9 Yawn · 12 Confusion · 15 Disable · 18 Water Pulse · 21 Headbutt · 24 Zen Headbutt · 27 Amnesia · 30 Surf · 33 Slack Off · 36 Psychic · 39 Psych Up · 42 Rain Dance · 45 Heal Pulse
 
 ### Farfetch'd (Galar) — #83
 
@@ -717,7 +717,7 @@ form also counts the base Pokémon in your Pokédex.
 
 - Type: Ice / Psychic
 - Ability: Vital Spirit / Own Tempo
-- Learnset: 1 Pound · 1 Mimic · 1 Light Screen · 1 Reflect · 1 Protect · 1 Safeguard · 1 Baton Pass · 1 Encore · 1 Rapid Spin · 1 Role Play · 1 Recycle · 1 Copycat · 1 Ice Shard · 1 Softboiled · 1 Dazzling Gleam · 12 Confusion · 16 Magic Coat · 20 Icy Wind · 24 Double Kick · 28 Psybeam · 32 Hypnosis · 36 Mirror Coat · 40 Faint Attack · 44 Ice Punch · 48 Psychic · 52 Teeter Dance
+- Learnset: 1 Pound · 1 Mimic · 1 Light Screen · 1 Reflect · 1 Protect · 1 Safeguard · 1 Baton Pass · 1 Encore · 1 Rapid Spin · 1 Role Play · 1 Recycle · 1 Copycat · 1 Ice Shard · 1 Softboiled · 1 Dazzling Gleam · 12 Confusion · 16 Magic Coat · 20 Icy Wind · 24 Double Kick · 28 Psybeam · 32 Hypnosis · 36 Mirror Coat · 40 Faint Attack · 44 Freeze-Dry · 48 Psychic · 52 Teeter Dance
 - Evolves: into Mr. Rime (level 42)
 
 ### Articuno (Galar) — #144
@@ -730,13 +730,13 @@ form also counts the base Pokémon in your Pokédex.
 
 - Type: Fighting / Flying
 - Ability: Defiant
-- Learnset: 1 Peck · 1 Focus Energy · 5 Rock Smash · 10 Light Screen · 15 Aerial Ace · 20 Agility · 25 Ancientpower · 30 Brick Break · 35 Drill Peck · 40 Reflect · 45 Sky Uppercut · 50 Bulk Up · 55 Counter · 60 Detect · 65 Cross Chop · 70 Reversal
+- Learnset: 1 Peck · 1 Focus Energy · 5 Rock Smash · 10 Light Screen · 15 Aerial Ace · 20 Agility · 25 Ancientpower · 30 Brick Break · 35 Drill Peck · 40 Reflect · 45 Thunderous Kick · 50 Bulk Up · 55 Counter · 60 Detect · 65 Close Combat · 70 Reversal
 
 ### Moltres (Galar) — #146
 
 - Type: Dark / Flying
 - Ability: Guts
-- Learnset: 1 Gust · 1 Leer · 5 Faint Attack · 10 Safeguard · 15 Wing Attack · 20 Agility · 25 Ancientpower · 30 Bite · 35 Air Slash · 40 Belly Drum · 45 Fiery Wrath · 50 Fake Tears · 55 Hurricane · 60 Endure · 65 Memento · 70 Sky Attack
+- Learnset: 1 Gust · 1 Leer · 5 Faint Attack · 10 Safeguard · 15 Wing Attack · 20 Agility · 25 Ancientpower · 30 Bite · 35 Air Slash · 40 Belly Drum · 45 Fiery Wrath · 50 Nasty Plot · 55 Hurricane · 60 Endure · 65 Memento · 70 Sky Attack
 
 ### Corsola (Galar) — #222
 
@@ -756,46 +756,46 @@ form also counts the base Pokémon in your Pokédex.
 
 - Type: Dark / Normal
 - Ability: Pickup
-- Learnset: 1 Sand-Attack · 1 Tackle · 1 Pin Missile · 1 Leer · 1 Lick · 1 Night Slash · 1 Switcheroo · 1 Baby-Doll Eyes · 9 Snarl · 12 Headbutt · 15 Fake Tears · 18 Fury Swipes · 23 Rest · 28 Take Down · 33 Scary Face · 38 Counter · 43 Taunt · 48 Double-Edge
+- Learnset: 1 Sand-Attack · 1 Tackle · 1 Pin Missile · 1 Leer · 1 Lick · 1 Night Slash · 1 Switcheroo · 1 Baby-Doll Eyes · 9 Snarl · 12 Headbutt · 15 Hone Claws · 18 Fury Swipes · 23 Rest · 28 Take Down · 33 Scary Face · 38 Counter · 43 Taunt · 48 Double-Edge
 - Evolves: into Obstagoon (level 35, at night)
 
 ### Growlithe (Hisui) — #58
 
 - Type: Fire / Rock
 - Ability: Intimidate / Flash Fire
-- Learnset: 1 Leer · 1 Ember · 4 Howl · 8 Bite · 12 Flame Wheel · 16 Helping Hand · 24 Fire Punch · 28 Headbutt · 32 Crunch · 36 Take Down · 40 Flamethrower · 44 Roar · 48 Rock Slide · 52 Reversal · 56 Fire Blast
+- Learnset: 1 Leer · 1 Ember · 4 Howl · 8 Bite · 12 Flame Wheel · 16 Helping Hand · 24 Fire Fang · 28 Headbutt · 32 Crunch · 36 Take Down · 40 Flamethrower · 44 Roar · 48 Rock Slide · 52 Reversal · 56 Flare Blitz
 - Evolves: into Arcanine (Hisui) (use Fire Stone)
 
 ### Arcanine (Hisui) — #59
 
 - Type: Fire / Rock
 - Ability: Intimidate / Flash Fire
-- Learnset: 1 Take Down · 1 Leer · 1 Bite · 1 Roar · 1 Ember · 1 Rock Throw · 1 Agility · 1 Rock Slide · 1 Flame Wheel · 1 Reversal · 1 Crunch · 1 Extremespeed · 1 Helping Hand · 1 Howl · 1 Fire Blast · 1 Fire Punch · 1 Headbutt · 5 Flamethrower · 64 Overheat
+- Learnset: 1 Take Down · 1 Leer · 1 Bite · 1 Roar · 1 Ember · 1 Rock Throw · 1 Agility · 1 Rock Slide · 1 Flame Wheel · 1 Reversal · 1 Crunch · 1 Extremespeed · 1 Helping Hand · 1 Howl · 1 Flare Blitz · 1 Fire Fang · 1 Headbutt · 5 Flamethrower · 64 Fire Blast
 
 ### Voltorb (Hisui) — #100
 
 - Type: Electric / Grass
 - Ability: Soundproof / Static
-- Learnset: 1 Tackle · 1 Charge · 4 Thundershock · 6 Stun Spore · 9 Bullet Seed · 11 Rollout · 13 Screech · 16 Shock Wave · 20 Swift · 22 Thunderpunch · 26 Selfdestruct · 29 Energy Ball · 34 Seed Bomb · 34 Discharge · 41 Explosion · 46 Metal Claw · 50 Spore
+- Learnset: 1 Tackle · 1 Charge · 4 Thundershock · 6 Stun Spore · 9 Bullet Seed · 11 Rollout · 13 Screech · 16 Charge Beam · 20 Swift · 22 Shock Wave · 26 Selfdestruct · 29 Energy Ball · 34 Seed Bomb · 34 Discharge · 41 Explosion · 46 Metal Claw · 50 Spore
 - Evolves: into Electrode (Hisui) (use Leaf Stone)
 
 ### Electrode (Hisui) — #101
 
 - Type: Electric / Grass
 - Ability: Soundproof / Static
-- Learnset: 1 Tackle · 1 Charge · 1 Frenzy Plant · 4 Thundershock · 6 Stun Spore · 9 Bullet Seed · 11 Rollout · 13 Screech · 16 Shock Wave · 20 Swift · 22 Thunderpunch · 26 Selfdestruct · 29 Energy Ball · 34 Seed Bomb · 34 Discharge · 41 Explosion · 46 Metal Claw · 50 Spore
+- Learnset: 1 Tackle · 1 Charge · 1 Frenzy Plant · 4 Thundershock · 6 Stun Spore · 9 Bullet Seed · 11 Rollout · 13 Screech · 16 Charge Beam · 20 Swift · 22 Shock Wave · 26 Selfdestruct · 29 Energy Ball · 34 Seed Bomb · 34 Discharge · 41 Explosion · 46 Metal Claw · 50 Spore
 
 ### Typhlosion (Hisui) — #157
 
 - Type: Fire / Ghost
 - Ability: Blaze
-- Learnset: 1 Tackle · 1 Double-Edge · 1 Leer · 1 Ember · 1 Smokescreen · 1 Eruption · 1 Metal Claw · 1 Shadow Punch · 13 Quick Attack · 20 Flame Wheel · 24 Defense Curl · 31 Swift · 35 Fire Punch · 43 Lava Plume · 48 Flamethrower · 56 Inferno · 61 Rollout · 74 Overheat
+- Learnset: 1 Tackle · 1 Double-Edge · 1 Leer · 1 Ember · 1 Smokescreen · 1 Eruption · 1 Metal Claw · 1 Shadow Punch · 13 Quick Attack · 20 Flame Wheel · 24 Defense Curl · 31 Swift · 35 Flame Charge · 43 Lava Plume · 48 Flamethrower · 56 Inferno · 61 Rollout · 74 Overheat
 
 ### Sneasel (Hisui) — #215
 
 - Type: Fighting / Poison
 - Ability: Inner Focus / Keen Eye
-- Learnset: 1 Scratch · 1 Leer · 1 Rock Smash · 6 Taunt · 12 Quick Attack · 18 Metal Claw · 24 Poison Jab · 30 Brick Break · 36 Fake Tears · 42 Slash · 48 Agility · 54 Screech · 60 Cross Chop
+- Learnset: 1 Scratch · 1 Leer · 1 Rock Smash · 6 Taunt · 12 Quick Attack · 18 Metal Claw · 24 Poison Jab · 30 Brick Break · 36 Hone Claws · 42 Slash · 48 Agility · 54 Screech · 60 Close Combat
 - Evolves: into Sneasler (holding Razor Claw, by day)
 
 ### Wooper (Paldea) — #194
@@ -809,17 +809,17 @@ form also counts the base Pokémon in your Pokédex.
 
 - Type: Fighting
 - Ability: Intimidate / Guts
-- Learnset: 1 Tackle · 1 Tail Whip · 5 Swords Dance · 10 Double Kick · 15 Faint Attack · 20 Headbutt · 25 Scary Face · 30 Zen Headbutt · 35 Hyper Voice · 40 Rest · 45 Swagger · 50 Thrash · 55 Double-Edge · 60 Cross Chop
+- Learnset: 1 Tackle · 1 Tail Whip · 5 Work Up · 10 Double Kick · 15 Faint Attack · 20 Headbutt · 25 Scary Face · 30 Zen Headbutt · 35 Hyper Voice · 40 Rest · 45 Swagger · 50 Thrash · 55 Double-Edge · 60 Close Combat
 
 ### Tauros (Paldea Blaze Breed) — #128
 
 - Type: Fighting / Fire
 - Ability: Intimidate / Guts
-- Learnset: 1 Tackle · 1 Tail Whip · 5 Swords Dance · 10 Double Kick · 15 Flame Wheel · 20 Headbutt · 25 Scary Face · 30 Zen Headbutt · 35 Hyper Voice · 40 Rest · 45 Swagger · 50 Thrash · 55 Fire Blast · 60 Cross Chop
+- Learnset: 1 Tackle · 1 Tail Whip · 5 Work Up · 10 Double Kick · 15 Flame Charge · 20 Headbutt · 25 Scary Face · 30 Zen Headbutt · 35 Hyper Voice · 40 Rest · 45 Swagger · 50 Thrash · 55 Flare Blitz · 60 Close Combat
 
 ### Tauros (Paldea Aqua Breed) — #128
 
 - Type: Fighting / Water
 - Ability: Intimidate / Guts
-- Learnset: 1 Tackle · 1 Tail Whip · 5 Swords Dance · 10 Double Kick · 15 Aqua Jet · 20 Headbutt · 25 Scary Face · 30 Zen Headbutt · 35 Hyper Voice · 40 Rest · 45 Swagger · 50 Thrash · 55 Hydro Pump · 60 Cross Chop
+- Learnset: 1 Tackle · 1 Tail Whip · 5 Work Up · 10 Double Kick · 15 Aqua Jet · 20 Headbutt · 25 Scary Face · 30 Zen Headbutt · 35 Hyper Voice · 40 Rest · 45 Swagger · 50 Thrash · 55 Hydro Pump · 60 Close Combat
 

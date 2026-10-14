@@ -28,10 +28,12 @@ Paldea Pokémon can live in Kanto and Hoenn.
 
 ### Fits the Game
 
-- ⚔️ **118 newer moves, for real:** Moonblast, Dazzling Gleam, Play Rough, Shadow Claw, Earth
+- ⚔️ **170 newer moves, for real:** Moonblast, Dazzling Gleam, Play Rough, Shadow Claw, Earth
   Power, Flash Cannon, Brave Bird, Aqua Jet and more, with their own power, accuracy, PP, priority,
-  type, battle text and description. Newer moves that need brand-new mechanics (Stealth Rock,
-  U-turn ...) are swapped, at the same level, for the closest Gen 3 move of the same type.
+  type, battle text and description, including new mechanics: Nasty Plot, Hone Claws, Work Up,
+  Quiver Dance, Close Combat, Flame Charge, Lunge, Fire Fang, Flare Blitz, Draining Kiss, Shore Up
+  and more. The rest (Stealth Rock, U-turn, Trick Room ...) are swapped, at the same level, for
+  the closest Gen 3 move of the same type.
 - 🧬 **52 newer abilities, for real:** Technician, Adaptability, Multiscale, Snow Warning,
   Regenerator, Prankster, Moxie, Sap Sipper, Iron Fist, Strong Jaw, Frisk and more work in
   battle, with their own name and description. Pokémon you already have get them too. Every

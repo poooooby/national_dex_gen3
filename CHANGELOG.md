@@ -7,6 +7,17 @@ All notable changes to this mod are documented here, in
 
 ### Added
 
+- **New move mechanics: 52 more real moves** (170 in all, 2377 learnset/egg uses;
+  `src/move_effects.lua`). A newer move whose effect Gen 3 lacks but which PokeAPI's move `meta`
+  describes completely (stat changes on the user or the foe, a status or flinch chance, drain or
+  recoil, healing) is built with that description (`tools/build_moves.py` `generic_extra`). Status
+  moves (Nasty Plot, Hone Claws, Work Up, Quiver Dance, Noble Roar, Shore Up ...) run on effect byte
+  250, which the cart never uses, mapped in the engine's effect table to this mod's handler (a
+  wrap of `Effects.run`); attacks (Close Combat, Flame Charge, Lunge, Fire Fang, Flare Blitz,
+  Draining Kiss ...) are plain hits whose extra a wrap of `Hit.run` applies once the hit lands,
+  through the engine's own stat-change and status functions. Moves with a condition or a
+  mechanic the description leaves out (Captivate, Parting Shot, Geomancy ...) keep a substitute.
+  Tests: `tests/move_effects_test.lua`.
 - **52 newer abilities as real abilities** (`src/abilities.lua`, data from
   `tools/build_abilities.py` -> `data/abilities.lua`): ids from 78 (append-only), names in the
   adapter's id table, the species module and the battle's id lookups, summary texts; a species'
