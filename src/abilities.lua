@@ -168,35 +168,47 @@ function RealAbilities.hooks(mod)
     local ok, decided = pcall(function()
       local ad = adapter()
       local aa, ba = abilityOf(ad, a), abilityOf(ad, b)
-      local function prio(ab, mv)
-        local p = tonumber(mv.priority) or 0
-        if ab == "PRANKSTER" and (tonumber(mv.power) or 0) == 0 then p = p + 1 end
-        return p
-      end
-      local pa, pb = prio(aa, aMove), prio(ba, bMove)
+      local pa, pb = RealAbilities.priorityOf(ad, a, aMove), RealAbilities.priorityOf(ad, b, bMove)
       if (aa == "PRANKSTER" or ba == "PRANKSTER") and pa ~= pb then return pa > pb end
       if pa ~= pb then return nil end
-      local w = weather(ad)
-      local function rushes(ab, x)
-        return (ab == "SAND_RUSH" and w == "SAND") or (ab == "SLUSH_RUSH" and w == "HAIL")
-          or (ab == "PROTOSYNTHESIS" and w == "SUN" and bestStat(x) == "speed")
-      end
-      if not (rushes(aa, a) or rushes(ba, b)) then return nil end
-      local okD, Damage = pcall(require, "src.core.game3.battle.damage")
-      local function speed(x, ab)
-        local s = tonumber(x.mon and x.mon.speed) or 0
-        if okD and Damage.applyStage then s = Damage.applyStage(s, x.stages and x.stages.speed or 0) end
-        if ab == "PROTOSYNTHESIS" then s = s * 1.5 elseif rushes(ab, x) then s = s * 2 end
-        if ad and ad:status(x) == "PAR" then s = s / 4 end
-        return s
-      end
-      local sa, sb = speed(a, aa), speed(b, ba)
-      if sa == sb then return nil end
+      -- only decide when something of ours changes the speeds, so the cart keeps its own
+      -- tie-break otherwise
+      local reverse = RealAbilities.reverseSpeed and RealAbilities.reverseSpeed(ad and ad._st)
+      local sa, ma = RealAbilities.effectiveSpeed(ad, a)
+      local sb, mb = RealAbilities.effectiveSpeed(ad, b)
+      if not (ma or mb or reverse) or sa == sb then return nil end
+      if reverse then return sa < sb end
       return sa > sb
     end)
     if ok and decided ~= nil then return decided end
     return nextFn(a, aMove, b, bMove, ctx)
   end)
+end
+
+-- Speed as the turn order sees it: stages, paralysis, the weather-speed abilities, plus any
+-- modifier another module registered (src/move_field.lua: Tailwind). Returns the speed and
+-- whether anything of ours changed it.
+RealAbilities.speedModifiers = {}                -- key -> fn(ad, b) -> multiplier (1 = none)
+RealAbilities.reverseSpeed = nil                 -- fn(st) -> true while slower goes first
+function RealAbilities.effectiveSpeed(ad, b)
+  local s = tonumber(b.mon and b.mon.speed) or 0
+  local okD, Damage = pcall(require, "src.core.game3.battle.damage")
+  if okD and Damage.applyStage then s = Damage.applyStage(s, b.stages and b.stages.speed or 0) end
+  local ab, w, modified = abilityOf(ad, b), weather(ad), false
+  if ab == "PROTOSYNTHESIS" and w == "SUN" and bestStat(b) == "speed" then s, modified = s * 1.5, true
+  elseif (ab == "SAND_RUSH" and w == "SAND") or (ab == "SLUSH_RUSH" and w == "HAIL") then s, modified = s * 2, true end
+  for _, fn in pairs(RealAbilities.speedModifiers) do
+    local okM, m = pcall(fn, ad, b)
+    if okM and tonumber(m) and m ~= 1 then s, modified = s * m, true end
+  end
+  if ad and ad:status(b) == "PAR" then s = s / 4 end
+  return s, modified
+end
+
+function RealAbilities.priorityOf(ad, b, mv)
+  local p = tonumber(mv and mv.priority) or 0
+  if abilityOf(ad, b) == "PRANKSTER" and (tonumber(mv and mv.power) or 0) == 0 then p = p + 1 end
+  return p
 end
 
 -- opts: { data = data/abilities.lua, require, log, formSlots = { [formId] = slot } }

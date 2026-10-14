@@ -87,6 +87,10 @@ return function(mod)
   local RealAbilities = loadSibling(mod, "src/abilities.lua")
   -- optional: without it the moves with new mechanics are plain hits or do nothing
   local MoveEffects = loadSibling(mod, "src/move_effects.lua")
+  local MoveRules = loadSibling(mod, "src/move_rules.lua")
+  if MoveRules then MoveRules.hooks(mod) end
+  local MoveField = loadSibling(mod, "src/move_field.lua")
+  if MoveField then MoveField.hooks(mod) end
   if RealAbilities then RealAbilities.hooks(mod) end
   local Api = loadSibling(mod, "src/api.lua")
   if not (Species and Fixups and Items and ItemArt and CryArt and Shops and Art and ConditionalEvos and Clock and Counters and Breeding and DexPatch and NationalUnlock and DexSync and DexRepeat and Editor and MonAnim and Api) then return end
@@ -185,6 +189,16 @@ return function(mod)
       local okFx, fxErr = pcall(MoveEffects.install, { moves = registeredMoves, require = require, log = mod.log })
       if not okFx then mod.log:warn("new move mechanics are off: %s", tostring(fxErr)) end
     end
+    -- moves whose power or outcome depends on the battle (src/move_rules.lua)
+    if MoveRules then
+      local formWeight = {}
+      for _, f in ipairs(registeredForms) do formWeight[f.slot] = f.weight end
+      local okRu, ruErr = pcall(MoveRules.install, { moves = registeredMoves, require = require, log = mod.log,
+        formWeight = formWeight })
+      if not okRu then mod.log:warn("move rules are off: %s", tostring(ruErr)) end
+    end
+    -- hazards, terrains, Tailwind / Trick Room and the moves that switch Pokemon out
+    -- (src/move_field.lua); after the abilities, whose turn-order hook it feeds
     -- real abilities (src/abilities.lua): after the repairs, so National numbers resolve
     if RealAbilities then
       local formSlots = {}
@@ -192,6 +206,11 @@ return function(mod)
       local okAb, abErr = pcall(RealAbilities.install, { data = read("data/abilities.lua") or {}, require = require,
         log = mod.log, formSlots = formSlots })
       if not okAb then mod.log:warn("real abilities are off: %s", tostring(abErr)) end
+    end
+    if MoveField then
+      local okFi, fiErr = pcall(MoveField.install, { moves = registeredMoves, require = require, log = mod.log,
+        abilities = RealAbilities })
+      if not okFi then mod.log:warn("field moves are off: %s", tostring(fiErr)) end
     end
     -- the Fairy type (src/types.lua): after the repairs, so National numbers resolve to this
     -- mod's slots and its reload hook runs after theirs

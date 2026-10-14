@@ -89,6 +89,50 @@ NAME_OVERRIDES: dict[str, str] = {
     "CLANGING SCALES": "CLANGNGSCALE",
     "SHELL SIDE ARM": "SHELLSIDEARM",
     "THUNDEROUS KICK": "THUNDERSKICK",
+    "PETAL BLIZZARD": "PETALBLIZZRD",
+    "FIRST IMPRESSION": "FIRSTIMPRESS",
+    "HEADLONG RUSH": "HEADLONGRUSH",
+    "MYSTICAL POWER": "MYSTICALPOWR",
+    "FISHIOUS REND": "FISHIOUSREND",
+    "BITTER MALICE": "BITTERMALICE",
+    "MATCHA GOTCHA": "MATCHAGOTCHA",
+    "LIGHT OF RUIN": "LIGHTOFRUIN",
+    "DARKEST LARIAT": "DARKSTLARIAT",
+    "SPARKLING ARIA": "SPARKLNGARIA",
+    "PSYSHIELD BASH": "PSYSHIELDBSH",
+    "MOUNTAIN GALE": "MOUNTAINGALE",
+    "INFERNAL PARADE": "INFRNLPARADE",
+    "KOWTOW CLEAVE": "KOWTOWCLEAVE",
+    "COLLISION COURSE": "COLLISIONCRS",
+    "ELECTRO DRIFT": "ELECTRODRIFT",
+    "MIGHTY CLEAVE": "MIGHTYCLEAVE",
+    "TACHYON CUTTER": "TACHYONCUTTR",
+    "MALIGNANT CHAIN": "MALIGNNTCHAN",
+    "VICTORY DANCE": "VICTORYDANCE",
+    "MISTY TERRAIN": "MISTYTERRAIN",
+    "GRASSY TERRAIN": "GRASSYTERRAN",
+    "ELECTRIC TERRAIN": "ELECTRCTERRN",
+    "PSYCHIC TERRAIN": "PSYCHCTERRAN",
+    "STOMPING TANTRUM": "STOMPTANTRUM",
+    "REVELATION DANCE": "REVELATNDNCE",
+    "LAST RESPECTS": "LASTRESPECTS",
+    "TERRAIN PULSE": "TERRAINPULSE",
+    "WATER SHURIKEN": "WATRSHURIKEN",
+    "SPRINGTIDE STORM": "SPRINGTSTORM",
+    "BLEAKWIND STORM": "BLEAKWNSTORM",
+    "WILDBOLT STORM": "WILDBLTSTORM",
+    "SANDSEAR STORM": "SANDSRSTORM",
+    "POPULATION BOMB": "POPULATNBOMB",
+    "SUNSTEEL STRIKE": "SUNSTLSTRIKE",
+    "MOONGEIST BEAM": "MOONGSTBEAM",
+    "DYNAMAX CANNON": "DYNAMXCANNON",
+    "EXPANDING FORCE": "EXPANDNFORCE",
+    "RISING VOLTAGE": "RISINGVOLTGE",
+    "SURGING STRIKES": "SURGNSTRIKES",
+    "TRIPLE ARROWS": "TRIPLEARROWS",
+    "GIGATON HAMMER": "GIGATNHAMMER",
+    "TERA STARSTORM": "TERASTARSTRM",
+    "SPICY EXTRACT": "SPICYEXTRACT",
 }
 
 # Summary text, in the Gen 3 manner, for moves whose official texts are too long for the
@@ -212,6 +256,86 @@ DESCRIPTIONS = {
     "GRAV_APPLE": "Drops an apple from high up. Lowers DEFENSE.",
     "SHELL_SIDE_ARM": "Fires a shell at the foe. It may poison the foe.",
     "THUNDEROUS_KICK": "A lightning-fast kick. Lowers the foe's DEFENSE.",
+    "ASSURANCE": "Hits twice as hard if the foe was hurt this turn.",
+    "SUCKER_PUNCH": "Strikes first, but only if the foe is about to attack.",
+    "TAKE_HEART": "Cures its status. Raises SP. ATK and SP. DEF.",
+    "MISTY_TERRAIN": "Mist covers the field. It guards against status.",
+    "TAILWIND": "A tailwind that doubles the team's SPEED for 4 turns.",
+    "U_TURN": "Attacks, then switches places with a party POKeMON.",
+    "ELECTRIC_TERRAIN": "Electrifies the field for 5 turns. No POKeMON can sleep.",
+    "TOXIC_SPIKES": "Lays poisoned spikes that poison foes that switch in.",
+    "METAL_BURST": "Strikes back with 1.5 times the damage taken this turn.",
+    "PARTING_SHOT": "Lowers the foe's ATTACK and SP. ATK, then switches out.",
+    "STICKY_WEB": "Lays a sticky web that slows foes that switch in.",
+    "VOLT_SWITCH": "Attacks, then switches places with a party POKeMON.",
+    "PSYCHIC_TERRAIN": "A psychic field. It blocks moves that strike first.",
+    "TRICK_ROOM": "Twists space for 5 turns. Slower POKeMON move first.",
+    "COMEUPPANCE": "Strikes back with 1.5 times the damage taken this turn.",
+    "WATER_SHURIKEN": "Hits 2 to 5 times in a row. It strikes first.",
+    "FLIP_TURN": "Attacks, then switches places with a party POKeMON.",
+    "SPRINGTIDE_STORM": "A storm of love and hate. May lower the foe's ATTACK.",
+    "BLEAKWIND_STORM": "A cold, brutal wind. It may lower the foe's SPEED.",
+    "WILDBOLT_STORM": "A thunderous storm. It may paralyze the foe.",
+    "SANDSEAR_STORM": "A storm of hot sand. It may burn the foe.",
+    "AXE_KICK": "May confuse the foe. Hurts the user if it misses.",
+    "POPULATION_BOMB": "The user's friends gather to hit up to 10 times.",
+    "ICE_SPINNER": "Spins on ice to attack. Wipes away any terrain.",
+    "SYRUP_BOMB": "Sticky syrup that lowers the foe's SPEED.",
+    "FREEZE_SHOCK": "Charges, then strikes. It may paralyze the foe.",
+    "ICE_BURN": "Charges, then strikes. It may burn the foe.",
+    "SUNSTEEL_STRIKE": "Slams into the foe with the force of a meteor.",
+    "MULTI_ATTACK": "Rapidly attacks with high energy.",
+    "SNIPE_SHOT": "A precise shot. Can't be drawn to another target.",
+    "SCALE_SHOT": "Hits 2 to 5 times. Raises SPEED but lowers DEFENSE.",
+    "RISING_VOLTAGE": "Twice as hard on a foe on electrified ground.",
+    "SURGING_STRIKES": "Three fierce blows. Always a critical hit.",
+    "TRIPLE_DIVE": "Three perfectly timed dives that each do damage.",
+    "DOUBLE_SHOCK": "All-out electricity. The user loses ELECTRIC type.",
+    "GIGATON_HAMMER": "A huge hammer swing. Can't be used two turns in a row.",
+    "ELECTRO_SHOT": "Gathers electricity to raise SP. ATK, then fires.",
+    "TERA_STARSTORM": "Fires the energy of crystals at the foe.",
+    "TIDY_UP": "Tidies up the field. Raises ATTACK and SPEED.",
+    "SHELTER": "Hardens its skin. Sharply raises DEFENSE.",
+    "SPICY_EXTRACT": "Sharply raises the foe's ATTACK and cuts DEFENSE.",
+    "LAST_RESORT": "Works only after every other move it knows is used.",
+    "PETAL_BLIZZARD": "Stirs up a violent storm of petals at all around.",
+    "HEAD_SMASH": "A reckless headbutt. The user is badly hurt too.",
+    "BRINE": "Hits twice as hard if the foe is under half HP.",
+    "PSYSHOCK": "A psychic wave that hits the foe's DEFENSE.",
+    "VENOSHOCK": "Soaks the foe in poison. Twice as hard if poisoned.",
+    "FELL_STINGER": "If it knocks out the foe, ATTACK drastically rises.",
+    "WAVE_CRASH": "Slams into the foe with water. The user is hurt too.",
+    "BOOMBURST": "A destructive, explosive sound hits all around.",
+    "FIRST_IMPRESSION": "A strong first strike. Works only on its first turn.",
+    "AQUA_CUTTER": "Fires a blade of water. High critical-hit ratio.",
+    "HEADLONG_RUSH": "A full-body charge. Lowers its own DEF and SP. DEF.",
+    "RAGING_FURY": "Rampages with fire for 2 to 3 turns, then is confused.",
+    "BARB_BARRAGE": "Toxic barbs. Twice as hard if the foe is poisoned.",
+    "BITTER_MALICE": "Spine-chilling resentment. Lowers the foe's ATTACK.",
+    "SPIN_OUT": "Spins furiously. Harshly lowers its own SPEED.",
+    "LIGHT_OF_RUIN": "Fires a ruinous beam. The user is badly hurt too.",
+    "MIND_BLOWN": "Blows up its own head. The user loses half its HP.",
+    "WICKED_BLOW": "A blow from the dark style. Always a critical hit.",
+    "PSYSHIELD_BASH": "Rams the foe with psychic power. Raises DEFENSE.",
+    "CHLOROBLAST": "A huge blast of sunlight. The user loses half its HP.",
+    "MOUNTAIN_GALE": "Hurls giant chunks of ice. It may cause flinching.",
+    "LUMINA_CRASH": "A mind-bending light. Harshly lowers SP. DEF.",
+    "JET_PUNCH": "A punch as fast as a jet of water. It strikes first.",
+    "KOWTOW_CLEAVE": "Kowtows, then slashes the foe. It never misses.",
+    "FLOWER_TRICK": "Throws a rigged bouquet. Always a critical hit.",
+    "TORCH_SONG": "Sings a song of flames. Raises the user's SP. ATK.",
+    "AQUA_STEP": "Dance-like water steps. Raises the user's SPEED.",
+    "COLLISION_COURSE": "Transforms and crashes in. Stronger if super effective.",
+    "ELECTRO_DRIFT": "Races in with electricity. Stronger if super effective.",
+    "HYPER_DRILL": "Spins a sharp part of its body like a drill.",
+    "TWIN_BEAM": "Fires mystical beams from its eyes. Hits twice.",
+    "ARMOR_CANNON": "Fires its armor. Lowers its own DEF and SP. DEF.",
+    "BITTER_BLADE": "Slashes with bitter fire. Heals half the damage.",
+    "BLOOD_MOON": "Fires a beam from the blood-red full moon.",
+    "THUNDERCLAP": "A fast jolt. Only works if the foe is about to attack.",
+    "MIGHTY_CLEAVE": "Cleaves the foe with the light from its head.",
+    "TACHYON_CUTTER": "Launches two particle blades. Hits twice.",
+    "MALIGNANT_CHAIN": "Wraps the foe in a toxic chain. It may badly poison.",
 }
 
 # Moves whose effect Gen 3 lacks but whose PokeAPI `meta` describes it completely (stat changes,
@@ -272,6 +396,91 @@ def generic_extra(m: dict[str, Any]) -> dict[str, Any] | None:
     if len(extra) == 1:
         return None
     return extra
+
+
+# Moves set by hand (src/move_rules.lua for `rule`): `like` runs on that cart move's effect,
+# `rule` names a rule src/move_rules.lua carries out on top of a plain hit, `extra` is a
+# description for src/move_effects.lua (as generic_extra makes). Today's power, accuracy, PP,
+# priority, type and target still come from PokeAPI.
+MANUAL: dict[str, dict[str, Any]] = {
+    # an existing Gen 3 effect
+    "boomburst": {"effect": 0}, "petal-blizzard": {"effect": 0}, "jet-punch": {"effect": 0},
+    "hyper-drill": {"effect": 0}, "mighty-cleave": {"effect": 0}, "hydro-steam": {"effect": 0},
+    "psyblade": {"effect": 0}, "order-up": {"effect": 0}, "blood-moon": {"effect": 0},
+    "grass-knot": {"like": "LOW KICK", "power": 1}, "natures-madness": {"like": "SUPER FANG", "power": 1},
+    "ruination": {"like": "SUPER FANG", "power": 1}, "snowscape": {"like": "HAIL"},
+    "aqua-cutter": {"like": "SLASH"}, "ivy-cudgel": {"like": "SLASH"}, "wave-crash": {"like": "DOUBLE-EDGE"},
+    "raging-bull": {"like": "BRICK BREAK"}, "kowtow-cleave": {"like": "SWIFT"}, "raging-fury": {"like": "OUTRAGE"},
+    "twin-beam": {"like": "DOUBLE KICK"}, "tachyon-cutter": {"like": "DOUBLE KICK"},
+    # power and stat rules
+    **{k: {"rule": k.upper().replace("-", "_")} for k in (
+        "assurance", "hex", "venoshock", "brine", "acrobatics", "payback", "retaliate", "stored-power",
+        "power-trip", "punishment", "heavy-slam", "heat-crash", "gyro-ball", "electro-ball", "wring-out",
+        "crush-grip", "wake-up-slap", "bolt-beak", "fishious-rend", "foul-play", "psyshock", "secret-sword",
+        "body-press", "sacred-sword", "darkest-lariat", "chip-away", "echoed-voice", "trump-card",
+        "frost-breath", "storm-throw", "wicked-blow", "flower-trick", "sucker-punch", "first-impression",
+        "last-resort", "clear-smog", "fell-stinger", "final-gambit", "sparkling-aria",
+        "chloroblast", "mind-blown", "electro-drift", "collision-course")},
+    # power worked out in battle: 1 here, as the cart's own Flail and Low Kick
+    **{k: {"rule": k.upper().replace("-", "_"), "power": 1} for k in (
+        "punishment", "heavy-slam", "heat-crash", "gyro-ball", "electro-ball", "wring-out",
+        "crush-grip", "trump-card", "final-gambit")},
+    "thunderclap": {"rule": "SUCKER_PUNCH"},
+    # the field, switching and the rest (src/move_field.lua, src/move_rules.lua)
+    **{k: {"rule": k.upper().replace("-", "_")} for k in (
+        "u-turn", "volt-switch", "flip-turn", "parting-shot", "dragon-tail", "circle-throw",
+        "stealth-rock", "toxic-spikes", "sticky-web", "defog", "tailwind", "trick-room",
+        "misty-terrain", "grassy-terrain", "electric-terrain", "psychic-terrain",
+        "terrain-pulse", "rising-voltage", "expanding-force", "steel-roller", "ice-spinner", "aqua-ring",
+        "stomping-tantrum", "rage-fist", "last-respects", "burn-up", "double-shock",
+        "revelation-dance", "flying-press", "synchronoise", "fusion-flare", "fusion-bolt", "glaive-rush",
+        "gigaton-hammer", "fickle-beam", "laser-focus", "dire-claw", "take-heart")},
+    "metal-burst": {"rule": "METAL_BURST", "power": 1}, "comeuppance": {"rule": "METAL_BURST", "power": 1},
+    "surging-strikes": {"rule": "SURGING_STRIKES", "hits": 3},
+    "water-shuriken": {"hits": True}, "triple-dive": {"hits": 3}, "dragon-darts": {"hits": 2},
+    "population-bomb": {"hits": 10},
+    "scale-shot": {"hits": True, "extra": {"kind": "hit", "self": {"speed": 1, "defense": -1}, "chance": 100}},
+    **{k: {"effect": 0} for k in (
+        "sunsteel-strike", "moongeist-beam", "dynamax-cannon", "tera-starstorm", "techno-blast",
+        "judgment", "multi-attack", "snipe-shot", "round", "flame-burst")},
+    "freeze-shock": {"like": "SKY ATTACK", "extra": {"kind": "hit", "ailment": "PARALYSIS", "ailmentChance": 30}},
+    "ice-burn": {"like": "SKY ATTACK", "extra": {"kind": "hit", "ailment": "BURN", "ailmentChance": 30}},
+    "electro-shot": {"like": "SKY ATTACK", "extra": {"kind": "hit", "self": {"spAtk": 1}, "chance": 100}},
+    "axe-kick": {"like": "HI JUMP KICK", "extra": {"kind": "hit", "ailment": "CONFUSION", "ailmentChance": 30}},
+    "esper-wing": {"like": "SLASH", "extra": {"kind": "hit", "self": {"speed": 1}, "chance": 100}},
+    "triple-arrows": {"like": "SLASH", "extra": {"kind": "hit", "foe": {"defense": -1}, "chance": 50, "flinch": 30}},
+    "shell-smash": {"extra": {"kind": "status", "self": {"attack": 2, "spAtk": 2, "speed": 2, "defense": -1, "spDef": -1}, "chance": 100}},
+    "take-heart": {"rule": "TAKE_HEART", "target": "user",
+                   "extra": {"kind": "status", "self": {"spAtk": 1, "spDef": 1}, "chance": 100}},
+    "syrup-bomb": {"extra": {"kind": "hit", "foe": {"speed": -1}, "chance": 100}},
+    "bleakwind-storm": {"extra": {"kind": "hit", "foe": {"speed": -1}, "chance": 30}},
+    "springtide-storm": {"extra": {"kind": "hit", "foe": {"attack": -1}, "chance": 30}},
+    "wildbolt-storm": {"extra": {"kind": "hit", "ailment": "PARALYSIS", "ailmentChance": 20}},
+    "sandsear-storm": {"extra": {"kind": "hit", "ailment": "BURN", "ailmentChance": 20}},
+    "infernal-parade": {"rule": "HEX", "extra": {"kind": "hit", "ailment": "BURN", "ailmentChance": 30}},
+    "barb-barrage": {"rule": "VENOSHOCK", "extra": {"kind": "hit", "ailment": "POISON", "ailmentChance": 50}},
+    # a description (src/move_effects.lua)
+    "head-smash": {"extra": {"kind": "hit", "drain": -50}},
+    "light-of-ruin": {"extra": {"kind": "hit", "drain": -50}},
+    "bitter-blade": {"extra": {"kind": "hit", "drain": 50}},
+    "matcha-gotcha": {"extra": {"kind": "hit", "drain": 50, "ailment": "BURN", "ailmentChance": 20}},
+    "spin-out": {"extra": {"kind": "hit", "self": {"speed": -2}, "chance": 100}},
+    "armor-cannon": {"extra": {"kind": "hit", "self": {"defense": -1, "spDef": -1}, "chance": 100}},
+    "headlong-rush": {"extra": {"kind": "hit", "self": {"defense": -1, "spDef": -1}, "chance": 100}},
+    "make-it-rain": {"extra": {"kind": "hit", "self": {"spAtk": -1}, "chance": 100}},
+    "mystical-power": {"extra": {"kind": "hit", "self": {"spAtk": 1}, "chance": 100}},
+    "torch-song": {"extra": {"kind": "hit", "self": {"spAtk": 1}, "chance": 100}},
+    "aqua-step": {"extra": {"kind": "hit", "self": {"speed": 1}, "chance": 100}},
+    "psyshield-bash": {"extra": {"kind": "hit", "self": {"defense": 1}, "chance": 100}},
+    "bitter-malice": {"extra": {"kind": "hit", "foe": {"attack": -1}, "chance": 100}},
+    "lumina-crash": {"extra": {"kind": "hit", "foe": {"spDef": -2}, "chance": 100}},
+    "mountain-gale": {"extra": {"kind": "hit", "flinch": 30}},
+    "malignant-chain": {"extra": {"kind": "hit", "ailment": "TOXIC", "ailmentChance": 50}},
+    "shelter": {"extra": {"kind": "status", "self": {"defense": 2}, "chance": 100}},
+    "tidy-up": {"extra": {"kind": "status", "self": {"attack": 1, "speed": 1}, "chance": 100}},
+    "victory-dance": {"extra": {"kind": "status", "self": {"attack": 1, "defense": 1, "speed": 1}, "chance": 100}},
+    "spicy-extract": {"extra": {"kind": "status", "foe": {"attack": 2, "defense": -2}, "chance": 100}},
+}
 
 
 # PokeAPI contest_type -> the cart's contest category (pokeemerald CONTEST_CATEGORY_*)
@@ -429,6 +638,7 @@ def build(api: bs.API, cart_dir: Path, contest_path: Path, cache: Path, out: Pat
         if m.get("contest_effect") and i in contest:
             ceffect_pairs[url_id(m["contest_effect"]["url"])][contest[i]["effect"]] += 1
     effect_of, target_of, ceffect_of = majority(effect_pairs), majority(target_pairs), majority(ceffect_pairs)
+    cart_effect_by_name = {c["name"]: c["effect"] for c in cart.values()}
     # an effect's cart moves are all attacks, all status moves, or a mix
     damaging: dict[int, set[bool]] = collections.defaultdict(set)
     for i in range(1, bs.MAX_MOVE_ID + 1):
@@ -447,22 +657,34 @@ def build(api: bs.API, cart_dir: Path, contest_path: Path, cache: Path, out: Pat
     for mid in sorted(use, key=lambda k: (-use[k], k)):
         m = api.get(f"/move/{mid}")
         text = effect_text(m)
-        extra = None
+        extra, rule = None, None
         effect = effect_of.get(text)
-        if effect is not None and ((m["power"] or 0) > 0) not in damaging[effect]:
+        manual = MANUAL.get(m["name"])
+        if manual:
+            extra, rule = manual.get("extra"), manual.get("rule")
+            if "like" in manual:
+                effect = cart_effect_by_name[manual["like"]]
+            elif "effect" in manual:
+                effect = manual["effect"]
+            else:
+                effect = CUSTOM_EFFECT if ((extra and extra["kind"] == "status")
+                                           or (rule and not (m["power"] or 0))) else 0
+        power = (manual or {}).get("power", m["power"] or 0)
+        hits = (manual or {}).get("hits")
+        if effect is not None and effect != CUSTOM_EFFECT and (power > 0) not in damaging[effect]:
             # an attack must map onto an attacking effect, a status move onto a status one
             # (Thousand Waves shares Mean Look's text, but Mean Look's effect deals no damage)
             effect = None
-        if effect is None:
+        if effect is None and not manual:
             extra = generic_extra(m)
             if extra:
                 effect = CUSTOM_EFFECT if extra["kind"] == "status" else 0
-        if effect is None or m["target"]["name"] not in target_of:
+        target_name = (manual or {}).get("target", m["target"]["name"])   # PokeAPI's "all-allies" etc.
+        if effect is None or target_name not in target_of:
             skipped.append((use[mid], m["name"], text))
             continue
         s = sd.get(sd_key(m["name"]), {})
         f = s.get("flags", {})
-        power = m["power"] or 0
         flags = ((1 if f.get("contact") else 0) | (2 if f.get("protect") else 0)
                  | (4 if f.get("reflectable") else 0) | (8 if f.get("snatch") else 0)
                  | (16 if f.get("mirror") else 0)
@@ -475,8 +697,8 @@ def build(api: bs.API, cart_dir: Path, contest_path: Path, cache: Path, out: Pat
             "full": (en(m["names"], "name") or m["name"]).replace("’", "'"),
             "type": mtype, "power": power, "accuracy": m["accuracy"] or 0, "pp": m["pp"] or 5,
             "effect": effect, "secondaryChance": 0 if extra else (m.get("effect_chance") or 0),
-            "extra": extra,
-            "target": target_of[m["target"]["name"]], "priority": m["priority"] or 0, "flags": flags,
+            "extra": extra, "rule": rule, "hits": hits,
+            "target": target_of[target_name], "priority": m["priority"] or 0, "flags": flags,
             "frlg": text_for(rid, m, FRLG_COLS, FRLG_ROWS), "rse": text_for(rid, m, RSE_COLS, RSE_ROWS),
             "contest": {
                 "category": CONTEST_CATEGORY.get((m.get("contest_type") or {}).get("name"), 0),
@@ -494,6 +716,8 @@ def build(api: bs.API, cart_dir: Path, contest_path: Path, cache: Path, out: Pat
 
 
 def lua_value(v: Any) -> str:
+    if isinstance(v, bool):
+        return "true" if v else "false"
     if isinstance(v, dict):
         return "{ " + ", ".join(f"{k} = {lua_value(x)}" for k, x in v.items()) + " }"
     if isinstance(v, str):
@@ -525,7 +749,9 @@ def write(rows: list[dict], path: Path) -> None:
             f'effect = {r["effect"]}, secondaryChance = {r["secondaryChance"]}, target = {r["target"]}, '
             f'priority = {r["priority"]}, flags = {r["flags"]}, look = {r["look"]}, '
             f'contest = {{ category = {c["category"]}, effect = {c["effect"]} }},'
-            + (f' extra = {lua_value(r["extra"])},' if r.get("extra") else '') + '\n'
+            + (f' extra = {lua_value(r["extra"])},' if r.get("extra") else '')
+            + (f' rule = "{r["rule"]}",' if r.get("rule") else '')
+            + (f' hits = {lua_value(r["hits"])},' if r.get("hits") else '') + '\n'
             f'    frlg = {lua_str(r["frlg"])},\n    rse = {lua_str(r["rse"])} }},')
     lines.append("}")
     path.write_text("\n".join(lines) + "\n", encoding="utf-8", newline="\n")

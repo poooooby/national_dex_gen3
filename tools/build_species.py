@@ -515,6 +515,7 @@ def form_record(item: dict[str, Any], mapper: "move_map.MoveMapper") -> dict[str
         "id": item["id"], "slot": item["slot"], "baseSpecies": item["base"],
         "form": item["form"], "baseDex": item["dex"],
     })
+    rec["weight"] = rec["dexEntry"]["weight"]      # hectograms; Heavy Slam / Low Kick read it
     del rec["dexEntry"]
     return rec
 

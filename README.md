@@ -28,11 +28,18 @@ Paldea Pokémon can live in Kanto and Hoenn.
 
 ### Fits the Game
 
-- ⚔️ **170 newer moves, for real:** Moonblast, Dazzling Gleam, Play Rough, Shadow Claw, Earth
+- ⚔️ **325 newer moves, for real:** Moonblast, Dazzling Gleam, Play Rough, Shadow Claw, Earth
   Power, Flash Cannon, Brave Bird, Aqua Jet and more, with their own power, accuracy, PP, priority,
-  type, battle text and description, including new mechanics: Nasty Plot, Hone Claws, Work Up,
-  Quiver Dance, Close Combat, Flame Charge, Lunge, Fire Fang, Flare Blitz, Draining Kiss, Shore Up
-  and more. The rest (Stealth Rock, U-turn, Trick Room ...) are swapped, at the same level, for
+  type, battle text and description, including new mechanics: Nasty Plot, Quiver Dance, Close
+  Combat, Flare Blitz, Draining Kiss, Shore Up, and moves that read the battle — Hex, Venoshock,
+  Brine, Acrobatics, Payback, Stored Power, Heavy Slam, Gyro Ball, Foul Play, Body Press,
+  Psyshock, Sucker Punch, First Impression, Final Gambit, Wicked Blow, Fell Stinger, Mind Blown
+  and more.
+- 🌋 **The battlefield itself:** Stealth Rock, Toxic Spikes and Sticky Web wait for whatever
+  switches in; Tailwind and Trick Room change who moves first; Electric, Grassy, Misty and
+  Psychic Terrain cover the field for five turns; U-turn, Volt Switch, Flip Turn and Parting
+  Shot hit and bring in a teammate; Dragon Tail and Circle Throw throw the foe out. The few
+  remaining moves (King's Shield, Gravity, Healing Wish ...) are swapped, at the same level, for
   the closest Gen 3 move of the same type.
 - 🧬 **52 newer abilities, for real:** Technician, Adaptability, Multiscale, Snow Warning,
   Regenerator, Prankster, Moxie, Sap Sipper, Iron Fist, Strong Jaw, Frisk and more work in
@@ -93,7 +100,8 @@ This mod adds the Pokémon. Two companions bring them to life:
   not a status an attack can cause; Super Luck doesn't stack with a high critical-hit move;
   Ice Body and Snow Cloak don't block hail damage.
 - **Moves follow Gen 3's rules.** A move's type decides whether it is physical or special (Fairy
-  moves are special, Shadow Claw is physical), and contest data for the newest moves is basic.
+  moves are special, Shadow Claw is physical; Foul Play, a Dark move, turns the foe's Attack
+  against it as a special hit), and contest data for the newest moves is basic.
   They are learned by level-up and as egg moves; TMs and tutors are the original ones.
 - **Removing this mod** from a save whose Pokémon know its moves or are its species breaks those
   Pokémon; keep the mod installed for that save.

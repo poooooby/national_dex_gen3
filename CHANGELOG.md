@@ -7,6 +7,67 @@ All notable changes to this mod are documented here, in
 
 ### Added
 
+- **Field moves and the rest of the attacks: 68 more real moves** (325 in all, 3659 learnset/egg
+  uses; 101 still substituted). `src/move_field.lua` keeps battle state Gen 3 never had, on the
+  engine's own side/field tables (`side.__ndx`, `st.__ndxField`), through exported seams only:
+  - **entry hazards** Stealth Rock, Toxic Spikes, Sticky Web (a wrap of `Engine.switchInEffects`,
+    before the cart's Spikes; the cart's Rapid Spin clears them, Defog clears both sides and the
+    foe's screens);
+  - **turn counters** Tailwind, Trick Room, the four Terrains (a residual phase of this mod's,
+    `ndx_field`, inserted in `Rules.FIELD_PHASES_ORDER`) with the terrain boosts in `Damage.calc`,
+    the status guards in the adapter's `canApplyStatus`, Grassy healing in the `ingrain` phase,
+    Psychic Terrain's priority block in `Hit.run`; Terrain Pulse, Rising Voltage, Expanding Force,
+    Steel Roller, Ice Spinner; Aqua Ring;
+  - **turn order** Tailwind and Trick Room through the real abilities' `battle.turn_order` hook
+    (`RealAbilities.effectiveSpeed` / `speedModifiers` / `reverseSpeed`, new exports);
+  - **switching** U-turn, Volt Switch, Flip Turn, Parting Shot (the cart's Baton Pass choice:
+    `Engine.switchCandidates` -> the `baton_pass` party prompt / `mostSuitableMon` ->
+    `Engine.performSwitch` -> `switchInEffects`), Dragon Tail and Circle Throw (a wild battle
+    ends, a trainer's Pokemon is dragged out).
+  `src/move_rules.lua` adds the stateless ones: multi-hit (`hits` on the row: Water Shuriken,
+  Surging Strikes, Triple Dive, Dragon Darts, Scale Shot, Population Bomb), Stomping Tantrum,
+  Rage Fist, Last Respects, Metal Burst, Comeuppance, Burn Up, Double Shock, Revelation Dance,
+  Flying Press, Synchronoise, Fusion Flare/Bolt, Glaive Rush, Gigaton Hammer, Fickle Beam, Laser
+  Focus, Dire Claw, Take Heart; and plain hits / cart effects / extras for Sunsteel Strike,
+  Moongeist Beam, Dynamax Cannon, Tera Starstorm, Techno Blast, Judgment, Multi-Attack, Snipe
+  Shot, Round, Flame Burst, Freeze Shock, Ice Burn, Electro Shot, Axe Kick, Esper Wing, Triple
+  Arrows, Shell Smash, Syrup Bomb and the four Storm moves. MANUAL may now set a move's `target`
+  (PokeAPI's "all-allies") and `hits`; a rule on a status move runs on effect byte 250.
+  Driver-verified on Emerald, FireRed and Sapphire: Trick Room's order, Stealth Rock's entry
+  damage, U-turn through the real party prompt, Dragon Tail ending a wild battle. Tests:
+  `tests/move_field_test.lua`, `tests/move_rules_test.lua`.
+- **Form weights** (`data/species/forms.lua` `weight`, from PokeAPI): Heavy Slam, Heat Crash, Low
+  Kick and Grass Knot read them (a form has no Pokedex entry to read).
+
+### Fixed
+
+- Retaliate counts any faint on the user's side last turn (`battle.fainted`), not only one from
+  a hit; Sacred Sword, Darkest Lariat and Chip Away ignore evasion as well as the defensive
+  stages; Damp stops Mind Blown and Chloroblast.
+- **Move rules: 87 more real moves** (257 in all, 3142 learnset/egg uses; `src/move_rules.lua`).
+  Newer attacks whose power, stats or outcome depend on the battle are set by hand in
+  `tools/build_moves.py` `MANUAL` (`rule`, `like`, `effect`, `extra`) and carried out by wraps of
+  `Damage.calc` (which the AI's estimate uses too) and `Hit.run`, with `battle.move_used` /
+  `battle.damage_dealt` keeping who moved and who fainted this turn:
+  - power: Hex, Infernal Parade, Venoshock, Barb Barrage, Brine, Acrobatics, Assurance, Payback,
+    Bolt Beak, Fishious Rend, Retaliate, Wake-Up Slap, Stored Power, Power Trip, Punishment, Heavy
+    Slam, Heat Crash, Gyro Ball, Electro Ball, Wring Out, Crush Grip, Trump Card, Echoed Voice;
+    the variable-power ones are power 1 to the cart, like Flail
+  - stats: Foul Play, Body Press, Secret Sword, Psyshock (the real move's stat goes into whichever
+    one Gen 3's type-based split reads); Sacred Sword, Darkest Lariat, Chip Away ignore Defense
+    boosts
+  - always a critical hit: Frost Breath, Storm Throw, Wicked Blow, Flower Trick; Final Gambit
+    deals the user's HP; Electro Drift and Collision Course hit 1.33x harder when super effective
+  - can fail: Sucker Punch and Thunderclap (the foe must be about to attack), First Impression
+    (first turn only), Last Resort (every other move used first)
+  - after the hit: Clear Smog, Fell Stinger (+3 Attack on a knockout), Final Gambit, Chloroblast,
+    Mind Blown, Sparkling Aria, Wake-Up Slap
+  - and existing Gen 3 effects or descriptions: Boomburst, Petal Blizzard, Jet Punch, Grass Knot,
+    Nature's Madness, Snowscape, Aqua Cutter, Wave Crash, Raging Fury, Twin Beam, Head
+    Smash, Bitter Blade, Spin Out, Armor Cannon, Torch Song, Aqua Step, Lumina Crash, Shelter,
+    Victory Dance and more.
+  Hand-written summary texts and 12-letter names where the official ones don't fit.
+  Tests: `tests/move_rules_test.lua`.
 - **New move mechanics: 52 more real moves** (170 in all, 2377 learnset/egg uses;
   `src/move_effects.lua`). A newer move whose effect Gen 3 lacks but which PokeAPI's move `meta`
   describes completely (stat changes on the user or the foe, a status or flinch chance, drain or

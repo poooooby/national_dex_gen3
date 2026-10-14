@@ -93,8 +93,85 @@ or nil to let the next provider answer.
   `evolution_methods` registry off on Gen 3), so conditions like a held item at a time of day,
   a location, a known move or gender have no trigger to attach to; the mod adds stand-in
   conditions where it can (see the player guide).
-- Level-up learnsets keep their modern length (9,302 moves across 639 species; 6,255 real Gen 3
-  moves, 3,047 substitutes). TM/HM, tutor and egg moves are limited to Gen 3's own moves.
+- Level-up learnsets keep their modern length (9,302 rows across 639 species). Newer moves are
+  real where `tools/build_moves.py` could build them (325 moves, 3,659 level-up/egg uses); the
+  other 101 are swapped for the closest cart move (`tools/.cache/move_substitutions.txt`).
+  TM/HM and tutor moves are Gen 3's own.
+
+## Rough areas
+
+Things that work but not exactly as in today's games, or are only partly verified.
+
+- In-game (driver) checks cover Moonblast, Nasty Plot, Close Combat, Snow Warning, Wicked Blow,
+  Heavy Slam, Mind Blown, Trick Room's turn order, Stealth Rock damage on entry, U-turn (through
+  the real party prompt) and Dragon Tail, on Emerald, FireRed and Sapphire. Everything else is
+  checked headlessly only (`tests/moves_test.lua`, `move_effects_test.lua`, `move_rules_test.lua`,
+  `move_field_test.lua`, `abilities_test.lua`).
+- Double battles are untested. The turn stamps (Sucker Punch, Payback, Bolt Beak, Fusion
+  Flare/Bolt) and the switch-out moves were written with singles in mind.
+- Gen 3 splits physical/special by type: Foul Play (Dark) is a special hit with the foe's Attack
+  standing in for Sp. Atk; Body Press / Secret Sword / Psyshock swap into the stat the move's
+  type reads; Dragon Tail is special.
+- Trump Card: the AI's damage estimate reads PP before this use's PP comes off.
+- Population Bomb is 10 hits on one accuracy roll; Scale Shot's stat change applies once.
+- Rage Fist's count is kept on the battle, keyed by the party mon (survives switches, never
+  saved); Last Respects counts the user's side's faints this battle.
+- Hazards: Defog clears both sides' hazards and the foe's screens; the cart's Rapid Spin clears
+  its user's side. Toxic Spikes ignore Safeguard (as in the real games); Misty Terrain's guard
+  applies.
+- Terrains boost 1.3x (Gen 8+). Psychic Terrain blocks priority attacks, not priority status
+  moves; Grassy Terrain does not halve Earthquake; Misty Terrain does not block confusion.
+- Tailwind and Trick Room order the two battlers the engine compares; ties keep the cart's coin
+  flip. Both go through the real abilities' turn-order hook, so they need the abilities on.
+- Evolution item icons are not verified in-game.
+- `clock_test` / `lycanroc_test` fail when the local `options.lua` sets `clock_source = "device"`.
+
+**Messages.** Lines Gen 3 has no string for are English text in code (hazards, terrains, Clear
+Smog, Sparkling Aria, Mind Blown, several abilities). 12-letter names and both-box summary texts
+are hand-written where the official ones don't fit; animations are borrowed from the closest
+cart move (`look`); contest data for the newest moves is basic.
+
+**Abilities.** Leaf Guard / Sweet Veil / Flower Veil don't stop a move's secondary status; Super
+Luck doesn't stack with high-crit moves; Ice Body / Snow Cloak don't block hail damage;
+Adaptability is approximated through the `battle.damage` hook.
+
+**Engine-side** (not this mod's to fix; worth reporting upstream):
+- The registry writes a new move's/species'/item's NAME into the index where the number belongs
+  (`Schemas` `index.num[id] = id`); `src/moves.lua` puts numbers back after every write.
+- Facade, Revenge and SmellingSalt never double through `Hit.run`: `calc_opts` passes
+  `dmgMultiplier = 1` and damage.lua only doubles when that field is falsy. Confirmed headlessly:
+  a burned Facade deals 17 where a healthy one deals 34 (the burn halves it, nothing doubles it).
+- Removing the mod from a save whose Pokemon know its moves breaks that battle (`Moves.get`
+  errors on an unknown number); the same holds for its species.
+- Link play: the Fairy type changes the type chart fingerprint; cross-gen online has no type 18.
+- Source patches (`dex_patch.lua`, `type_icons.lua`) match engine text exactly and fall back to
+  the stock behaviour (logged once) when an engine update changes it.
+
+## Moves still substituted (101)
+
+`tools/.cache/moves_new.txt` lists them with their use counts. All of them are reachable
+mod-side (the engine seams are in the plan notes); grouped by what they need:
+
+- **Protection variants:** Spiky Shield, King's Shield, Baneful Bunker, Obstruct, Silk Trap,
+  Burning Bulwark (protect + punish contact); Feint, Hyperspace Hole, Phantom Force, Shadow Force
+  (hit through it); Geomancy (a charge turn of its own).
+- **Ability / type changes:** Worry Seed, Entrainment, Simple Beam, Gastro Acid, Core Enforcer,
+  Soak, Magic Powder, Trick-or-Treat, Forest's Curse, Reflect Type, Tar Shot, Electrify, Ion
+  Deluge, Plasma Fists.
+- **Trapping and lasting volatiles:** Jaw Lock, Thousand Waves, Spirit Shackle, Anchor Shot,
+  Octolock, Salt Cure, Heal Block, Throat Chop, Eerie Spell, Psycho Shift, Magnet Rise, Miracle Eye.
+- **Stat swaps, splits and the rest:** Power Split, Guard Split, Power Swap, Guard Swap, Heart
+  Swap, Speed Swap, Power Trick, Topsy-Turvy, Spectral Thief, Strength Sap, Venom Drench,
+  Captivate, Acupressure, Clangorous Soul, No Retreat, Fillet Away, Gear Up, Magnetic Flux,
+  Rototiller, Flower Shield, Decorate, Aromatic Mist.
+- **Field:** Gravity, Smack Down, Thousand Arrows, Wonder Room, Magic Room, Fairy Lock, Aurora
+  Veil, Lucky Chant, Court Change, Mortal Spin, Ceaseless Edge, Stone Axe, Wide Guard, Quick
+  Guard, Crafty Shield.
+- **Switching and healing:** Healing Wish, Lunar Dance, Shed Tail, Chilly Reception, Revival
+  Blessing, Purify, Jungle Healing, Lunar Blessing, Pollen Puff.
+- **Doubles only:** Ally Switch, After You, Quash, Instruct, Me First, Doodle.
+- **Items and berries:** Bug Bite, Pluck, Incinerate, Belch, Stuff Cheeks, Fling, Natural Gift,
+  Bestow, Teatime; and Powder, Shell Trap, Beak Blast.
 
 ## Regenerating the data
 

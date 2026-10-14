@@ -315,7 +315,7 @@ function Species.register(mod, payload, crossgen, forms)
         id = r.id, dex = r.baseDex, slot = r.slot, name = r.name,
         form = r.form, baseSpecies = r.baseSpecies, baseDex = r.baseDex,
         legendary = r.legendary, mythical = r.mythical, evolutions = evolutions,
-        teach = r.teach or {},
+        teach = r.teach or {}, weight = r.weight,
       }
     else
       formsFailed = formsFailed + 1
