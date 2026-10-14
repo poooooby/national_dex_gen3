@@ -101,7 +101,7 @@
 ### #826 Orbeetle
 
 - Type: Bug / Psychic
-- Ability: Swarm / Keen Eye
+- Ability: Swarm / Frisk
 - Learnset: 1 Confusion · 1 Light Screen · 1 Reflect · 1 Struggle Bug · 4 Confuse Ray · 8 Magic Coat · 12 Agility · 16 Psybeam · 20 Hypnosis · 24 Rest · 28 Bug Buzz · 32 Mirror Coat · 36 Psychic · 40 Belly Drum · 44 Calm Mind · 48 Trick
 
 ### #827 Nickit
@@ -119,37 +119,37 @@
 ### #829 Gossifleur
 
 - Type: Grass
-- Ability: Effect Spore / Natural Cure
+- Ability: Effect Spore / Regenerator
 - Learnset: 1 Sing · 1 Leafage · 4 Rapid Spin · 8 Sweet Scent · 12 Razor Leaf · 16 Swift · 21 Leaf Tornado · 24 Synthesis · 28 Hyper Voice · 32 Aromatherapy · 36 Leaf Storm
 
 ### #830 Eldegoss
 
 - Type: Grass
-- Ability: Effect Spore / Natural Cure
+- Ability: Effect Spore / Regenerator
 - Learnset: 1 Sing · 1 Cotton Spore · 1 Rapid Spin · 1 Sweet Scent · 1 Leafage · 12 Razor Leaf · 16 Swift · 23 Leaf Tornado · 28 Synthesis · 34 Hyper Voice · 40 Aromatherapy · 46 Leaf Storm · 52 Spore
 
 ### #831 Wooloo
 
 - Type: Normal
-- Ability: Thick Fat / Run Away
+- Ability: Fluffy / Run Away
 - Learnset: 1 Tackle · 1 Growl · 4 Defense Curl · 8 Copycat · 12 Rest · 16 Double Kick · 21 Headbutt · 25 Take Down · 28 Trick · 32 Reversal · 36 Cotton Spore · 40 Double-Edge
 
 ### #832 Dubwool
 
 - Type: Normal
-- Ability: Thick Fat / Inner Focus
+- Ability: Fluffy / Inner Focus
 - Learnset: 1 Tackle · 1 Growl · 1 Defense Curl · 1 Copycat · 12 Rest · 16 Double Kick · 21 Headbutt · 27 Take Down · 32 Trick · 38 Reversal · 44 Cotton Spore · 50 Double-Edge · 56 Hyper Beam
 
 ### #833 Chewtle
 
 - Type: Water
-- Ability: Hustle / Shell Armor
+- Ability: Strong Jaw / Shell Armor
 - Learnset: 1 Tackle · 1 Water Gun · 7 Bite · 14 Protect · 21 Headbutt · 28 Counter · 35 Faint Attack · 42 Liquidation · 49 Body Slam
 
 ### #834 Drednaw
 
 - Type: Water / Rock
-- Ability: Hustle / Shell Armor
+- Ability: Strong Jaw / Shell Armor
 - Learnset: 1 Tackle · 1 Bite · 1 Water Gun · 1 Protect · 1 Crunch · 1 Rock Tomb · 1 Rock Polish · 1 Razor Shell · 21 Headbutt · 30 Counter · 39 Faint Attack · 48 Liquidation · 57 Body Slam · 66 Rock Slide
 
 ### #835 Yamper
@@ -161,13 +161,13 @@
 ### #836 Boltund
 
 - Type: Electric
-- Ability: Hustle
+- Ability: Strong Jaw
 - Learnset: 1 Tackle · 1 Tail Whip · 1 Bite · 1 Thunder Wave · 1 Nuzzle · 15 Roar · 20 Spark · 28 Charm · 34 Crunch · 41 Charge · 48 Wild Charge · 55 Play Rough · 62 Sandstorm
 
 ### #837 Rolycoly
 
 - Type: Rock
-- Ability: Flame Body / Thick Fat
+- Ability: Flame Body / Heatproof
 - Learnset: 1 Tackle · 1 Smokescreen · 5 Rapid Spin · 10 Rock Throw · 15 Rock Polish · 20 Ancientpower · 25 Flame Wheel · 30 Sandstorm · 35 Eruption · 40 Rock Blast
 
 ### #838 Carkol
@@ -233,7 +233,7 @@
 ### #848 Toxel
 
 - Type: Electric / Poison
-- Ability: Run Away / Static
+- Ability: Rattled / Static
 - Learnset: 1 Growl · 1 Acid · 1 Flail · 1 Sludge Bomb · 1 Nuzzle · 1 Minimize
 
 ### #849 Toxtricity
@@ -269,67 +269,67 @@
 ### #854 Sinistea
 
 - Type: Ghost
-- Ability: Sturdy
+- Ability: Weak Armor
 - Learnset: 1 Withdraw · 1 Astonish · 6 Minimize · 12 Mega Drain · 24 Faint Attack · 30 Sweet Scent · 36 Giga Drain · 42 Fake Tears · 48 Shadow Ball · 54 Memento · 60 Belly Drum
 
 ### #855 Polteageist
 
 - Type: Ghost
-- Ability: Sturdy
+- Ability: Weak Armor
 - Learnset: 1 Mega Drain · 1 Withdraw · 1 Astonish · 1 Minimize · 1 Aromatherapy · 1 Belly Drum · 18 Protect · 24 Faint Attack · 30 Sweet Scent · 36 Giga Drain · 42 Fake Tears · 48 Shadow Ball · 54 Memento · 60 Pain Split · 66 Curse
 
 ### #856 Hatenna
 
 - Type: Psychic
-- Ability: Shed Skin / Pressure
+- Ability: Healer / Anticipation
 - Learnset: 1 Confusion · 1 Play Nice · 5 Rain Dance · 10 Disarming Voice · 15 Minimize · 20 Psybeam · 25 Rest · 30 Dazzling Gleam · 35 Calm Mind · 40 Psychic · 45 Trick
 
 ### #857 Hattrem
 
 - Type: Psychic
-- Ability: Shed Skin / Pressure
+- Ability: Healer / Anticipation
 - Learnset: 1 Confusion · 1 Disarming Voice · 1 Play Nice · 1 Brutal Swing · 1 Rain Dance · 15 Minimize · 20 Psybeam · 25 Rest · 30 Dazzling Gleam · 37 Calm Mind · 44 Psychic · 51 Trick
 
 ### #858 Hatterene
 
 - Type: Psychic / Fairy
-- Ability: Shed Skin / Pressure
+- Ability: Healer / Anticipation
 - Learnset: 1 Confusion · 1 Psycho Cut · 1 Disarming Voice · 1 Play Nice · 1 Brutal Swing · 1 Rain Dance · 15 Minimize · 20 Psybeam · 25 Rest · 30 Dazzling Gleam · 37 Calm Mind · 46 Psychic · 55 Trick · 64 Role Play
 
 ### #859 Impidimp
 
 - Type: Dark / Fairy
-- Ability: Run Away / Keen Eye
+- Ability: Prankster / Frisk
 - Learnset: 1 Fake Out · 1 Minimize · 4 Bite · 8 Flatter · 12 Fake Tears · 16 Faint Attack · 20 Swagger · 24 Crunch · 28 Torment · 33 Dark Pulse · 36 Taunt · 40 Play Rough · 44 Thief
 
 ### #860 Morgrem
 
 - Type: Dark / Fairy
-- Ability: Run Away / Keen Eye
+- Ability: Prankster / Frisk
 - Learnset: 1 Bite · 1 Fake Out · 1 Flatter · 1 Minimize · 1 False Surrender · 12 Fake Tears · 16 Faint Attack · 20 Swagger · 24 Crunch · 28 Torment · 35 Dark Pulse · 40 Taunt · 46 Play Rough · 52 Thief
 
 ### #861 Grimmsnarl
 
 - Type: Dark / Fairy
-- Ability: Run Away / Keen Eye
+- Ability: Prankster / Frisk
 - Learnset: 1 Bite · 1 Fake Out · 1 Flatter · 1 Bulk Up · 1 Minimize · 1 Spirit Break · 1 False Surrender · 12 Fake Tears · 16 Faint Attack · 20 Swagger · 24 Crunch · 28 Torment · 35 Dark Pulse · 40 Taunt · 48 Play Rough · 56 Thief · 64 Cross Chop
 
 ### #862 Obstagoon
 
 - Type: Dark / Normal
-- Ability: Guts
+- Ability: Reckless / Guts
 - Learnset: 1 Sand-Attack · 1 Tackle · 1 Pin Missile · 1 Leer · 1 Submission · 1 Lick · 1 Cross Chop · 1 Night Slash · 1 Switcheroo · 1 Baby-Doll Eyes · 1 Magic Coat · 9 Snarl · 12 Headbutt · 15 Fake Tears · 18 Fury Swipes · 23 Rest · 28 Take Down · 35 Scary Face · 42 Counter · 49 Taunt · 56 Double-Edge
 
 ### #863 Perrserker
 
 - Type: Steel
-- Ability: Battle Armor / Hustle
+- Ability: Battle Armor / Tough Claws
 - Learnset: 1 Scratch · 1 Growl · 1 Fake Out · 1 Iron Defense · 1 Meteor Mash · 1 Iron Head · 1 Fake Tears · 12 Pay Day · 16 Metal Claw · 20 Taunt · 24 Swagger · 31 Fury Swipes · 36 Screech · 42 Slash · 48 Metal Sound · 54 Thrash
 
 ### #864 Cursola
 
 - Type: Ghost
-- Ability: Sturdy
+- Ability: Weak Armor
 - Learnset: 1 Tackle · 1 Disable · 1 Harden · 1 Perish Song · 1 Astonish · 15 Spite · 20 Ancientpower · 25 Shadow Punch · 30 Curse · 35 Aromatherapy · 40 Power Gem · 45 Night Shade · 50 Grudge · 55 Mirror Coat
 
 ### #865 Sirfetch'd
@@ -353,13 +353,13 @@
 ### #868 Milcery
 
 - Type: Fairy
-- Ability: Insomnia
+- Ability: Sweet Veil
 - Learnset: 1 Tackle · 1 Minimize · 5 Sweet Kiss · 10 Sweet Scent · 15 Uproar · 20 Charm · 25 Attract · 30 Acid Armor · 35 Dazzling Gleam · 40 Recover · 45 Softboiled · 50 Belly Drum
 
 ### #869 Alcremie
 
 - Type: Fairy
-- Ability: Insomnia
+- Ability: Sweet Veil
 - Learnset: 1 Tackle · 1 Sweet Kiss · 1 Sweet Scent · 1 Minimize · 1 Double Team · 15 Uproar · 20 Charm · 25 Attract · 30 Acid Armor · 35 Dazzling Gleam · 40 Recover · 45 Softboiled · 50 Belly Drum
 
 ### #870 Falinks
@@ -437,13 +437,13 @@
 ### #882 Dracovish
 
 - Type: Water / Dragon
-- Ability: Water Absorb / Hustle
+- Ability: Water Absorb / Strong Jaw
 - Learnset: 1 Tackle · 1 Water Gun · 7 Protect · 14 Brutal Swing · 21 Ancientpower · 28 Bite · 35 Dragonbreath · 42 Stomp · 49 Super Fang · 56 Crunch · 63 Waterfall · 70 Dragon Pulse · 77 Dragon Rush
 
 ### #883 Arctovish
 
 - Type: Water / Ice
-- Ability: Water Absorb / Rain Dish
+- Ability: Water Absorb / Ice Body
 - Learnset: 1 Water Gun · 1 Powder Snow · 7 Protect · 14 Icy Wind · 21 Ancientpower · 28 Bite · 35 Mist · 42 Ice Punch · 49 Super Fang · 56 Crunch · 63 Waterfall · 70 Icicle Crash · 77 Blizzard
 
 ### #884 Duraludon
@@ -503,7 +503,7 @@
 ### #893 Zarude
 
 - Type: Dark / Grass
-- Ability: Natural Cure
+- Ability: Leaf Guard
 - Learnset: 1 Scratch · 1 Bind · 6 Leer · 12 Vine Whip · 18 Growth · 24 Fury Swipes · 30 Scary Face · 36 Petal Dance · 42 Bite · 48 Signal Beam · 54 Swagger · 60 Energy Ball · 66 Synthesis · 72 Cross Chop · 78 Thrash · 84 Power Whip · 90 Aromatherapy
 
 ### #894 Regieleki
@@ -539,7 +539,7 @@
 ### #899 Wyrdeer
 
 - Type: Normal / Psychic
-- Ability: Intimidate / Keen Eye
+- Ability: Intimidate / Frisk
 - Learnset: 1 Tackle · 1 Luster Purge · 3 Leer · 7 Astonish · 10 Hypnosis · 13 Stomp · 16 Sand-Attack · 21 Take Down · 23 Confuse Ray · 27 Calm Mind · 32 Role Play · 37 Zen Headbutt · 49 Imprison · 55 Double-Edge · 62 Megahorn
 
 ### #900 Kleavor
@@ -551,13 +551,13 @@
 ### #901 Ursaluna
 
 - Type: Ground / Normal
-- Ability: Guts / Soundproof
+- Ability: Guts / Bulletproof
 - Learnset: 1 Scratch · 1 Leer · 1 Lick · 1 Fake Tears · 1 Covet · 1 Earthquake · 8 Fury Swipes · 13 Faint Attack · 17 Sweet Scent · 22 Slash · 25 Play Nice · 29 Play Rough · 35 Scary Face · 41 Rest · 41 Snore · 48 High Horsepower · 56 Thrash · 64 Cross Chop
 
 ### #902 Basculegion
 
 - Type: Water / Ghost
-- Ability: Swift Swim / Hustle
+- Ability: Swift Swim / Adaptability
 - Learnset: 1 Tail Whip · 1 Water Gun · 1 Shadow Ball · 1 Night Shade · 4 Tackle · 8 Flail · 12 Aqua Jet · 16 Bite · 20 Scary Face · 24 Headbutt · 28 Water Sport · 32 Crunch · 36 Take Down · 40 Uproar · 44 Hydro Pump · 48 Thrash · 52 Double-Edge · 56 Rock Slide
 
 ### #903 Sneasler

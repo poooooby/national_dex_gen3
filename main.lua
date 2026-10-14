@@ -83,6 +83,9 @@ return function(mod)
   -- one of them are left out
   local NewMoves = loadSibling(mod, "src/moves.lua")
   local TypeIcons = loadSibling(mod, "src/type_icons.lua")
+  -- optional: without it every newer ability stays the closest Gen 3 one
+  local RealAbilities = loadSibling(mod, "src/abilities.lua")
+  if RealAbilities then RealAbilities.hooks(mod) end
   local Api = loadSibling(mod, "src/api.lua")
   if not (Species and Fixups and Items and ItemArt and CryArt and Shops and Art and ConditionalEvos and Clock and Counters and Breeding and DexPatch and NationalUnlock and DexSync and DexRepeat and Editor and MonAnim and Api) then return end
 
@@ -125,6 +128,13 @@ return function(mod)
       Editor.prepare(ev, require, function() fixups.install(nil) end, mod.log)
       -- the new moves: learnset numbers, names, texts (src/moves.lua)
       if NewMoves then pcall(NewMoves.install, { moves = registeredMoves, require = require, log = mod.log, family = "frlg" }) end
+      -- the real abilities' names, texts and ability pairs (src/abilities.lua)
+      if RealAbilities then
+        local formSlots = {}
+        for _, f in ipairs(registeredForms) do formSlots[f.id] = f.slot end
+        pcall(RealAbilities.install, { data = read("data/abilities.lua") or {}, require = require, log = mod.log,
+          formSlots = formSlots })
+      end
       local n = Editor.addToCatalog(ev and ev.data, registered, registeredForms, mod.content.pokemon)
       local items = Editor.addItems(ev and ev.data, registeredItems, require)
       local moves = Editor.addMoves(ev and ev.data, registeredMoves)
@@ -167,6 +177,14 @@ return function(mod)
       local okMoves, movesErr = pcall(NewMoves.install, { moves = registeredMoves, require = require, log = mod.log,
         family = (gameName:find("firered", 1, true) or gameName:find("leafgreen", 1, true)) and "frlg" or "rse" })
       if not okMoves then mod.log:warn("the new moves are incomplete: %s", tostring(movesErr)) end
+    end
+    -- real abilities (src/abilities.lua): after the repairs, so National numbers resolve
+    if RealAbilities then
+      local formSlots = {}
+      for _, f in ipairs(registeredForms) do formSlots[f.id] = f.slot end
+      local okAb, abErr = pcall(RealAbilities.install, { data = read("data/abilities.lua") or {}, require = require,
+        log = mod.log, formSlots = formSlots })
+      if not okAb then mod.log:warn("real abilities are off: %s", tostring(abErr)) end
     end
     -- the Fairy type (src/types.lua): after the repairs, so National numbers resolve to this
     -- mod's slots and its reload hook runs after theirs

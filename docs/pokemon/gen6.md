@@ -71,7 +71,7 @@
 ### #661 Fletchling
 
 - Type: Normal / Flying
-- Ability: Clear Body
+- Ability: Big Pecks
 - Learnset: 1 Growl · 1 Peck · 5 Quick Attack · 10 Ember · 15 Flail · 20 Air Cutter · 25 Agility · 30 Aerial Ace · 35 Featherdance · 40 Steel Wing · 45 Roost · 50 Fly
 
 ### #662 Fletchinder
@@ -107,55 +107,55 @@
 ### #667 Litleo
 
 - Type: Fire / Normal
-- Ability: Guts / Pressure
+- Ability: Rivalry / Pressure
 - Learnset: 1 Tackle · 1 Leer · 5 Ember · 8 Swords Dance · 11 Headbutt · 15 Tail Whip · 20 Take Down · 23 Flame Wheel · 28 Endeavor · 33 Snore · 36 Flamethrower · 39 Crunch · 43 Hyper Voice · 46 Fire Punch · 50 Overheat
 
 ### #668 Pyroar
 
 - Type: Fire / Normal
-- Ability: Guts / Pressure
+- Ability: Rivalry / Pressure
 - Learnset: 1 Tackle · 1 Leer · 1 Ember · 1 Hyper Beam · 1 Swords Dance · 11 Headbutt · 15 Tail Whip · 20 Take Down · 23 Flame Wheel · 28 Endeavor · 33 Snore · 38 Flamethrower · 42 Crunch · 48 Hyper Voice · 51 Fire Punch · 57 Overheat
 
 ### #669 FlabÉBÉ
 
 - Type: Fairy
-- Ability: Shield Dust
+- Ability: Flower Veil
 - Learnset: 1 Vine Whip · 1 Tackle · 6 Fairy Wind · 10 Safeguard · 15 Razor Leaf · 20 Wish · 22 Magical Leaf · 24 Spore · 28 Leaf Blade · 33 Synthesis · 37 Softboiled · 41 Moonblast · 45 Petal Dance · 48 Solarbeam
 
 ### #670 Floette
 
 - Type: Fairy
-- Ability: Shield Dust
+- Ability: Flower Veil
 - Learnset: 1 Vine Whip · 1 Tackle · 1 Fairy Wind · 10 Safeguard · 15 Razor Leaf · 20 Wish · 25 Magical Leaf · 27 Spore · 33 Leaf Blade · 38 Synthesis · 43 Softboiled · 46 Moonblast · 51 Petal Dance · 58 Solarbeam
 
 ### #671 Florges
 
 - Type: Fairy
-- Ability: Shield Dust
+- Ability: Flower Veil
 - Learnset: 1 Solarbeam · 1 Petal Dance · 1 Safeguard · 1 Synthesis · 1 Wish · 1 Magical Leaf · 1 Needle Arm · 1 Leaf Blade · 1 Disarming Voice · 1 Spore · 1 Softboiled · 5 Moonblast
 
 ### #672 Skiddo
 
 - Type: Grass
-- Ability: Water Absorb
+- Ability: Sap Sipper
 - Learnset: 1 Tackle · 1 Growth · 7 Vine Whip · 9 Tail Whip · 12 Leech Seed · 13 Razor Leaf · 16 Aromatherapy · 20 Synthesis · 22 Take Down · 26 Bulldoze · 30 Seed Bomb · 34 Bulk Up · 38 Double-Edge · 42 Horn Leech · 45 Leaf Blade
 
 ### #673 Gogoat
 
 - Type: Grass
-- Ability: Water Absorb
+- Ability: Sap Sipper
 - Learnset: 1 Vine Whip · 1 Tackle · 1 Tail Whip · 1 Growth · 1 Earthquake · 1 Aerial Ace · 12 Leech Seed · 13 Razor Leaf · 16 Aromatherapy · 20 Synthesis · 22 Take Down · 26 Bulldoze · 30 Seed Bomb · 34 Bulk Up · 40 Double-Edge · 47 Horn Leech · 55 Leaf Blade · 58 Milk Drink
 
 ### #674 Pancham
 
 - Type: Fighting
-- Ability: Guts / Hustle
+- Ability: Iron Fist / Hustle
 - Learnset: 1 Tackle · 1 Leer · 4 Arm Thrust · 8 Taunt · 12 Rolling Kick · 16 Jump Kick · 20 Swords Dance · 24 Slash · 28 Vital Throw · 33 Crunch · 36 Body Slam · 40 Fake Tears · 44 Belly Drum
 
 ### #675 Pangoro
 
 - Type: Fighting / Dark
-- Ability: Guts / Hustle
+- Ability: Iron Fist / Hustle
 - Learnset: 1 Tackle · 1 Leer · 1 Taunt · 1 Arm Thrust · 1 Night Slash · 1 Bullet Punch · 12 Rolling Kick · 16 Jump Kick · 20 Swords Dance · 24 Slash · 28 Vital Throw · 35 Crunch · 40 Body Slam · 46 Fake Tears · 52 Belly Drum · 58 Cross Chop
 
 ### #676 Furfrou
@@ -197,25 +197,25 @@
 ### #682 Spritzee
 
 - Type: Fairy
-- Ability: Shed Skin
+- Ability: Healer
 - Learnset: 1 Sweet Scent · 1 Fairy Wind · 3 Sweet Kiss · 6 Snore · 9 Uproar · 12 Aromatherapy · 15 Weather Ball · 18 Attract · 21 Flail · 24 Softboiled · 27 Psychic · 30 Charm · 33 Calm Mind · 36 Moonblast · 39 Skill Swap
 
 ### #683 Aromatisse
 
 - Type: Fairy
-- Ability: Shed Skin
+- Ability: Healer
 - Learnset: 1 Sweet Kiss · 1 Sweet Scent · 1 Snore · 1 Rest · 1 Fairy Wind · 1 Minimize · 9 Disarming Voice · 12 Aromatherapy · 15 Uproar · 18 Attract · 21 Flail · 24 Softboiled · 27 Psychic · 30 Charm · 33 Calm Mind · 36 Moonblast · 39 Skill Swap · 42 Psych Up
 
 ### #684 Swirlix
 
 - Type: Fairy
-- Ability: Insomnia
+- Ability: Sweet Veil
 - Learnset: 1 Tackle · 1 Sweet Scent · 3 Play Nice · 6 Fairy Wind · 9 Aromatherapy · 12 Uproar · 15 Fake Tears · 18 Swift · 21 String Shot · 24 Cotton Spore · 27 Energy Ball · 30 Wish · 33 Play Rough · 36 Spore · 39 Endeavor
 
 ### #685 Slurpuff
 
 - Type: Fairy
-- Ability: Insomnia
+- Ability: Sweet Veil
 - Learnset: 1 Tackle · 1 Sweet Scent · 1 Fairy Wind · 1 Play Nice · 9 Aromatherapy · 12 Uproar · 15 Fake Tears · 18 Swift · 21 String Shot · 24 Cotton Spore · 27 Energy Ball · 30 Wish · 33 Play Rough · 36 Spore · 39 Endeavor · 42 Tail Glow
 
 ### #686 Inkay
@@ -233,25 +233,25 @@
 ### #688 Binacle
 
 - Type: Rock / Water
-- Ability: Hustle / Compoundeyes
+- Ability: Tough Claws / Sniper
 - Learnset: 1 Scratch · 1 Mud-Slap · 4 Withdraw · 8 Water Gun · 12 Fury Cutter · 16 Fury Swipes · 20 Ancientpower · 24 Rock Polish · 28 Slash · 32 Fake Tears · 36 Razor Shell · 40 Belly Drum · 44 Cross Chop
 
 ### #689 Barbaracle
 
 - Type: Rock / Water
-- Ability: Hustle / Compoundeyes
+- Ability: Tough Claws / Sniper
 - Learnset: 1 Scratch · 1 Water Gun · 1 Withdraw · 1 Skull Bash · 1 Mud-Slap · 12 Fury Cutter · 16 Fury Swipes · 20 Ancientpower · 24 Rock Polish · 28 Slash · 32 Fake Tears · 36 Razor Shell · 42 Belly Drum · 48 Cross Chop · 54 Stone Edge
 
 ### #690 Skrelp
 
 - Type: Poison / Water
-- Ability: Poison Point
+- Ability: Poison Point / Poison Touch
 - Learnset: 1 Tackle · 1 Smokescreen · 5 Acid · 10 Water Gun · 15 Tail Whip · 20 Double Team · 25 Poison Tail · 30 Water Pulse · 35 Toxic · 40 Dragon Pulse · 45 Aqua Tail · 50 Sludge Bomb · 55 Hydro Pump
 
 ### #691 Dragalge
 
 - Type: Poison / Dragon
-- Ability: Poison Point
+- Ability: Poison Point / Poison Touch
 - Learnset: 1 Tackle · 1 Acid · 1 Water Gun · 1 Smokescreen · 15 Tail Whip · 20 Double Team · 25 Poison Tail · 30 Water Pulse · 35 Toxic · 40 Dragon Pulse · 45 Aqua Tail · 52 Sludge Bomb · 59 Hydro Pump · 66 Outrage
 
 ### #692 Clauncher
@@ -269,25 +269,25 @@
 ### #694 Helioptile
 
 - Type: Electric / Normal
-- Ability: Water Absorb / Sand Veil
+- Ability: Dry Skin / Sand Veil
 - Learnset: 1 Tail Whip · 1 Mud-Slap · 4 Pound · 8 Thundershock · 12 Quick Attack · 16 Charge · 20 Bulldoze · 24 Shock Wave · 28 Spark · 32 Thunder Wave · 36 Thunderbolt · 40 Pain Split · 44 Thunder
 
 ### #695 Heliolisk
 
 - Type: Electric / Normal
-- Ability: Water Absorb / Sand Veil
+- Ability: Dry Skin / Sand Veil
 - Learnset: 1 Pound · 1 Tail Whip · 1 Thundershock · 1 Thunderbolt · 1 Thunder Wave · 1 Thunder · 1 Quick Attack · 1 Mud-Slap · 1 Charge · 1 Discharge · 1 Shock Wave · 1 Bulldoze · 1 Spark · 1 Pain Split · 1 Sand-Attack
 
 ### #696 Tyrunt
 
 - Type: Rock / Dragon
-- Ability: Hustle
+- Ability: Strong Jaw
 - Learnset: 1 Tackle · 1 Tail Whip · 4 Roar · 8 Ancientpower · 12 Charm · 16 Bite · 20 Dragonbreath · 24 Stomp · 28 Rock Slide · 32 Crunch · 36 Dragon Claw · 40 Thrash · 44 Earthquake · 48 Horn Drill
 
 ### #697 Tyrantrum
 
 - Type: Rock / Dragon
-- Ability: Hustle
+- Ability: Strong Jaw
 - Learnset: 1 Tackle · 1 Tail Whip · 1 Roar · 1 Ancientpower · 12 Charm · 16 Bite · 20 Dragonbreath · 24 Stomp · 28 Rock Slide · 32 Crunch · 36 Dragon Claw · 42 Thrash · 48 Earthquake · 54 Horn Drill · 60 Giga Impact · 66 Rock Throw
 
 ### #698 Amaura
@@ -329,73 +329,73 @@
 ### #704 Goomy
 
 - Type: Dragon
-- Ability: Water Absorb / Shed Skin
+- Ability: Sap Sipper / Hydration
 - Learnset: 1 Tackle · 1 Absorb · 5 Water Gun · 10 Dragonbreath · 15 Protect · 20 Flail · 25 Water Pulse · 30 Rain Dance · 35 Dragon Pulse · 41 Curse · 45 Body Slam · 50 Muddy Water
 
 ### #705 Sliggoo
 
 - Type: Dragon
-- Ability: Water Absorb / Shed Skin
+- Ability: Sap Sipper / Hydration
 - Learnset: 1 Tackle · 1 Water Gun · 1 Absorb · 1 Acid Armor · 1 Dragonbreath · 1 Acid · 15 Protect · 20 Flail · 25 Water Pulse · 30 Rain Dance · 35 Dragon Pulse · 43 Curse · 49 Body Slam · 56 Muddy Water
 
 ### #706 Goodra
 
 - Type: Dragon
-- Ability: Water Absorb / Shed Skin
+- Ability: Sap Sipper / Hydration
 - Learnset: 1 Tackle · 1 Water Gun · 1 Absorb · 1 Dragonbreath · 1 Poison Tail · 1 Fake Out · 1 Aqua Tail · 1 Acid · 1 Minimize · 15 Protect · 20 Flail · 25 Water Pulse · 30 Rain Dance · 43 Curse · 49 Body Slam · 58 Muddy Water · 67 Power Whip
 
 ### #707 Klefki
 
 - Type: Steel / Fairy
-- Ability: Run Away
+- Ability: Prankster
 - Learnset: 1 Astonish · 4 Tackle · 8 Fairy Wind · 12 Torment · 16 Softboiled · 20 Metal Sound · 24 Uproar · 28 Recycle · 32 Imprison · 36 Flash Cannon · 40 Play Rough · 44 Rest · 48 Faint Attack · 52 Hyper Beam
 
 ### #708 Phantump
 
 - Type: Ghost / Grass
-- Ability: Natural Cure / Keen Eye
+- Ability: Natural Cure / Frisk
 - Learnset: 1 Tackle · 1 Astonish · 4 Branch Poke · 8 Leech Seed · 12 Confuse Ray · 16 Will-O-Wisp · 20 Shadow Punch · 24 Growth · 28 Horn Leech · 32 Curse · 36 Night Shade · 40 Ingrain · 44 Wood Hammer · 48 Destiny Bond · 52 Aromatherapy
 
 ### #709 Trevenant
 
 - Type: Ghost / Grass
-- Ability: Natural Cure / Keen Eye
+- Ability: Natural Cure / Frisk
 - Learnset: 1 Tackle · 1 Leech Seed · 1 Astonish · 1 Shadow Claw · 1 Branch Poke · 12 Confuse Ray · 16 Will-O-Wisp · 20 Shadow Punch · 24 Growth · 28 Horn Leech · 32 Curse · 36 Night Shade · 40 Ingrain · 44 Wood Hammer · 48 Destiny Bond · 52 Aromatherapy
 
 ### #710 Pumpkaboo
 
 - Type: Ghost / Grass
-- Ability: Pickup / Keen Eye
+- Ability: Pickup / Frisk
 - Learnset: 1 Astonish · 1 Spite · 4 Shadow Sneak · 8 Confuse Ray · 12 Razor Leaf · 12 Nightmare · 16 Leech Seed · 20 Bullet Seed · 24 Scary Face · 24 Taunt · 28 Aromatherapy · 32 Seed Bomb · 36 Shadow Ball · 36 Refresh · 40 Trick · 44 Pain Split
 
 ### #711 Gourgeist
 
 - Type: Ghost / Grass
-- Ability: Pickup / Keen Eye
+- Ability: Pickup / Frisk
 - Learnset: 1 Confuse Ray · 1 Explosion · 1 Astonish · 1 Shadow Sneak · 1 Spite · 1 Moonblast · 12 Razor Leaf · 12 Nightmare · 16 Leech Seed · 20 Bullet Seed · 24 Scary Face · 24 Taunt · 28 Aromatherapy · 32 Seed Bomb · 36 Shadow Ball · 36 Refresh · 40 Trick · 44 Pain Split · 48 Night Shade
 
 ### #712 Bergmite
 
 - Type: Ice
-- Ability: Own Tempo / Rain Dish
+- Ability: Own Tempo / Ice Body
 - Learnset: 1 Harden · 1 Rapid Spin · 3 Tackle · 6 Powder Snow · 9 Curse · 12 Icy Wind · 15 Protect · 18 Avalanche · 21 Bite · 24 Ice Punch · 27 Iron Defense · 30 Recover · 33 Crunch · 36 Take Down · 39 Blizzard · 42 Double-Edge
 
 ### #713 Avalugg
 
 - Type: Ice
-- Ability: Own Tempo / Rain Dish
+- Ability: Own Tempo / Ice Body
 - Learnset: 1 Tackle · 1 Body Slam · 1 Harden · 1 Powder Snow · 1 Rapid Spin · 1 Sandstorm · 9 Curse · 12 Icy Wind · 15 Protect · 18 Avalanche · 21 Bite · 24 Ice Punch · 27 Iron Defense · 30 Recover · 33 Crunch · 36 Take Down · 41 Blizzard · 46 Double-Edge · 51 Icicle Crash
 
 ### #714 Noibat
 
 - Type: Flying / Dragon
-- Ability: Keen Eye
+- Ability: Frisk / Keen Eye
 - Learnset: 1 Tackle · 1 Absorb · 4 Gust · 8 Supersonic · 12 Double Team · 16 Wing Attack · 20 Bite · 24 Air Cutter · 28 Whirlwind · 32 Super Fang · 36 Air Slash · 40 Screech · 44 Roost · 49 Featherdance · 52 Hurricane
 
 ### #715 Noivern
 
 - Type: Flying / Dragon
-- Ability: Keen Eye
+- Ability: Frisk / Keen Eye
 - Learnset: 1 Gust · 1 Tackle · 1 Supersonic · 1 Absorb · 1 Moonlight · 1 Dragon Pulse · 12 Double Team · 16 Wing Attack · 20 Bite · 24 Air Cutter · 28 Whirlwind · 32 Super Fang · 36 Air Slash · 40 Screech · 44 Roost · 51 Featherdance · 56 Hurricane · 62 Hyper Beam
 
 ### #716 Xerneas

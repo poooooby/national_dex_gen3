@@ -7,6 +7,17 @@ All notable changes to this mod are documented here, in
 
 ### Added
 
+- **52 newer abilities as real abilities** (`src/abilities.lua`, data from
+  `tools/build_abilities.py` -> `data/abilities.lua`): ids from 78 (append-only), names in the
+  adapter's id table, the species module and the battle's id lookups, summary texts; a species'
+  ability pair is set live from its real slots (a slot without one keeps the closest Gen 3
+  ability) and the adapter's `abilityOf` answers from species + ability slot, so Pokemon in saves
+  get them. Effects through `Damage.base`, the `battle.damage` / `battle.crit` /
+  `battle.accuracy` / `battle.turn_order` hooks and wraps of the ability, stat-change and effect
+  functions; each needs only its own target and falls back to the Gen 3 ability without it.
+  Known limits: Leaf Guard / Sweet Veil / Flower Veil don't stop a move's secondary status, Super
+  Luck doesn't stack with high-crit moves, Ice Body / Snow Cloak don't block hail damage.
+  `docs/abilities.md` lists them. Tests: `tests/abilities_test.lua`.
 - **118 newer moves as real moves** (`src/moves.lua`, data from `tools/build_moves.py` ->
   `data/moves.lua`): a newer move whose effect is one Gen 3 already has (matched by PokeAPI's
   effect description against the cart's own moves, attacks only onto attacking effects) is

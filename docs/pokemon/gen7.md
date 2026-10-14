@@ -77,13 +77,13 @@
 ### #734 Yungoos
 
 - Type: Normal
-- Ability: Hustle
+- Ability: Hustle / Strong Jaw
 - Learnset: 1 Tackle · 3 Leer · 7 Faint Attack · 10 Sand-Attack · 13 Swords Dance · 19 Bite · 22 Mud-Slap · 25 Super Fang · 28 Take Down · 31 Scary Face · 34 Crunch · 37 Yawn · 40 Thrash · 43 Rest
 
 ### #735 Gumshoos
 
 - Type: Normal
-- Ability: Hustle
+- Ability: Hustle / Strong Jaw
 - Learnset: 1 Sand-Attack · 1 Tackle · 1 Leer · 1 Faint Attack · 13 Swords Dance · 19 Bite · 23 Mud-Slap · 27 Super Fang · 31 Take Down · 35 Scary Face · 39 Crunch · 43 Yawn · 47 Thrash · 52 Rest
 
 ### #736 Grubbin
@@ -107,13 +107,13 @@
 ### #739 Crabrawler
 
 - Type: Fighting
-- Ability: Hyper Cutter / Guts
+- Ability: Hyper Cutter / Iron Fist
 - Learnset: 5 Rock Smash · 9 Leer · 13 Bubblebeam · 17 Protect · 22 Brick Break · 25 Slam · 29 Faint Attack · 33 Reversal · 37 Crabhammer · 42 Iron Defense · 45 Dynamicpunch · 49 Cross Chop
 
 ### #740 Crabominable
 
 - Type: Fighting / Ice
-- Ability: Hyper Cutter / Guts
+- Ability: Hyper Cutter / Iron Fist
 - Learnset: 1 Ice Punch · 1 Leer · 1 Protect · 1 Rock Smash · 17 Bubblebeam · 22 Brick Break · 25 Slam · 29 Avalanche · 33 Reversal · 37 Ice Beam · 42 Iron Defense · 45 Dynamicpunch · 49 Cross Chop
 
 ### #741 Oricorio
@@ -125,13 +125,13 @@
 ### #742 Cutiefly
 
 - Type: Bug / Fairy
-- Ability: Pickup / Shield Dust
+- Ability: Honey Gather / Shield Dust
 - Learnset: 1 Absorb · 1 Fairy Wind · 6 Stun Spore · 12 Sweet Scent · 18 Uproar · 24 Struggle Bug · 30 Covet · 36 Switcheroo · 42 Dazzling Gleam · 48 Bug Buzz · 54 Tail Glow
 
 ### #743 Ribombee
 
 - Type: Bug / Fairy
-- Ability: Pickup / Shield Dust
+- Ability: Honey Gather / Shield Dust
 - Learnset: 1 Absorb · 1 Stun Spore · 1 Sweet Scent · 1 Fairy Wind · 1 Megahorn · 18 Uproar · 24 Struggle Bug · 32 Covet · 40 Switcheroo · 48 Dazzling Gleam · 56 Bug Buzz · 64 Tail Glow
 
 ### #744 Rockruff
@@ -143,7 +143,7 @@
 ### #745 Lycanroc
 
 - Type: Rock
-- Ability: Keen Eye / Swift Swim
+- Ability: Keen Eye / Sand Rush
 - Learnset: 1 Sand-Attack · 1 Tackle · 1 Leer · 1 Quick Attack · 1 Double Team · 1 Faint Attack · 1 Detect · 1 Accelerock · 12 Rock Throw · 16 Howl · 20 Bite · 24 Rock Tomb · 30 Roar · 36 Rock Slide · 42 Crunch · 48 Scary Face · 54 Sandstorm · 60 Stone Edge
 
 ### #746 Wishiwashi
@@ -167,13 +167,13 @@
 ### #749 Mudbray
 
 - Type: Ground
-- Ability: Own Tempo / Sturdy
+- Ability: Own Tempo / Stamina
 - Learnset: 1 Mud-Slap · 1 Rock Smash · 4 Iron Defense · 8 Double Kick · 12 Bulldoze · 16 Stomp · 20 Strength · 24 Counter · 28 High Horsepower · 32 Metal Claw · 36 Earthquake · 40 Mega Kick · 44 Superpower
 
 ### #750 Mudsdale
 
 - Type: Ground
-- Ability: Own Tempo / Sturdy
+- Ability: Own Tempo / Stamina
 - Learnset: 1 Double Kick · 1 Mud-Slap · 1 Rock Smash · 1 Iron Defense · 12 Bulldoze · 16 Stomp · 20 Strength · 24 Counter · 28 High Horsepower · 34 Metal Claw · 40 Earthquake · 46 Mega Kick · 52 Superpower
 
 ### #751 Dewpider
@@ -191,13 +191,13 @@
 ### #753 Fomantis
 
 - Type: Grass
-- Ability: Natural Cure
+- Ability: Leaf Guard
 - Learnset: 1 Fury Cutter · 1 Leafage · 5 Growth · 10 Ingrain · 15 Razor Leaf · 20 Sweet Scent · 25 Slash · 30 X-Scissor · 35 Synthesis · 40 Leaf Blade · 45 Sunny Day · 50 Solarbeam
 
 ### #754 Lurantis
 
 - Type: Grass
-- Ability: Natural Cure
+- Ability: Leaf Guard
 - Learnset: 1 Growth · 1 Solarbeam · 1 Fury Cutter · 1 Ingrain · 1 Night Slash · 1 Petal Dance · 1 Leafage · 15 Razor Leaf · 20 Sweet Scent · 25 Slash · 30 X-Scissor · 37 Synthesis · 44 Leaf Blade · 51 Sunny Day · 63 Solar Blade
 
 ### #755 Morelull
@@ -227,43 +227,43 @@
 ### #759 Stufful
 
 - Type: Normal / Fighting
-- Ability: Thick Fat / Oblivious
+- Ability: Fluffy / Oblivious
 - Learnset: 1 Tackle · 1 Leer · 4 Baby-Doll Eyes · 8 Faint Attack · 12 Brutal Swing · 16 Endure · 20 Strength · 24 Take Down · 28 Flail · 32 Cross Chop · 36 Thrash · 40 Pain Split · 44 Double-Edge · 48 Superpower
 
 ### #760 Bewear
 
 - Type: Normal / Fighting
-- Ability: Thick Fat / Oblivious
+- Ability: Fluffy / Oblivious
 - Learnset: 1 Bind · 1 Tackle · 1 Leer · 1 Faint Attack · 1 Baby-Doll Eyes · 12 Brutal Swing · 16 Endure · 20 Strength · 24 Take Down · 30 Flail · 36 Cross Chop · 42 Thrash · 48 Pain Split · 54 Double-Edge · 60 Superpower
 
 ### #761 Bounsweet
 
 - Type: Grass
-- Ability: Natural Cure / Oblivious
+- Ability: Leaf Guard / Oblivious
 - Learnset: 1 Splash · 4 Play Nice · 8 Rapid Spin · 12 Razor Leaf · 16 Sweet Scent · 20 Magical Leaf · 24 Flail · 28 Teeter Dance · 32 Minimize
 
 ### #762 Steenee
 
 - Type: Grass
-- Ability: Natural Cure / Oblivious
+- Ability: Leaf Guard / Oblivious
 - Learnset: 1 Razor Leaf · 1 Splash · 1 Flail · 1 Rapid Spin · 1 Play Nice · 16 Sweet Scent · 22 Magical Leaf · 28 Stomp · 34 Teeter Dance · 40 Minimize · 46 Leaf Storm
 
 ### #763 Tsareena
 
 - Type: Grass
-- Ability: Natural Cure / Inner Focus
+- Ability: Leaf Guard / Inner Focus
 - Learnset: 1 Razor Leaf · 1 Splash · 1 Flail · 1 Swagger · 1 Rapid Spin · 1 Power Whip · 1 Play Nice · 1 Leaf Blade · 16 Sweet Scent · 22 Magical Leaf · 28 Stomp · 34 Teeter Dance · 40 Minimize · 46 Leaf Storm · 58 Hi Jump Kick
 
 ### #764 Comfey
 
 - Type: Fairy
-- Ability: Shield Dust / Shed Skin
+- Ability: Flower Veil / Shed Skin
 - Learnset: 1 Wrap · 1 Growth · 3 Vine Whip · 6 Helping Hand · 9 Uproar · 12 Charm · 15 Magical Leaf · 18 Synthesis · 21 Leech Seed · 24 Needle Arm · 27 Sweet Kiss · 30 Softboiled · 33 Leaf Blade · 36 Bind · 39 Play Rough · 42 Sweet Scent · 45 Petal Dance · 48 Spore
 
 ### #765 Oranguru
 
 - Type: Normal / Psychic
-- Ability: Inner Focus / Oblivious
+- Ability: Inner Focus / Telepathy
 - Learnset: 1 Confusion · 1 Taunt · 5 Belly Drum · 10 Calm Mind · 15 Psywave · 20 Psych Up · 25 Torment · 30 Fake Tears · 35 Zen Headbutt · 40 Rest · 45 Psychic · 50 Trick · 55 Faint Attack · 60 Future Sight
 
 ### #766 Passimian
@@ -335,7 +335,7 @@
 ### #777 Togedemaru
 
 - Type: Electric / Steel
-- Ability: Rough Skin / Lightningrod
+- Ability: Iron Barbs / Lightningrod
 - Learnset: 1 Tackle · 1 Nuzzle · 5 Defense Curl · 10 Charge · 15 Thundershock · 20 Silver Wind · 25 Spark · 30 Pin Missile · 35 Thunder Wave · 40 Zing Zap · 45 Discharge · 50 Sandstorm · 55 Wild Charge · 60 Aromatherapy
 
 ### #778 Mimikyu
@@ -347,13 +347,13 @@
 ### #779 Bruxish
 
 - Type: Water / Psychic
-- Ability: Inner Focus / Hustle
+- Ability: Inner Focus / Strong Jaw
 - Learnset: 1 Water Gun · 4 Astonish · 9 Confusion · 12 Bite · 17 Aqua Jet · 20 Disable · 25 Extrasensory · 28 Crunch · 33 Aqua Tail · 36 Screech · 41 Psychic Fangs · 44 Hydro Pump
 
 ### #780 Drampa
 
 - Type: Normal / Dragon
-- Ability: Guts / Water Absorb
+- Ability: Guts / Sap Sipper
 - Learnset: 1 Snore · 1 Play Nice · 5 Twister · 10 Protect · 15 Glare · 20 Safeguard · 25 Dragonbreath · 30 Extrasensory · 35 Dragon Pulse · 40 Light Screen · 45 Fly · 50 Hyper Voice · 55 Outrage
 
 ### #781 Dhelmise
@@ -365,19 +365,19 @@
 ### #782 Jangmo-O
 
 - Type: Dragon
-- Ability: Soundproof
+- Ability: Bulletproof / Soundproof
 - Learnset: 1 Tackle · 1 Leer · 4 Protect · 8 Dragonbreath · 12 Scary Face · 16 Headbutt · 20 Swords Dance · 24 Screech · 28 Iron Defense · 32 Dragon Claw · 36 Tail Whip · 40 Dragon Dance · 44 Outrage
 
 ### #783 Hakamo-O
 
 - Type: Dragon / Fighting
-- Ability: Soundproof
+- Ability: Bulletproof / Soundproof
 - Learnset: 1 Tackle · 1 Leer · 1 Protect · 1 Dragonbreath · 12 Scary Face · 16 Headbutt · 20 Swords Dance · 24 Screech · 28 Iron Defense · 32 Dragon Claw · 38 Tail Whip · 44 Dragon Dance · 50 Outrage · 56 Cross Chop
 
 ### #784 Kommo-O
 
 - Type: Dragon / Fighting
-- Ability: Soundproof
+- Ability: Bulletproof / Soundproof
 - Learnset: 1 Tackle · 1 Leer · 1 Protect · 1 Dragonbreath · 1 Dragon Rage · 12 Scary Face · 16 Headbutt · 20 Swords Dance · 24 Screech · 28 Iron Defense · 32 Dragon Claw · 38 Tail Whip · 44 Dragon Dance · 52 Outrage · 60 Cross Chop · 68 Sand-Attack · 76 Hyper Beam
 
 ### #785 Tapu Koko
@@ -431,49 +431,49 @@
 ### #793 Nihilego
 
 - Type: Rock / Poison
-- Ability: Pressure
+- Ability: Beast Boost
 - Learnset: 1 Pound · 1 Wrap · 5 Acid · 10 Tickle · 15 Poison Fang · 20 Poison Tail · 25 Rest · 25 Trick · 30 Sludge · 35 Headbutt · 40 Acid Armor · 45 Toxic · 50 Power Gem · 55 Sandstorm · 60 Mirror Coat · 65 Role Play · 70 Rock Slide
 
 ### #794 Buzzwole
 
 - Type: Bug / Fighting
-- Ability: Pressure
+- Ability: Beast Boost
 - Learnset: 1 Harden · 1 Karate Chop · 5 Taunt · 10 Silver Wind · 15 Vital Throw · 20 Bulk Up · 25 Endure · 30 Reversal · 35 Mega Punch · 40 Signal Beam · 45 Focus Energy · 50 Dynamicpunch · 55 Counter · 60 Cross Chop · 65 Superpower · 70 Focus Punch
 
 ### #795 Pheromosa
 
 - Type: Bug / Fighting
-- Ability: Pressure
+- Ability: Beast Boost
 - Learnset: 1 Rapid Spin · 1 Tackle · 5 Leer · 10 Detect · 15 Silver Wind · 20 Low Kick · 25 Double Kick · 30 Triple Kick · 35 Stomp · 40 Agility · 45 Signal Beam · 50 Bounce · 55 Rest · 60 Bug Buzz · 65 Tail Glow · 70 Hi Jump Kick
 
 ### #796 Xurkitree
 
 - Type: Electric
-- Ability: Pressure
+- Ability: Beast Boost
 - Learnset: 1 Wrap · 1 Thundershock · 5 Charge · 10 Thunder Wave · 15 Ingrain · 20 Spark · 25 Shock Wave · 30 Hypnosis · 35 Sand-Attack · 40 Thunderpunch · 45 Discharge · 50 Rest · 55 Thunderbolt · 60 Sandstorm · 65 Power Whip · 70 Zap Cannon
 
 ### #797 Celesteela
 
 - Type: Steel / Flying
-- Ability: Pressure
+- Ability: Beast Boost
 - Learnset: 1 Tackle · 1 Absorb · 5 Harden · 10 Sandstorm · 15 Mega Drain · 20 Rock Throw · 25 Ingrain · 30 Sand-Attack · 35 Giga Drain · 40 Flash Cannon · 45 Metal Sound · 50 Iron Defense · 55 Leech Seed · 60 Metal Claw · 65 Double-Edge · 70 Skull Bash
 
 ### #798 Kartana
 
 - Type: Grass / Steel
-- Ability: Pressure
+- Ability: Beast Boost
 - Learnset: 1 Fury Cutter · 1 Vacuum Wave · 5 Razor Leaf · 10 False Swipe · 15 Cut · 20 Air Cutter · 25 Aerial Ace · 30 Detect · 35 Night Slash · 40 Synthesis · 45 Focus Energy · 50 Featherdance · 55 Leaf Blade · 60 Sky Uppercut · 65 Swords Dance · 70 Guillotine
 
 ### #799 Guzzlord
 
 - Type: Dark / Dragon
-- Ability: Pressure
+- Ability: Beast Boost
 - Learnset: 1 Bite · 1 Dragon Claw · 5 Stockpile · 5 Swallow · 10 Knock Off · 15 Stomp · 20 Dig · 25 Sandstorm · 30 Crunch · 35 Body Slam · 40 Acid Armor · 45 Cross Chop · 50 Metal Claw · 55 Dragon Rush · 60 Sludge Bomb · 65 Thrash · 70 Giga Impact
 
 ### #800 Necrozma
 
 - Type: Psychic
-- Ability: Thick Fat
+- Ability: Prism Armor
 - Learnset: 1 Confusion · 1 Metal Claw · 1 Morning Sun · 1 Moonlight · 1 Shock Wave · 8 Sandstorm · 16 Slash · 24 Night Slash · 32 Psycho Cut · 40 Psywave · 48 Rock Blast · 56 Iron Defense · 64 Power Gem · 72 Photon Geyser · 80 Rest · 88 Prismatic Laser
 
 ### #801 Magearna
@@ -485,31 +485,31 @@
 ### #802 Marshadow
 
 - Type: Fighting / Ghost
-- Ability: Hustle
+- Ability: Technician
 - Learnset: 1 Fire Punch · 1 Ice Punch · 1 Thunderpunch · 1 Counter · 1 Tackle · 1 Copycat · 1 Shadow Sneak · 9 Role Play · 18 Shadow Punch · 27 Force Palm · 36 Faint Attack · 45 Bite · 54 Drain Punch · 63 Psych Up · 72 Night Shade · 81 Focus Energy · 90 Endeavor · 99 Cross Chop
 
 ### #803 Poipole
 
 - Type: Poison
-- Ability: Pressure
+- Ability: Beast Boost
 - Learnset: 1 Growl · 1 Acid · 1 Peck · 1 Helping Hand · 1 Dragon Pulse · 7 Fury Attack · 14 Silver Wind · 21 Charm · 28 Sludge · 35 Acid Armor · 42 Fake Tears · 49 Poison Jab · 56 Poisonpowder · 63 Toxic
 
 ### #804 Naganadel
 
 - Type: Poison / Dragon
-- Ability: Pressure
+- Ability: Beast Boost
 - Learnset: 1 Growl · 1 Acid · 1 Peck · 1 Helping Hand · 1 Air Cutter · 1 Air Slash · 1 Dragon Pulse · 7 Fury Attack · 14 Silver Wind · 21 Charm · 28 Sludge · 35 Acid Armor · 42 Fake Tears · 49 Poison Jab · 56 Poisonpowder · 63 Toxic · 70 Dragon Rush
 
 ### #805 Stakataka
 
 - Type: Rock / Steel
-- Ability: Pressure
+- Ability: Beast Boost
 - Learnset: 1 Tackle · 1 Harden · 5 Rock Throw · 10 Protect · 15 Stomp · 20 Block · 25 Rock Slide · 30 Sandstorm · 35 Metal Sound · 40 Rock Blast · 45 Thunder Wave · 50 Iron Defense · 55 Iron Head · 60 Take Down · 65 Reflect · 70 Double-Edge
 
 ### #806 Blacephalon
 
 - Type: Fire / Ghost
-- Ability: Pressure
+- Ability: Beast Boost
 - Learnset: 1 Fire Spin · 1 Astonish · 5 Light Screen · 10 Ember · 15 Night Shade · 20 Confuse Ray · 25 Magic Coat · 30 Flame Wheel · 35 Hypnosis · 40 Mystical Fire · 45 Shadow Ball · 50 Calm Mind · 55 Will-O-Wisp · 60 Trick · 65 Fire Blast · 70 Eruption
 
 ### #807 Zeraora
@@ -527,6 +527,6 @@
 ### #809 Melmetal
 
 - Type: Steel
-- Ability: Guts
+- Ability: Iron Fist
 - Learnset: 1 Thunderpunch · 1 Headbutt · 1 Tail Whip · 1 Thundershock · 1 Harden · 24 Thunder Wave · 32 Acid Armor · 40 Flash Cannon · 48 Mega Punch · 56 Protect · 64 Discharge · 72 Dynamicpunch · 80 Superpower · 88 Double Iron Bash · 96 Hyper Beam
 

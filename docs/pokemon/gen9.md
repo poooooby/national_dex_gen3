@@ -239,7 +239,7 @@
 ### #945 Grafaiai
 
 - Type: Poison / Normal
-- Ability: Chlorophyll / Poison Point
+- Ability: Chlorophyll / Poison Touch
 - Learnset: 1 Scratch · 1 Leer · 1 Softboiled · 5 Acid · 8 Fury Swipes · 11 Switcheroo · 14 Poison Fang · 18 Flatter · 21 Slash · 25 Signal Beam · 33 Poison Jab · 37 Taunt · 40 Substitute · 45 Knock Off · 51 Gunk Shot
 
 ### #946 Bramblin
@@ -299,13 +299,13 @@
 ### #955 Flittle
 
 - Type: Psychic
-- Ability: Pressure / Keen Eye
+- Ability: Anticipation / Frisk
 - Learnset: 1 Growl · 1 Peck · 5 Confusion · 8 Baby-Doll Eyes · 11 Disarming Voice · 15 Quick Attack · 19 Psybeam · 24 Aerial Ace · 29 Agility · 34 Uproar
 
 ### #956 Espathra
 
 - Type: Psychic
-- Ability: Synchronize / Keen Eye
+- Ability: Synchronize / Frisk
 - Learnset: 1 Growl · 1 Peck · 1 Drill Peck · 1 Featherdance · 1 Extrasensory · 5 Confusion · 8 Baby-Doll Eyes · 11 Disarming Voice · 15 Quick Attack · 19 Psybeam · 24 Aerial Ace · 29 Agility · 34 Uproar · 43 Dazzling Gleam · 49 Psychic · 54 Hyper Beam
 
 ### #957 Tinkatink
@@ -329,19 +329,19 @@
 ### #960 Wiglett
 
 - Type: Water
-- Ability: Static / Run Away
+- Ability: Static / Rattled
 - Learnset: 1 Sand-Attack · 1 Water Gun · 4 Mud-Slap · 8 Wrap · 12 Aqua Jet · 20 Slam · 20 Water Pulse · 24 Headbutt · 28 Dig · 32 Faint Attack · 36 Crunch · 40 Liquidation
 
 ### #961 Wugtrio
 
 - Type: Water
-- Ability: Static / Run Away
+- Ability: Static / Rattled
 - Learnset: 1 Sand-Attack · 1 Wrap · 1 Water Gun · 1 Mud-Slap · 12 Aqua Jet · 16 Slam · 20 Water Pulse · 24 Headbutt · 30 Clamp · 36 Dig · 42 Faint Attack · 48 Crunch · 54 Liquidation
 
 ### #962 Bombirdier
 
 - Type: Flying / Dark
-- Ability: Clear Body / Keen Eye
+- Ability: Big Pecks / Keen Eye
 - Learnset: 1 Wing Attack · 1 Leer · 1 Peck · 1 Memento · 1 Fake Tears · 7 Thief · 11 Rock Throw · 16 Whirlwind · 20 Aerial Ace · 24 Torment · 29 Rock Tomb · 36 Faint Attack · 42 Dual Wingbeat · 47 Rock Slide · 53 Knock Off · 60 Taunt
 
 ### #963 Finizen
@@ -401,7 +401,7 @@
 ### #972 Houndstone
 
 - Type: Ghost
-- Ability: Swift Swim
+- Ability: Sand Rush
 - Learnset: 1 Tackle · 1 Growl · 1 Shadow Punch · 3 Lick · 6 Tail Whip · 6 Bite · 9 Roar · 12 Headbutt · 16 Dig · 24 Rest · 28 Crunch · 36 Play Rough · 41 Helping Hand · 46 Night Shade · 51 Charm · 58 Double-Edge
 
 ### #973 Flamigo
@@ -413,13 +413,13 @@
 ### #974 Cetoddle
 
 - Type: Ice
-- Ability: Thick Fat / Sand Veil
+- Ability: Thick Fat / Snow Cloak
 - Learnset: 1 Tackle · 1 Powder Snow · 6 Growl · 9 Snore · 12 Ice Shard · 15 Rest · 19 Take Down · 25 Flail · 27 Avalanche · 31 Bounce · 36 Body Slam · 40 Amnesia · 44 Ice Punch · 49 Double-Edge · 53 Blizzard
 
 ### #975 Cetitan
 
 - Type: Ice
-- Ability: Thick Fat / Swift Swim
+- Ability: Thick Fat / Slush Rush
 - Learnset: 1 Tackle · 1 Powder Snow · 6 Growl · 9 Snore · 12 Ice Shard · 15 Rest · 19 Take Down · 25 Flail · 27 Avalanche · 31 Bounce · 36 Body Slam · 40 Amnesia · 44 Ice Punch · 49 Double-Edge · 53 Blizzard
 
 ### #976 Veluza
@@ -467,79 +467,79 @@
 ### #983 Kingambit
 
 - Type: Dark / Steel
-- Ability: White Smoke / Guts
+- Ability: Defiant / Guts
 - Learnset: 1 Scratch · 1 Leer · 1 Fury Cutter · 1 Metal Claw · 1 Meteor Mash · 1 Crunch · 15 Torment · 20 Scary Face · 25 Faint Attack · 30 Metal Sound · 35 Slash · 40 Night Slash · 45 Iron Defense · 50 Headbutt · 57 Iron Head · 64 Swords Dance · 71 Guillotine
 
 ### #984 Great Tusk
 
 - Type: Ground / Fighting
-- Ability: Pressure
+- Ability: Protosynth.
 - Learnset: 1 Horn Attack · 1 Defense Curl · 1 Rollout · 1 Sunny Day · 7 Bulldoze · 14 Taunt · 21 Rapid Spin · 28 Brick Break · 35 Dig · 42 Knock Off · 49 Earthquake · 56 Giga Impact · 63 Cross Chop · 70 Endeavor · 77 Megahorn · 84 Rock Slide · 91 Magnitude
 
 ### #985 Scream Tail
 
 - Type: Fairy / Psychic
-- Ability: Pressure
+- Ability: Protosynth.
 - Learnset: 1 Pound · 1 Sing · 1 Disable · 7 Howl · 14 Swords Dance · 21 Bite · 28 Body Slam · 35 Rest · 42 Play Rough · 49 Hyper Voice · 56 Psychic Fangs · 63 Crunch · 70 Wish · 77 Metal Claw · 84 Perish Song · 91 Hyper Beam
 
 ### #986 Brute Bonnet
 
 - Type: Grass / Dark
-- Ability: Pressure
+- Ability: Protosynth.
 - Learnset: 1 Absorb · 1 Growth · 1 Astonish · 7 Stun Spore · 14 Mega Drain · 21 Synthesis · 28 Poison Fang · 35 Faint Attack · 42 Thrash · 49 Giga Drain · 56 Bite · 63 Spore · 70 Ingrain · 77 Rage Powder · 91 Solarbeam
 
 ### #987 Flutter Mane
 
 - Type: Ghost / Fairy
-- Ability: Pressure
+- Ability: Protosynth.
 - Learnset: 1 Confuse Ray · 1 Spite · 1 Astonish · 7 Psybeam · 14 Mean Look · 21 Memento · 28 Wish · 35 Dazzling Gleam · 42 Shadow Ball · 49 Mystical Fire · 56 Power Gem · 63 Extrasensory · 70 Night Shade · 77 Pain Split · 84 Moonblast · 91 Perish Song
 
 ### #988 Slither Wing
 
 - Type: Bug / Fighting
-- Ability: Pressure
+- Ability: Protosynth.
 - Learnset: 1 Gust · 1 Ember · 1 Silver Wind · 7 Poisonpowder · 7 Stun Spore · 14 Flame Wheel · 21 Stomp · 28 Jump Kick · 35 Morning Sun · 42 Signal Beam · 49 Superpower · 56 Bulk Up · 63 Dual Wingbeat · 70 Megahorn · 77 Whirlwind · 84 Leech Life · 91 Thrash
 
 ### #989 Sandy Shocks
 
 - Type: Electric / Ground
-- Ability: Pressure
+- Ability: Protosynth.
 - Learnset: 1 Supersonic · 1 Thundershock · 1 Thunder Wave · 1 Charge · 7 Spark · 14 Bulldoze · 21 Shock Wave · 28 Tri Attack · 35 Screech · 42 Metal Claw · 49 Metal Sound · 56 Discharge · 63 Earth Power · 70 Mirror Coat · 77 Rest · 84 Zap Cannon · 91 Minimize
 
 ### #990 Iron Treads
 
 - Type: Ground / Steel
-- Ability: Pressure
+- Ability: Quark Drive
 - Learnset: 1 Horn Attack · 1 Defense Curl · 1 Rollout · 1 Thunder Wave · 7 Bulldoze · 21 Rapid Spin · 28 Iron Head · 35 Dig · 42 Knock Off · 49 Earthquake · 56 Metal Claw · 63 Wild Charge · 70 Endeavor · 77 Megahorn · 84 Giga Impact · 91 Meteor Mash
 
 ### #991 Iron Bundle
 
 - Type: Ice / Water
-- Ability: Pressure
+- Ability: Quark Drive
 - Learnset: 1 Present · 7 Powder Snow · 14 Whirlpool · 21 Take Down · 28 Drill Peck · 35 Helping Hand · 42 Ice Punch · 49 Dive · 56 Ice Beam · 63 Agility · 70 Hail · 77 Hydro Pump · 84 Mist · 91 Blizzard
 
 ### #992 Iron Hands
 
 - Type: Fighting / Electric
-- Ability: Pressure
+- Ability: Quark Drive
 - Learnset: 1 Sand-Attack · 1 Tackle · 1 Focus Energy · 1 Arm Thrust · 7 Fake Out · 14 Whirlwind · 21 Thunderpunch · 28 Slam · 35 Force Palm · 42 Seismic Toss · 49 Charge · 56 Wild Charge · 63 Cross Chop · 70 Detect · 77 Metal Claw · 84 Belly Drum · 91 Focus Punch
 
 ### #993 Iron Jugulis
 
 - Type: Dark / Flying
-- Ability: Pressure
+- Ability: Quark Drive
 - Learnset: 1 Focus Energy · 1 Tri Attack · 1 Air Cutter · 1 Swords Dance · 1 Thunder Wave · 7 Roar · 14 Faint Attack · 21 Dragonbreath · 28 Snarl · 35 Crunch · 42 Hyper Voice · 56 Air Slash · 63 Knock Off · 70 Dark Pulse · 77 Outrage · 84 Dragon Pulse · 91 Hyper Beam
 
 ### #994 Iron Moth
 
 - Type: Fire / Poison
-- Ability: Pressure
+- Ability: Quark Drive
 - Learnset: 1 Gust · 1 Whirlwind · 1 Ember · 1 Acid · 7 Struggle Bug · 14 Fire Spin · 21 Take Down · 28 Signal Beam · 35 Screech · 42 Discharge · 49 Sludge Wave · 56 Fire Punch · 63 Metal Sound · 70 Morning Sun · 77 Hurricane · 84 Bug Buzz · 91 Overheat
 
 ### #995 Iron Thorns
 
 - Type: Rock / Electric
-- Ability: Pressure
+- Ability: Quark Drive
 - Learnset: 1 Rock Throw · 1 Iron Defense · 1 Spark · 1 Ice Punch · 1 Flame Wheel · 7 Screech · 21 Rock Tomb · 28 Bite · 35 Charge · 42 Rock Slide · 49 Sandstorm · 56 Wild Charge · 63 Pin Missile · 70 Earthquake · 77 Reflect · 84 Stone Edge · 91 Giga Impact
 
 ### #996 Frigibax
@@ -563,7 +563,7 @@
 ### #999 Gimmighoul
 
 - Type: Ghost
-- Ability: Run Away
+- Ability: Rattled
 - Learnset: 1 Tackle · 1 Astonish
 
 ### #1000 Gholdengo
@@ -599,13 +599,13 @@
 ### #1005 Roaring Moon
 
 - Type: Dragon / Dark
-- Ability: Pressure
+- Ability: Protosynth.
 - Learnset: 1 Leer · 1 Bite · 1 Focus Energy · 1 Dragonbreath · 7 Flame Wheel · 14 Headbutt · 21 Scary Face · 28 Dragon Claw · 35 Zen Headbutt · 42 Flamethrower · 49 Night Slash · 56 Dragon Dance · 63 Dragon Rush · 70 Fly · 77 Crunch · 84 Roost · 91 Double-Edge
 
 ### #1006 Iron Valiant
 
 - Type: Fairy / Fighting
-- Ability: Pressure
+- Ability: Quark Drive
 - Learnset: 1 Disable · 1 Double Team · 1 Fury Cutter · 1 Shadow Sneak · 7 Hypnosis · 14 Tackle · 21 Future Sight · 28 Dazzling Gleam · 35 Psycho Cut · 42 Night Slash · 49 Leaf Blade · 56 Moonblast · 63 Cross Chop · 70 Knock Off · 77 Destiny Bond · 84 Sandstorm · 84 Detect · 91 Spirit Break
 
 ### #1007 Koraidon
@@ -623,13 +623,13 @@
 ### #1009 Walking Wake
 
 - Type: Water / Dragon
-- Ability: Pressure
+- Ability: Protosynth.
 - Learnset: 1 Leer · 1 Roar · 1 Twister · 1 Aqua Jet · 7 Bite · 14 Water Pulse · 21 Swords Dance · 28 Dragonbreath · 35 Dragon Claw · 42 Dragon Rush · 56 Waterfall · 63 Dragon Pulse · 70 Outrage · 77 Flamethrower · 84 Hydro Pump
 
 ### #1010 Iron Leaves
 
 - Type: Grass / Psychic
-- Ability: Pressure
+- Ability: Quark Drive
 - Learnset: 1 Leer · 1 Quick Attack · 1 Helping Hand · 1 Tail Whip · 7 Magical Leaf · 14 Headbutt · 21 Detect · 28 Night Slash · 35 Swords Dance · 42 Sky Uppercut · 49 Leaf Blade · 56 Extrasensory · 63 Cross Chop · 70 Imprison · 77 Megahorn · 84 Magic Coat · 91 Solar Blade
 
 ### #1011 Dipplin
@@ -671,43 +671,43 @@
 ### #1017 Ogerpon
 
 - Type: Grass
-- Ability: White Smoke
+- Ability: Defiant
 - Learnset: 1 Vine Whip · 1 Leech Seed · 1 Quick Attack · 1 Follow Me · 6 Focus Energy · 12 Growth · 18 Slam · 24 Jump Kick · 30 Solarbeam · 36 Crunch · 42 Synthesis · 48 Aromatherapy · 54 Power Whip · 60 Superpower · 66 Wood Hammer
 
 ### #1018 Archaludon
 
 - Type: Steel / Dragon
-- Ability: Sturdy
+- Ability: Stamina / Sturdy
 - Learnset: 1 Leer · 1 Metal Claw · 1 Volt Tackle · 6 Rock Smash · 12 Fake Tears · 18 Metal Sound · 24 Dragonbreath · 30 Dragon Rage · 36 Iron Defense · 42 Focus Energy · 48 Dragon Claw · 54 Flash Cannon · 60 Meteor Mash · 66 Hyper Beam
 
 ### #1019 Hydrapple
 
 - Type: Grass / Dragon
-- Ability: Intimidate / Natural Cure
+- Ability: Intimidate / Regenerator
 - Learnset: 1 Withdraw · 1 Sweet Scent · 1 Recycle · 1 Astonish · 1 Dragon Claw · 4 Dragon Rage · 8 Growth · 12 Dragonbreath · 16 Protect · 20 Bullet Seed · 28 Giga Drain · 32 Dragon Pulse · 36 Recover · 40 Energy Ball · 44 Substitute · 54 Power Whip
 
 ### #1020 Gouging Fire
 
 - Type: Fire / Dragon
-- Ability: Pressure
+- Ability: Protosynth.
 - Learnset: 1 Stomp · 1 Leer · 1 Sunny Day · 1 Flame Wheel · 7 Fire Punch · 14 Howl · 21 Bite · 28 Dragon Claw · 35 Crush Claw · 42 Morning Sun · 49 Will-O-Wisp · 56 Dragon Rush · 63 Fire Blast · 70 Lava Plume · 77 Outrage · 84 Sacred Fire · 91 Overheat
 
 ### #1021 Raging Bolt
 
 - Type: Electric / Dragon
-- Ability: Pressure
+- Ability: Protosynth.
 - Learnset: 1 Stomp · 1 Twister · 1 Sunny Day · 1 Shock Wave · 7 Charge · 14 Dragonbreath · 21 Thunder Wave · 28 Discharge · 35 Dragon Claw · 42 Calm Mind · 49 Thunderpunch · 56 Dragon Hammer · 63 Spark · 70 Dragon Pulse · 77 Zap Cannon · 84 Brick Break · 91 Thunder
 
 ### #1022 Iron Boulder
 
 - Type: Rock / Psychic
-- Ability: Pressure
+- Ability: Quark Drive
 - Learnset: 1 Horn Attack · 1 Leer · 1 Rock Throw · 1 Thunder Wave · 7 Quick Attack · 14 Slash · 21 Agility · 28 Psycho Cut · 35 Counter · 42 Rock Tomb · 49 Sky Uppercut · 56 Rock Slide · 63 Swords Dance · 70 Megahorn · 77 Detect · 84 Stone Edge · 91 Giga Impact
 
 ### #1023 Iron Crown
 
 - Type: Steel / Psychic
-- Ability: Pressure
+- Ability: Quark Drive
 - Learnset: 1 Leer · 1 Confusion · 1 Metal Claw · 1 Thunder Wave · 7 Smart Strike · 14 Slash · 21 Iron Defense · 28 Extrasensory · 35 Psycho Cut · 42 Flash Cannon · 49 Sky Uppercut · 56 Steel Wing · 63 Future Sight · 70 Shock Wave · 77 Detect · 84 Meteor Mash · 91 Hyper Beam
 
 ### #1024 Terapagos

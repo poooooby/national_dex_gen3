@@ -2,6 +2,7 @@
 -- drift from what the game does:
 --   docs/items.md            the added items: price, where to buy, what evolves with them
 --   docs/moves.md            the added moves: type, power, accuracy, PP, what they do
+--   docs/abilities.md        the added abilities and what they do
 --   docs/pokemon.md          index of the added Pokemon
 --   docs/pokemon/genN.md     every added species of one generation: types, its
 --                            Gen 3 ability, and its level-up learnset
@@ -252,8 +253,25 @@ for _, r in ipairs(species) do
   table.insert(byGen[g], r)
 end
 
+-- real abilities newer than Gen 3 (src/abilities.lua): a slot whose ability is one of them shows
+-- it; every other slot the closest Gen 3 ability, as in the game
+local realAbilities = load("data/abilities.lua")
+local realBySlug = {}
+for _, d in ipairs(realAbilities.defs or {}) do realBySlug[d.slug] = d end
+
 local function abilityText(r)
   local names, seen = {}, {}
+  local slots = r.baseSpecies and realAbilities.forms[r.id] or (not r.baseSpecies and realAbilities.species[r.dex])
+  local anyReal = false
+  for _, s in ipairs(slots or {}) do if realBySlug[s[1]] then anyReal = true end end
+  if anyReal then
+    for _, s in ipairs(slots) do
+      local d = realBySlug[s[1]]
+      local n = d and d.name or abilityNames[s[2]]
+      if n and not seen[n] then seen[n] = true; names[#names + 1] = title(n) end
+    end
+    return join(names, " / ")
+  end
   for _, id in ipairs(r.abilities or {}) do
     local n = abilityNames[id]
     if n and not seen[n] then seen[n] = true; names[#names + 1] = title(n) end
@@ -440,4 +458,26 @@ for _, m in ipairs(sortedMoves) do
 end
 out("docs/moves.md", M)
 
-print(string.format("docs: %d items, %d moves, %d species, %d forms", #items, #newMoves, #species, #forms))
+-- ---- abilities
+
+local A = {
+  "# Added Abilities",
+  "",
+  "Abilities from later generations that work in battle here. Every other newer ability is the",
+  "closest Gen 3 ability (see each Pokémon's page). Healer, Telepathy and Honey Gather only matter",
+  "with a partner or outside battle, and Quark Drive needs Electric Terrain or Booster Energy,",
+  "which Gen 3 does not have, so those four have no effect in battle here.",
+  "",
+  "| Ability | What it does |",
+  "|---|---|",
+}
+local sortedAbilities = {}
+for _, d in ipairs(realAbilities.defs or {}) do sortedAbilities[#sortedAbilities + 1] = d end
+table.sort(sortedAbilities, function(a, b) return a.name < b.name end)
+for _, d in ipairs(sortedAbilities) do
+  A[#A + 1] = string.format("| %s | %s |", title((d.slug:gsub("-", " "))), d.text)
+end
+out("docs/abilities.md", A)
+
+print(string.format("docs: %d items, %d moves, %d abilities, %d species, %d forms", #items, #newMoves,
+  #(realAbilities.defs or {}), #species, #forms))

@@ -83,13 +83,13 @@
 ### #507 Herdier
 
 - Type: Normal
-- Ability: Intimidate / Swift Swim
+- Ability: Intimidate / Sand Rush
 - Learnset: 1 Tackle · 1 Leer · 1 Bite · 1 Swords Dance · 12 Headbutt · 19 Baby-Doll Eyes · 24 Play Rough · 30 Crunch · 36 Take Down · 42 Helping Hand · 48 Reversal · 54 Roar · 60 Hyper Beam · 66 Giga Impact
 
 ### #508 Stoutland
 
 - Type: Normal
-- Ability: Intimidate / Swift Swim
+- Ability: Intimidate / Sand Rush
 - Learnset: 1 Tackle · 1 Leer · 1 Bite · 1 Spark · 1 Ice Punch · 1 Flame Wheel · 1 Swords Dance · 12 Headbutt · 19 Baby-Doll Eyes · 24 Play Rough · 30 Crunch · 38 Take Down · 46 Helping Hand · 54 Reversal · 62 Roar · 70 Hyper Beam · 78 Giga Impact
 
 ### #509 Purrloin
@@ -155,43 +155,43 @@
 ### #519 Pidove
 
 - Type: Normal / Flying
-- Ability: Clear Body / Serene Grace
+- Ability: Big Pecks / Super Luck
 - Learnset: 1 Gust · 1 Growl · 4 Leer · 8 Quick Attack · 12 Taunt · 16 Air Cutter · 20 Swagger · 24 Featherdance · 28 Detect · 32 Air Slash · 36 Roost · 40 Reflect · 44 Sky Attack
 
 ### #520 Tranquill
 
 - Type: Normal / Flying
-- Ability: Clear Body / Serene Grace
+- Ability: Big Pecks / Super Luck
 - Learnset: 1 Gust · 1 Leer · 1 Growl · 1 Quick Attack · 12 Taunt · 16 Air Cutter · 20 Swagger · 26 Featherdance · 34 Detect · 38 Air Slash · 44 Roost · 50 Reflect · 56 Sky Attack
 
 ### #521 Unfezant
 
 - Type: Normal / Flying
-- Ability: Clear Body / Serene Grace
+- Ability: Big Pecks / Super Luck
 - Learnset: 1 Gust · 1 Leer · 1 Growl · 1 Quick Attack · 12 Taunt · 16 Air Cutter · 20 Swagger · 26 Featherdance · 36 Detect · 42 Air Slash · 50 Roost · 58 Reflect · 66 Sky Attack
 
 ### #522 Blitzle
 
 - Type: Electric
-- Ability: Lightningrod / Volt Absorb
+- Ability: Lightningrod / Motor Drive
 - Learnset: 1 Quick Attack · 4 Tail Whip · 8 Charge · 11 Shock Wave · 15 Thunder Wave · 18 Flame Wheel · 22 Spark · 25 Stomp · 29 Discharge · 33 Agility · 35 Wild Charge · 40 Thrash
 
 ### #523 Zebstrika
 
 - Type: Electric
-- Ability: Lightningrod / Volt Absorb
+- Ability: Lightningrod / Motor Drive
 - Learnset: 1 Tail Whip · 1 Thunder Wave · 1 Quick Attack · 1 Charge · 11 Shock Wave · 18 Flame Wheel · 25 Spark · 31 Stomp · 36 Discharge · 42 Agility · 47 Wild Charge · 53 Thrash
 
 ### #524 Roggenrola
 
 - Type: Rock
-- Ability: Sturdy
+- Ability: Sturdy / Weak Armor
 - Learnset: 1 Sand-Attack · 1 Tackle · 4 Harden · 8 Reflect · 12 Mud-Slap · 16 Rock Throw · 20 Iron Defense · 24 Headbutt · 28 Rock Slide · 32 Rock Blast · 36 Sandstorm · 40 Stone Edge · 44 Explosion
 
 ### #525 Boldore
 
 - Type: Rock
-- Ability: Sturdy
+- Ability: Sturdy / Weak Armor
 - Learnset: 1 Sand-Attack · 1 Tackle · 1 Harden · 1 Power Gem · 1 Reflect · 12 Mud-Slap · 16 Rock Throw · 20 Iron Defense · 24 Headbutt · 30 Rock Slide · 36 Rock Blast · 42 Sandstorm · 48 Stone Edge · 54 Explosion
 
 ### #526 Gigalith
@@ -215,19 +215,19 @@
 ### #529 Drilbur
 
 - Type: Ground
-- Ability: Swift Swim / Sand Veil
+- Ability: Sand Rush / Sand Force
 - Learnset: 1 Mud-Slap · 1 Rapid Spin · 4 Scratch · 8 Fake Tears · 12 Fury Swipes · 16 Metal Claw · 20 Sandstorm · 24 Crush Claw · 28 Rock Slide · 32 Dig · 36 Swords Dance · 40 Drill Run · 44 Earthquake · 48 Fissure
 
 ### #530 Excadrill
 
 - Type: Ground / Steel
-- Ability: Swift Swim / Sand Veil
+- Ability: Sand Rush / Sand Force
 - Learnset: 1 Scratch · 1 Horn Drill · 1 Mud-Slap · 1 Rapid Spin · 1 Fake Tears · 12 Fury Swipes · 16 Metal Claw · 20 Sandstorm · 24 Crush Claw · 28 Rock Slide · 34 Dig · 40 Swords Dance · 46 Drill Run · 52 Earthquake · 58 Fissure
 
 ### #531 Audino
 
 - Type: Normal
-- Ability: Shed Skin / Natural Cure
+- Ability: Healer / Regenerator
 - Learnset: 1 Pound · 1 Play Nice · 4 Disarming Voice · 9 Baby-Doll Eyes · 12 Helping Hand · 16 Growl · 20 Zen Headbutt · 24 Rain Dance · 28 Belly Drum · 32 Take Down · 36 Pain Split · 40 Hyper Voice · 44 Rest · 48 Double-Edge · 52 Psych Up · 56 Softboiled · 60 Hyper Beam
 
 ### #532 Timburr
@@ -251,19 +251,19 @@
 ### #535 Tympole
 
 - Type: Water
-- Ability: Swift Swim / Shed Skin
+- Ability: Swift Swim / Hydration
 - Learnset: 1 Growl · 1 Snore · 4 Acid · 8 Supersonic · 12 Mud Shot · 16 Swift · 20 Bubblebeam · 24 Flail · 28 Uproar · 32 Water Sport · 36 Hyper Voice · 40 Muddy Water · 44 Rain Dance · 48 Hydro Pump
 
 ### #536 Palpitoad
 
 - Type: Water / Ground
-- Ability: Swift Swim / Shed Skin
+- Ability: Swift Swim / Hydration
 - Learnset: 1 Growl · 1 Supersonic · 1 Acid · 1 Snore · 12 Mud Shot · 16 Swift · 20 Bubblebeam · 24 Flail · 30 Uproar · 37 Water Sport · 42 Hyper Voice · 48 Muddy Water · 54 Rain Dance · 60 Hydro Pump
 
 ### #537 Seismitoad
 
 - Type: Water / Ground
-- Ability: Swift Swim / Poison Point
+- Ability: Swift Swim / Poison Touch
 - Learnset: 1 Growl · 1 Supersonic · 1 Acid · 1 Acid Armor · 1 Drain Punch · 1 Snore · 12 Mud Shot · 16 Swift · 20 Bubblebeam · 24 Flail · 30 Uproar · 39 Water Sport · 46 Hyper Voice · 54 Muddy Water · 62 Rain Dance · 70 Hydro Pump
 
 ### #538 Throh
@@ -287,7 +287,7 @@
 ### #541 Swadloon
 
 - Type: Bug / Grass
-- Ability: Natural Cure / Chlorophyll
+- Ability: Leaf Guard / Chlorophyll
 - Learnset: 1 Tackle · 1 Razor Leaf · 1 String Shot · 1 Protect · 1 Silver Wind · 22 Struggle Bug · 29 Endure · 31 Tail Glow · 36 Bug Buzz · 43 Flail
 
 ### #542 Leavanny
@@ -317,13 +317,13 @@
 ### #546 Cottonee
 
 - Type: Grass / Fairy
-- Ability: Run Away / Keen Eye
+- Ability: Prankster / Keen Eye
 - Learnset: 1 Absorb · 1 Helping Hand · 3 Fairy Wind · 6 Stun Spore · 12 Mega Drain · 15 Razor Leaf · 18 Growth · 21 Poisonpowder · 24 Giga Drain · 27 Charm · 30 Leech Seed · 33 Cotton Spore · 36 Energy Ball · 39 Sunny Day · 42 Endeavor · 45 Spore · 48 Solarbeam
 
 ### #547 Whimsicott
 
 - Type: Grass / Fairy
-- Ability: Run Away / Keen Eye
+- Ability: Prankster / Keen Eye
 - Learnset: 1 Gust · 1 Absorb · 1 Mega Drain · 1 Leech Seed · 1 Growth · 1 Razor Leaf · 1 Solarbeam · 1 Poisonpowder · 1 Stun Spore · 1 Cotton Spore · 1 Giga Drain · 1 Charm · 1 Sunny Day · 1 Memento · 1 Helping Hand · 1 Endeavor · 1 Featherdance · 1 Energy Ball · 1 Spore · 1 Hurricane · 1 Fairy Wind · 1 Moonblast
 
 ### #548 Petilil
@@ -341,25 +341,25 @@
 ### #550 Basculin
 
 - Type: Water
-- Ability: Guts / Hustle
+- Ability: Reckless / Adaptability
 - Learnset: 1 Tail Whip · 1 Water Gun · 4 Tackle · 8 Flail · 12 Aqua Jet · 16 Bite · 20 Scary Face · 24 Headbutt · 28 Water Sport · 32 Crunch · 36 Take Down · 40 Reversal · 44 Hydro Pump · 48 Thrash · 52 Double-Edge · 56 Rock Slide
 
 ### #551 Sandile
 
 - Type: Ground / Dark
-- Ability: Intimidate / Guts
+- Ability: Intimidate / Moxie
 - Learnset: 1 Leer · 1 Knock Off · 3 Sand-Attack · 6 Fake Tears · 9 Sand Tomb · 12 Scary Face · 15 Bite · 18 Torment · 21 Dig · 24 Swagger · 27 Crunch · 30 Sandstorm · 33 Faint Attack · 36 Earthquake · 39 Thrash
 
 ### #552 Krokorok
 
 - Type: Ground / Dark
-- Ability: Intimidate / Guts
+- Ability: Intimidate / Moxie
 - Learnset: 1 Sand-Attack · 1 Leer · 1 Fake Tears · 1 Knock Off · 9 Sand Tomb · 12 Scary Face · 15 Bite · 18 Torment · 21 Dig · 24 Swagger · 27 Crunch · 32 Sandstorm · 35 Faint Attack · 42 Earthquake · 47 Thrash
 
 ### #553 Krookodile
 
 - Type: Ground / Dark
-- Ability: Intimidate / Guts
+- Ability: Intimidate / Moxie
 - Learnset: 1 Sand-Attack · 1 Leer · 1 Fake Tears · 1 Knock Off · 9 Sand Tomb · 12 Scary Face · 15 Bite · 18 Torment · 21 Dig · 24 Swagger · 27 Crunch · 32 Sandstorm · 35 Faint Attack · 44 Earthquake · 51 Thrash · 58 Outrage
 
 ### #554 Darumaka
@@ -395,13 +395,13 @@
 ### #559 Scraggy
 
 - Type: Dark / Fighting
-- Ability: Shed Skin / Guts
+- Ability: Shed Skin / Moxie
 - Learnset: 1 Leer · 1 Low Kick · 4 Faint Attack · 8 Headbutt · 12 Sand-Attack · 16 Facade · 20 Torment · 24 Beat Up · 28 Scary Face · 32 Brick Break · 36 Swagger · 40 Crunch · 44 Hi Jump Kick · 48 Focus Punch · 52 Rock Slide
 
 ### #560 Scrafty
 
 - Type: Dark / Fighting
-- Ability: Shed Skin / Guts
+- Ability: Shed Skin / Moxie
 - Learnset: 1 Headbutt · 1 Leer · 1 Low Kick · 1 Faint Attack · 12 Sand-Attack · 16 Facade · 20 Torment · 24 Beat Up · 28 Scary Face · 32 Brick Break · 36 Swagger · 42 Crunch · 48 Hi Jump Kick · 54 Focus Punch · 60 Rock Slide
 
 ### #561 Sigilyph
@@ -425,13 +425,13 @@
 ### #564 Tirtouga
 
 - Type: Water / Rock
-- Ability: Thick Fat / Sturdy
+- Ability: Solid Rock / Sturdy
 - Learnset: 1 Water Gun · 1 Withdraw · 3 Protect · 6 Aqua Jet · 9 Rock Throw · 12 Ancientpower · 15 Bite · 18 Sandstorm · 21 Dive · 24 Rock Slide · 27 Crunch · 30 Curse · 33 Iron Defense · 36 Aqua Tail · 39 Rain Dance · 42 Hydro Pump · 45 Belly Drum
 
 ### #565 Carracosta
 
 - Type: Water / Rock
-- Ability: Thick Fat / Sturdy
+- Ability: Solid Rock / Sturdy
 - Learnset: 1 Water Gun · 1 Withdraw · 1 Protect · 1 Aqua Jet · 9 Rock Throw · 12 Ancientpower · 15 Bite · 18 Sandstorm · 21 Dive · 24 Rock Slide · 27 Crunch · 30 Curse · 33 Iron Defense · 36 Aqua Tail · 41 Rain Dance · 46 Hydro Pump · 51 Belly Drum
 
 ### #566 Archen
@@ -455,7 +455,7 @@
 ### #569 Garbodor
 
 - Type: Poison
-- Ability: Stench / Sturdy
+- Ability: Stench / Weak Armor
 - Learnset: 1 Pound · 1 Take Down · 1 Poison Gas · 1 Metal Claw · 1 Recycle · 1 Acid · 9 Amnesia · 12 Poison Fang · 15 Acid Armor · 18 Sludge · 21 Stockpile · 21 Swallow · 24 Body Slam · 27 Sludge Bomb · 30 Toxic · 33 Poison Tail · 39 Pain Split · 43 Gunk Shot · 48 Explosion
 
 ### #570 Zorua
@@ -473,31 +473,31 @@
 ### #572 Minccino
 
 - Type: Normal
-- Ability: Cute Charm / Hustle
+- Ability: Cute Charm / Technician
 - Learnset: 1 Pound · 1 Baby-Doll Eyes · 4 Helping Hand · 8 Snore · 12 Sing · 16 Charm · 20 Swift · 24 Encore · 28 Belly Drum · 32 Tail Slap · 36 Tickle · 40 Slam · 44 Hyper Voice · 48 Hyper Beam
 
 ### #573 Cinccino
 
 - Type: Normal
-- Ability: Cute Charm / Hustle
+- Ability: Cute Charm / Technician
 - Learnset: 1 Pound · 1 Sing · 1 Charm · 1 Bullet Seed · 1 Tail Slap
 
 ### #574 Gothita
 
 - Type: Psychic
-- Ability: Keen Eye / White Smoke
+- Ability: Frisk / Competitive
 - Learnset: 1 Pound · 1 Confusion · 4 Play Nice · 8 Tickle · 12 Psybeam · 16 Charm · 20 Extrasensory · 24 Hypnosis · 28 Fake Tears · 33 Psych Up · 36 Psychic · 40 Flatter · 44 Future Sight · 48 Rest
 
 ### #575 Gothorita
 
 - Type: Psychic
-- Ability: Keen Eye / White Smoke
+- Ability: Frisk / Competitive
 - Learnset: 1 Pound · 1 Confusion · 1 Tickle · 1 Play Nice · 12 Psybeam · 16 Charm · 20 Extrasensory · 24 Hypnosis · 28 Fake Tears · 35 Psych Up · 46 Flatter · 52 Future Sight · 58 Rest
 
 ### #576 Gothitelle
 
 - Type: Psychic
-- Ability: Keen Eye / White Smoke
+- Ability: Frisk / Competitive
 - Learnset: 1 Pound · 1 Confusion · 1 Tickle · 1 Play Nice · 12 Psybeam · 16 Charm · 20 Extrasensory · 24 Hypnosis · 28 Fake Tears · 35 Psych Up · 40 Psychic · 48 Flatter · 56 Future Sight · 64 Rest
 
 ### #577 Solosis
@@ -521,43 +521,43 @@
 ### #580 Ducklett
 
 - Type: Water / Flying
-- Ability: Keen Eye / Clear Body
+- Ability: Keen Eye / Big Pecks
 - Learnset: 1 Water Gun · 6 Rest · 9 Wing Attack · 13 Water Pulse · 15 Aerial Ace · 19 Bubblebeam · 21 Featherdance · 24 Water Sport · 27 Air Slash · 30 Roost · 34 Rain Dance · 37 Reflect · 41 Brave Bird · 46 Hurricane
 
 ### #581 Swanna
 
 - Type: Water / Flying
-- Ability: Keen Eye / Clear Body
+- Ability: Keen Eye / Big Pecks
 - Learnset: 1 Wing Attack · 1 Water Gun · 1 Rest · 13 Water Pulse · 15 Aerial Ace · 19 Bubblebeam · 21 Featherdance · 24 Water Sport · 27 Air Slash · 30 Roost · 34 Rain Dance · 40 Reflect · 47 Brave Bird · 55 Hurricane
 
 ### #582 Vanillite
 
 - Type: Ice
-- Ability: Rain Dish / Sand Veil
+- Ability: Ice Body / Snow Cloak
 - Learnset: 1 Harden · 1 Astonish · 4 Taunt · 8 Mist · 12 Icy Wind · 16 Avalanche · 20 Hail · 24 Icicle Spear · 28 Uproar · 32 Acid Armor · 36 Mirror Coat · 40 Ice Beam · 44 Blizzard · 48 Sheer Cold
 
 ### #583 Vanillish
 
 - Type: Ice
-- Ability: Rain Dish / Sand Veil
+- Ability: Ice Body / Snow Cloak
 - Learnset: 1 Mist · 1 Harden · 1 Taunt · 1 Astonish · 12 Icy Wind · 16 Avalanche · 20 Hail · 24 Icicle Spear · 28 Uproar · 32 Acid Armor · 38 Mirror Coat · 44 Ice Beam · 50 Blizzard · 56 Sheer Cold
 
 ### #584 Vanilluxe
 
 - Type: Ice
-- Ability: Rain Dish / Sand Stream
+- Ability: Ice Body / Snow Warning
 - Learnset: 1 Mist · 1 Harden · 1 Taunt · 1 Astonish · 1 Weather Ball · 1 Icicle Crash · 1 Ice Punch · 12 Icy Wind · 16 Avalanche · 20 Hail · 24 Icicle Spear · 28 Uproar · 32 Acid Armor · 38 Mirror Coat · 44 Ice Beam · 52 Blizzard · 60 Sheer Cold
 
 ### #585 Deerling
 
 - Type: Normal / Grass
-- Ability: Chlorophyll / Water Absorb
+- Ability: Chlorophyll / Sap Sipper
 - Learnset: 1 Tackle · 4 Growl · 7 Sand-Attack · 10 Double Kick · 13 Leech Seed · 16 Bullet Seed · 20 Take Down · 24 Zen Headbutt · 28 Energy Ball · 32 Charm · 37 Double-Edge · 42 Solarbeam
 
 ### #586 Sawsbuck
 
 - Type: Normal / Grass
-- Ability: Chlorophyll / Water Absorb
+- Ability: Chlorophyll / Sap Sipper
 - Learnset: 1 Sand-Attack · 1 Tackle · 1 Growl · 1 Megahorn · 1 Horn Leech · 10 Double Kick · 13 Leech Seed · 16 Bullet Seed · 20 Take Down · 24 Zen Headbutt · 28 Energy Ball · 36 Charm · 44 Double-Edge · 52 Solarbeam
 
 ### #587 Emolga
@@ -605,7 +605,7 @@
 ### #594 Alomomola
 
 - Type: Water
-- Ability: Shed Skin
+- Ability: Healer / Hydration
 - Learnset: 1 Pound · 1 Play Nice · 5 Water Sport · 9 Aqua Jet · 13 Helping Hand · 13 Sandstorm · 21 Protect · 25 Water Pulse · 29 Rest · 33 Rain Dance · 37 Wish · 41 Dive · 45 Safeguard · 49 Whirlpool · 55 Hydro Pump
 
 ### #595 Joltik
@@ -623,13 +623,13 @@
 ### #597 Ferroseed
 
 - Type: Grass / Steel
-- Ability: Rough Skin
+- Ability: Iron Barbs
 - Learnset: 1 Tackle · 1 Harden · 5 Metal Claw · 10 Pin Missile · 15 Ingrain · 20 Flash Cannon · 25 Iron Head · 30 Selfdestruct · 35 Iron Defense · 41 Curse · 45 Meteor Mash · 50 Explosion
 
 ### #598 Ferrothorn
 
 - Type: Grass / Steel
-- Ability: Rough Skin
+- Ability: Iron Barbs
 - Learnset: 1 Tackle · 1 Pin Missile · 1 Harden · 1 Metal Claw · 1 Power Whip · 15 Ingrain · 20 Flash Cannon · 25 Iron Head · 30 Selfdestruct · 35 Iron Defense · 43 Curse · 49 Meteor Mash · 56 Explosion
 
 ### #599 Klink
@@ -671,13 +671,13 @@
 ### #605 Elgyem
 
 - Type: Psychic
-- Ability: Oblivious / Synchronize
+- Ability: Telepathy / Synchronize
 - Learnset: 1 Growl · 1 Confusion · 6 Imprison · 12 Teleport · 18 Psybeam · 24 Rest · 24 Trick · 30 Headbutt · 36 Zen Headbutt · 43 Recover · 48 Calm Mind · 54 Role Play · 60 Psychic
 
 ### #606 Beheeyem
 
 - Type: Psychic
-- Ability: Oblivious / Synchronize
+- Ability: Telepathy / Synchronize
 - Learnset: 1 Growl · 1 Confusion · 1 Teleport · 1 Imprison · 1 Rest · 18 Psybeam · 24 Trick · 24 Role Play · 30 Headbutt · 36 Zen Headbutt · 45 Recover · 52 Calm Mind · 60 Skill Swap · 68 Psychic
 
 ### #607 Litwick
@@ -701,31 +701,31 @@
 ### #610 Axew
 
 - Type: Dragon
-- Ability: Guts / Hustle
+- Ability: Rivalry / Hustle
 - Learnset: 1 Scratch · 1 Leer · 3 Bite · 6 False Swipe · 9 Faint Attack · 12 Taunt · 15 Slash · 18 Dragon Claw · 21 Scary Face · 24 Crunch · 27 Dragon Dance · 30 Dragonbreath · 33 Focus Energy · 36 Dragon Pulse · 39 Swords Dance · 42 Outrage · 45 Guillotine · 48 Giga Impact
 
 ### #611 Fraxure
 
 - Type: Dragon
-- Ability: Guts / Hustle
+- Ability: Rivalry / Hustle
 - Learnset: 1 Scratch · 1 Leer · 1 Bite · 1 False Swipe · 9 Faint Attack · 12 Taunt · 15 Slash · 18 Dragon Claw · 21 Scary Face · 24 Crunch · 27 Dragon Dance · 30 Dragonbreath · 33 Focus Energy · 36 Dragon Pulse · 41 Swords Dance · 46 Outrage · 51 Guillotine · 56 Giga Impact
 
 ### #612 Haxorus
 
 - Type: Dragon
-- Ability: Guts / Hustle
+- Ability: Rivalry / Hustle
 - Learnset: 1 Scratch · 1 Leer · 1 Bite · 1 False Swipe · 9 Faint Attack · 12 Taunt · 15 Slash · 18 Dragon Claw · 21 Scary Face · 24 Crunch · 27 Dragon Dance · 30 Dragonbreath · 33 Focus Energy · 36 Dragon Pulse · 41 Swords Dance · 46 Outrage · 53 Guillotine · 60 Giga Impact
 
 ### #613 Cubchoo
 
 - Type: Ice
-- Ability: Sand Veil / Swift Swim
+- Ability: Snow Cloak / Slush Rush
 - Learnset: 1 Growl · 1 Powder Snow · 3 Endure · 6 Fury Swipes · 9 Icy Wind · 12 Play Nice · 15 Dive · 18 Aurora Beam · 21 Slash · 24 Flail · 27 Charm · 30 Hail · 33 Thrash · 36 Rest · 39 Blizzard · 42 Sheer Cold
 
 ### #614 Beartic
 
 - Type: Ice
-- Ability: Sand Veil / Swift Swim
+- Ability: Snow Cloak / Slush Rush
 - Learnset: 1 Growl · 1 Fury Swipes · 1 Powder Snow · 1 Endure · 1 Charm · 1 Aqua Jet · 1 Icicle Crash · 9 Icy Wind · 12 Play Nice · 15 Dive · 18 Aurora Beam · 21 Slash · 24 Flail · 27 Swagger · 30 Hail · 33 Thrash · 36 Rest · 41 Blizzard · 46 Sheer Cold · 51 Superpower
 
 ### #615 Cryogonal
@@ -737,13 +737,13 @@
 ### #616 Shelmet
 
 - Type: Bug
-- Ability: Shed Skin / Shell Armor
+- Ability: Hydration / Shell Armor
 - Learnset: 1 Absorb · 1 Protect · 4 Acid · 8 Curse · 12 Mega Drain · 16 Struggle Bug · 20 Yawn · 24 Acid Armor · 28 Giga Drain · 32 Rest · 36 Body Slam · 40 Recover · 44 Bug Buzz · 48 Reversal
 
 ### #617 Accelgor
 
 - Type: Bug
-- Ability: Shed Skin / Sticky Hold
+- Ability: Hydration / Sticky Hold
 - Learnset: 1 Body Slam · 1 Acid · 1 Absorb · 1 Quick Attack · 1 Double Team · 1 Acid Armor · 1 Curse · 1 Yawn · 1 Rest · 1 Poison Fang · 1 Whirlpool · 12 Mega Drain · 16 Struggle Bug · 20 Swift · 24 Agility · 28 Giga Drain · 32 Trick · 36 Signal Beam · 40 Recover · 44 Bug Buzz · 48 Reversal · 52 Toxic
 
 ### #618 Stunfisk
@@ -755,13 +755,13 @@
 ### #619 Mienfoo
 
 - Type: Fighting
-- Ability: Inner Focus / Natural Cure
+- Ability: Inner Focus / Regenerator
 - Learnset: 1 Pound · 1 Detect · 5 Fake Out · 10 Reversal · 15 Fury Swipes · 20 Bulk Up · 25 Force Palm · 30 Signal Beam · 35 Drain Punch · 40 Fake Tears · 45 Aura Sphere · 51 Bounce · 55 Calm Mind · 60 Hi Jump Kick
 
 ### #620 Mienshao
 
 - Type: Fighting
-- Ability: Inner Focus / Natural Cure
+- Ability: Inner Focus / Regenerator
 - Learnset: 1 Pound · 1 Reversal · 1 Detect · 1 Fake Out · 1 Bulk Up · 15 Fury Swipes · 20 Sandstorm · 25 Force Palm · 30 Signal Beam · 35 Drain Punch · 40 Fake Tears · 45 Aura Sphere · 53 Bounce · 59 Calm Mind · 66 Hi Jump Kick
 
 ### #621 Druddigon
@@ -773,31 +773,31 @@
 ### #622 Golett
 
 - Type: Ground / Ghost
-- Ability: Guts / Oblivious
+- Ability: Iron Fist / Oblivious
 - Learnset: 1 Mud-Slap · 1 Astonish · 4 Defense Curl · 8 Pound · 12 Shadow Punch · 16 Curse · 20 Night Shade · 24 Dig · 28 Iron Defense · 32 Mega Punch · 36 Shadow Ball · 40 Metal Claw · 44 Lick · 48 Cross Chop · 52 Earthquake · 56 Dynamicpunch
 
 ### #623 Golurk
 
 - Type: Ground / Ghost
-- Ability: Guts / Oblivious
+- Ability: Iron Fist / Oblivious
 - Learnset: 1 Pound · 1 Defense Curl · 1 Astonish · 1 High Horsepower · 12 Shadow Punch · 16 Curse · 20 Night Shade · 24 Dig · 28 Iron Defense · 32 Mega Punch · 36 Shadow Ball · 40 Metal Claw · 46 Lick · 52 Cross Chop · 58 Earthquake · 64 Dynamicpunch
 
 ### #624 Pawniard
 
 - Type: Dark / Steel
-- Ability: White Smoke / Inner Focus
+- Ability: Defiant / Inner Focus
 - Learnset: 1 Scratch · 1 Leer · 5 Fury Cutter · 10 Metal Claw · 15 Torment · 20 Scary Face · 25 Faint Attack · 30 Metal Sound · 35 Slash · 40 Night Slash · 45 Iron Defense · 50 Headbutt · 55 Iron Head · 60 Swords Dance · 65 Guillotine
 
 ### #625 Bisharp
 
 - Type: Dark / Steel
-- Ability: White Smoke / Inner Focus
+- Ability: Defiant / Inner Focus
 - Learnset: 1 Scratch · 1 Leer · 1 Fury Cutter · 1 Metal Claw · 1 Meteor Mash · 15 Torment · 20 Scary Face · 25 Faint Attack · 30 Metal Sound · 35 Slash · 40 Night Slash · 45 Iron Defense · 50 Headbutt · 57 Iron Head · 64 Swords Dance · 71 Guillotine
 
 ### #626 Bouffalant
 
 - Type: Normal
-- Ability: Guts / Water Absorb
+- Ability: Reckless / Sap Sipper
 - Learnset: 1 Tackle · 1 Leer · 5 Focus Energy · 10 Fury Attack · 15 Revenge · 20 Scary Face · 25 Horn Attack · 30 Reversal · 35 Crunch · 40 Head Charge · 45 Swords Dance · 50 Megahorn · 55 Giga Impact
 
 ### #627 Rufflet
@@ -815,13 +815,13 @@
 ### #629 Vullaby
 
 - Type: Dark / Flying
-- Ability: Clear Body / Shield Dust
+- Ability: Big Pecks / Shield Dust
 - Learnset: 1 Gust · 1 Leer · 6 Flatter · 12 Aerial Ace · 18 Featherdance · 24 Knock Off · 30 Iron Defense · 36 Whirlwind · 42 Air Slash · 48 Dark Pulse · 54 Fake Tears · 60 Rest · 66 Attract · 72 Brave Bird
 
 ### #630 Mandibuzz
 
 - Type: Dark / Flying
-- Ability: Clear Body / Shield Dust
+- Ability: Big Pecks / Shield Dust
 - Learnset: 1 Gust · 1 Leer · 1 Toxic · 1 Sky Attack · 1 Bone Rush · 1 Flatter · 1 Aerial Ace · 18 Featherdance · 24 Knock Off · 30 Iron Defense · 36 Whirlwind · 42 Air Slash · 48 Dark Pulse · 57 Fake Tears · 64 Rest · 72 Attract · 80 Brave Bird
 
 ### #631 Heatmor
@@ -869,31 +869,31 @@
 ### #638 Cobalion
 
 - Type: Steel / Fighting
-- Ability: Inner Focus
+- Ability: Justified
 - Learnset: 1 Leer · 1 Quick Attack · 1 Helping Hand · 1 Tail Whip · 7 Metal Claw · 14 Detect · 21 Double Kick · 28 Headbutt · 35 Meteor Mash · 42 Take Down · 49 Sky Uppercut · 56 Swords Dance · 63 Iron Head · 70 Cross Chop
 
 ### #639 Terrakion
 
 - Type: Rock / Fighting
-- Ability: Inner Focus
+- Ability: Justified
 - Learnset: 1 Leer · 1 Quick Attack · 1 Helping Hand · 1 Tail Whip · 7 Rock Throw · 14 Detect · 21 Double Kick · 28 Headbutt · 35 Rock Slide · 42 Take Down · 49 Sky Uppercut · 56 Swords Dance · 63 Stone Edge · 70 Cross Chop
 
 ### #640 Virizion
 
 - Type: Grass / Fighting
-- Ability: Inner Focus
+- Ability: Justified
 - Learnset: 1 Leer · 1 Quick Attack · 1 Helping Hand · 1 Tail Whip · 7 Magical Leaf · 14 Detect · 21 Double Kick · 28 Headbutt · 35 Giga Drain · 42 Synthesis · 49 Sky Uppercut · 56 Swords Dance · 63 Leaf Blade · 70 Cross Chop
 
 ### #641 Tornadus
 
 - Type: Flying
-- Ability: Run Away
+- Ability: Prankster
 - Learnset: 1 Gust · 1 Astonish · 5 Leer · 10 Swagger · 15 Bite · 20 Air Cutter · 25 Agility · 30 Featherdance · 35 Air Slash · 40 Crunch · 45 Extrasensory · 50 Uproar · 55 Cross Chop · 60 Rain Dance · 65 Hurricane · 70 Thrash · 77 Aeroblast
 
 ### #642 Thundurus
 
 - Type: Electric / Flying
-- Ability: Run Away
+- Ability: Prankster
 - Learnset: 1 Thundershock · 1 Astonish · 5 Leer · 10 Swagger · 15 Bite · 20 Shock Wave · 25 Agility · 30 Charge · 35 Spark · 40 Crunch · 45 Discharge · 50 Uproar · 55 Cross Chop · 60 Rain Dance · 65 Thunder · 70 Thrash · 75 Zap Cannon
 
 ### #643 Reshiram
@@ -911,7 +911,7 @@
 ### #645 Landorus
 
 - Type: Ground / Flying
-- Ability: Sand Veil
+- Ability: Sand Force
 - Learnset: 1 Sand Tomb · 1 Rock Throw · 5 Leer · 10 Block · 15 Bulldoze · 20 Rock Tomb · 30 Imprison · 35 Rock Slide · 40 Earth Power · 45 Extrasensory · 50 Stone Edge · 55 Cross Chop · 60 Sandstorm · 65 Earthquake · 70 Outrage · 75 Fissure · 80 Bone Club
 
 ### #646 Kyurem
@@ -923,7 +923,7 @@
 ### #647 Keldeo
 
 - Type: Water / Fighting
-- Ability: Inner Focus
+- Ability: Justified
 - Learnset: 1 Leer · 1 Helping Hand · 1 Aqua Jet · 1 Tail Whip · 1 Sky Uppercut · 7 Bubblebeam · 14 Detect · 21 Double Kick · 28 Headbutt · 35 Aqua Tail · 42 Take Down · 49 Hi Jump Kick · 56 Swords Dance · 63 Hydro Pump · 70 Cross Chop
 
 ### #648 Meloetta

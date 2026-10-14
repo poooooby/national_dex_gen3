@@ -73,17 +73,19 @@ T.eq(#api.formsOf("ROTOM"), 5, "ROTOM has five forms")
 T.eq(#api.formsOf(479), 5, "by dex number too")
 T.check(api.apiVersion >= 2, "apiVersion is 2 or more")
 
--- ------- abilities and moves: only what the cart has
+-- ------- abilities and moves: the cart's, or a real newer ability this mod installs
 
+local real = require("src.core.game3.battle.adapter").ABILITY_BY_ID
 local bad = 0
 for slot = 1090, 1217 do
   local pair = P._abilities[slot] or {}
   for _, id in ipairs({ pair[1] or 0, pair[2] or 0 }) do
-    if id ~= 0 and (id < 1 or id > 77 or id == 76) then bad = bad + 1 end
+    local cart = id >= 1 and id <= 77 and id ~= 76
+    if id ~= 0 and not cart and not (id >= 78 and real[id]) then bad = bad + 1 end
   end
   if not P._learnsets[slot] or #P._learnsets[slot] == 0 then bad = bad + 1 end
 end
-T.eq(bad, 0, "every form has a cart ability and a learnset")
+T.eq(bad, 0, "every form has a known ability (the cart's or an installed newer one) and a learnset")
 
 -- ------- evolutions between forms
 
