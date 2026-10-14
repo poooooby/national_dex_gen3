@@ -36,6 +36,7 @@ T.eq(P._stats[451].hp, 55, "its base stats are in the species tables")
 T.eq(P._names[451], "TURTWIG", "and its name")
 T.eq(P._types[451][1], P._types[1][1], "Grass typing, the engine's own type number")
 
+
 -- Abilities: every newer ability is mapped to the closest one the cart has
 -- (tools/ability_map.py), never a new id: the Gen 3 battle engine only
 -- implements the cart's own (1-75, and Air Lock at 77). Cacophony (76) is
@@ -101,6 +102,29 @@ T.eq(sylveon.types[1], "NORMAL", "pure Fairy becomes Normal")
 -- ------- reload repairs
 
 run.loader.events:emit("game.ready", {})
+
+-- Safari Zone flee rate (the registry has no field for it; the reload repair adds it):
+-- the band of FireRed's own Safari table by catch rate
+local function flee(dex) local m = P.speciesMeta(dex + 64) return m and m.safariZoneFleeRate end
+T.eq(flee(387), 125, "Turtwig (catch rate 45) flees like FireRed's rare Safari Pokemon: 125")
+T.eq(flee(399), 50, "Bidoof (catch rate 255): 50, like Nidoran / Doduo")
+T.eq(flee(446), 125, "Munchlax (catch rate 50): 125")
+T.eq(flee(403), 50, "Shinx (catch rate 235): 50")
+local Fixups = H.module("src/fixups.lua")
+T.eq(Fixups.safariFleeRate(120), 75, "catch rate 120 (Rhyhorn's): 75, its own Safari rate")
+T.eq(Fixups.safariFleeRate(30), 125, "catch rate 30 (Chansey's): 125")
+T.eq(Fixups.safariFleeRate(225), 50, "catch rate 225 (Goldeen's): 50")
+local missing = 0
+for slot = 451, 1089 do
+  local m = P.speciesMeta(slot)
+  if m and (tonumber(m.safariZoneFleeRate) or 0) == 0 then missing = missing + 1 end
+end
+T.eq(missing, 0, "every new species has a Safari flee rate")
+T.eq(P.speciesMeta(129).safariZoneFleeRate, 25, "the Safari Zone's own species keep theirs (Magikarp 25)")
+T.eq(P.speciesMeta(147).safariZoneFleeRate, 100, "...Dratini 100")
+T.eq(P.speciesMeta(113).safariZoneFleeRate, 125, "...Chansey 125")
+T.eq(P.speciesMeta(25).safariZoneFleeRate, 50, "a cart species that never lived there gets its band: Pikachu (catch rate 190) 50")
+T.eq(P.speciesMeta(6).safariZoneFleeRate, 125, "...Charizard (45) 125")
 local evo = P._evolutions[451] and P._evolutions[451][1]
 T.check(evo ~= nil, "TURTWIG has an evolution row")
 T.eq(evo and evo.target, 452, "that evolves into GROTLE's slot, not slot 0")

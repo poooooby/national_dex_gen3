@@ -8,3 +8,6 @@ __pycache__/
 
 # test builds (tools/build_dist.py)
 /dist/
+
+# Claude Code skills and settings (local only)
+/.claude/

@@ -3,6 +3,17 @@
 All notable changes to this mod are documented here, in
 [keep a changelog](https://keepachangelog.com/en/1.1.0/) format.
 
+## [Unreleased]
+
+### Fixed
+
+- Pokemon met in the FireRed / LeafGreen Safari Zone that don't belong there (a spawn mod such as
+  Modern Spawns can put any species there, new or not) run away like the Safari Zone's own. The
+  game only gives its Safari species a flee rate, so every other species had none and almost
+  never ran. Each now gets the rate its catch rate's band has in FireRed's own Safari table: 50
+  for easy-to-catch species (catch rate 150 and up), 75 for middling ones (60-149), 125 for rare
+  ones (under 60). The Safari Zone's own species keep their rates.
+
 ## [0.8.3] - 2026-10-13
 
 ### Fixed

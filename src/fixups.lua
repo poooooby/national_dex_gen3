@@ -10,6 +10,13 @@
 --     names at install time; new species are added to it.
 --   * national numbers: Pokemon.national / speciesFromNational read the ROM's
 --     national table; new species are added both ways.
+--   * Safari Zone flee rate: FireRed / LeafGreen give only the Safari Zone's own
+--     species a flee rate (BaseStats safariZoneFleeRate, read into the species meta;
+--     the registry has no such field). Any other species met there -- a new one, or a
+--     cart species a spawn mod puts there -- had 0 and almost never ran. Every species
+--     without one gets the rate its catch rate's band has in the game's own table
+--     (Fixups.safariFleeRate); the Safari species keep theirs, so a game without a
+--     spawn mod plays exactly as before.
 --
 -- Reaches into src.core.game3.pokemon (engine_internals): none of this has a
 -- registry or hook.
@@ -52,6 +59,22 @@ end
 -- on an item that does not exist YET simply waits; bridges: evolutions
 -- added to the cart's own species (Species.register); log: mod.log, for a
 -- one-line summary of what is waiting and on what.
+-- FireRed's Safari table follows the catch rate: easy-to-catch Safari Pokemon
+-- (catch rate 150 and up: Nidoran, Paras, Venonat, Doduo, Goldeen ...) flee at 50,
+-- middling ones (60-149: Nidorino, Exeggcute, Rhyhorn, Seaking ...) at 75, rare ones
+-- (under 60: Chansey, Kangaskhan, Scyther, Pinsir, Tauros, Dragonair) at 125. Only
+-- Magikarp (25) and Dratini (100) stray from it. {lowest catch rate, flee rate}.
+Fixups.SAFARI_FLEE = { { 150, 50 }, { 60, 75 }, { 0, 125 } }
+
+--- The Safari Zone flee rate a species with `catchRate` gets (pure).
+function Fixups.safariFleeRate(catchRate)
+  local c = tonumber(catchRate) or 45
+  for _, band in ipairs(Fixups.SAFARI_FLEE) do
+    if c >= band[1] then return band[2] end
+  end
+  return Fixups.SAFARI_FLEE[#Fixups.SAFARI_FLEE][2]
+end
+
 function Fixups.new(registered, itemIndex, bridges, log, forms)
   local self = {}
   bridges = bridges or {}
@@ -172,11 +195,31 @@ function Fixups.new(registered, itemIndex, bridges, log, forms)
           if P._byName[key] == nil then P._byName[key] = r.slot end
         end
       end
+      -- the Safari Zone flee rate the registry cannot carry (kept if one is already there).
+      -- The registry's own reload pass may come after this one and builds the slot's meta
+      -- afresh from whatever the slot holds, so the entry is started here if need be and
+      -- the rate carried over into it.
+      if type(P._speciesMeta) == "table" then
+        local meta = P._speciesMeta[r.slot]
+        if type(meta) ~= "table" then meta = {} P._speciesMeta[r.slot] = meta end
+        if (tonumber(meta.safariZoneFleeRate) or 0) == 0 then
+          meta.safariZoneFleeRate = Fixups.safariFleeRate(meta.catchRate or r.catchRate)
+        end
+      end
       if type(P._national) == "table" then
         P._national.toNational = P._national.toNational or {}
         P._national.toSpecies = P._national.toSpecies or {}
         P._national.toNational[r.slot] = r.dex -- a form's dex is its base's
         if not r.form then P._national.toSpecies[r.dex] = r.slot end
+      end
+    end
+    -- the cart's own species without a Safari flee rate (all but the Safari Zone's)
+    if type(P._speciesMeta) == "table" then
+      for slot, meta in pairs(P._speciesMeta) do
+        if type(slot) == "number" and slot > 0 and type(meta) == "table"
+          and (tonumber(meta.catchRate) or 0) > 0 and (tonumber(meta.safariZoneFleeRate) or 0) == 0 then
+          meta.safariZoneFleeRate = Fixups.safariFleeRate(meta.catchRate)
+        end
       end
     end
     applyBridges(P)

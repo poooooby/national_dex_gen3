@@ -47,6 +47,8 @@ tests/regional_test.lua
 tests/mon_anim_test.lua
 tests/unown_test.lua
 
+.claude/skills/lua-developer/SKILL.md
+
 # dist/ (managed by tools/build_dist.py; do not edit)
 dist/national_dex_gen3-0.7.0.zip
 # end dist/
