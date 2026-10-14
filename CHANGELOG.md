@@ -5,6 +5,23 @@ All notable changes to this mod are documented here, in
 
 ## [Unreleased]
 
+### Added
+
+- **The Fairy type** (Gen 6+) as a real type, id 18 (`src/types.lua`, data from
+  `tools/build_types.py` -> `data/types.lua`):
+  - the Gen 6 type chart: Fairy's 12 matchups, inserted before the chart's Foresight sentinel, and
+    Steel no longer resisting Ghost and Dark; the AI's own effectiveness check reads the same chart
+  - every species and form that is Fairy today gets its modern typing (64 species, the cart's
+    Clefairy/Jigglypuff/Togepi/Snubbull/Marill/Mr. Mime/Ralts/Mawile lines included, and 26 forms),
+    set on the live tables after every reload; STAB follows automatically
+  - Charm, Sweet Kiss and Moonlight are Fairy moves
+  - the name FAIRY, and an original Fairy type icon (`tools/build_type_icons.py`) laid out like the
+    cart's: FireRed/LeafGreen badges through the summary and Pokedex chrome, Ruby/Sapphire/Emerald
+    summary icons through a patched copy of the summary screen (`src/type_icons.lua`; contest icons
+    unchanged); any mismatch leaves the stock screen
+  - Emerald's Battle Factory type count reads a Fairy half as the Pokemon's other type
+  - tests: `tests/fairy_test.lua` (FireRed, Emerald, Ruby)
+
 ### Fixed
 
 - Pokemon met in the FireRed / LeafGreen Safari Zone that don't belong there (a spawn mod such as

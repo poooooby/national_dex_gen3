@@ -46,6 +46,9 @@ tools/desc_width.py
 tests/regional_test.lua
 tests/mon_anim_test.lua
 tests/unown_test.lua
+tests/fairy_test.lua
+tools/build_types.py
+tools/build_type_icons.py
 
 .claude/skills/lua-developer/SKILL.md
 

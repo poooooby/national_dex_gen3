@@ -52,7 +52,7 @@
 
 ### #730 Primarina
 
-- Type: Water
+- Type: Water / Fairy
 - Ability: Torrent
 - Learnset: 1 Pound · 1 Growl · 1 Water Gun · 1 Snore · 1 Surf · 9 Dive · 12 Swords Dance · 15 Icy Wind · 20 Sing · 25 Bubblebeam · 30 Encore · 37 Softboiled · 44 Hyper Voice · 51 Crush Claw · 58 Hydro Pump
 
@@ -124,13 +124,13 @@
 
 ### #742 Cutiefly
 
-- Type: Bug
+- Type: Bug / Fairy
 - Ability: Pickup / Shield Dust
 - Learnset: 1 Absorb · 1 Pound · 6 Stun Spore · 12 Sweet Scent · 18 Uproar · 24 Silver Wind · 30 Covet · 36 Taunt · 42 Razor Wind · 48 Signal Beam · 54 Tail Glow
 
 ### #743 Ribombee
 
-- Type: Bug
+- Type: Bug / Fairy
 - Ability: Pickup / Shield Dust
 - Learnset: 1 Absorb · 1 Stun Spore · 1 Sweet Scent · 1 Pound · 1 Megahorn · 18 Uproar · 24 Silver Wind · 32 Covet · 40 Taunt · 48 Razor Wind · 56 Signal Beam · 64 Tail Glow
 
@@ -202,13 +202,13 @@
 
 ### #755 Morelull
 
-- Type: Grass
+- Type: Grass / Fairy
 - Ability: Illuminate / Effect Spore
 - Learnset: 1 Absorb · 1 Astonish · 4 Confuse Ray · 8 Ingrain · 12 Mega Drain · 16 Sleep Powder · 20 Moonlight · 25 Aromatherapy · 28 Giga Drain · 32 Razor Wind · 36 Spore · 40 Crush Claw · 44 Dream Eater
 
 ### #756 Shiinotic
 
-- Type: Grass
+- Type: Grass / Fairy
 - Ability: Illuminate / Effect Spore
 - Learnset: 1 Absorb · 1 Confuse Ray · 1 Ingrain · 1 Astonish · 12 Mega Drain · 16 Sleep Powder · 20 Moonlight · 27 Aromatherapy · 32 Giga Drain · 38 Razor Wind · 44 Spore · 50 Crush Claw · 56 Dream Eater
 
@@ -256,7 +256,7 @@
 
 ### #764 Comfey
 
-- Type: Normal
+- Type: Fairy
 - Ability: Shield Dust / Shed Skin
 - Learnset: 1 Wrap · 1 Growth · 3 Vine Whip · 6 Helping Hand · 9 Uproar · 12 Charm · 15 Magical Leaf · 18 Synthesis · 21 Leech Seed · 24 Needle Arm · 27 Sweet Kiss · 30 Softboiled · 33 Leaf Blade · 36 Bind · 39 Crush Claw · 42 Sweet Scent · 45 Petal Dance · 48 Spore
 
@@ -340,7 +340,7 @@
 
 ### #778 Mimikyu
 
-- Type: Ghost
+- Type: Ghost / Fairy
 - Ability: Sturdy
 - Learnset: 1 Scratch · 1 Splash · 1 Astonish · 1 Refresh · 1 Solarbeam · 6 Shadow Punch · 12 Double Team · 18 Swords Dance · 24 Mimic · 30 Fake Tears · 36 Slash · 42 Night Shade · 48 Charm · 54 Crush Claw · 60 Pain Split
 
@@ -382,25 +382,25 @@
 
 ### #785 Tapu Koko
 
-- Type: Electric
+- Type: Electric / Fairy
 - Ability: Static
 - Learnset: 1 Thundershock · 1 Quick Attack · 5 Withdraw · 10 Pound · 15 False Swipe · 20 Spark · 25 Shock Wave · 30 Charge · 35 Agility · 40 Screech · 45 Thunderpunch · 50 Mean Look · 55 Super Fang · 60 Thunderbolt · 65 Sky Attack · 70 Rest · 75 Thunder Wave
 
 ### #786 Tapu Lele
 
-- Type: Psychic
+- Type: Psychic / Fairy
 - Ability: Synchronize
 - Learnset: 1 Confusion · 1 Astonish · 5 Withdraw · 10 Aromatherapy · 15 Uproar · 20 Psybeam · 25 Flatter · 30 Minimize · 35 Sweet Scent · 40 Extrasensory · 45 Psychic · 50 Mean Look · 55 Super Fang · 60 Crush Claw · 65 Tickle · 70 Skill Swap · 75 Rest
 
 ### #787 Tapu Bulu
 
-- Type: Grass
+- Type: Grass / Fairy
 - Ability: Overgrow
 - Learnset: 1 Rock Smash · 1 Vine Whip · 5 Withdraw · 10 Disable · 15 Leech Seed · 20 Mega Drain · 25 Whirlwind · 30 Horn Attack · 35 Scary Face · 40 Giga Drain · 45 Extrasensory · 50 Mean Look · 55 Super Fang · 60 Solarbeam · 65 Megahorn · 70 Skull Bash · 75 Spore
 
 ### #788 Tapu Fini
 
-- Type: Water
+- Type: Water / Fairy
 - Ability: Water Veil
 - Learnset: 1 Water Gun · 1 Snore · 5 Withdraw · 10 Mist · 10 Haze · 15 Water Sport · 20 Water Pulse · 25 Dive · 30 Featherdance · 35 Rest · 40 Surf · 45 Muddy Water · 50 Mean Look · 55 Super Fang · 60 Crush Claw · 65 Hydro Pump · 70 Rain Dance · 75 Softboiled
 
@@ -478,7 +478,7 @@
 
 ### #801 Magearna
 
-- Type: Steel
+- Type: Steel / Fairy
 - Ability: Pressure
 - Learnset: 1 Helping Hand · 1 Metal Claw · 6 Defense Curl · 12 Rollout · 18 Iron Defense · 24 Charge · 30 Psybeam · 36 Aurora Beam · 42 Lock-On · 48 Metal Sound · 54 Trick · 60 Steel Wing · 66 Brick Break · 72 Iron Tail · 78 Pain Split · 84 Zap Cannon · 90 Hyper Beam
 

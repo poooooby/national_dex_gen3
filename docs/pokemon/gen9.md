@@ -124,13 +124,13 @@
 
 ### #926 Fidough
 
-- Type: Normal
+- Type: Fairy
 - Ability: Own Tempo
 - Learnset: 1 Tackle · 1 Growl · 3 Lick · 6 Tail Whip · 8 Covet · 11 Bite · 15 Swords Dance · 18 Crush Claw · 22 Leer · 26 Baton Pass · 30 Roar · 33 Double-Edge · 36 Charm · 40 Crunch · 45 Hyper Beam
 
 ### #927 Dachsbun
 
-- Type: Normal
+- Type: Fairy
 - Ability: Flash Fire
 - Learnset: 1 Tackle · 1 Growl · 3 Lick · 6 Tail Whip · 8 Covet · 11 Bite · 15 Swords Dance · 18 Crush Claw · 22 Leer · 29 Baton Pass · 33 Roar · 38 Double-Edge · 42 Charm · 47 Crunch · 53 Hyper Beam
 
@@ -310,19 +310,19 @@
 
 ### #957 Tinkatink
 
-- Type: Steel
+- Type: Fairy / Steel
 - Ability: Hustle / Own Tempo
 - Learnset: 1 Astonish · 1 Pound · 5 Swords Dance · 8 Metal Claw · 11 Covet · 14 Rock Smash · 17 Uproar · 21 Sweet Kiss · 24 Faint Attack · 27 Slam · 31 Iron Tail · 35 Crush Claw · 39 Fake Out · 43 Flatter · 47 Signal Beam · 52 Knock Off
 
 ### #958 Tinkatuff
 
-- Type: Steel
+- Type: Fairy / Steel
 - Ability: Hustle / Own Tempo
 - Learnset: 1 Astonish · 1 Pound · 5 Swords Dance · 8 Metal Claw · 11 Covet · 14 Rock Smash · 17 Uproar · 21 Sweet Kiss · 24 Faint Attack · 27 Slam · 31 Iron Tail · 35 Crush Claw · 39 Fake Out · 43 Flatter · 47 Signal Beam · 52 Knock Off
 
 ### #959 Tinkaton
 
-- Type: Steel
+- Type: Fairy / Steel
 - Ability: Hustle / Own Tempo
 - Learnset: 1 Astonish · 1 Pound · 1 Meteor Mash · 5 Swords Dance · 8 Metal Claw · 11 Covet · 14 Rock Smash · 17 Uproar · 21 Sweet Kiss · 24 Faint Attack · 27 Slam · 31 Iron Tail · 35 Crush Claw · 39 Fake Out · 43 Flatter · 47 Signal Beam · 52 Knock Off
 
@@ -478,7 +478,7 @@
 
 ### #985 Scream Tail
 
-- Type: Psychic
+- Type: Fairy / Psychic
 - Ability: Pressure
 - Learnset: 1 Pound · 1 Sing · 1 Disable · 7 Howl · 14 Swords Dance · 21 Bite · 28 Body Slam · 35 Rest · 42 Crush Claw · 49 Hyper Voice · 56 Extrasensory · 63 Crunch · 70 Wish · 77 Metal Claw · 84 Perish Song · 91 Hyper Beam
 
@@ -490,7 +490,7 @@
 
 ### #987 Flutter Mane
 
-- Type: Ghost
+- Type: Ghost / Fairy
 - Ability: Pressure
 - Learnset: 1 Confuse Ray · 1 Spite · 1 Astonish · 7 Psybeam · 14 Mean Look · 21 Memento · 28 Wish · 35 Razor Wind · 42 Shadow Ball · 49 Fire Punch · 56 Rock Slide · 63 Extrasensory · 70 Night Shade · 77 Pain Split · 84 Crush Claw · 91 Perish Song
 
@@ -604,7 +604,7 @@
 
 ### #1006 Iron Valiant
 
-- Type: Fighting
+- Type: Fairy / Fighting
 - Ability: Pressure
 - Learnset: 1 Disable · 1 Double Team · 1 Fury Cutter · 1 Astonish · 7 Hypnosis · 14 Tackle · 21 Future Sight · 28 Razor Wind · 35 Extrasensory · 42 Faint Attack · 49 Leaf Blade · 56 Crush Claw · 63 Cross Chop · 70 Knock Off · 77 Destiny Bond · 84 Sandstorm · 84 Detect · 91 Strength
 
@@ -664,7 +664,7 @@
 
 ### #1016 Fezandipiti
 
-- Type: Poison
+- Type: Poison / Fairy
 - Ability: Poison Point
 - Learnset: 1 Double Kick · 1 Peck · 1 Poison Gas · 1 Snore · 8 Quick Attack · 16 Attract · 24 Wing Attack · 32 Sludge · 40 Spike Cannon · 48 Beat Up · 56 Swagger · 56 Flatter · 64 Featherdance · 72 Crush Claw
 

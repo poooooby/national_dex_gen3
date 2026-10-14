@@ -316,7 +316,7 @@
 
 ### #439 Mime Jr.
 
-- Type: Psychic
+- Type: Psychic / Fairy
 - Ability: Soundproof / Thick Fat
 - Learnset: 1 Pound · 1 Pain Split · 4 Baton Pass · 8 Encore · 12 Confusion · 16 Role Play · 20 Protect · 24 Recycle · 28 Psybeam · 32 Mimic · 36 Light Screen · 36 Reflect · 36 Safeguard · 40 Faint Attack · 44 Razor Wind · 48 Psychic · 52 Teeter Dance
 
@@ -490,7 +490,7 @@
 
 ### #468 Togekiss
 
-- Type: Normal / Flying
+- Type: Fairy / Flying
 - Ability: Hustle / Serene Grace
 - Learnset: 1 Pound · 1 Double-Edge · 1 Growl · 1 Metronome · 1 Sky Attack · 1 Tri Attack · 1 Sweet Kiss · 1 Charm · 1 Safeguard · 1 Baton Pass · 1 Extremespeed · 1 Ancientpower · 1 Follow Me · 1 Wish · 1 Yawn · 1 Hyper Beam · 1 Brick Break · 1 Fly · 1 Belly Drum · 1 Scratch · 1 Rain Dance
 

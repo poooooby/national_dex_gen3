@@ -31,7 +31,11 @@ Paldea Pokémon can live in Kanto and Hoenn.
 - ⚔️ **Gen 3 moves and abilities:** Newer moves are swapped, at the same level, for the closest
   Gen 3 move of the same type, and each Pokémon gets the nearest Gen 3 ability. They play like
   their modern selves in spirit.
-- 🧪 **Real typings:** Every Pokémon keeps its typing, minus Fairy (which Gen 3 doesn't have).
+- 🧚 **The Fairy type:** Fairy is a real type, with today's matchups (it beats Dragon, Dark and
+  Fighting; Dragon can't touch it; Poison and Steel hit it hard) and its own type icon. Every
+  Pokémon has its modern typing, the originals too: Clefairy, Jigglypuff, Togepi, Snubbull,
+  Marill, Mr. Mime, Ralts and Mawile are part Fairy, and Charm, Sweet Kiss and Moonlight are
+  Fairy moves. Steel no longer resists Ghost and Dark, as in today's games.
 - 📖 **A bigger Pokédex:** The new Pokémon join the National Pokédex, with a FORMS page for
   species with alternate forms, and fast scrolling when you hold a direction.
 
@@ -76,8 +80,13 @@ This mod adds the Pokémon. Two companions bring them to life:
   at a time of day ...) get stand-ins, e.g. Piloswine → Mamoswine while knowing Rock Tomb, and
   Galarian Farfetch'd → Sirfetch'd after 3 critical hits in one battle.
 - **TM, tutor and egg moves** are limited to what Gen 3 has.
-- **The original 386 Pokémon,** the story, trainers and maps are unchanged; the originals only
-  gain their new evolutions.
+- **The original 386 Pokémon,** the story, trainers and maps are unchanged, apart from the
+  originals' Fairy typing and their new evolutions.
+- **Fairy attacks come later.** Fairy-type attacking moves (Moonblast, Play Rough ...) are newer
+  than Gen 3, so for now Fairy Pokémon learn the closest Gen 3 move instead. Fairy moves follow
+  Gen 3's rule that a move's type decides physical or special, so they are special.
+- **Link play** expects both players to have the same type chart; trade and battle with
+  players who use this mod too.
 
 ## 📚 Player Guides
 

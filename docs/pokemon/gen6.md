@@ -118,19 +118,19 @@
 
 ### #669 FlabÉBÉ
 
-- Type: Normal
+- Type: Fairy
 - Ability: Shield Dust
 - Learnset: 1 Vine Whip · 1 Tackle · 6 Pound · 10 Safeguard · 15 Razor Leaf · 20 Wish · 22 Magical Leaf · 24 Spore · 28 Leaf Blade · 33 Synthesis · 37 Softboiled · 41 Crush Claw · 45 Petal Dance · 48 Solarbeam
 
 ### #670 Floette
 
-- Type: Normal
+- Type: Fairy
 - Ability: Shield Dust
 - Learnset: 1 Vine Whip · 1 Tackle · 1 Pound · 10 Safeguard · 15 Razor Leaf · 20 Wish · 25 Magical Leaf · 27 Spore · 33 Leaf Blade · 38 Synthesis · 43 Softboiled · 46 Crush Claw · 51 Petal Dance · 58 Solarbeam
 
 ### #671 Florges
 
-- Type: Normal
+- Type: Fairy
 - Ability: Shield Dust
 - Learnset: 1 Solarbeam · 1 Petal Dance · 1 Safeguard · 1 Synthesis · 1 Wish · 1 Magical Leaf · 1 Needle Arm · 1 Leaf Blade · 1 Snore · 1 Spore · 1 Softboiled · 5 Crush Claw
 
@@ -196,25 +196,25 @@
 
 ### #682 Spritzee
 
-- Type: Normal
+- Type: Fairy
 - Ability: Shed Skin
 - Learnset: 1 Sweet Scent · 1 Pound · 3 Sweet Kiss · 6 Snore · 9 Uproar · 12 Aromatherapy · 15 Weather Ball · 18 Attract · 21 Flail · 24 Softboiled · 27 Psychic · 30 Charm · 33 Calm Mind · 36 Crush Claw · 39 Skill Swap
 
 ### #683 Aromatisse
 
-- Type: Normal
+- Type: Fairy
 - Ability: Shed Skin
 - Learnset: 1 Sweet Kiss · 1 Sweet Scent · 1 Snore · 1 Rest · 1 Pound · 1 Minimize · 9 Pay Day · 12 Aromatherapy · 15 Uproar · 18 Attract · 21 Flail · 24 Softboiled · 27 Psychic · 30 Charm · 33 Calm Mind · 36 Crush Claw · 39 Skill Swap · 42 Psych Up
 
 ### #684 Swirlix
 
-- Type: Normal
+- Type: Fairy
 - Ability: Insomnia
 - Learnset: 1 Tackle · 1 Sweet Scent · 3 Minimize · 6 Pound · 9 Aromatherapy · 12 Uproar · 15 Fake Tears · 18 Swift · 21 String Shot · 24 Cotton Spore · 27 Leaf Blade · 30 Wish · 33 Crush Claw · 36 Spore · 39 Endeavor
 
 ### #685 Slurpuff
 
-- Type: Normal
+- Type: Fairy
 - Ability: Insomnia
 - Learnset: 1 Tackle · 1 Sweet Scent · 1 Pound · 1 Minimize · 9 Aromatherapy · 12 Uproar · 15 Fake Tears · 18 Swift · 21 String Shot · 24 Cotton Spore · 27 Leaf Blade · 30 Wish · 33 Crush Claw · 36 Spore · 39 Endeavor · 42 Tail Glow
 
@@ -304,7 +304,7 @@
 
 ### #700 Sylveon
 
-- Type: Normal
+- Type: Fairy
 - Ability: Cute Charm
 - Learnset: 1 Tackle · 1 Take Down · 1 Double-Edge · 1 Tail Whip · 1 Bite · 1 Growl · 1 Charm · 1 Baton Pass · 1 Helping Hand · 1 Covet · 1 Pain Split · 1 Snore · 5 Sand-Attack · 10 Quick Attack · 15 Swords Dance · 20 Swift · 25 Light Screen · 30 Uproar · 35 Softboiled · 40 Skill Swap · 45 Psych Up · 50 Crush Claw · 55 Hyper Beam
 
@@ -316,13 +316,13 @@
 
 ### #702 Dedenne
 
-- Type: Electric
+- Type: Electric / Fairy
 - Ability: Pickup
 - Learnset: 1 Tail Whip · 1 Spark · 5 Tackle · 10 Charge · 15 Thundershock · 20 Charm · 25 Shock Wave · 30 Thunderpunch · 35 Rest · 35 Snore · 40 Thunderbolt · 45 Crush Claw · 50 Super Fang · 55 Belly Drum · 60 Thunder
 
 ### #703 Carbink
 
-- Type: Rock
+- Type: Rock / Fairy
 - Ability: Clear Body
 - Learnset: 1 Tackle · 1 Harden · 5 Rest · 10 Rock Throw · 15 Flail · 20 Ancientpower · 25 Sandstorm · 30 Light Screen · 35 Rock Slide · 40 Skill Swap · 45 Rock Tomb · 50 Reflect · 55 Crush Claw · 60 Rollout
 
@@ -346,7 +346,7 @@
 
 ### #707 Klefki
 
-- Type: Steel
+- Type: Steel / Fairy
 - Ability: Run Away
 - Learnset: 1 Astonish · 4 Tackle · 8 Pound · 12 Torment · 16 Softboiled · 20 Metal Sound · 24 Uproar · 28 Recycle · 32 Imprison · 36 Iron Tail · 40 Crush Claw · 44 Rest · 48 Faint Attack · 52 Hyper Beam
 
@@ -400,7 +400,7 @@
 
 ### #716 Xerneas
 
-- Type: Normal
+- Type: Fairy
 - Ability: Pressure
 - Learnset: 1 Tackle · 1 Rest · 5 Light Screen · 10 Aurora Beam · 15 Nature Power · 20 Faint Attack · 25 Aromatherapy · 30 Psych Up · 35 Giga Drain · 40 Softboiled · 45 Ingrain · 50 Take Down · 55 Double Team · 60 Crush Claw · 65 Trick · 70 Megahorn · 75 Cross Chop · 80 Outrage · 85 Hyper Beam
 
@@ -418,7 +418,7 @@
 
 ### #719 Diancie
 
-- Type: Rock
+- Type: Rock / Fairy
 - Ability: Clear Body
 - Learnset: 1 Tackle · 1 Harden · 1 Rock Throw · 7 Rest · 14 Rock Tomb · 21 Flail · 28 Ancientpower · 35 Sandstorm · 42 Light Screen · 49 Rock Slide · 56 Skill Swap · 63 Rollout · 70 Reflect · 77 Crush Claw · 84 Rock Blast
 

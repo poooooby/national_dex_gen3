@@ -292,25 +292,25 @@
 
 ### #858 Hatterene
 
-- Type: Psychic
+- Type: Psychic / Fairy
 - Ability: Shed Skin / Pressure
 - Learnset: 1 Confusion · 1 Extrasensory · 1 Snore · 1 Minimize · 1 Faint Attack · 1 Rain Dance · 15 Smokescreen · 20 Psybeam · 25 Rest · 30 Razor Wind · 37 Calm Mind · 46 Psychic · 55 Trick · 64 Role Play
 
 ### #859 Impidimp
 
-- Type: Dark
+- Type: Dark / Fairy
 - Ability: Run Away / Keen Eye
 - Learnset: 1 Fake Out · 1 Minimize · 4 Bite · 8 Flatter · 12 Fake Tears · 16 Faint Attack · 20 Swagger · 24 Crunch · 28 Torment · 33 Thief · 36 Taunt · 40 Crush Claw · 44 Pursuit
 
 ### #860 Morgrem
 
-- Type: Dark
+- Type: Dark / Fairy
 - Ability: Run Away / Keen Eye
 - Learnset: 1 Bite · 1 Fake Out · 1 Flatter · 1 Minimize · 1 Faint Attack · 12 Fake Tears · 16 Thief · 20 Swagger · 24 Crunch · 28 Torment · 35 Pursuit · 40 Taunt · 46 Crush Claw · 52 Knock Off
 
 ### #861 Grimmsnarl
 
-- Type: Dark
+- Type: Dark / Fairy
 - Ability: Run Away / Keen Eye
 - Learnset: 1 Bite · 1 Fake Out · 1 Flatter · 1 Bulk Up · 1 Minimize · 1 Crush Claw · 1 Faint Attack · 12 Fake Tears · 16 Thief · 20 Swagger · 24 Crunch · 28 Torment · 35 Pursuit · 40 Taunt · 48 Take Down · 56 Knock Off · 64 Cross Chop
 
@@ -352,13 +352,13 @@
 
 ### #868 Milcery
 
-- Type: Normal
+- Type: Fairy
 - Ability: Insomnia
 - Learnset: 1 Tackle · 1 Minimize · 5 Sweet Kiss · 10 Sweet Scent · 15 Uproar · 20 Charm · 25 Attract · 30 Acid Armor · 35 Razor Wind · 40 Recover · 45 Softboiled · 50 Belly Drum
 
 ### #869 Alcremie
 
-- Type: Normal
+- Type: Fairy
 - Ability: Insomnia
 - Learnset: 1 Tackle · 1 Sweet Kiss · 1 Sweet Scent · 1 Minimize · 1 Double Team · 15 Uproar · 20 Charm · 25 Attract · 30 Acid Armor · 35 Razor Wind · 40 Recover · 45 Softboiled · 50 Belly Drum
 
@@ -472,7 +472,7 @@
 
 ### #888 Zacian
 
-- Type: Normal
+- Type: Fairy
 - Ability: Intimidate
 - Learnset: 1 Bite · 1 Quick Attack · 1 Metal Claw · 1 Howl · 1 Detect · 1 Sky Uppercut · 11 Slash · 22 Swords Dance · 33 Steel Wing · 44 Tail Whip · 55 Crunch · 66 Crush Claw · 77 Cross Chop · 88 Hyper Beam
 
@@ -574,7 +574,7 @@
 
 ### #905 Enamorus
 
-- Type: Flying
+- Type: Fairy / Flying
 - Ability: Cute Charm
 - Learnset: 1 Astonish · 1 Pound · 5 Torment · 10 Flatter · 15 Twister · 20 Weather Ball · 25 Iron Defense · 30 Imprison · 35 Fire Punch · 40 Razor Wind · 45 Extrasensory · 50 Uproar · 55 Superpower · 60 Rest · 65 Crush Claw · 70 Outrage · 75 Egg Bomb
 

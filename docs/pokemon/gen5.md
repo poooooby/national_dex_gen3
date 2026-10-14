@@ -316,13 +316,13 @@
 
 ### #546 Cottonee
 
-- Type: Grass
+- Type: Grass / Fairy
 - Ability: Run Away / Keen Eye
 - Learnset: 1 Absorb · 1 Helping Hand · 3 Pound · 6 Stun Spore · 12 Mega Drain · 15 Razor Leaf · 18 Growth · 21 Poisonpowder · 24 Giga Drain · 27 Charm · 30 Leech Seed · 33 Cotton Spore · 36 Leaf Blade · 39 Sunny Day · 42 Endeavor · 45 Spore · 48 Solarbeam
 
 ### #547 Whimsicott
 
-- Type: Grass
+- Type: Grass / Fairy
 - Ability: Run Away / Keen Eye
 - Learnset: 1 Gust · 1 Absorb · 1 Mega Drain · 1 Leech Seed · 1 Growth · 1 Razor Leaf · 1 Solarbeam · 1 Poisonpowder · 1 Stun Spore · 1 Cotton Spore · 1 Giga Drain · 1 Charm · 1 Sunny Day · 1 Memento · 1 Helping Hand · 1 Endeavor · 1 Featherdance · 1 Leaf Blade · 1 Spore · 1 Bounce · 1 Pound · 1 Crush Claw
 

@@ -258,7 +258,7 @@ form also counts the base Pokémon in your Pokédex.
 
 ### Enamorus (Therian) — #905
 
-- Type: Flying
+- Type: Fairy / Flying
 - Ability: Shield Dust
 - Learnset: 1 Astonish · 1 Pound · 5 Torment · 10 Flatter · 15 Twister · 20 Weather Ball · 25 Iron Defense · 30 Imprison · 35 Fire Punch · 40 Razor Wind · 45 Extrasensory · 50 Uproar · 55 Superpower · 60 Rest · 65 Crush Claw · 70 Outrage · 75 Egg Bomb
 
@@ -306,7 +306,7 @@ form also counts the base Pokémon in your Pokédex.
 
 ### Zacian (Crowned) — #888
 
-- Type: Steel
+- Type: Fairy / Steel
 - Ability: Intimidate
 - Learnset: 1 Bite · 1 Quick Attack · 1 Metal Claw · 1 Howl · 1 Detect · 1 Sky Uppercut · 11 Slash · 22 Swords Dance · 33 Steel Wing · 44 Tail Whip · 55 Crunch · 66 Crush Claw · 77 Cross Chop · 88 Hyper Beam
 
@@ -354,83 +354,83 @@ form also counts the base Pokémon in your Pokédex.
 
 ### Floette (Eternal) — #670
 
-- Type: Normal
+- Type: Fairy
 - Ability: Shield Dust
 - Learnset: 1 Vine Whip · 1 Tackle · 1 Pound · 6 Scratch · 10 Safeguard · 15 Razor Leaf · 20 Wish · 25 Magical Leaf · 27 Spore · 33 Leaf Blade · 38 Aromatherapy · 43 Softboiled · 46 Crush Claw · 50 Hyper Beam · 51 Petal Dance · 58 Solarbeam
 
 ### Floette (Yellow) — #670
 
-- Type: Normal
+- Type: Fairy
 - Ability: Shield Dust
 - Learnset: 1 Vine Whip · 1 Tackle · 1 Pound · 10 Safeguard · 15 Razor Leaf · 20 Wish · 25 Magical Leaf · 27 Spore · 33 Leaf Blade · 38 Synthesis · 43 Softboiled · 46 Crush Claw · 51 Petal Dance · 58 Solarbeam
 - Evolves: into Florges (Yellow) (use Shiny Stone)
 
 ### Floette (Orange) — #670
 
-- Type: Normal
+- Type: Fairy
 - Ability: Shield Dust
 - Learnset: 1 Vine Whip · 1 Tackle · 1 Pound · 10 Safeguard · 15 Razor Leaf · 20 Wish · 25 Magical Leaf · 27 Spore · 33 Leaf Blade · 38 Synthesis · 43 Softboiled · 46 Crush Claw · 51 Petal Dance · 58 Solarbeam
 - Evolves: into Florges (Orange) (use Shiny Stone)
 
 ### Floette (Blue) — #670
 
-- Type: Normal
+- Type: Fairy
 - Ability: Shield Dust
 - Learnset: 1 Vine Whip · 1 Tackle · 1 Pound · 10 Safeguard · 15 Razor Leaf · 20 Wish · 25 Magical Leaf · 27 Spore · 33 Leaf Blade · 38 Synthesis · 43 Softboiled · 46 Crush Claw · 51 Petal Dance · 58 Solarbeam
 - Evolves: into Florges (Blue) (use Shiny Stone)
 
 ### Floette (White) — #670
 
-- Type: Normal
+- Type: Fairy
 - Ability: Shield Dust
 - Learnset: 1 Vine Whip · 1 Tackle · 1 Pound · 10 Safeguard · 15 Razor Leaf · 20 Wish · 25 Magical Leaf · 27 Spore · 33 Leaf Blade · 38 Synthesis · 43 Softboiled · 46 Crush Claw · 51 Petal Dance · 58 Solarbeam
 - Evolves: into Florges (White) (use Shiny Stone)
 
 ### Alcremie (Ruby Cream) — #869
 
-- Type: Normal
+- Type: Fairy
 - Ability: Insomnia
 - Learnset: 1 Tackle · 1 Sweet Kiss · 1 Sweet Scent · 1 Minimize · 1 Double Team · 15 Uproar · 20 Charm · 25 Attract · 30 Acid Armor · 35 Razor Wind · 40 Recover · 45 Softboiled · 50 Belly Drum
 
 ### Alcremie (Matcha Cream) — #869
 
-- Type: Normal
+- Type: Fairy
 - Ability: Insomnia
 - Learnset: 1 Tackle · 1 Sweet Kiss · 1 Sweet Scent · 1 Minimize · 1 Double Team · 15 Uproar · 20 Charm · 25 Attract · 30 Acid Armor · 35 Razor Wind · 40 Recover · 45 Softboiled · 50 Belly Drum
 
 ### Alcremie (Mint Cream) — #869
 
-- Type: Normal
+- Type: Fairy
 - Ability: Insomnia
 - Learnset: 1 Tackle · 1 Sweet Kiss · 1 Sweet Scent · 1 Minimize · 1 Double Team · 15 Uproar · 20 Charm · 25 Attract · 30 Acid Armor · 35 Razor Wind · 40 Recover · 45 Softboiled · 50 Belly Drum
 
 ### Alcremie (Lemon Cream) — #869
 
-- Type: Normal
+- Type: Fairy
 - Ability: Insomnia
 - Learnset: 1 Tackle · 1 Sweet Kiss · 1 Sweet Scent · 1 Minimize · 1 Double Team · 15 Uproar · 20 Charm · 25 Attract · 30 Acid Armor · 35 Razor Wind · 40 Recover · 45 Softboiled · 50 Belly Drum
 
 ### Alcremie (Salted Cream) — #869
 
-- Type: Normal
+- Type: Fairy
 - Ability: Insomnia
 - Learnset: 1 Tackle · 1 Sweet Kiss · 1 Sweet Scent · 1 Minimize · 1 Double Team · 15 Uproar · 20 Charm · 25 Attract · 30 Acid Armor · 35 Razor Wind · 40 Recover · 45 Softboiled · 50 Belly Drum
 
 ### Alcremie (Ruby Swirl) — #869
 
-- Type: Normal
+- Type: Fairy
 - Ability: Insomnia
 - Learnset: 1 Tackle · 1 Sweet Kiss · 1 Sweet Scent · 1 Minimize · 1 Double Team · 15 Uproar · 20 Charm · 25 Attract · 30 Acid Armor · 35 Razor Wind · 40 Recover · 45 Softboiled · 50 Belly Drum
 
 ### Alcremie (Caramel Swirl) — #869
 
-- Type: Normal
+- Type: Fairy
 - Ability: Insomnia
 - Learnset: 1 Tackle · 1 Sweet Kiss · 1 Sweet Scent · 1 Minimize · 1 Double Team · 15 Uproar · 20 Charm · 25 Attract · 30 Acid Armor · 35 Razor Wind · 40 Recover · 45 Softboiled · 50 Belly Drum
 
 ### Alcremie (Rainbow Swirl) — #869
 
-- Type: Normal
+- Type: Fairy
 - Ability: Insomnia
 - Learnset: 1 Tackle · 1 Sweet Kiss · 1 Sweet Scent · 1 Minimize · 1 Double Team · 15 Uproar · 20 Charm · 25 Attract · 30 Acid Armor · 35 Razor Wind · 40 Recover · 45 Softboiled · 50 Belly Drum
 
@@ -449,53 +449,53 @@ form also counts the base Pokémon in your Pokédex.
 
 ### FlabÉBÉ (Yellow) — #669
 
-- Type: Normal
+- Type: Fairy
 - Ability: Shield Dust
 - Learnset: 1 Vine Whip · 1 Tackle · 6 Pound · 10 Safeguard · 15 Razor Leaf · 20 Wish · 22 Magical Leaf · 24 Spore · 28 Leaf Blade · 33 Synthesis · 37 Softboiled · 41 Crush Claw · 45 Petal Dance · 48 Solarbeam
 - Evolves: into Floette (Yellow) (level 19)
 
 ### FlabÉBÉ (Orange) — #669
 
-- Type: Normal
+- Type: Fairy
 - Ability: Shield Dust
 - Learnset: 1 Vine Whip · 1 Tackle · 6 Pound · 10 Safeguard · 15 Razor Leaf · 20 Wish · 22 Magical Leaf · 24 Spore · 28 Leaf Blade · 33 Synthesis · 37 Softboiled · 41 Crush Claw · 45 Petal Dance · 48 Solarbeam
 - Evolves: into Floette (Orange) (level 19)
 
 ### FlabÉBÉ (Blue) — #669
 
-- Type: Normal
+- Type: Fairy
 - Ability: Shield Dust
 - Learnset: 1 Vine Whip · 1 Tackle · 6 Pound · 10 Safeguard · 15 Razor Leaf · 20 Wish · 22 Magical Leaf · 24 Spore · 28 Leaf Blade · 33 Synthesis · 37 Softboiled · 41 Crush Claw · 45 Petal Dance · 48 Solarbeam
 - Evolves: into Floette (Blue) (level 19)
 
 ### FlabÉBÉ (White) — #669
 
-- Type: Normal
+- Type: Fairy
 - Ability: Shield Dust
 - Learnset: 1 Vine Whip · 1 Tackle · 6 Pound · 10 Safeguard · 15 Razor Leaf · 20 Wish · 22 Magical Leaf · 24 Spore · 28 Leaf Blade · 33 Synthesis · 37 Softboiled · 41 Crush Claw · 45 Petal Dance · 48 Solarbeam
 - Evolves: into Floette (White) (level 19)
 
 ### Florges (Yellow) — #671
 
-- Type: Normal
+- Type: Fairy
 - Ability: Shield Dust
 - Learnset: 1 Solarbeam · 1 Petal Dance · 1 Safeguard · 1 Synthesis · 1 Wish · 1 Magical Leaf · 1 Needle Arm · 1 Leaf Blade · 1 Snore · 1 Spore · 1 Softboiled · 5 Crush Claw
 
 ### Florges (Orange) — #671
 
-- Type: Normal
+- Type: Fairy
 - Ability: Shield Dust
 - Learnset: 1 Solarbeam · 1 Petal Dance · 1 Safeguard · 1 Synthesis · 1 Wish · 1 Magical Leaf · 1 Needle Arm · 1 Leaf Blade · 1 Snore · 1 Spore · 1 Softboiled · 5 Crush Claw
 
 ### Florges (Blue) — #671
 
-- Type: Normal
+- Type: Fairy
 - Ability: Shield Dust
 - Learnset: 1 Solarbeam · 1 Petal Dance · 1 Safeguard · 1 Synthesis · 1 Wish · 1 Magical Leaf · 1 Needle Arm · 1 Leaf Blade · 1 Snore · 1 Spore · 1 Softboiled · 5 Crush Claw
 
 ### Florges (White) — #671
 
-- Type: Normal
+- Type: Fairy
 - Ability: Shield Dust
 - Learnset: 1 Solarbeam · 1 Petal Dance · 1 Safeguard · 1 Synthesis · 1 Wish · 1 Magical Leaf · 1 Needle Arm · 1 Leaf Blade · 1 Snore · 1 Spore · 1 Softboiled · 5 Crush Claw
 
@@ -586,7 +586,7 @@ form also counts the base Pokémon in your Pokédex.
 
 ### Ninetales (Alola) — #38
 
-- Type: Ice
+- Type: Ice / Fairy
 - Ability: Sand Veil
 - Learnset: 1 Tail Whip · 1 Blizzard · 1 Icy Wind · 1 Imprison · 1 Razor Wind
 
@@ -677,7 +677,7 @@ form also counts the base Pokémon in your Pokédex.
 
 ### Rapidash (Galar) — #78
 
-- Type: Psychic
+- Type: Psychic / Fairy
 - Ability: Run Away / Immunity
 - Learnset: 1 Tackle · 1 Tail Whip · 1 Growl · 1 Confusion · 1 Quick Attack · 1 Megahorn · 1 Extrasensory · 15 Pound · 20 Agility · 25 Psybeam · 30 Stomp · 35 Rest · 43 Take Down · 49 Razor Wind · 56 Psychic · 63 Trick
 
@@ -709,7 +709,7 @@ form also counts the base Pokémon in your Pokédex.
 
 ### Weezing (Galar) — #110
 
-- Type: Poison
+- Type: Poison / Fairy
 - Ability: Levitate / Cloud Nine
 - Learnset: 1 Tackle · 1 Smokescreen · 1 Haze · 1 Smog · 1 Poison Gas · 1 Heat Wave · 1 Featherdance · 1 Snore · 1 Minimize · 1 Body Slam · 12 Poison Fang · 16 Faint Attack · 20 Sludge · 24 Pound · 28 Selfdestruct · 32 Sludge Bomb · 38 Toxic · 44 Poison Tail · 50 Explosion · 56 Memento · 62 Destiny Bond · 68 Softboiled
 

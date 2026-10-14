@@ -33,6 +33,8 @@ local items = load("data/items.lua")
 local shops = load("data/shops.lua")
 local crossgen = load("data/species/crossgen.lua")
 local forms = load("data/species/forms.lua")
+-- the Fairy type (src/types.lua): species by National number and forms by id, modern typing
+local fairy = load("data/types.lua")
 local index = load("data/species/index.lua")
 local species = {}
 for _, shard in ipairs(index.shards) do
@@ -264,8 +266,11 @@ local function learnsetText(r)
 end
 
 local function typesText(r)
+  local list = (r.baseSpecies and fairy.forms[r.id]) or (not r.baseSpecies and fairy.species[r.dex]) or r.types or {}
   local t = {}
-  for _, ty in ipairs(r.types or {}) do t[#t + 1] = title(ty) end
+  for i, ty in ipairs(list) do
+    if i == 1 or ty ~= list[1] then t[#t + 1] = title(ty) end
+  end
   return join(t, " / ")
 end
 

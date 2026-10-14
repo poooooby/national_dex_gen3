@@ -77,6 +77,9 @@ return function(mod)
   local DexForms = loadSibling(mod, "src/dex_forms.lua")
   local Editor = loadSibling(mod, "src/editor.lua")
   local MonAnim = loadSibling(mod, "src/mon_anim.lua")
+  -- optional: without it the game keeps Gen 3's 17 types
+  local FairyTypes = loadSibling(mod, "src/types.lua")
+  local TypeIcons = loadSibling(mod, "src/type_icons.lua")
   local Api = loadSibling(mod, "src/api.lua")
   if not (Species and Fixups and Items and ItemArt and CryArt and Shops and Art and ConditionalEvos and Clock and Counters and Breeding and DexPatch and NationalUnlock and DexSync and DexRepeat and Editor and MonAnim and Api) then return end
 
@@ -136,6 +139,45 @@ return function(mod)
   -- its re-apply of registry data does not undo these repairs
   mod.events:on("game.ready", function(ev)
     fixups.install(ev and ev.game or mod.game)
+    -- the Fairy type (src/types.lua): after the repairs, so National numbers resolve to this
+    -- mod's slots and its reload hook runs after theirs
+    if FairyTypes then
+      local okFairy, fairyErr = pcall(function()
+        local formSlots = {}
+        for _, f in ipairs(registeredForms) do formSlots[f.id] = f.slot end
+        local frlgIcon
+        if love and love.graphics and love.graphics.newImage then
+          local okImg, img = pcall(love.graphics.newImage, mod.path .. "/assets/types/fairy_frlg.png")
+          if okImg and img then
+            if img.setFilter then img:setFilter("nearest", "nearest") end
+            frlgIcon = img
+          end
+        end
+        FairyTypes.install({ data = read("data/types.lua") or {}, require = require, log = mod.log,
+          formSlots = formSlots, art = { frlg = frlgIcon } })
+        -- Ruby/Sapphire/Emerald's summary icon draws through a local (src/type_icons.lua)
+        local okVer, GVer = pcall(require, "src.core.GameVersion")
+        local game = okVer and GVer and tostring(GVer.current) or ""
+        local which = game:find("emerald", 1, true) and "rse"
+          or ((game:find("ruby", 1, true) or game:find("sapphire", 1, true)) and "rs") or nil
+        if TypeIcons and which then
+          local rseIcon
+          if love and love.graphics and love.graphics.newImage then
+            local okImg, img = pcall(love.graphics.newImage, mod.path .. "/assets/types/fairy_rse.png")
+            if okImg and img then
+              if img.setFilter then img:setFilter("nearest", "nearest") end
+              rseIcon = img
+            end
+          end
+          TypeIcons.install({ which = which, icon = rseIcon, require = require, load = load, log = mod.log,
+            read = function(path)
+              local okB, Blob = pcall(require, "src.import.CacheBlob")
+              return okB and Blob and Blob.readFs and Blob.readFs(path) or nil
+            end })
+        end
+      end)
+      if not okFairy then mod.log:warn("the Fairy type is off: %s", tostring(fairyErr)) end
+    end
     -- every species and form gets a cart species' front animation (src/mon_anim.lua): without
     -- one, a trainer leading with it stops the battle
     do
