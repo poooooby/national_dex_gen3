@@ -7,7 +7,7 @@
 -- from the cart's own name table before any mod loads.
 --
 -- When the editor is the host, this does what a game would:
---   bindModules  (before registration) hands the dataset the move and item modules, as
+--   bindModules  (before registration) hands the dataset the species, move and item modules, as
 --                Game3:_exposeModData does, so learnsets, TMs and evolution items resolve
 --   prepare      (on mods.loaded) applies the registries to the live tables
 --                (Gen3Compat.applyMerged + a species reload) and runs this mod's own
@@ -16,6 +16,7 @@
 --                (data.pokemon), a form under its own id and labelled with its form
 --   addItems     adds this mod's items (index 900+) to the editor's item list (data.items),
 --                which it builds from the cart's own items only
+--   addMoves     adds this mod's moves (index 355+) to the editor's move list (data.moves)
 -- In a game none of this runs.
 
 local Editor = {}
@@ -30,6 +31,10 @@ end
 
 function Editor.bindModules(data, require)
   if type(data) ~= "table" then return end
+  -- the species module: the move registry writes a new move's name into its move-name table,
+  -- which is the index learnsets resolve moves by (a game binds it the same way)
+  local okP, Pokemon = pcall(require, "src.core.game3.pokemon")
+  if okP and type(Pokemon) == "table" then data.gen3Pokemon = data.gen3Pokemon or Pokemon end
   local okMv, Moves = pcall(require, "src.core.game3.battle.moves")
   if okMv and type(Moves) == "table" then
     if not Moves._romLoaded and Moves.loadRomPack then
@@ -90,6 +95,24 @@ function Editor.addItems(data, items, require)
       local row = { id = key, name = name, itemId = index,
                     pocket = (type(info) == "table" and info.pocket) or "ITEMS" }
       data.items[key], data.items[index], data.items[tostring(index)] = row, row, row
+      added = added + 1
+    end
+  end
+  return added
+end
+
+-- moves: src/moves.lua's registered rows ({ id, name, index, pp, power, type }). Keyed the way
+-- the editor keys the cart's own moves (Gen.bindGame3Data): the name and the number.
+function Editor.addMoves(data, moves)
+  if type(data) ~= "table" then return 0 end
+  data.moves = data.moves or {}
+  local added = 0
+  for _, r in ipairs(moves or {}) do
+    local index = tonumber(r.index)
+    if index and r.name then
+      local row = { id = r.name, moveId = index, name = r.name, pp = r.pp or 10, power = r.power or 0,
+                    type = r.type or "NORMAL" }
+      data.moves[r.name], data.moves[index] = row, row
       added = added + 1
     end
   end

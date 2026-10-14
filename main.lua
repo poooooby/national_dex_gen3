@@ -79,6 +79,9 @@ return function(mod)
   local MonAnim = loadSibling(mod, "src/mon_anim.lua")
   -- optional: without it the game keeps Gen 3's 17 types
   local FairyTypes = loadSibling(mod, "src/types.lua")
+  -- moves newer than Gen 3 that run on a Gen 3 effect; without it, the learnset rows that name
+  -- one of them are left out
+  local NewMoves = loadSibling(mod, "src/moves.lua")
   local TypeIcons = loadSibling(mod, "src/type_icons.lua")
   local Api = loadSibling(mod, "src/api.lua")
   if not (Species and Fixups and Items and ItemArt and CryArt and Shops and Art and ConditionalEvos and Clock and Counters and Breeding and DexPatch and NationalUnlock and DexSync and DexRepeat and Editor and MonAnim and Api) then return end
@@ -101,6 +104,9 @@ return function(mod)
 
   local itemPayload = Items.loadPayload(read)
   local registeredItems = Items.register(mod, itemPayload)
+  -- moves newer than Gen 3 that run on a Gen 3 effect (src/moves.lua), before the species,
+  -- whose learnsets name them
+  local registeredMoves = NewMoves and NewMoves.register(mod, read("data/moves.lua") or {}) or {}
 
   local crossgen = Species.loadCrossGeneration(read)
   local forms = Species.loadForms(read)
@@ -117,9 +123,23 @@ return function(mod)
   if inEditor then
     mod.events:on("mods.loaded", function(ev)
       Editor.prepare(ev, require, function() fixups.install(nil) end, mod.log)
+      -- the new moves: learnset numbers, names, texts (src/moves.lua)
+      if NewMoves then pcall(NewMoves.install, { moves = registeredMoves, require = require, log = mod.log, family = "frlg" }) end
       local n = Editor.addToCatalog(ev and ev.data, registered, registeredForms, mod.content.pokemon)
       local items = Editor.addItems(ev and ev.data, registeredItems, require)
-      mod.log:info("save editor: %d species and forms, %d items listed", n, items)
+      local moves = Editor.addMoves(ev and ev.data, registeredMoves)
+      mod.log:info("save editor: %d species and forms, %d items, %d moves listed", n, items, moves)
+    end)
+  end
+
+  -- in a game, the species tables hold the new moves' numbers from the moment mods finish
+  -- loading (src/moves.lua repairs the registry's write); game.ready installs again
+  if NewMoves and not inEditor then
+    mod.events:on("mods.loaded", function()
+      local okVerL, GVerL = pcall(require, "src.core.GameVersion")
+      local current = okVerL and GVerL and tostring(GVerL.current) or ""
+      pcall(NewMoves.install, { moves = registeredMoves, require = require, log = mod.log,
+        family = (current:find("firered", 1, true) or current:find("leafgreen", 1, true)) and "frlg" or "rse" })
     end)
   end
 
@@ -139,6 +159,15 @@ return function(mod)
   -- its re-apply of registry data does not undo these repairs
   mod.events:on("game.ready", function(ev)
     fixups.install(ev and ev.game or mod.game)
+    -- the new moves' names, texts, contest rows and animations (src/moves.lua); before the
+    -- Fairy type, which retypes the Fairy ones by name
+    local okVerM, GVerM = pcall(require, "src.core.GameVersion")
+    local gameName = okVerM and GVerM and tostring(GVerM.current) or ""
+    if NewMoves then
+      local okMoves, movesErr = pcall(NewMoves.install, { moves = registeredMoves, require = require, log = mod.log,
+        family = (gameName:find("firered", 1, true) or gameName:find("leafgreen", 1, true)) and "frlg" or "rse" })
+      if not okMoves then mod.log:warn("the new moves are incomplete: %s", tostring(movesErr)) end
+    end
     -- the Fairy type (src/types.lua): after the repairs, so National numbers resolve to this
     -- mod's slots and its reload hook runs after theirs
     if FairyTypes then
@@ -153,7 +182,12 @@ return function(mod)
             frlgIcon = img
           end
         end
-        FairyTypes.install({ data = read("data/types.lua") or {}, require = require, log = mod.log,
+        local fairyData = read("data/types.lua") or {}
+        fairyData.moves = fairyData.moves or {}
+        for _, id in ipairs(NewMoves and NewMoves.fairy(registeredMoves) or {}) do
+          fairyData.moves[#fairyData.moves + 1] = id
+        end
+        FairyTypes.install({ data = fairyData, require = require, log = mod.log,
           formSlots = formSlots, art = { frlg = frlgIcon } })
         -- Ruby/Sapphire/Emerald's summary icon draws through a local (src/type_icons.lua)
         local okVer, GVer = pcall(require, "src.core.GameVersion")

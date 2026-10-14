@@ -1,6 +1,7 @@
 -- Builds the player reference in docs/ from the mod's own data, so it cannot
 -- drift from what the game does:
 --   docs/items.md            the added items: price, where to buy, what evolves with them
+--   docs/moves.md            the added moves: type, power, accuracy, PP, what they do
 --   docs/pokemon.md          index of the added Pokemon
 --   docs/pokemon/genN.md     every added species of one generation: types, its
 --                            Gen 3 ability, and its level-up learnset
@@ -35,6 +36,9 @@ local crossgen = load("data/species/crossgen.lua")
 local forms = load("data/species/forms.lua")
 -- the Fairy type (src/types.lua): species by National number and forms by id, modern typing
 local fairy = load("data/types.lua")
+-- moves newer than Gen 3 that are real moves (src/moves.lua): their names in learnsets
+local newMoves = load("data/moves.lua")
+for _, m in ipairs(newMoves) do moveNames[m.index] = m.full or m.name end
 local index = load("data/species/index.lua")
 local species = {}
 for _, shard in ipairs(index.shards) do
@@ -411,4 +415,29 @@ for _, base in ipairs(group) do
 end
 out("docs/pokemon/forms.md", F)
 
-print(string.format("docs: %d items, %d species, %d forms", #items, #species, #forms))
+-- ---- moves
+
+local physical = { NORMAL = true, FIGHTING = true, FLYING = true, POISON = true, GROUND = true,
+                   ROCK = true, BUG = true, GHOST = true, STEEL = true }
+local M = {
+  "# Added Moves",
+  "",
+  "Moves from later generations that work the way a Gen 3 move does. Pokémon learn them by",
+  "level-up or as egg moves; every other newer move is swapped for the closest Gen 3 move (see",
+  "each Pokémon's learnset). As in Gen 3, a move's type decides whether it is physical or special.",
+  "",
+  "| Move | Type | Kind | Power | Accuracy | PP | What it does |",
+  "|---|---|---|---|---|---|---|",
+}
+local sortedMoves = {}
+for _, m in ipairs(newMoves) do sortedMoves[#sortedMoves + 1] = m end
+table.sort(sortedMoves, function(a, b) return (a.full or a.name) < (b.full or b.name) end)
+for _, m in ipairs(sortedMoves) do
+  local kind = m.power == 0 and "Status" or (physical[m.type] and "Physical" or "Special")
+  local text = (m.rse or m.frlg or ""):gsub("%c", " ")
+  M[#M + 1] = string.format("| %s | %s | %s | %s | %s | %d | %s |", m.full or title(m.name), title(m.type), kind,
+    m.power > 1 and tostring(m.power) or "—", m.accuracy > 0 and tostring(m.accuracy) or "—", m.pp, text)
+end
+out("docs/moves.md", M)
+
+print(string.format("docs: %d items, %d moves, %d species, %d forms", #items, #newMoves, #species, #forms))

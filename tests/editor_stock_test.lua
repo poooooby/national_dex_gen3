@@ -150,5 +150,15 @@ do
   T.check(found, "the editor's item picker lists the last of them (935)")
 end
 
+-- moves: this mod's newer moves are in the editor's move list, and one can be set on a Pokemon
+do
+  local moon = Data.moves.MOONBLAST
+  T.check(moon ~= nil and moon.moveId >= 355, "MOONBLAST is in the editor's move list")
+  T.eq(Data.moves[moon and moon.moveId or 0], moon, "by number too")
+  local mon = MonOps.create(Data, "SYLVEON", 50, 3)
+  local okSet = pcall(MonOps.setMove, Data, mon, 1, "MOONBLAST")
+  T.check(okSet, "the editor can teach it")
+end
+
 run.release()
 T.finish("national_dex_gen3 stock save editor")

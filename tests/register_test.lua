@@ -93,7 +93,7 @@ for slot = 451, 1089 do
     last = level or last
   end
 end
-T.eq(unresolved, 0, "every learnset move is one FireRed has")
+T.eq(unresolved, 0, "every learnset move is a number the game knows (FireRed's or one this mod registers)")
 
 -- Fairy is dropped: Sylveon (pure Fairy) is Normal, Flabebe too
 local sylveon = run.loader.content.pokemon:get("SYLVEON")

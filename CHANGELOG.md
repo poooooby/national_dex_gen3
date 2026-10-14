@@ -7,6 +7,18 @@ All notable changes to this mod are documented here, in
 
 ### Added
 
+- **118 newer moves as real moves** (`src/moves.lua`, data from `tools/build_moves.py` ->
+  `data/moves.lua`): a newer move whose effect is one Gen 3 already has (matched by PokeAPI's
+  effect description against the cart's own moves, attacks only onto attacking effects) is
+  registered at its own index (append-only from 355) with today's power, accuracy, PP, priority,
+  target, flags (Pokemon Showdown's data), contest category/appeal and a summary text for each
+  box; learnsets and egg moves use it instead of a substitute (1705 uses). The battle's move-name
+  index, "used MOVE!" text, summary text, Ruby/Sapphire/Emerald contest rows and the battle
+  animation (the closest cart move's) answer for them; Fairy ones are Fairy. The other 308 newer
+  moves keep their substitutes. Works around a registry fault that writes a new move into the
+  move index by name (learnsets and, after a reload, the move rows end up under the name): the
+  numbers are put back after every write. Save editor: the moves are in its move list.
+  `docs/moves.md` lists them. Tests: `tests/moves_test.lua`.
 - **The Fairy type** (Gen 6+) as a real type, id 18 (`src/types.lua`, data from
   `tools/build_types.py` -> `data/types.lua`):
   - the Gen 6 type chart: Fairy's 12 matchups, inserted before the chart's Foresight sentinel, and

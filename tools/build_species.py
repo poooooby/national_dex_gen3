@@ -239,19 +239,46 @@ def modern_learnset(pokemon: dict[str, Any]) -> list[tuple[int, int]]:
     return []
 
 
+def real_moves(path: Path = ROOT / "data" / "moves.lua") -> dict[int, int]:
+    """PokeAPI move id -> this mod's index (355+) for the newer moves registered as real
+    moves (data/moves.lua, tools/build_moves.py)."""
+    if not path.exists():
+        return {}
+    src = path.read_text(encoding="utf-8")
+    return {int(m.group(2)): int(m.group(1)) for m in re.finditer(r"index = (\d+), api = (\d+)", src)}
+
+
+REAL_MOVES: dict[int, int] = {}
+
+
 def learnset_for(pokemon: dict[str, Any], mapper: "move_map.MoveMapper") -> list[list[int]]:
-    """The modern level-up list at its full length: Gen 3 moves as they are,
-    every newer move replaced by the closest Gen 3 move the species does not
-    already learn (tools/move_map.py), at the same level."""
+    """The modern level-up list at its full length: Gen 3 moves as they are, a newer move
+    that is a real move here (data/moves.lua) at its own index, and every other newer move
+    replaced by the closest Gen 3 move the species does not already learn
+    (tools/move_map.py), at the same level."""
     rows = modern_learnset(pokemon)
     taken = {mid for _, mid in rows if mid <= MAX_MOVE_ID}
     out = []
     for level, mid in rows:
         if mid > MAX_MOVE_ID:
-            mid = mapper.substitute(mid, taken)
-            taken.add(mid)
+            if mid in REAL_MOVES:
+                mid = REAL_MOVES[mid]
+            else:
+                mid = mapper.substitute(mid, taken)
+                taken.add(mid)
         out.append([level, mid])
     return sorted(out, key=lambda r: r[0])
+
+
+def egg_moves(pokemon: dict[str, Any]) -> list[int]:
+    """Egg moves: Gen 3's own, and the newer ones that are real moves here."""
+    found = set(moves_by_method(pokemon, {"egg"}))
+    for move in pokemon["moves"]:
+        move_id = id_from_url(move["move"]["url"])
+        if move_id in REAL_MOVES and any(d["move_learn_method"]["name"] == "egg"
+                                         for d in move["version_group_details"]):
+            found.add(REAL_MOVES[move_id])
+    return sorted(found)
 
 
 def moves_by_method(pokemon: dict[str, Any], methods: set[str]) -> list[int]:
@@ -431,7 +458,7 @@ def species_record(species: dict[str, Any], pokemon: dict[str, Any], dex: int,
         # taught (machine or tutor) and egg moves, Gen 3's moves only;
         # the mod maps `teach` onto the running game's own TMs, HMs and tutors
         "teach": moves_by_method(pokemon, {"machine", "tutor"}),
-        "eggMoves": moves_by_method(pokemon, {"egg"}),
+        "eggMoves": egg_moves(pokemon),
         "evolutions": evolutions,
         "legendary": bool(species.get("is_legendary")),
         "mythical": bool(species.get("is_mythical")),
@@ -562,6 +589,7 @@ def main() -> None:
                         "the Gen 3 move stats newer moves are matched against")
     p.add_argument("--refresh", action="store_true")
     args = p.parse_args()
+    REAL_MOVES.update(real_moves())
     records, crossgen, mapper, forms = build(API(args.cache, args.refresh), args.workers, args.cart)
     write(records, crossgen, args.out, forms)
     ability_report(records)

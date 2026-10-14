@@ -28,9 +28,11 @@ Paldea Pokémon can live in Kanto and Hoenn.
 
 ### Fits the Game
 
-- ⚔️ **Gen 3 moves and abilities:** Newer moves are swapped, at the same level, for the closest
-  Gen 3 move of the same type, and each Pokémon gets the nearest Gen 3 ability. They play like
-  their modern selves in spirit.
+- ⚔️ **118 newer moves, for real:** Moonblast, Dazzling Gleam, Play Rough, Shadow Claw, Earth
+  Power, Flash Cannon, Brave Bird, Aqua Jet and more, with their own power, accuracy, PP, priority,
+  type, battle text and description. Newer moves that need brand-new mechanics (Stealth Rock,
+  U-turn ...) are swapped, at the same level, for the closest Gen 3 move of the same type.
+- 🧬 **Gen 3 abilities:** Each Pokémon gets the nearest Gen 3 ability.
 - 🧚 **The Fairy type:** Fairy is a real type, with today's matchups (it beats Dragon, Dark and
   Fighting; Dragon can't touch it; Poison and Steel hit it hard) and its own type icon. Every
   Pokémon has its modern typing, the originals too: Clefairy, Jigglypuff, Togepi, Snubbull,
@@ -82,9 +84,11 @@ This mod adds the Pokémon. Two companions bring them to life:
 - **TM, tutor and egg moves** are limited to what Gen 3 has.
 - **The original 386 Pokémon,** the story, trainers and maps are unchanged, apart from the
   originals' Fairy typing and their new evolutions.
-- **Fairy attacks come later.** Fairy-type attacking moves (Moonblast, Play Rough ...) are newer
-  than Gen 3, so for now Fairy Pokémon learn the closest Gen 3 move instead. Fairy moves follow
-  Gen 3's rule that a move's type decides physical or special, so they are special.
+- **Moves follow Gen 3's rules.** A move's type decides whether it is physical or special (Fairy
+  moves are special, Shadow Claw is physical), and contest data for the newest moves is basic.
+  They are learned by level-up and as egg moves; TMs and tutors are the original ones.
+- **Removing this mod** from a save whose Pokémon know its moves or are its species breaks those
+  Pokémon; keep the mod installed for that save.
 - **Link play** expects both players to have the same type chart; trade and battle with
   players who use this mod too.
 

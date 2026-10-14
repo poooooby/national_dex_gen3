@@ -49,6 +49,8 @@ tests/unown_test.lua
 tests/fairy_test.lua
 tools/build_types.py
 tools/build_type_icons.py
+tools/build_moves.py
+tests/moves_test.lua
 
 .claude/skills/lua-developer/SKILL.md
 
