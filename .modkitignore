@@ -25,6 +25,8 @@ docs/pokemon/gen6.md
 docs/pokemon/gen7.md
 docs/pokemon/gen8.md
 docs/pokemon/gen9.md
+docs/abilities.md
+docs/moves.md
 tests/forms_test.lua
 tools/form_list.py
 docs/pokemon/forms.md

@@ -346,11 +346,30 @@ function Fixups.new(registered, itemIndex, bridges, log, forms)
     withBase("setSeen")
     withBase("setCaught")
 
+    -- the count views run every frame some screens are open (the RSE save menu), so a dex with
+    -- no form marked (the usual case) passes through as it is, without a copy
+    local DEX_KEYS = { "seen", "caught", "owned" }
+    local formSlots, formKeys = {}, {}
+    for slot in pairs(baseSlotOf) do
+      formSlots[#formSlots + 1] = slot
+      formKeys[#formKeys + 1] = tostring(slot)          -- a save may have string keys
+    end
+    local function hasForm(dex)
+      for _, key in ipairs(DEX_KEYS) do
+        local t = dex[key]
+        if type(t) == "table" then
+          for i = 1, #formSlots do
+            if t[formSlots[i]] or t[formKeys[i]] then return true end
+          end
+        end
+      end
+      return false
+    end
     local function withoutForms(dex)
-      if type(dex) ~= "table" then return dex end
+      if type(dex) ~= "table" or not hasForm(dex) then return dex end
       local view = {}
       for k, v in pairs(dex) do view[k] = v end
-      for _, key in ipairs({ "seen", "caught", "owned" }) do
+      for _, key in ipairs(DEX_KEYS) do
         if type(dex[key]) == "table" then
           local kept = {}
           for slot, on in pairs(dex[key]) do
@@ -371,6 +390,8 @@ function Fixups.new(registered, itemIndex, bridges, log, forms)
     if type(summary) == "function" then
       Dex.summaryCount = function(save)
         if type(save) ~= "table" then return summary(save) end
+        local dex = type(save.dex) == "table" and save.dex or save.pokedex
+        if type(dex) ~= "table" or not hasForm(dex) then return summary(save) end
         local view = {}
         for k, v in pairs(save) do view[k] = v end
         if type(save.dex) == "table" then view.dex = withoutForms(save.dex)
