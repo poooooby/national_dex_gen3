@@ -25,8 +25,8 @@
 --       changeStat          BIG_PECKS, FLOWER_VEIL, DEFIANT, COMPETITIVE
 --       Status moves        LEAF_GUARD, SWEET_VEIL, FLOWER_VEIL (a status from a move's side
 --                           effect is not blocked: that check is local to the engine)
---     HEALER, TELEPATHY and HONEY_GATHER have no effect in a single battle here, as in the
---     games (no partner); QUARK_DRIVE works on Electric Terrain (no Booster Energy in Gen 3)
+--     HEALER, TELEPATHY and HONEY_GATHER have no effect here, not even in a double battle (no
+--     HONEY in Gen 3); QUARK_DRIVE works on Electric Terrain (no Booster Energy in Gen 3)
 -- An ability whose wrap target is missing is not installed, and its Pokemon keep the closest
 -- Gen 3 ability. Every addition runs protected: an error falls back to the engine's own result.
 
@@ -53,7 +53,7 @@ local BALL_BOMB = set{ "BARRAGE", "EGG_BOMB", "SHADOW_BALL", "SLUDGE_BOMB", "ZAP
   "SEED_BOMB", "MUD_BOMB", "MAGNET_BOMB", "ROCK_WRECKER", "AURA_SPHERE", "ACID_SPRAY", "SEARING_SHOT",
   "ELECTRO_BALL", "POLLEN_PUFF", "BEAK_BLAST", "PYRO_BALL" }
 
--- the abilities that have no effect in a single battle here (installed for their name and text)
+-- the abilities that have no effect here (installed for their name and text)
 local QUIET = set{ "HEALER", "TELEPATHY", "HONEY_GATHER" }
 
 local function safe(fn, ...)

@@ -91,12 +91,12 @@ T.check(dmg(nil, "HEATPROOF", EMBER) < dmg(nil, nil, EMBER), "HEATPROOF halves F
 T.check(dmg(nil, "DRY_SKIN", EMBER) > dmg(nil, nil, EMBER), "DRY_SKIN takes more from Fire")
 
 -- ------- battle.damage: the final number
-local function hooked(userAb, targetAb, info, targetHp)
+local function hooked(userAb, targetAb, info, targetHp, flags)
   local st, ad = battle(withAbility(mon(25), userAb), withAbility(mon(16, 50, { hp = targetHp or 150 }), targetAb))
   local Battle = require("src.core.game3.battle")
   Battle._adapter = ad
   local d = Runtime.call("battle.damage", function() return 100, info end,
-    { battle = st, user = st.player, target = st.enemy, move = { flags = 1 } })
+    { battle = st, user = st.player, target = st.enemy, move = { flags = flags or 1 } })
   Battle._adapter = nil
   return d
 end
@@ -108,6 +108,10 @@ T.eq(hooked(nil, "FILTER", { effectiveness = 2, stab = 1, moveType = 0 }), 75, "
 T.eq(hooked(nil, "MULTISCALE", plain), 50, "MULTISCALE halves damage at full HP")
 T.eq(hooked(nil, "MULTISCALE", plain, 100), 100, "but not once hurt")
 T.eq(hooked(nil, "FLUFFY", plain), 50, "FLUFFY halves contact damage")
+local fire = { effectiveness = 1, stab = 1, critical = false, moveType = 10, physical = false }
+T.eq(hooked(nil, "FLUFFY", fire, nil, 0), 200, "FLUFFY doubles Fire damage (Flamethrower, no contact)")
+T.eq(hooked(nil, "FLUFFY", fire, nil, 1), 100, "and a Fire contact move (Fire Punch) deals normal damage")
+T.eq(hooked(nil, "FLUFFY", plain, nil, 0), 100, "a non-contact, non-Fire move is unchanged")
 T.eq(hooked(nil, nil, plain), 100, "no ability, no change")
 
 -- ------- switch-in, end of turn, switch-out

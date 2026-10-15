@@ -3,6 +3,18 @@
 All notable changes to this mod are documented here, in
 [keep a changelog](https://keepachangelog.com/en/1.1.0/) format.
 
+## [Unreleased]
+
+### Changed
+
+- **Ability descriptions:** `docs/abilities.md` gives each added ability's full effect (every
+  number, and what works differently from the newer games: Fluffy's double Fire damage, Sand
+  Force not blocking sandstorm, Leaf Guard not stopping added effects...) beside the one-line
+  summary text, from a `DETAILS` table in `tools/build_abilities.py` (`detail` in
+  `data/abilities.lua`). Clearer summary texts for Fluffy, Weak Armor, Rattled and Rivalry;
+  Healer, Telepathy and Honey Gather say they have no effect here. `abilities_test.lua` checks
+  Fluffy's Fire doubling.
+
 ## [1.0.1] - 2026-10-15 (prerelease)
 
 ### Changed

@@ -465,18 +465,18 @@ local A = {
   "# Added Abilities",
   "",
   "Abilities from later generations that work in battle here. Every other newer ability is the",
-  "closest Gen 3 ability (see each Pokémon's page). Healer, Telepathy and Honey Gather only matter",
-  "with a partner or outside battle, so they have no effect in a single battle here. Quark Drive",
-  "works on Electric Terrain (Gen 3 has no Booster Energy).",
+  "closest Gen 3 ability (see each Pokémon's page). The summary screen has room for one short line,",
+  "so **What it does** below is the full effect, with every number and anything that works",
+  "differently from the newer games. Gen 3 decides physical or special by a move's type.",
   "",
-  "| Ability | What it does |",
-  "|---|---|",
+  "| Ability | Summary screen | What it does |",
+  "|---|---|---|",
 }
 local sortedAbilities = {}
 for _, d in ipairs(realAbilities.defs or {}) do sortedAbilities[#sortedAbilities + 1] = d end
 table.sort(sortedAbilities, function(a, b) return a.name < b.name end)
 for _, d in ipairs(sortedAbilities) do
-  A[#A + 1] = string.format("| %s | %s |", title((d.slug:gsub("-", " "))), d.text)
+  A[#A + 1] = string.format("| %s | %s | %s |", title((d.slug:gsub("-", " "))), d.text, d.detail or d.text)
 end
 out("docs/abilities.md", A)
 
