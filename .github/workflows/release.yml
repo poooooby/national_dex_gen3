@@ -11,7 +11,9 @@ name: Release
 #
 # Versioning, first rule that applies wins:
 #   1. the "version" input of a manual run,
-#   2. "[release X.Y.Z]" anywhere in the commit message,
+#   2. "[release X.Y.Z]" anywhere in the commit message ("[prerelease X.Y.Z]" publishes it as a
+#      GitHub prerelease, which the game's mod updater does not offer: ModUpdate.pickBest takes
+#      the newest non-prerelease),
 #   3. manifest.json's own version, when it is ahead of every existing tag,
 #      so bumping the manifest is the normal way to cut a release,
 #   4. otherwise the newest vX.Y.Z tag with its patch incremented
@@ -34,6 +36,11 @@ on:
         description: "Exact version to release (e.g. 0.3.0). Leave blank to auto-resolve."
         required: false
         default: ""
+      prerelease:
+        description: "Publish as a prerelease (the game's mod updater skips prereleases)."
+        type: boolean
+        required: false
+        default: false
 
 permissions:
   contents: write
@@ -56,6 +63,7 @@ jobs:
         id: ver
         env:
           DISPATCH_VERSION: ${{ github.event.inputs.version }}
+          DISPATCH_PRERELEASE: ${{ github.event.inputs.prerelease }}
         run: |
           set -euo pipefail
           python3 - <<'PY' >> "$GITHUB_OUTPUT"
@@ -83,9 +91,11 @@ jobs:
           latest = released[-1] if released else None
 
           override = os.environ.get("DISPATCH_VERSION", "").strip()
+          prerelease = os.environ.get("DISPATCH_PRERELEASE", "").strip().lower() == "true"
           if not override:
-              found = re.search(r"\[release\s+(\d+\.\d+\.\d+)\]", sh("git", "log", "-1", "--pretty=%B"))
-              override = found.group(1) if found else ""
+              found = re.search(r"\[(pre)?release\s+(\d+\.\d+\.\d+)\]", sh("git", "log", "-1", "--pretty=%B"))
+              override = found.group(2) if found else ""
+              prerelease = prerelease or bool(found and found.group(1))
 
           manifest_ver = parse(manifest_version)
           if override:
@@ -106,9 +116,10 @@ jobs:
                   "and there is no vX.Y.Z tag to count from")
 
           text = "%d.%d.%d" % version
-          print(f"Releasing {text}, from {source}.", file=sys.stderr)
+          print(f"Releasing {text}{' as a prerelease' if prerelease else ''}, from {source}.", file=sys.stderr)
           print(f"version={text}")
           print(f"tag=v{text}")
+          print(f"prerelease={'true' if prerelease else 'false'}")
           PY
 
       - name: Refuse to clobber an existing release
@@ -211,6 +222,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           VERSION: ${{ steps.ver.outputs.version }}
           TAG: ${{ steps.ver.outputs.tag }}
+          PRERELEASE: ${{ steps.ver.outputs.prerelease }}
           MOD_ID: "national_dex_gen3"
         run: |
           set -euo pipefail
@@ -225,11 +237,18 @@ jobs:
           fi
           printf 'Release notes:\n%s\n' "$notes"
 
+          pre=()
+          if [ "$PRERELEASE" = "true" ]; then
+            pre=(--prerelease --latest=false)
+            notes=$'**Prerelease:** the game does not offer it as an update; install it by hand.\n\n'"$notes"
+          fi
+
           gh release create "$TAG" \
             --target "$GITHUB_SHA" \
             --title "$VERSION" \
             --notes "$notes" \
+            "${pre[@]}" \
             "dist/${MOD_ID}-${VERSION}.zip" \
             "dist/sha256sums.txt"
 
-          echo "Published release $TAG"
+          echo "Published release $TAG${pre:+ (prerelease)}"
