@@ -1,4 +1,4 @@
--- The "Modern Moves" option (off by default): the original 386 Pokemon also learn the newer
+-- The "Modern Moves" option (on by default): the original 386 Pokemon also learn the newer
 -- moves they learn in the modern games (data/species/modern.lua, tools/build_modern_learnsets.py).
 --
 -- The cart's own learnsets stay as they are; while the option is on, each species' level-up list

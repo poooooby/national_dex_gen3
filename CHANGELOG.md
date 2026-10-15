@@ -3,6 +3,14 @@
 All notable changes to this mod are documented here, in
 [keep a changelog](https://keepachangelog.com/en/1.1.0/) format.
 
+## [1.0.1] - 2026-10-15 (prerelease)
+
+### Changed
+
+- **Modern Moves is on by default** (`options.lua`): a player who never set it gets the newer
+  moves on the original 386; turning it off in the mod menu still puts the cart's learnsets back.
+  `modern_learnsets_test.lua` checks the default.
+
 ## [1.0.0] - 2026-10-15 (prerelease)
 
 ### Added
@@ -18,7 +26,7 @@ All notable changes to this mod are documented here, in
   Store 2F and Lilycove's two TM counters; item texts re-wrapped to the Bag box. Save editor:
   listed like the other items, same wraps and TM Case size. Tests: `tms_test.lua`,
   `editor_stock_test.lua`; in-game: taught from the TM Case / Bag on FireRed, Emerald, Sapphire.
-- **Modern Moves option** (off by default): the original 386 also learn the newer moves they
+- **Modern Moves option** (off by default; on from 1.0.1): the original 386 also learn the newer moves they
   learn today (`data/species/modern.lua` from `tools/build_modern_learnsets.py`: the real newer
   moves of the newest game listing the species, 1307 level-up rows on 374 species, and newer
   egg moves). `src/modern_learnsets.lua` swaps each cart list for a merged copy while the option

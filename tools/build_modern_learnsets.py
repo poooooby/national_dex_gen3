@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """The newer moves the original 386 Pokemon learn in the modern games (the "Modern Moves"
-option, off by default).
+option, on by default).
 
 For each of National Dex #1-386: the level-up moves of the newest main-series game that lists
 the species (the same choice as tools/build_species.py) that are newer than Gen 3 and real moves

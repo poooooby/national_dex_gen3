@@ -1,8 +1,8 @@
 -- Standalone: luajit mods/national_dex_gen3/tests/modern_learnsets_test.lua [game] (from the
 -- gen1recomp root; needs that cart imported, FireRed by default).
 --
--- The Modern Moves option (src/modern_learnsets.lua, data/species/modern.lua): off by default,
--- the original 386 keep the cart's learnsets; on, they also learn their newer moves at the modern
+-- The Modern Moves option (src/modern_learnsets.lua, data/species/modern.lua): on by default;
+-- off, the original 386 keep the cart's learnsets; on, they also learn their newer moves at the modern
 -- level (and the egg species their newer egg moves); off again puts the cart's own lists back.
 -- The option follows the mod menu (mod.options_changed).
 package.path = "./?.lua;./?/init.lua;" .. package.path
@@ -24,7 +24,8 @@ do
 end
 local run = T.sdk.loadMods({ "mods/national_dex_gen3" }, { data = data, generation = 3 })
 T.eq(#run.errors, 0, "loads clean (" .. tostring(run.errors[1]) .. ")")
-run.loader.modOptions.national_dex_gen3 = { modern_moves = false }
+-- never set by the player: options.lua's default (on)
+run.loader.modOptions.national_dex_gen3 = {}
 run.loader.events:emit("game.ready", {})
 
 local modern = dofile("mods/national_dex_gen3/data/species/modern.lua")
@@ -44,9 +45,11 @@ local function setOption(on)
   run.loader.events:emit("mod.options_changed", { mod = "national_dex_gen3", key = "modern_moves", value = on })
 end
 
+T.eq(knowsAt(clefairy, MOONBLAST), 44, "on by default: Clefairy learns Moonblast at 44")
+setOption(false)
 local cartList = P._learnsets[clefairy]
 local cartCount = #P.learnset(clefairy)
-T.eq(knowsAt(clefairy, MOONBLAST), nil, "off by default: Clefairy keeps the cart's learnset")
+T.eq(knowsAt(clefairy, MOONBLAST), nil, "off: Clefairy keeps the cart's learnset")
 
 setOption(true)
 T.eq(knowsAt(clefairy, MOONBLAST), 44, "on: Clefairy learns Moonblast at 44, as today")
