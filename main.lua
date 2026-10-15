@@ -87,6 +87,8 @@ return function(mod)
   local MoveAnims = loadSibling(mod, "src/anims.lua")
   -- the Modern Moves option: the original 386 also learn their newer moves
   local ModernLearnsets = loadSibling(mod, "src/modern_learnsets.lua")
+  -- optional: without it the newer moves have no TMs
+  local Tms = loadSibling(mod, "src/tms.lua")
   -- optional: without it every newer ability stays the closest Gen 3 one
   local RealAbilities = loadSibling(mod, "src/abilities.lua")
   -- optional: without it the moves with new mechanics are plain hits or do nothing
@@ -120,6 +122,10 @@ return function(mod)
   -- moves newer than Gen 3 that run on a Gen 3 effect (src/moves.lua), before the species,
   -- whose learnsets name them
   local registeredMoves = NewMoves and NewMoves.register(mod, read("data/moves.lua") or {}) or {}
+  -- TMs for the newer moves (src/tms.lua): items in the TM Case, after the moves they teach
+  local moveRowById, moveNumById = {}, {}
+  for _, r in ipairs(registeredMoves) do moveRowById[r.id], moveNumById[r.id] = r, r.index end
+  local registeredTms = (Tms and NewMoves) and Tms.register(mod, read("data/tms.lua") or {}, moveRowById, require) or {}
 
   local crossgen = Species.loadCrossGeneration(read)
   local forms = Species.loadForms(read)
@@ -156,6 +162,14 @@ return function(mod)
     -- the Move Reminder past a learnset's 20th row (this mod's species have longer ones too)
     pcall(ModernLearnsets.installRelearner, require)
   end
+  local function installTms()
+    if not (Tms and #registeredTms > 0) then return end
+    local formSlots = {}
+    for _, f in ipairs(registeredForms) do formSlots[f.id] = f.slot end
+    local okT, errT = pcall(Tms.install, { list = registeredTms, moves = moveNumById, formSlots = formSlots,
+      require = require, log = mod.log })
+    if not okT then mod.log:warn("new TMs are off: %s", tostring(errT)) end
+  end
   mod.events:on("mod.options_changed", function(ev)
     if type(ev) == "table" and ev.mod == mod.id and ev.key == "modern_moves" and applyModern then
       pcall(applyModern)
@@ -171,6 +185,8 @@ return function(mod)
       if NewMoves then pcall(NewMoves.install, { moves = registeredMoves, require = require, log = mod.log, family = "frlg" }) end
       -- the Modern Moves option, as the player set it
       installModern()
+      -- the new TMs: their moves, who learns them, the TM Case's size
+      installTms()
       -- the real abilities' names, texts and ability pairs (src/abilities.lua)
       if RealAbilities then
         local formSlots = {}
@@ -180,6 +196,7 @@ return function(mod)
       end
       local n = Editor.addToCatalog(ev and ev.data, registered, registeredForms, mod.content.pokemon)
       local items = Editor.addItems(ev and ev.data, registeredItems, require)
+        + Editor.addItems(ev and ev.data, registeredTms, require)
       local moves = Editor.addMoves(ev and ev.data, registeredMoves)
       -- the Fairy type (src/types.lua): species types, the chart and the type's name; the editor
       -- writes type names as text, so no badge art
@@ -242,6 +259,7 @@ return function(mod)
       if not okAn then mod.log:warn("new move animations are off: %s", tostring(anErr)) end
     end
     installModern()
+    installTms()
     -- the new moves' mechanics Gen 3 lacks (src/move_effects.lua)
     if MoveEffects then
       local okFx, fxErr = pcall(MoveEffects.install, { moves = registeredMoves, require = require, log = mod.log })

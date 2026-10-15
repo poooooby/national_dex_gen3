@@ -56,7 +56,7 @@ function Shops.install(rules, itemIndex, game, log)
             end
           end
           if log and added > 0 then
-            log:info("%s now also sells %d evolution item(s)", rule.store, added)
+            log:info("%s now also sells %d item(s)", rule.store, added)
           end
         end
       end

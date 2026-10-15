@@ -17,6 +17,8 @@ local Shops = dofile(root .. "/src/shops.lua")
 
 local index = {}
 for _, r in ipairs(itemRows) do index[r.slug] = r.index end
+-- and the new TMs (data/tms.lua), sold by slug "tm51" ...
+for _, t in ipairs(dofile(root .. "/data/tms.lua")) do index[t.id:lower()] = t.index end
 
 -- the distinct stores of a cart: ptr -> items (the same list is stored under
 -- three keys)

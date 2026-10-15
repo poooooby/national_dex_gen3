@@ -38,6 +38,12 @@ Paldea Pokémon can live in Kanto and Hoenn.
 - 🎬 **Animations to match:** 134 newer moves play their modern-style animation (Moonblast calls
   down the moon, Psychic Fangs bites through a psychic haze), built from Gen 3's own graphics;
   the rest borrow the closest Gen 3 animation (Bulldoze shakes the ground like Earthquake).
+- 💿 **114 new TMs (TM51–TM164):** every newer move that's a TM in today's games, from Dazzling
+  Gleam and Earth Power to Scald, Stealth Rock and U-turn. Buy them at the Celadon Dept. Store
+  (FireRed / LeafGreen) or the Lilycove Dept. Store (Ruby / Sapphire / Emerald); the TM Case
+  holds them all, and a Pokémon can learn one if it learns that move by TM in the modern games.
+  They follow Scarlet / Violet's TM order after Gen 3's own 50 (Fire Fang is TM51), with the
+  Sword / Shield-only ones at the end.
 - 🌋 **The battlefield itself:** Stealth Rock, Toxic Spikes and Sticky Web wait for whatever
   switches in; Tailwind and Trick Room change who moves first; Electric, Grassy, Misty and
   Psychic Terrain cover the field for five turns; U-turn, Volt Switch, Flip Turn and Parting
@@ -100,8 +106,11 @@ This mod adds the Pokémon. Two companions bring them to life:
 - **Some evolutions are adapted.** Conditions Gen 3 can't check (a known move, rain, a held item
   at a time of day ...) get stand-ins, e.g. Piloswine → Mamoswine while knowing Rock Tomb, and
   Galarian Farfetch'd → Sirfetch'd after 3 critical hits in one battle.
-- **TM and tutor moves** are Gen 3's own. Newer moves are learned by level-up and as egg moves,
-  and the Move Reminder offers every level-up move up to a Pokémon's level, however long its list.
+- **Newer moves** are learned by level-up, as egg moves and from the new TMs; move tutors are
+  Gen 3's own. The Move Reminder offers every level-up move up to a Pokémon's level, however
+  long its list. The new TMs don't pass on to eggs from the father, as Gen 3's TMs do.
+- **Ruby and Sapphire's Bag** squeezes the three-digit numbers of TM100 and up against the move
+  name; FireRed, LeafGreen and Emerald show them in full.
 - **The original 386 Pokémon,** the story, trainers and maps are unchanged, apart from the
   originals' Fairy typing, their new evolutions and, with **Modern Moves** on, their newer moves.
 - **A few abilities work in part.** Leaf Guard, Sweet Veil and Flower Veil stop status moves but
@@ -122,6 +131,7 @@ This mod adds the Pokémon. Two companions bring them to life:
 
 - [Added items](docs/items.md): every item's price, where to buy it, and which Pokémon evolve
   with it.
+- [Added TMs](docs/tms.md): every new TM's move, price, store and how many Pokémon learn it.
 - [Added Pokémon](docs/pokemon.md): all 639 by generation, with typing, ability and level-up
   moves.
 - [Alternate forms](docs/pokemon/forms.md): the 128 forms.

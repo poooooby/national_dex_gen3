@@ -202,6 +202,18 @@ do
   T.check(charm and (charm.type == "FAIRY" or charm.type == 18), "and so is the cart's CHARM (" .. tostring(charm and charm.type) .. ")")
 end
 
+-- the new TMs: listed like the other items, in the TM Case, which holds them all
+do
+  local ItemsData = require("src.core.game3.items_data")
+  local tm = Data.items.TM51
+  T.check(tm ~= nil and tm.itemId == 1100, "TM51 is in the editor's item list")
+  T.eq(tm and tm.pocket, "TM_CASE", "as a TM Case item")
+  T.eq(ItemsData.isTm(1100) and ItemsData.tmNumber(1100), 51, "the editor knows it as TM51")
+  local tms = dofile("mods/national_dex_gen3/data/tms.lua")
+  T.eq(P.moveFromTmItem(1100), require("src.core.game3.battle.moves").numForName(tms[1].move), "teaching " .. tms[1].move)
+  T.check((ItemsData.CAPACITY.TM_CASE or 0) >= 58 + #tms, "and its TM Case holds every TM")
+end
+
 -- Modern Moves: on in the player's options, so the editor's learnsets have the newer moves
 do
   local MOONBLAST = Data.moves.MOONBLAST and Data.moves.MOONBLAST.moveId

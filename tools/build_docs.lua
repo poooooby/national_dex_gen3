@@ -1,6 +1,7 @@
 -- Builds the player reference in docs/ from the mod's own data, so it cannot
 -- drift from what the game does:
 --   docs/items.md            the added items: price, where to buy, what evolves with them
+--   docs/tms.md              the added TMs: move, price, where to buy, how many Pokemon learn it
 --   docs/moves.md            the added moves: type, power, accuracy, PP, what they do
 --   docs/abilities.md        the added abilities and what they do
 --   docs/pokemon.md          index of the added Pokemon
@@ -233,7 +234,7 @@ for _, g in ipairs({ "frlg", "rse" }) do
           if it.slug == slug then names[#names + 1] = string.format("%s (₽%d)", it.name, it.price) end
         end
       end
-      L[#L + 1] = "- **" .. rule.store .. "**: " .. join(names, ", ")
+      if #names > 0 then L[#L + 1] = "- **" .. rule.store .. "**: " .. join(names, ", ") end
     end
   end
   L[#L + 1] = ""
@@ -479,5 +480,32 @@ for _, d in ipairs(sortedAbilities) do
 end
 out("docs/abilities.md", A)
 
-print(string.format("docs: %d items, %d moves, %d abilities, %d species, %d forms", #items, #newMoves,
+-- ---- tms
+
+local tms = load("data/tms.lua")
+local moveById = {}
+for _, m in ipairs(newMoves) do moveById[m.id] = m end
+local TM = {
+  "# Added TMs",
+  "",
+  "TMs for the newer moves, numbered after Gen 3's 50: every move that is a TM in Scarlet / Violet",
+  "or Sword / Shield and works in battle here. They go in the TM Case (made bigger to hold them",
+  "all), are used up when taught like Gen 3's TMs, and a Pokémon can learn one if it learns that",
+  "move by TM in any of the main games.",
+  "",
+  "*Generated from `data/tms.lua` and `data/shops.lua` by `tools/build_docs.lua`.*",
+  "",
+  "| TM | Move | Type | Price | FireRed / LeafGreen | Ruby / Sapphire / Emerald | Pokémon |",
+  "|---|---|---|---|---|---|---|",
+}
+for _, t in ipairs(tms) do
+  local m = moveById[t.move] or {}
+  local s = sold[t.id:lower()] or { frlg = {}, rse = {} }
+  TM[#TM + 1] = string.format("| TM%d | %s | %s | ₽%d | %s | %s | %d |", t.number, m.full or title(t.move:gsub("_", " ")),
+    title(m.type or "?"), t.price, #s.frlg > 0 and join(s.frlg, "; ") or "not sold",
+    #s.rse > 0 and join(s.rse, "; ") or "not sold", #t.dex + #t.forms)
+end
+out("docs/tms.md", TM)
+
+print(string.format("docs: %d items, %d TMs, %d moves, %d abilities, %d species, %d forms", #items, #tms, #newMoves,
   #(realAbilities.defs or {}), #species, #forms))

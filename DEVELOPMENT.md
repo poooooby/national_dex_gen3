@@ -52,6 +52,23 @@ When the engine reloads its species tables, the mod also repairs evolution targe
 registry write can point them at slot 0) and name / National Dex number lookup, and adds tutor
 compatibility to the engine's tutor data.
 
+## TMs
+
+`data/tms.lua` (`python tools/build_tms.py`, after `tools/build_moves.py`): `ORDER` is
+append-only (item index 1100 + position, TM number 51 + position; both are in saves), each with
+its price, item texts wrapped for the FRLG (19x4) and RSE (19x3) boxes (`TEXT` for hand-written
+ones) and who learns it (National numbers and form ids with the PokeAPI "machine" method in any
+version group). `src/tms.lua`: `Tms.register` (load: raises `Schemas.REGISTRIES.items.gen3Fields.index`
+to 2047, registers `pocket = "TM_CASE"` items) and `Tms.install` (game.ready and the editor's
+mods.loaded: wraps `Pokemon.moveFromTmItem`, `Pokemon.canLearnTmItem`, `ItemsData.isTm`,
+`ItemsData.tmNumber`; adds the TM count to every game profile's `bag.capacity.TM_CASE`, which
+`ItemsData.CAPACITY` is refilled from; Bag icons via both `bag_chrome.drawItemIcon`; the FRLG
+`tm_case_chrome.drawDisc` clamp and Fairy tint). The engine's species TM row is 64 bits with 58
+used and the registry drops unknown TM moves, so compatibility lives in the mod. Not covered:
+breeding's father TM moves, link checks and the Apprentice loop over the cart's 58 machines, and
+the R/S Bag draws three-digit numbers into the name (fixed positions in a local). Tests:
+`tests/tms_test.lua [game]`, `tests/tm_case_test.lua` (a 900+ TM Case item through a save).
+
 ## Modern Moves (option)
 
 `data/species/modern.lua` (`python tools/build_modern_learnsets.py`, after `tools/build_moves.py`):

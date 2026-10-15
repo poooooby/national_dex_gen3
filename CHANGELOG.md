@@ -7,6 +7,17 @@ All notable changes to this mod are documented here, in
 
 ### Added
 
+- **114 new TMs (TM51-TM164)** for every newer move that is a TM in Scarlet/Violet or
+  Sword/Shield and real here, in Scarlet/Violet's TM order (then the Sword/Shield-only TMs and
+  TRs) (`data/tms.lua` from `tools/build_tms.py`; items 1100-1213,
+  append-only, item index cap raised to 2047 like the species cap). Compatibility: every species
+  and form that learns the move by TM in any main game (16408 pairs). `src/tms.lua` wraps
+  `Pokemon.moveFromTmItem` / `canLearnTmItem` and `ItemsData.isTm` / `tmNumber`, grows the TM
+  Case by 114 on every game profile, draws a cart TM icon of the same type in the Bag, and in the
+  FRLG TM Case keeps the disc on the rack (pink Normal disc for Fairy). Sold at Celadon Dept.
+  Store 2F and Lilycove's two TM counters; item texts re-wrapped to the Bag box. Save editor:
+  listed like the other items, same wraps and TM Case size. Tests: `tms_test.lua`,
+  `editor_stock_test.lua`; in-game: taught from the TM Case / Bag on FireRed, Emerald, Sapphire.
 - **Modern Moves option** (off by default): the original 386 also learn the newer moves they
   learn today (`data/species/modern.lua` from `tools/build_modern_learnsets.py`: the real newer
   moves of the newest game listing the species, 1307 level-up rows on 374 species, and newer

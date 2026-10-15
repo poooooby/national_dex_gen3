@@ -61,6 +61,9 @@ tests/move_field_test.lua
 tests/anims_test.lua
 tests/modern_learnsets_test.lua
 tests/tm_case_test.lua
+tests/tms_test.lua
+tools/build_tms.py
+docs/tms.md
 tests/fixtures/tm_item/main.lua
 tests/fixtures/tm_item/manifest.json
 tools/build_modern_learnsets.py
