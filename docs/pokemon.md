@@ -30,3 +30,7 @@ has in this game, and its level-up learnset (`level move`).
 
 - [Forms](pokemon/forms.md): Alolan, Galarian, Hisuian and Paldean forms, Wormadam's cloaks, the Rotom appliances,
   the Therian and Origin forms and more, each a Pokémon of its own.
+
+## By type
+
+- [Fairy](fairy.md): every Fairy-type Pokémon, the originals that became part Fairy included.

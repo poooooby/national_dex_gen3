@@ -447,28 +447,28 @@ form also counts the base Pokémon in your Pokédex.
 - Ability: Sticky Hold / Storm Drain
 - Learnset: 1 Water Gun · 1 Recover · 1 Harden · 1 Mud-Slap · 15 Water Pulse · 20 Ancientpower · 25 Body Slam · 33 Muddy Water · 39 Earth Power · 46 Rain Dance · 53 Memento
 
-### FlabÉBÉ (Yellow) — #669
+### Flabébé (Yellow) — #669
 
 - Type: Fairy
 - Ability: Flower Veil
 - Learnset: 1 Vine Whip · 1 Tackle · 6 Fairy Wind · 10 Safeguard · 15 Razor Leaf · 20 Wish · 22 Magical Leaf · 24 Grassy Terrain · 28 Petal Blizzard · 33 Synthesis · 37 Misty Terrain · 41 Moonblast · 45 Petal Dance · 48 Solarbeam
 - Evolves: into Floette (Yellow) (level 19)
 
-### FlabÉBÉ (Orange) — #669
+### Flabébé (Orange) — #669
 
 - Type: Fairy
 - Ability: Flower Veil
 - Learnset: 1 Vine Whip · 1 Tackle · 6 Fairy Wind · 10 Safeguard · 15 Razor Leaf · 20 Wish · 22 Magical Leaf · 24 Grassy Terrain · 28 Petal Blizzard · 33 Synthesis · 37 Misty Terrain · 41 Moonblast · 45 Petal Dance · 48 Solarbeam
 - Evolves: into Floette (Orange) (level 19)
 
-### FlabÉBÉ (Blue) — #669
+### Flabébé (Blue) — #669
 
 - Type: Fairy
 - Ability: Flower Veil
 - Learnset: 1 Vine Whip · 1 Tackle · 6 Fairy Wind · 10 Safeguard · 15 Razor Leaf · 20 Wish · 22 Magical Leaf · 24 Grassy Terrain · 28 Petal Blizzard · 33 Synthesis · 37 Misty Terrain · 41 Moonblast · 45 Petal Dance · 48 Solarbeam
 - Evolves: into Floette (Blue) (level 19)
 
-### FlabÉBÉ (White) — #669
+### Flabébé (White) — #669
 
 - Type: Fairy
 - Ability: Flower Veil

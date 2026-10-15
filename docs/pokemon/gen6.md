@@ -116,7 +116,7 @@
 - Ability: Rivalry / Pressure
 - Learnset: 1 Tackle · 1 Leer · 1 Ember · 1 Hyper Beam · 1 Work Up · 11 Headbutt · 15 Noble Roar · 20 Take Down · 23 Fire Fang · 28 Endeavor · 33 Echoed Voice · 38 Flamethrower · 42 Crunch · 48 Hyper Voice · 51 Incinerate · 57 Overheat
 
-### #669 FlabÉBÉ
+### #669 Flabébé
 
 - Type: Fairy
 - Ability: Flower Veil
