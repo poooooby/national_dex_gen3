@@ -60,6 +60,9 @@ tests/move_rules_test.lua
 tests/move_field_test.lua
 tests/anims_test.lua
 tests/modern_learnsets_test.lua
+tests/tm_case_test.lua
+tests/fixtures/tm_item/main.lua
+tests/fixtures/tm_item/manifest.json
 tools/build_modern_learnsets.py
 tools/build_anims.py
 tools/anim_known.lua
