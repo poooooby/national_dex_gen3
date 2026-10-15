@@ -28,19 +28,25 @@ Paldea Pokémon can live in Kanto and Hoenn.
 
 ### Fits the Game
 
-- ⚔️ **325 newer moves, for real:** Moonblast, Dazzling Gleam, Play Rough, Shadow Claw, Earth
+- ⚔️ **419 newer moves, for real:** Moonblast, Dazzling Gleam, Play Rough, Shadow Claw, Earth
   Power, Flash Cannon, Brave Bird, Aqua Jet and more, with their own power, accuracy, PP, priority,
   type, battle text and description, including new mechanics: Nasty Plot, Quiver Dance, Close
   Combat, Flare Blitz, Draining Kiss, Shore Up, and moves that read the battle — Hex, Venoshock,
   Brine, Acrobatics, Payback, Stored Power, Heavy Slam, Gyro Ball, Foul Play, Body Press,
   Psyshock, Sucker Punch, First Impression, Final Gambit, Wicked Blow, Fell Stinger, Mind Blown
   and more.
+- 🎬 **Animations to match:** 134 newer moves play their modern-style animation (Moonblast calls
+  down the moon, Psychic Fangs bites through a psychic haze), built from Gen 3's own graphics;
+  the rest borrow the closest Gen 3 animation (Bulldoze shakes the ground like Earthquake).
 - 🌋 **The battlefield itself:** Stealth Rock, Toxic Spikes and Sticky Web wait for whatever
   switches in; Tailwind and Trick Room change who moves first; Electric, Grassy, Misty and
   Psychic Terrain cover the field for five turns; U-turn, Volt Switch, Flip Turn and Parting
-  Shot hit and bring in a teammate; Dragon Tail and Circle Throw throw the foe out. The few
-  remaining moves (King's Shield, Gravity, Healing Wish ...) are swapped, at the same level, for
-  the closest Gen 3 move of the same type.
+  Shot hit and bring in a teammate; Dragon Tail and Circle Throw throw the foe out; King's
+  Shield, Spiky Shield and Baneful Bunker punish whoever touches them; Gravity, Magnet Rise,
+  Wonder Room, Magic Room, Aurora Veil, Healing Wish, Soak, Worry Seed, Power Split, Heart Swap,
+  Fling and Natural Gift all do what they do today. Seven moves that need a partner to act out
+  of turn (After You, Quash, Instruct, Me First, Ally Switch, Bestow, Teatime) are swapped, at
+  the same level, for the closest Gen 3 move of the same type.
 - 🧬 **52 newer abilities, for real:** Technician, Adaptability, Multiscale, Snow Warning,
   Regenerator, Prankster, Moxie, Sap Sipper, Iron Fist, Strong Jaw, Frisk and more work in
   battle, with their own name and description. Pokémon you already have get them too. Every
@@ -103,6 +109,8 @@ This mod adds the Pokémon. Two companions bring them to life:
   moves are special, Shadow Claw is physical; Foul Play, a Dark move, turns the foe's Attack
   against it as a special hit), and contest data for the newest moves is basic.
   They are learned by level-up and as egg moves; TMs and tutors are the original ones.
+- **The save editor** that comes with gen1recomp knows everything this mod adds: every Pokémon
+  and form, their items and moves, Fairy typing and the newer abilities.
 - **Removing this mod** from a save whose Pokémon know its moves or are its species breaks those
   Pokémon; keep the mod installed for that save.
 - **Link play** expects both players to have the same type chart; trade and battle with
@@ -121,7 +129,9 @@ This mod adds the Pokémon. Two companions bring them to life:
 ## 🪪 Credits
 
 Species data from [PokéAPI](https://pokeapi.co/). Cries and item sprites are fan-made: see
-[CREDITS.md](CREDITS.md).
+[CREDITS.md](CREDITS.md). Big thanks to the RHH team for the
+battle animations of the newer moves, borrowed from their
+[pokeemerald-expansion](https://github.com/rh-hideout/pokeemerald-expansion/) 1.17.2.
 
 The mod's code, tools, documentation and Wooble's item sprites are MIT licensed: see
 [LICENSE](LICENSE), which also lists what it does not cover (the other item sprites, the

@@ -160,5 +160,36 @@ do
   T.check(okSet, "the editor can teach it")
 end
 
+-- abilities: the editor's ability picker reads Pokemon.abilities / abilityName, which carry the
+-- real newer abilities (src/abilities.lua), and a Pokemon made there has one
+do
+  local slot = P.speciesFromName("AMBIPOM")
+  local pair = P.abilities(slot)
+  T.eq(P.abilityName(pair[1]), "TECHNICIAN", "AMBIPOM's first ability in the editor is TECHNICIAN")
+  T.eq(P.abilityName(pair[2]), "PICKUP", "and its second the cart's PICKUP")
+  local mon = MonOps.create(Data, "AMBIPOM", 30, 3)
+  T.check(mon.ability == pair[1] or mon.ability == pair[2], "an AMBIPOM made in the editor has one of them")
+  local Legality = require("Legality")
+  local okC, report = pcall(Legality.mon, { data = Data, save = { version = "firered", generation = 3 } }, mon)
+  T.check(okC and type(report) == "table", "the editor's legality check runs (" .. tostring(not okC and report or "") .. ")")
+  local bad
+  for _, issue in ipairs(okC and type(report) == "table" and report.checks or {}) do
+    if issue.field == "ability" then bad = issue.message end
+  end
+  T.eq(bad, nil, "and accepts its ability")
+end
+
+-- the Fairy type: the editor shows species and move types from the live tables and its own move
+-- rows; SYLVEON is Fairy, Moonblast and the cart's Charm are Fairy moves
+do
+  local Types = require("src.core.game3.battle.types")
+  T.eq(Types.ID.FAIRY, 18, "the editor knows the Fairy type")
+  T.eq(P.types(P.speciesFromName("SYLVEON"))[1], 18, "SYLVEON is Fairy in the editor")
+  T.eq(P.types(P.speciesFromName("CLEFAIRY"))[1], 18, "and so is the cart's CLEFAIRY")
+  T.eq(Data.moves.MOONBLAST and Data.moves.MOONBLAST.type, "FAIRY", "MOONBLAST is listed as a Fairy move")
+  local charm = Data.moves.CHARM
+  T.check(charm and (charm.type == "FAIRY" or charm.type == 18), "and so is the cart's CHARM (" .. tostring(charm and charm.type) .. ")")
+end
+
 run.release()
 T.finish("national_dex_gen3 stock save editor")

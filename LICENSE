@@ -39,6 +39,9 @@ used here with credit (see CREDITS.md). They are not licensed to you by this
 file:
 
   - The cries in assets/cries/ (fan-made, by the authors in CREDITS.md).
+  - The battle animations in data/anims.lua, borrowed from RHH's
+    pokeemerald-expansion (Rom Hacking Hideout and its contributors; see
+    CREDITS.md).
   - Every other item sprite in assets/items/icons.png (fan-made, by the
     authors in CREDITS.md).
   - The Pokedex summaries in data/species/ (the games' own text, taken from

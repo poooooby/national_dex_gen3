@@ -36,6 +36,14 @@ ships are fan-made, and the credits below belong to their authors.
 - **Unremarkable Teacup:** Wooble
 - **Masterpiece Teacup:** Wooble
 
+## Battle animations
+
+- A big thank-you to **RHH (Rom Hacking Hideout)** and everyone who worked on
+  **pokeemerald-expansion** (<https://github.com/rh-hideout/pokeemerald-expansion/>,
+  contributors: <https://github.com/rh-hideout/pokeemerald-expansion/blob/master/CREDITS.md>)
+  for their battle animations of the newer moves. The ones this mod borrows are based off
+  pokeemerald-expansion 1.17.2, played with the graphics the Gen 3 games already have.
+
 ## Shop prices
 
 - The evolution items' shop prices are derived from the item price tables on

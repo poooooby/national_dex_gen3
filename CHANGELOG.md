@@ -7,6 +7,44 @@ All notable changes to this mod are documented here, in
 
 ### Added
 
+- **Move animations from pokeemerald-expansion.** 134 newer moves play their modern-style
+  animation, translated from RHH's pokeemerald-expansion 1.17.2 (credited in README, CREDITS.md,
+  LICENSE) by `tools/build_anims.py` into `data/anims.lua`: only scripts built from the templates,
+  graphics, tasks and opcodes the engine and the carts already have (no graphics copied); sounds
+  and tags resolved per cart, calls inlined (the VM keeps one return address). `src/anims.lua`
+  wraps `Anim.scriptForMove`; a missing piece falls back to the move's `look`. 108 others borrow
+  a closer cart animation (`looks`: the cart move whose expansion animation is most alike, plus a
+  reviewed `REJECT`/`HAND` list; Trick Room no longer plays Rest). Test: `anims_test.lua`, all 134
+  on FireRed, LeafGreen, Ruby, Sapphire and Emerald; in-game Moonblast, Psychic Fangs, Bulldoze
+  and Trick Room on Emerald, FireRed and Sapphire.
+- **Save editor: the Fairy type.** On `mods.loaded` the editor installs `src/types.lua` as a game
+  does on `game.ready` (species typings, the chart, the type's name), and `Editor.retypeMoves`
+  retypes the editor's own rows for Charm, Sweet Kiss and Moonlight, built before mods load. The
+  real abilities and the 419 moves were already there. Test: `editor_stock_test.lua` (Ambipom's
+  Technician in the ability picker and the legality check, Sylveon/Clefairy Fairy, Moonblast and
+  Charm Fairy moves).
+- **The last 94 newer moves as real moves** (419 in all, 4482 learnset/egg uses; 7 left: After
+  You, Quash, Instruct, Me First, Ally Switch, Bestow, Teatime, which need a battler to act out
+  of turn or swap places). `src/move_field.lua`: the protection variants (Spiky Shield, King's
+  Shield, Baneful Bunker, Obstruct, Silk Trap, Burning Bulwark: `expProtected` + a streak stamp of
+  this mod's, the punishment on `M.missReason == "protected"`), Feint, Hyperspace Hole, Phantom
+  Force / Shadow Force (a `"VANISHED"` semi-invulnerable kind), Geomancy, Wide / Quick Guard and
+  Crafty Shield, Gravity, Wonder Room, Magic Room (`HeldItems.itemOf`), Fairy Lock (`canSwitch` /
+  `canRun`), Aurora Veil, Lucky Chant (`battle.crit`), Court Change, Mortal Spin, Ceaseless Edge,
+  Stone Axe, Healing Wish / Lunar Dance (a side flag read on entry), Shed Tail (the cart's
+  Substitute by id, then the switch), Chilly Reception, Revival Blessing, Purify, Jungle Healing /
+  Lunar Blessing, Pollen Puff (heals a partner), Jaw Lock, Thousand Waves, Spirit Shackle, Anchor
+  Shot, Octolock, Salt Cure, Heal Block (the adapter's `heal`), Throat Chop (`soundproofBlocks`,
+  `selectionError`, `moveLimitations`), Magnet Rise, Smack Down, Thousand Arrows, Spectral Thief.
+  `src/move_rules.lua`: Worry Seed, Entrainment, Simple Beam, Gastro Acid, Core Enforcer, Doodle,
+  Soak, Magic Powder, Reflect Type, Trick-or-Treat, Forest's Curse (a third type honoured by the
+  damage wrap), Tar Shot, Electrify, Ion Deluge, Plasma Fists, Power / Guard Split, Power / Guard
+  / Heart / Speed Swap, Power Trick (stat overrides on the battler, never the saved mon),
+  Topsy-Turvy, Strength Sap, Venom Drench, Captivate, Acupressure, Clangorous Soul, No Retreat,
+  Fillet Away, Gear Up, Magnetic Flux, Rototiller, Flower Shield, Decorate, Aromatic Mist, Fling,
+  Natural Gift, Bug Bite, Pluck, Incinerate, Belch, Stuff Cheeks, Powder, Shell Trap, Eerie Spell,
+  Psycho Shift, Miracle Eye, Beak Blast. Doubles-only moves fail in singles and work on the
+  partner in doubles. Tests: `tests/move_field_test.lua` (107), `tests/move_rules_test.lua` (125).
 - **Field moves and the rest of the attacks: 68 more real moves** (325 in all, 3659 learnset/egg
   uses; 101 still substituted). `src/move_field.lua` keeps battle state Gen 3 never had, on the
   engine's own side/field tables (`side.__ndx`, `st.__ndxField`), through exported seams only:
@@ -41,6 +79,18 @@ All notable changes to this mod are documented here, in
 
 ### Fixed
 
+- **Poipole evolves again.** Its Naganadel step asked for Outrage, a stand-in from when Dragon
+  Pulse was swapped out; with Dragon Pulse real, nothing taught Poipole Outrage. The step now asks
+  for Dragon Pulse (363), as in the real games (`tools/form_list.py`). `known_move_test.lua` checks
+  each of this mod's species learns the move its evolution needs.
+- Ten move texts were cut off at an abbreviation ("The user boosts the Sp.": Aromatic Mist, Work
+  Up, Shell Smash, Decorate, Geomancy, Gear Up, Fillet Away, Double Hit) or said only "The user
+  faints." (Healing Wish, Lunar Dance); hand-written texts now, and `build_moves.py` no longer
+  splits a sentence after "Sp." or "etc.".
+- **Quark Drive works** on Electric Terrain (the best stat x1.3, SPEED x1.5), as Protosynthesis does
+  in sun (`src/abilities.lua` `boosterOn`). Test: `move_field_test.lua`.
+- Player docs: the Pokémon, move and ability pages describe real abilities, real moves and the
+  Fairy type (`tools/build_docs.lua`).
 - Retaliate counts any faint on the user's side last turn (`battle.fainted`), not only one from
   a hit; Sacred Sword, Darkest Lariat and Chip Away ignore evasion as well as the defensive
   stages; Damp stops Mind Blown and Chloroblast.

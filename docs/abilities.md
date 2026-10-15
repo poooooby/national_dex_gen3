@@ -2,8 +2,8 @@
 
 Abilities from later generations that work in battle here. Every other newer ability is the
 closest Gen 3 ability (see each Pokémon's page). Healer, Telepathy and Honey Gather only matter
-with a partner or outside battle, and Quark Drive needs Electric Terrain or Booster Energy,
-which Gen 3 does not have, so those four have no effect in battle here.
+with a partner or outside battle, so they have no effect in a single battle here. Quark Drive
+works on Electric Terrain (Gen 3 has no Booster Energy).
 
 | Ability | What it does |
 |---|---|

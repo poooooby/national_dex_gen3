@@ -56,6 +56,9 @@ tests/abilities_test.lua
 tests/move_effects_test.lua
 tests/move_rules_test.lua
 tests/move_field_test.lua
+tests/anims_test.lua
+tools/build_anims.py
+tools/anim_known.lua
 
 .claude/skills/lua-developer/SKILL.md
 

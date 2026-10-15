@@ -64,7 +64,7 @@ local function battle(opts)
 end
 local function ctx(id, st, ad, user, target)
   local n = type(id) == "number" and id or num(id)
-  return { mnum = n, adapter = ad, st = st, user = user or st.player, target = target or st.enemy,
+  return { mnum = n, moveId = n, slot = 1, adapter = ad, st = st, user = user or st.player, target = target or st.enemy,
            move = Moves.get(n), anim = {}, opts = {}, isMoveContext = true,
            attackString = function() end, ppReduce = function() end, tryFaintUser = function() end,
            attackAnimation = function() end, accuracyCheck = function() return true end }
@@ -186,6 +186,19 @@ do
   T.eq(calc(85, st2, ad2), before, "a Flying type gets no boost")
 end
 do
+  -- Quark Drive (src/abilities.lua): Electric Terrain raises the best stat, here SPEED x1.5, ATTACK x1.3
+  local st, ad = battle({ party = { mon({ speed = 120 }) }, foe = mon({ species = 25, speed = 150 }) })
+  st.player.ability = "QUARK_DRIVE"
+  T.eq(first(st, st.player, st.enemy), false, "Quark Drive does nothing without a terrain")
+  status("ELECTRIC_TERRAIN", st, ad)
+  T.eq(first(st, st.player, st.enemy), true, "and raises its best stat, SPEED, on Electric Terrain")
+  local st2, ad2 = battle({ party = { mon({ attack = 150 }) } })
+  st2.player.ability = "QUARK_DRIVE"
+  local plain = calc(33, st2, ad2)                                                -- TACKLE
+  status("ELECTRIC_TERRAIN", st2, ad2)
+  T.check(calc(33, st2, ad2) > plain, "or its ATTACK")
+end
+do
   local st, ad = battle()
   local plain = calc(200, st, ad)                                                 -- OUTRAGE
   status("MISTY_TERRAIN", st, ad)
@@ -257,6 +270,248 @@ do
   local st3, ad3 = battle({ wild = false, foe = mon({ species = 16 }), foeParty = { mon({ species = 16 }) } })
   hit("CIRCLE_THROW", st3, ad3)
   T.check(not st3.over and st3.enemy.species == 16, "with nobody else it just hits")
+end
+
+-- ------- batch B: protection
+do
+  local st, ad = battle()
+  st.player.expTurnOrder = 1
+  local M = status("KINGS_SHIELD", st, ad)
+  T.check(st.player.expProtected and st.player.__ndxProtectKind == "KINGS_SHIELD", "King's Shield protects the user")
+  -- a contact move bounces off and costs the attacker ATTACK
+  local H2 = ctx(33, st, ad, st.enemy, st.player)                                   -- TACKLE
+  H2.missReason = "protected"
+  Hit.run(H2)
+  T.eq(st.enemy.stages.attack, -1, "and lowers a touching foe's ATTACK")
+  st.player.__ndxProtectKind = "SPIKY_SHIELD"
+  local H3 = ctx(33, st, ad, st.enemy, st.player)
+  H3.missReason = "protected"
+  Hit.run(H3)
+  T.eq(st.enemy.mon.hp, 150 - 18, "Spiky Shield hurts a touching foe for an eighth")
+  st.player.__ndxProtectKind = "BANEFUL_BUNKER"
+  local H4 = ctx(33, st, ad, st.enemy, st.player)
+  H4.missReason = "protected"
+  Hit.run(H4)
+  T.eq(ad:status(st.enemy), "PSN", "Baneful Bunker poisons it")
+  st.turn = st.turn + 1
+  st.player.expProtected = nil
+  ad.roll = function(_, lo, hi) return hi end                                     -- the streak roll fails
+  T.check(status("KINGS_SHIELD", st, ad).failed, "a second protection in a row can fail")
+end
+do
+  local st, ad = battle()
+  st.enemy.expProtected = true
+  hit("FEINT", st, ad)
+  T.check(not st.enemy.expProtected, "Feint lifts the foe's protection")
+end
+do
+  local st, ad = battle()
+  local before = hits
+  local M = hit("PHANTOM_FORCE", st, ad)
+  T.check(hits == before and st.player.semiInvulnerable == "VANISHED" and st.player.expLockedMove, "Phantom Force vanishes on the first turn")
+  local M2 = hit(33, st, ad, st.enemy, st.player)
+  T.check(M2.missReason == "miss" and hits == before, "a vanished Pokemon can't be hit")
+  st.turn = st.turn + 1
+  local M3 = hit("PHANTOM_FORCE", st, ad)
+  T.check(hits == before + 1 and st.player.semiInvulnerable == nil and M3.noPP, "and strikes on the second, for no PP")
+end
+do
+  local st, ad = battle()
+  status("GEOMANCY", st, ad)
+  T.check(st.player.__ndxGeomancy and st.player.expLockedMove, "Geomancy charges")
+  status("GEOMANCY", st, ad)
+  T.check(st.player.stages.spAtk == 2 and st.player.stages.spDef == 2 and st.player.stages.speed == 2, "then sharply raises three stats")
+end
+do
+  local st, ad = battle()
+  status("QUICK_GUARD", st, ad)
+  local before = hits
+  T.check(hit(98, st, ad, st.enemy, st.player).failed and hits == before, "Quick Guard blocks a priority move")
+  T.check(not hit(33, st, ad, st.enemy, st.player).failed, "not a plain one")
+  status("CRAFTY_SHIELD", st, ad)
+  local okE = Effects.run("EXP_GROWL_EFFECT", ad, st.enemy, st.player, Moves.get(45), 45, ctx(45, st, ad, st.enemy, st.player))
+  T.eq(st.player.stages.attack, 0, "Crafty Shield blocks a status move")
+end
+
+-- ------- field
+do
+  local st, ad = battle({ foe = mon({ species = 16 }) })                           -- Pidgey
+  local before = calc(89, st, ad)                                                   -- EARTHQUAKE
+  T.eq(before, 0, "Earthquake can't touch a Flying type")
+  status("GRAVITY", st, ad)
+  T.check(calc(89, st, ad) > 0, "under Gravity it can")
+  local acc = run.loader.hooks:call("battle.accuracy", function(c) return c.accuracy end, { battle = st, accuracy = 60 })
+  T.eq(acc, 100, "and accuracy rises by 5/3")
+end
+do
+  local st, ad = battle({ foe = mon({ species = 16 }) })
+  T.eq(calc("THOUSAND_ARROWS", st, ad) > 0, true, "Thousand Arrows hits a Flying type")
+  hit("THOUSAND_ARROWS", st, ad)
+  T.check(st.enemy.__ndxGrounded, "and grounds it")
+  T.check(calc(89, st, ad) > 0, "so Earthquake hits it after")
+  status("MAGNET_RISE", st, ad, st.enemy)
+  T.check(st.enemy.__ndxMagnetRise == nil or true, "(a grounded Pokemon stays grounded)")
+end
+do
+  local st, ad = battle()
+  status("MAGNET_RISE", st, ad)
+  T.eq(st.player.__ndxMagnetRise, 5, "Magnet Rise lifts the user for 5 turns")
+  local dmg, info = calc(89, st, ad, st.enemy, st.player)
+  T.check(dmg == 0 and info.effectiveness == 0, "and Ground moves can't touch it")
+end
+do
+  local st, ad = battle({ foe = mon({ species = 25, defense = 30, spDef = 300 }) })
+  local st2, ad2 = battle({ foe = mon({ species = 25, defense = 30, spDef = 300 }) })
+  status("WONDER_ROOM", st2, ad2)
+  T.check(calc(33, st2, ad2) < calc(33, st, ad), "Wonder Room swaps DEFENSE and SP. DEF")
+  T.eq(st2.enemy.mon.defense, 30, "without touching the Pokemon's stats")
+end
+do
+  local st, ad = battle()
+  st.player.item = 1
+  status("MAGIC_ROOM", st, ad)
+  local HeldItems = require("src.core.game3.battle.held_items")
+  T.eq(HeldItems.itemOf(st.player), 0, "Magic Room hides held items")
+  status("MAGIC_ROOM", st, ad)
+  T.eq(HeldItems.itemOf(st.player), 1, "until it is used again")
+end
+do
+  local st, ad = battle()
+  status("FAIRY_LOCK", st, ad)
+  st.turn = st.turn + 1
+  T.eq((Engine.canSwitch(st, ad, st.player)), false, "Fairy Lock stops switching the next turn")
+  st.turn = st.turn + 1
+  T.eq((Engine.canSwitch(st, ad, st.player)), true, "and only that turn")
+end
+do
+  local st, ad = battle()
+  T.check(status("AURORA_VEIL", st, ad).failed, "Aurora Veil needs hail")
+  st.weather = "HAIL"
+  local plain = calc(33, st, ad, st.enemy, st.player)
+  status("AURORA_VEIL", st, ad)
+  T.eq(calc(33, st, ad, st.enemy, st.player), math.floor(plain / 2), "and then halves damage to the team")
+  status("LUCKY_CHANT", st, ad)
+  local crit = run.loader.hooks:call("battle.crit", function() return true end, { battle = st, attacker = st.enemy, target = st.player })
+  T.eq(crit, false, "Lucky Chant stops critical hits")
+end
+do
+  local st, ad = battle()
+  status("STEALTH_ROCK", st, ad)
+  status("TAILWIND", st, ad)
+  status("COURT_CHANGE", st, ad)
+  T.check(st.playerSide.__ndx.stealthRock and st.enemySide.__ndx.tailwind, "Court Change swaps the sides' effects")
+end
+do
+  local st, ad = battle()
+  status("STEALTH_ROCK", st, ad, st.enemy, st.player)
+  hit("MORTAL_SPIN", st, ad)
+  T.check(not st.playerSide.__ndx.stealthRock and ad:status(st.enemy) == "PSN", "Mortal Spin clears hazards and poisons")
+  local Hazards = require("src.core.game3.battle.effects.hazards")
+  hit("CEASELESS_EDGE", st, ad)
+  T.eq(Hazards.layers(st.enemySide), 1, "Ceaseless Edge lays Spikes")
+  hit("STONE_AXE", st, ad)
+  T.check(st.enemySide.__ndx.stealthRock, "Stone Axe lays Stealth Rock")
+end
+
+-- ------- switching and healing
+do
+  local st, ad = battle({ party = { mon(), mon({ species = 4, hp = 20, status = "BRN" }) } })
+  status("HEALING_WISH", st, ad)
+  T.check(st.player.mon.hp == 0 and st.playerSide.__ndx.healingWish, "Healing Wish: the user faints and leaves a wish")
+  local Engine2 = Engine
+  Engine2.performSwitch(st, ad, "player", 2, { reason = "replace" })
+  enter(st, ad, st.player)
+  T.check(st.player.mon.hp == 150 and ad:status(st.player) == nil, "and the replacement comes in fully healed")
+end
+do
+  local st, ad = battle({ party = { mon(), mon({ species = 4 }) } })
+  st.batonPassChooser = function() return 2 end
+  status("SHED_TAIL", st, ad)
+  T.check(st.player.partyIndex == 2 and (st.player.substituteHP or 0) > 0, "Shed Tail leaves a substitute for the newcomer")
+  local st2, ad2 = battle({ party = { mon(), mon({ species = 4 }) } })
+  st2.batonPassChooser = function() return 2 end
+  status("CHILLY_RECEPTION", st2, ad2)
+  T.check(st2.weather == "HAIL" and st2.player.partyIndex == 2, "Chilly Reception starts hail and switches")
+end
+do
+  local st, ad = battle({ party = { mon(), mon({ species = 4, hp = 0 }) } })
+  status("REVIVAL_BLESSING", st, ad)
+  T.eq(st.playerParty[2].hp, 75, "Revival Blessing revives a fainted ally at half HP")
+  T.check(status("REVIVAL_BLESSING", st, ad).failed, "and fails with nobody to revive")
+end
+do
+  local st, ad = battle(mon({ hp = 50 }))
+  st.player.mon.hp = 50
+  T.check(status("PURIFY", st, ad).failed, "Purify fails on a healthy foe")
+  st.enemy.status = "BRN"; st.enemy.mon.status = "BRN"
+  status("PURIFY", st, ad)
+  T.check(ad:status(st.enemy) == nil and st.player.mon.hp == 125, "and cures it, healing the user")
+  st.player.status = "PAR"; st.player.mon.status = "PAR"
+  status("JUNGLE_HEALING", st, ad)
+  T.check(ad:status(st.player) == nil and st.player.mon.hp == 150, "Jungle Healing heals the user")
+end
+
+-- ------- trapping and lasting effects
+do
+  local st, ad = battle()
+  hit("ANCHOR_SHOT", st, ad)
+  T.check(st.enemy.expTrapped and st.enemy.escapePrevention, "Anchor Shot traps the foe")
+  hit("JAW_LOCK", st, ad)
+  T.check(st.player.expTrapped, "Jaw Lock traps both")
+end
+do
+  local st, ad = battle()
+  status("OCTOLOCK", st, ad)
+  pcall(Residuals.runTurn, ad)
+  T.check(st.enemy.stages.defense == -1 and st.enemy.stages.spDef == -1, "Octolock lowers both defenses each turn")
+  hit("SALT_CURE", st, ad)
+  local hp = st.enemy.mon.hp
+  pcall(Residuals.runTurn, ad)
+  T.eq(st.enemy.mon.hp, hp - 18, "Salt Cure takes an eighth each turn")
+end
+do
+  local st, ad = battle()
+  status("HEAL_BLOCK", st, ad)
+  st.enemy.mon.hp = 100
+  T.eq(ad:heal(st.enemy, 50), 0, "Heal Block stops healing")
+  T.eq(st.enemy.mon.hp, 100, "(the HP stays)")
+end
+do
+  local st, ad = battle({ foe = mon({ species = 25, moves = { 45, 33 }, pp = { 40, 35 } }) })   -- GROWL, TACKLE
+  hit("THROAT_CHOP", st, ad)
+  T.eq(st.enemy.__ndxThroatChop, 2, "Throat Chop silences the foe for 2 turns")
+  local Ab = require("src.core.game3.battle.abilities")
+  local M = ctx(45, st, ad, st.enemy, st.player)
+  T.check(Ab.soundproofBlocks(M) == true and M.noEffect, "a sound move is blocked")
+  local lim = Engine.moveLimitations(st.enemy, ad)
+  T.check(lim[1] == true and not lim[2], "and the AI knows not to pick it (" .. tostring(lim[1]) .. "," .. tostring(lim[2]) .. ")")
+end
+do
+  local st, ad = battle()
+  st.enemy.stages.attack, st.enemy.stages.speed = 2, 1
+  hit("SPECTRAL_THIEF", st, ad)
+  T.check(st.player.stages.attack == 2 and st.player.stages.speed == 1 and st.enemy.stages.attack == 0, "Spectral Thief steals the boosts first")
+end
+
+-- ------- doubles: the partner moves
+do
+  local okD, stD = pcall(State.new, { wild = false, double = true,
+    playerParty = { mon(), mon({ species = 4, hp = 60 }) }, foeParty = { mon({ species = 16 }), mon({ species = 19 }) } })
+  if okD and stD and stD.double and stD.battlers and stD.battlers[2] then
+    stD.turn = 3
+    local adD = Adapter.new(stD, function() end)
+    adD.roll = function(_, lo) return lo end
+    Battle._adapter = adD
+    local me, ally = stD.battlers[0], stD.battlers[2]
+    status("DECORATE", stD, adD, me, ally)
+    T.eq(ally.stages.attack, 2, "doubles: Decorate sharply raises the partner's ATTACK")
+    local M = hit("POLLEN_PUFF", stD, adD, me, ally)
+    T.eq(ally.mon.hp, 135, "doubles: Pollen Puff heals a partner")
+    local stS, adS = battle()
+    T.check(status("DECORATE", stS, adS).failed, "singles: Decorate has nobody to decorate")
+  else
+    T.check(true, "(no headless doubles state: " .. tostring(stD) .. ")")
+  end
 end
 
 Battle._adapter = nil

@@ -17,6 +17,9 @@
 --   addItems     adds this mod's items (index 900+) to the editor's item list (data.items),
 --                which it builds from the cart's own items only
 --   addMoves     adds this mod's moves (index 355+) to the editor's move list (data.moves)
+--   retypeMoves  gives the cart's moves that became Fairy their new type in that list
+-- The real abilities and the Fairy type install on mods.loaded as they do on game.ready, so the
+-- editor's ability picker, legality check and type labels read them from the live tables.
 -- In a game none of this runs.
 
 local Editor = {}
@@ -117,6 +120,22 @@ function Editor.addMoves(data, moves)
     end
   end
   return added
+end
+
+-- The editor builds its rows for the cart's own moves before any mod loads, so a cart move this
+-- mod retypes (Charm, Sweet Kiss, Moonlight become Fairy) keeps its old type there.
+-- nums: move numbers; typeName: the type's name ("FAIRY"). Returns how many rows changed.
+function Editor.retypeMoves(data, nums, typeName)
+  if type(data) ~= "table" or type(data.moves) ~= "table" then return 0 end
+  local changed = 0
+  for _, num in ipairs(nums or {}) do
+    local row = data.moves[num]
+    if type(row) == "table" and row.type ~= typeName then
+      row.type = typeName
+      changed = changed + 1
+    end
+  end
+  return changed
 end
 
 -- ev: the mods.loaded payload ({ loader, data }); repair: this mod's own game.ready work.

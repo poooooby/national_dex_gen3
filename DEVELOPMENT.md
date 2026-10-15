@@ -52,6 +52,31 @@ When the engine reloads its species tables, the mod also repairs evolution targe
 registry write can point them at slot 0) and name / National Dex number lookup, and adds tutor
 compatibility to the engine's tutor data.
 
+## Move animations
+
+`src/anims.lua` wraps `Anim.scriptForMove` (outside `src/moves.lua`'s, which plays the cart move
+named in `look`). `data/anims.lua`, built by `tools/build_anims.py` from RHH's pokeemerald-expansion
+(1.17.2; credit it as its README asks), holds:
+
+- `moves`: 134 moves whose expansion script uses only templates, graphics tags, tasks and opcodes
+  the engine and the imported carts already have, expanded (macros, constants, `.if`) into the
+  rows the animation VM runs. Calls are inlined, since the VM (like the cart) keeps one return
+  address and expansion's subroutines call others; a branching one (a background by side) stays
+  a real call if nothing it reaches calls again. Sounds (`"SE_M_X"`, `"SE:"` in arguments) and
+  graphics tags in arguments (`"TAG:X"`) stay names, resolved against the running cart, and a
+  template takes the cart's own tag, palette, callback and size; the script then starts with the
+  `loadspritegfx` rows its tags need (expansion loads graphics implicitly). Any piece missing on
+  the running cart falls back to the `look`.
+- `looks`: for 108 others, the cart move whose expansion animation shares the most with the
+  move's (weighted by rarity), when clearly closer than `look`; `REJECT`/`HAND` in the tool
+  hold the reviewed exceptions.
+
+Rebuild with `python tools/build_anims.py` (needs luajit and an imported cart under the engine
+root; `tools/anim_known.lua` lists what the engine and carts offer). The report
+(`tools/.cache/anims_report.txt`) lists what each left-out move lacks: mostly expansion's own
+sprite templates (215), then tasks (32) and its newer backgrounds (24). Test:
+`tests/anims_test.lua [game]` resolves and plays every script headlessly on that cart.
+
 ## Art
 
 Pictures (battle, summary and Pokédex) come from a sprite mod:
@@ -94,8 +119,8 @@ or nil to let the next provider answer.
   a location, a known move or gender have no trigger to attach to; the mod adds stand-in
   conditions where it can (see the player guide).
 - Level-up learnsets keep their modern length (9,302 rows across 639 species). Newer moves are
-  real where `tools/build_moves.py` could build them (325 moves, 3,659 level-up/egg uses); the
-  other 101 are swapped for the closest cart move (`tools/.cache/move_substitutions.txt`).
+  real where `tools/build_moves.py` could build them (419 moves, 4,482 level-up/egg uses); the
+  other 7 are swapped for the closest cart move (`tools/.cache/move_substitutions.txt`).
   TM/HM and tutor moves are Gen 3's own.
 
 ## Rough areas
@@ -104,11 +129,29 @@ Things that work but not exactly as in today's games, or are only partly verifie
 
 - In-game (driver) checks cover Moonblast, Nasty Plot, Close Combat, Snow Warning, Wicked Blow,
   Heavy Slam, Mind Blown, Trick Room's turn order, Stealth Rock damage on entry, U-turn (through
-  the real party prompt) and Dragon Tail, on Emerald, FireRed and Sapphire. Everything else is
-  checked headlessly only (`tests/moves_test.lua`, `move_effects_test.lua`, `move_rules_test.lua`,
-  `move_field_test.lua`, `abilities_test.lua`).
-- Double battles are untested. The turn stamps (Sucker Punch, Payback, Bolt Beak, Fusion
-  Flare/Bolt) and the switch-out moves were written with singles in mind.
+  the real party prompt), Dragon Tail, Spiky Shield's and King's Shield's punishment and Soak, on
+  Emerald, FireRed and Sapphire. Everything else is checked headlessly only (`tests/moves_test.lua`,
+  `move_effects_test.lua`, `move_rules_test.lua`, `move_field_test.lua`, `abilities_test.lua`).
+- Double battles: only a headless doubles state (Decorate, Pollen Puff on a partner) is tested.
+  The turn stamps (Sucker Punch, Payback, Bolt Beak, Fusion Flare/Bolt) and the switch-out moves
+  were written with singles in mind.
+- Protection variants keep their own "used last turn" streak; the cart's Protect after one of
+  them doesn't see it (and vice versa). Shed Tail makes the cart's Substitute (a quarter of HP,
+  not half). Phantom Force / Shadow Force vanish with a kind of their own (`"VANISHED"`): only
+  this mod's wraps make attacks miss them, so a cart status move can still reach them.
+- Ability changes write `expTracedAbility` (+ `ability` for the AI); Simple Beam gives "SIMPLE",
+  which nothing in the cart's battle engine implements, so it works as "no ability". Power Split
+  / Guard Split / Power Trick / Speed Swap keep their numbers on the battler (`__ndxStat`, read by
+  this mod's damage wrap and turn order only); the cart's own speed ties and the AI's estimates
+  read the real stats.
+- Wonder Room swaps DEFENSE and SP. DEF in this mod's damage wrap only; Magic Room hides items
+  from `HeldItems.itemOf` (the battle's reads), not from the Bag. Fairy Lock uses `canSwitch` /
+  `canRun`, so a Roar-style forced switch still works.
+- Fling's powers cover the items Gen 3 has (a berry is 10, an unlisted item 30) and the item is
+  used up (as in the real games); Natural Gift uses the Gen 6+ 80/90/100 table. Bug Bite / Pluck
+  remove the foe's berry without eating its effect; Belch remembers a berry eaten since the
+  battler came in (`expUsedHeldItem`). Beak Blast is a plain hit (no burn on contact); Shell Trap
+  needs a physical hit taken this turn but doesn't go last.
 - Gen 3 splits physical/special by type: Foul Play (Dark) is a special hit with the foe's Attack
   standing in for Sp. Atk; Body Press / Secret Sword / Psyshock swap into the stat the move's
   type reads; Dragon Tail is special.
@@ -147,31 +190,12 @@ Adaptability is approximated through the `battle.damage` hook.
 - Source patches (`dex_patch.lua`, `type_icons.lua`) match engine text exactly and fall back to
   the stock behaviour (logged once) when an engine update changes it.
 
-## Moves still substituted (101)
+## Moves still substituted (7)
 
-`tools/.cache/moves_new.txt` lists them with their use counts. All of them are reachable
-mod-side (the engine seams are in the plan notes); grouped by what they need:
-
-- **Protection variants:** Spiky Shield, King's Shield, Baneful Bunker, Obstruct, Silk Trap,
-  Burning Bulwark (protect + punish contact); Feint, Hyperspace Hole, Phantom Force, Shadow Force
-  (hit through it); Geomancy (a charge turn of its own).
-- **Ability / type changes:** Worry Seed, Entrainment, Simple Beam, Gastro Acid, Core Enforcer,
-  Soak, Magic Powder, Trick-or-Treat, Forest's Curse, Reflect Type, Tar Shot, Electrify, Ion
-  Deluge, Plasma Fists.
-- **Trapping and lasting volatiles:** Jaw Lock, Thousand Waves, Spirit Shackle, Anchor Shot,
-  Octolock, Salt Cure, Heal Block, Throat Chop, Eerie Spell, Psycho Shift, Magnet Rise, Miracle Eye.
-- **Stat swaps, splits and the rest:** Power Split, Guard Split, Power Swap, Guard Swap, Heart
-  Swap, Speed Swap, Power Trick, Topsy-Turvy, Spectral Thief, Strength Sap, Venom Drench,
-  Captivate, Acupressure, Clangorous Soul, No Retreat, Fillet Away, Gear Up, Magnetic Flux,
-  Rototiller, Flower Shield, Decorate, Aromatic Mist.
-- **Field:** Gravity, Smack Down, Thousand Arrows, Wonder Room, Magic Room, Fairy Lock, Aurora
-  Veil, Lucky Chant, Court Change, Mortal Spin, Ceaseless Edge, Stone Axe, Wide Guard, Quick
-  Guard, Crafty Shield.
-- **Switching and healing:** Healing Wish, Lunar Dance, Shed Tail, Chilly Reception, Revival
-  Blessing, Purify, Jungle Healing, Lunar Blessing, Pollen Puff.
-- **Doubles only:** Ally Switch, After You, Quash, Instruct, Me First, Doodle.
-- **Items and berries:** Bug Bite, Pluck, Incinerate, Belch, Stuff Cheeks, Fling, Natural Gift,
-  Bestow, Teatime; and Powder, Shell Trap, Beak Blast.
+`tools/.cache/moves_new.txt` lists them. The engine fixes the turn order once per turn and has
+no way to make a battler act out of turn or repeat a move mid-turn, and nothing lets a mod swap
+two battlers' positions or hand an item over with the Bag's bookkeeping: After You, Quash,
+Instruct, Me First, Ally Switch, Bestow, Teatime.
 
 ## Regenerating the data
 

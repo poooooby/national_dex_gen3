@@ -206,9 +206,9 @@ stand-in is a TM or a level-up move the Pokémon already has, so no learnset is 
 | Mime Jr. | Mr. Mime | Mimic |
 | Steenee | Tsareena | Stomp |
 | Clobbopus | Grapploct | Taunt |
-| Poipole (level 40+) | Naganadel | Outrage, for Dragon Pulse |
+| Poipole (level 40+) | Naganadel | Dragon Pulse |
 | Dipplin (level 35+) | Hydrapple | Dragon Breath, for Dragon Cheer |
-| Eevee | Sylveon | Charm or Sweet Kiss (the moves that were Fairy), with high friendship |
+| Eevee | Sylveon | Charm or Sweet Kiss (the Fairy moves a Gen 3 Eevee can learn), with high friendship |
 
 **Other conditions**
 

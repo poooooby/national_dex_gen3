@@ -154,7 +154,8 @@ end
 local function status(id, st, ad, user, target)
   local M = { mnum = num(id), adapter = ad, st = st, user = user or st.player, target = target or st.enemy,
               move = Moves.get(num(id)), isMoveContext = true, attackAnimation = function() end }
-  return Effects.run("NATIONAL_DEX_GEN3_MOVE_EFFECT", ad, M.user, M.target, M.move, M.mnum, M), M
+  local r = Effects.run("NATIONAL_DEX_GEN3_MOVE_EFFECT", ad, M.user, M.target, M.move, M.mnum, M)
+  return M, r
 end
 
 -- ------- whose stats
@@ -365,6 +366,165 @@ do
   st.enemy.ability = "DAMP"
   local M = use("MIND_BLOWN", st, ad)
   T.check(M.failed and st.player.mon.hp == 150, "Damp stops Mind Blown")
+end
+
+-- ------- batch B: abilities and types
+do
+  local st, ad = battle()
+  status("WORRY_SEED", st, ad)
+  T.eq(ad:abilityOf(st.enemy), "INSOMNIA", "Worry Seed makes the foe's ability INSOMNIA")
+  status("GASTRO_ACID", st, ad)
+  T.eq(ad:abilityOf(st.enemy), nil, "Gastro Acid suppresses it")
+  local st2, ad2 = battle()
+  st2.player.ability = "DRIZZLE"
+  status("ENTRAINMENT", st2, ad2)
+  T.eq(ad2:abilityOf(st2.enemy), "DRIZZLE", "Entrainment copies the user's ability over")
+  status("DOODLE", st2, ad2, st2.enemy, st2.player)
+  T.eq(ad2:abilityOf(st2.enemy), "DRIZZLE", "Doodle copies the foe's onto the user")
+end
+do
+  local st, ad = battle(nil, mon({ species = 16 }))
+  status("SOAK", st, ad)
+  T.check(st.enemy.type1 == 11 and st.enemy.type2 == nil, "Soak makes the foe pure Water")
+  status("TRICK_OR_TREAT", st, ad)
+  T.eq(st.enemy.__ndxType3, 7, "Trick-or-Treat adds Ghost")
+  T.eq(calc(33, st, ad), 0, "so a Normal move can't touch it")
+  status("REFLECT_TYPE", st, ad)
+  T.check(st.player.type1 == 11 and st.player.__ndxType3 == 7, "Reflect Type copies all of it")
+end
+do
+  local st, ad = battle()
+  local plain = calc(52, st, ad)                                                   -- EMBER
+  status("TAR_SHOT", st, ad)
+  T.check(st.enemy.stages.speed == -1 and calc(52, st, ad) == plain * 2, "Tar Shot: SPEED down, Fire moves doubled")
+  local _, info = calc(33, st, ad, st.enemy, st.player)
+  T.eq(info.moveType, 0, "Tackle is Normal")
+  status("ELECTRIFY", st, ad)
+  _, info = calc(33, st, ad, st.enemy, st.player)
+  T.eq(info.moveType, 13, "until Electrify makes the foe's next move Electric")
+  local st2, ad2 = battle()
+  status("ION_DELUGE", st2, ad2)
+  _, info = calc(33, st2, ad2)
+  T.eq(info.moveType, 13, "Ion Deluge turns Normal moves Electric this turn")
+end
+do
+  local st, ad = battle(nil, mon({ species = 198 }))                               -- Murkrow (Dark/Flying)
+  T.eq(calc(94, st, ad), 0, "Psychic can't touch a Dark type")                   -- PSYCHIC
+  status("MIRACLE_EYE", st, ad)
+  T.check(calc(94, st, ad) > 0, "until Miracle Eye")
+end
+
+-- ------- stats
+do
+  local st, ad = battle(mon({ attack = 50 }), mon({ species = 25, attack = 150 }))
+  status("POWER_SPLIT", st, ad)
+  T.check(st.player.__ndxStat.attack == 100 and st.enemy.__ndxStat.attack == 100, "Power Split averages ATTACK")
+  T.check(st.player.mon.attack == 50 and st.enemy.mon.attack == 150, "without writing the Pokemon's stats")
+  local st2, ad2 = battle(mon({ attack = 50 }), mon({ species = 25, attack = 50 }))
+  T.check(calc(33, st, ad) > calc(33, st2, ad2), "and the damage uses the shared value")
+end
+do
+  local st, ad = battle(mon({ attack = 50, defense = 200 }))
+  status("POWER_TRICK", st, ad)
+  T.check(st.player.__ndxStat.attack == 200 and st.player.__ndxStat.defense == 50, "Power Trick swaps ATTACK and DEFENSE")
+  local st2, ad2 = battle(mon({ speed = 50 }), mon({ species = 25, speed = 200 }))
+  status("SPEED_SWAP", st2, ad2)
+  local RA = require("src.core.game3.battle") and nil
+  T.check(st2.player.__ndxStat.speed == 200 and st2.enemy.__ndxStat.speed == 50, "Speed Swap swaps SPEED")
+end
+do
+  local st, ad = battle()
+  st.player.stages.attack, st.enemy.stages.spAtk = 3, -2
+  status("HEART_SWAP", st, ad)
+  T.check(st.player.stages.attack == 0 and st.player.stages.spAtk == -2 and st.enemy.stages.attack == 3, "Heart Swap swaps every stat change")
+  status("TOPSY_TURVY", st, ad)
+  T.eq(st.enemy.stages.attack, -3, "Topsy-Turvy flips the foe's")
+end
+do
+  local st, ad = battle(mon({ hp = 50 }), mon({ species = 25, attack = 80 }))
+  status("STRENGTH_SAP", st, ad)
+  T.check(st.player.mon.hp == 130 and st.enemy.stages.attack == -1, "Strength Sap heals by the foe's ATTACK and lowers it")
+  T.check(status("VENOM_DRENCH", st, ad).failed, "Venom Drench fails on an unpoisoned foe")
+  st.enemy.status = "PSN"; st.enemy.mon.status = "PSN"
+  status("VENOM_DRENCH", st, ad)
+  T.check(st.enemy.stages.attack == -2 and st.enemy.stages.speed == -1, "and lowers three stats on a poisoned one")
+end
+do
+  local st, ad = battle(mon({ gender = "M" }), mon({ species = 25, gender = "F" }))
+  status("CAPTIVATE", st, ad)
+  T.eq(st.enemy.stages.spAtk, -2, "Captivate works on the opposite gender")
+  local st2, ad2 = battle(mon({ gender = "M" }), mon({ species = 25, gender = "M" }))
+  T.check(status("CAPTIVATE", st2, ad2).failed, "and fails on the same")
+end
+do
+  local st, ad = battle()
+  status("CLANGOROUS_SOUL", st, ad)
+  T.check(st.player.mon.hp == 100 and st.player.stages.attack == 1 and st.player.stages.speed == 1, "Clangorous Soul: a third of HP for +1 everything")
+  status("NO_RETREAT", st, ad)
+  T.check(st.player.stages.attack == 2 and st.player.expTrapped, "No Retreat: +1 everything, no escape")
+  local st2, ad2 = battle()
+  status("FILLET_AWAY", st2, ad2)
+  T.check(st2.player.mon.hp == 75 and st2.player.stages.attack == 2, "Fillet Away: half the HP for +2")
+  status("ACUPRESSURE", st2, ad2)
+  T.eq(st2.player.stages.attack, 4, "Acupressure: +2 to a stat (the first open one here)")
+end
+do
+  local st, ad = battle()
+  T.check(status("GEAR_UP", st, ad).failed, "Gear Up needs PLUS or MINUS")
+  st.player.ability = "PLUS"
+  status("GEAR_UP", st, ad)
+  T.eq(st.player.stages.attack, 1, "and works with it")
+  local st2, ad2 = battle(mon({ species = 1 }))                                    -- Bulbasaur
+  status("ROTOTILLER", st2, ad2)
+  T.eq(st2.player.stages.attack, 1, "Rototiller raises Grass types on the ground")
+end
+
+-- ------- items and berries
+do
+  local st, ad = battle()
+  T.check(use("FLING", st, ad).failed, "Fling fails with no item")
+  st.player.item = 133                                                             -- CHERI BERRY
+  T.eq(power("FLING", st, ad), 10, "a berry flings for 10")
+  use("FLING", st, ad)
+  T.eq(st.player.item, 0, "and is gone after")
+  local st2, ad2 = battle()
+  st2.player.item = 133
+  local _, info = calc("NATURAL_GIFT", st2, ad2)
+  T.check(info.power == 80 and info.moveType == 10, "Natural Gift: a Cheri Berry is an 80-power Fire move")
+  T.check(use("BELCH", st2, ad2).failed, "Belch fails before a berry was eaten")
+  st2.player.expUsedHeldItem = 133
+  T.check(not use("BELCH", st2, ad2).failed, "and works after")
+end
+do
+  local st, ad = battle()
+  st.player.item = 133
+  status("STUFF_CHEEKS", st, ad)
+  T.check(st.player.item == 0 and st.player.stages.defense == 2, "Stuff Cheeks eats the berry for +2 DEFENSE")
+  st.enemy.item = 133
+  use("BUG_BITE", st, ad)
+  T.eq(st.enemy.item, 0, "Bug Bite eats the foe's berry")
+end
+do
+  local st, ad = battle()
+  status("POWDER", st, ad)
+  local before = hits
+  local M = use(52, st, ad, st.enemy, st.player)                                   -- EMBER
+  T.check(M.failed and hits == before and st.enemy.mon.hp == 150 - 37, "Powder blows up a Fire move in the foe's face")
+end
+do
+  local st, ad = battle(nil, mon({ species = 25, moves = { 33 }, pp = { 10 } }))
+  st.enemy.lastMoveId = 33
+  use("EERIE_SPELL", st, ad)
+  T.eq(st.enemy.mon.pp[1], 7, "Eerie Spell takes 3 PP from the foe's last move")
+  st.player.status = "BRN"; st.player.mon.status = "BRN"
+  status("PSYCHO_SHIFT", st, ad)
+  T.check(ad:status(st.player) == nil and ad:status(st.enemy) == "BRN", "Psycho Shift passes the burn on")
+end
+do
+  local st, ad = battle()
+  run.loader.events:emit("battle.move_used", { battle = st, user = st.enemy, moveNum = 33 })
+  use("CORE_ENFORCER", st, ad)
+  T.eq(ad:abilityOf(st.enemy), nil, "Core Enforcer suppresses a foe that already moved")
 end
 
 run.release()

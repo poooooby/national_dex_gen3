@@ -11,11 +11,11 @@
 --     (it stores the number it was given) gets its real ability too
 --   * what it does, through wraps and hooks:
 --       Damage.base         power: TECHNICIAN, STRONG_JAW, IRON_FIST, TOUGH_CLAWS, RECKLESS,
---                           SAND_FORCE, RIVALRY, PROTOSYNTHESIS; taken: HEATPROOF, DRY_SKIN
+--                           SAND_FORCE, RIVALRY, PROTOSYNTHESIS, QUARK_DRIVE; taken: HEATPROOF, DRY_SKIN
 --       battle.damage       ADAPTABILITY, SNIPER, TINTED_LENS, MULTISCALE, FLUFFY, FILTER,
---                           SOLID_ROCK, PRISM_ARMOR, PROTOSYNTHESIS (defence)
+--                           SOLID_ROCK, PRISM_ARMOR, PROTOSYNTHESIS, QUARK_DRIVE (defence)
 --       battle.crit         SUPER_LUCK          battle.accuracy  SNOW_CLOAK
---       battle.turn_order   PRANKSTER, SAND_RUSH, SLUSH_RUSH, PROTOSYNTHESIS (speed)
+--       battle.turn_order   PRANKSTER, SAND_RUSH, SLUSH_RUSH, PROTOSYNTHESIS, QUARK_DRIVE (speed)
 --       switchIn            SNOW_WARNING, FRISK, ANTICIPATION
 --       endTurn             ICE_BODY, HYDRATION, DRY_SKIN
 --       switchOut           REGENERATOR
@@ -25,8 +25,8 @@
 --       changeStat          BIG_PECKS, FLOWER_VEIL, DEFIANT, COMPETITIVE
 --       Status moves        LEAF_GUARD, SWEET_VEIL, FLOWER_VEIL (a status from a move's side
 --                           effect is not blocked: that check is local to the engine)
---     HEALER, TELEPATHY, HONEY_GATHER and QUARK_DRIVE have no effect in a single battle here,
---     as in the games (no partner, no Electric Terrain or Booster Energy)
+--     HEALER, TELEPATHY and HONEY_GATHER have no effect in a single battle here, as in the
+--     games (no partner); QUARK_DRIVE works on Electric Terrain (no Booster Energy in Gen 3)
 -- An ability whose wrap target is missing is not installed, and its Pokemon keep the closest
 -- Gen 3 ability. Every addition runs protected: an error falls back to the engine's own result.
 
@@ -54,7 +54,7 @@ local BALL_BOMB = set{ "BARRAGE", "EGG_BOMB", "SHADOW_BALL", "SLUDGE_BOMB", "ZAP
   "ELECTRO_BALL", "POLLEN_PUFF", "BEAK_BLAST", "PYRO_BALL" }
 
 -- the abilities that have no effect in a single battle here (installed for their name and text)
-local QUIET = set{ "HEALER", "TELEPATHY", "HONEY_GATHER", "QUARK_DRIVE" }
+local QUIET = set{ "HEALER", "TELEPATHY", "HONEY_GATHER" }
 
 local function safe(fn, ...)
   local ok, a, b = pcall(fn, ...)
@@ -85,6 +85,14 @@ end
 local function weather(ad)
   local st = ad and ad._st
   return st and st.weather or nil
+end
+
+-- Protosynthesis in sun, Quark Drive on Electric Terrain (src/move_field.lua keeps the terrain)
+local function boosterOn(ad, ab)
+  if ab == "PROTOSYNTHESIS" then return weather(ad) == "SUN" end
+  if ab ~= "QUARK_DRIVE" then return false end
+  local f = ad and ad._st and ad._st.__ndxField
+  return f ~= nil and (f.terrainTurns or 0) > 0 and f.terrain == "ELECTRIC"
 end
 
 local function gender(b)
@@ -134,7 +142,7 @@ function RealAbilities.hooks(mod)
         if mtype == 10 then d = d * 2 end                     -- FIRE
       end
       if (ta == "FILTER" or ta == "SOLID_ROCK" or ta == "PRISM_ARMOR") and eff > 1 then d = d * 0.75 end
-      if ta == "PROTOSYNTHESIS" and weather(ad) == "SUN" then
+      if boosterOn(ad, ta) then
         local best = bestStat(c.target)
         if (info.physical and best == "defense") or (not info.physical and best == "spDef") then d = d / 1.3 end
       end
@@ -191,11 +199,12 @@ end
 RealAbilities.speedModifiers = {}                -- key -> fn(ad, b) -> multiplier (1 = none)
 RealAbilities.reverseSpeed = nil                 -- fn(st) -> true while slower goes first
 function RealAbilities.effectiveSpeed(ad, b)
-  local s = tonumber(b.mon and b.mon.speed) or 0
+  local over = b.__ndxStat and tonumber(b.__ndxStat.speed)        -- Speed Swap (src/move_rules.lua)
+  local s = over or tonumber(b.mon and b.mon.speed) or 0
   local okD, Damage = pcall(require, "src.core.game3.battle.damage")
   if okD and Damage.applyStage then s = Damage.applyStage(s, b.stages and b.stages.speed or 0) end
-  local ab, w, modified = abilityOf(ad, b), weather(ad), false
-  if ab == "PROTOSYNTHESIS" and w == "SUN" and bestStat(b) == "speed" then s, modified = s * 1.5, true
+  local ab, w, modified = abilityOf(ad, b), weather(ad), over ~= nil
+  if boosterOn(ad, ab) and bestStat(b) == "speed" then s, modified = s * 1.5, true
   elseif (ab == "SAND_RUSH" and w == "SAND") or (ab == "SLUSH_RUSH" and w == "HAIL") then s, modified = s * 2, true end
   for _, fn in pairs(RealAbilities.speedModifiers) do
     local okM, m = pcall(fn, ad, b)
@@ -240,7 +249,7 @@ function RealAbilities.install(opts)
   local REQUIRES = {
     TECHNICIAN = "damage", STRONG_JAW = "damage", IRON_FIST = "damage", TOUGH_CLAWS = "damage",
     RECKLESS = "damage", SAND_FORCE = "damage", HEATPROOF = "damage", DRY_SKIN = "damage", RIVALRY = "damage",
-    PROTOSYNTHESIS = "damage", SNOW_WARNING = "switchIn", FRISK = "switchIn", ANTICIPATION = "switchIn",
+    PROTOSYNTHESIS = "damage", QUARK_DRIVE = "damage", SNOW_WARNING = "switchIn", FRISK = "switchIn", ANTICIPATION = "switchIn",
     ICE_BODY = "endTurn", HYDRATION = "endTurn", REGENERATOR = "switchOut", SAP_SIPPER = "absorb",
     MOTOR_DRIVE = "absorb", STORM_DRAIN = "absorb", BULLETPROOF = "absorb", IRON_BARBS = "onDamage",
     JUSTIFIED = "onDamage", RATTLED = "onDamage", STAMINA = "onDamage", WEAK_ARMOR = "onDamage",
@@ -395,7 +404,7 @@ function RealAbilities.install(opts)
           local ga, gd = gender(attacker), gender(defender)
           if ga and gd then m = m * (ga == gd and 1.25 or 0.75) end
         end
-        if aa == "PROTOSYNTHESIS" and weather(ad) == "SUN" then
+        if boosterOn(ad, aa) then
           local best = bestStat(attacker)
           local phys = okT and Types.isPhysical(mtype)
           if (phys and best == "attack") or (not phys and best == "spAtk") then m = m * 1.3 end

@@ -19,6 +19,22 @@ MoveRules._rules = {}                             -- move number -> rule name (i
 MoveRules._hits = {}                              -- move number -> hit count (true: 2-5)
 MoveRules._formWeight = {}                        -- form slot -> hectograms
 
+-- Fling: power by the cart's item name (Showdown's data for the items Gen 3 has); a berry is 10,
+-- anything else 30
+local FLING = { ["HARD STONE"] = 100, ["THICK CLUB"] = 90, ["DRAGON FANG"] = 70, ["POISON BARB"] = 70,
+  ["SHARP BEAK"] = 50, ["DEEPSEATOOTH"] = 90, ["IRON BALL"] = 130, ["ROCK INCENSE"] = 10,
+  ["BLACKGLASSES"] = 30, ["LEFTOVERS"] = 10, ["LIGHT BALL"] = 30, ["KING'S ROCK"] = 30,
+  ["METAL COAT"] = 30, ["QUICK CLAW"] = 80, ["MACHO BRACE"] = 60, ["STICK"] = 60,
+  ["DRAGON SCALE"] = 30, ["EVERSTONE"] = 30, ["FIRE STONE"] = 30, ["WATER STONE"] = 30,
+  ["THUNDERSTONE"] = 30, ["LEAF STONE"] = 30, ["MOON STONE"] = 30, ["SUN STONE"] = 30 }
+-- Natural Gift: the 43 Gen 3 berries in order (ItemsData.berryNumber), type and power (Gen 6+)
+local GIFT_TYPE = { 10, 11, 13, 12, 15, 1, 3, 4, 2, 14, 6, 5, 7, 16, 17, 8,
+                    10, 11, 13, 12, 15, 1, 3, 4, 2, 14, 6, 5, 7, 16, 17, 8,
+                    10, 11, 13, 12, 15, 1, 3, 4, 2, 14, 6 }
+local GIFT_POWER = { 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80, 80,
+                     90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90, 90,
+                     100, 100, 100, 100, 100, 100, 100, 100, 100, 100, 100 }
+
 local ALWAYS_CRIT = { FROST_BREATH = true, STORM_THROW = true, WICKED_BLOW = true, FLOWER_TRICK = true,
                       SURGING_STRIKES = true }
 
@@ -76,6 +92,39 @@ local function speedOf(b)
   if ok and Damage.applyStage then s = Damage.applyStage(s, stageOf(b, "speed")) end
   if statusOf(b) == "PAR" then s = math.floor(s / 4) end
   return math.max(1, s)
+end
+
+local function itemOf(b)
+  local ok, HeldItems = pcall(require, "src.core.game3.battle.held_items")
+  if ok and HeldItems.itemOf then return tonumber(HeldItems.itemOf(b)) or 0 end
+  return tonumber(b and b.item) or 0
+end
+
+local function isBerry(item)
+  local ok, ItemsData = pcall(require, "src.core.game3.items_data")
+  return ok and ItemsData.isBerry and ItemsData.isBerry(item) or false
+end
+
+local function berryNumber(item)
+  local ok, ItemsData = pcall(require, "src.core.game3.items_data")
+  return ok and ItemsData.berryNumber and ItemsData.berryNumber(item) or nil
+end
+
+local function itemName(item)
+  local ok, ItemsData = pcall(require, "src.core.game3.items_data")
+  local okN, n = pcall(function() return ok and ItemsData.displayName and ItemsData.displayName(item) end)
+  return okN and n and tostring(n):upper() or "ITEM"
+end
+
+local function consume(ad, b)
+  local ok, HeldItems = pcall(require, "src.core.game3.battle.held_items")
+  if ok and HeldItems.consume then HeldItems.consume(ad, b) end
+end
+
+local function setAbility(b, name)
+  b.expTracedAbility = name
+  b.expAbilitySuppressed = nil
+  b.ability = name
 end
 
 local function battleOf(o)
@@ -157,11 +206,36 @@ local function prepare(rule, A, D, move, o, set, num)
   if power then o.power = math.max(1, math.floor(power)) end
 
   if rule == "REVELATION_DANCE" and tonumber(A.type1) then o.moveType = tonumber(A.type1) end
+  if rule == "FLING" then
+    local item = itemOf(A)
+    o.power = isBerry(item) and 10 or FLING[itemName(item)] or 30
+  elseif rule == "NATURAL_GIFT" then
+    local n = berryNumber(itemOf(A))
+    if n and GIFT_POWER[n] then o.power, o.moveType = GIFT_POWER[n], GIFT_TYPE[n] end
+  end
+  -- what the field did to the move's type: Electrify, Ion Deluge (Normal moves)
+  if A.__ndxElectrified == turn then o.moveType = 13
+  elseif st and st.__ndxIonDeluge == turn and (tonumber(o.moveType) or tonumber(move.type) or 0) == 0 then o.moveType = 13 end
 
   -- whose stats: Gen 3 splits physical and special by type, so the real move's stat goes into
   -- whichever one the move's type reads (Foul Play is Dark, so the foe's ATTACK stands in
   -- for the user's SP. ATK)
   local aMon, dMon = monOf(A), monOf(D)
+  -- Power Split, Guard Split, Power Trick: the battler's stats as the moves left them (never
+  -- written to the mon, which is the saved party entry)
+  for _, pair in ipairs({ { A, aMon }, { D, dMon } }) do
+    local over = pair[1].__ndxStat
+    if over then
+      for _, k in ipairs({ "attack", "defense", "spAtk", "spDef" }) do
+        if over[k] then set(pair[2], k, over[k]) end
+      end
+    end
+  end
+  -- Miracle Eye: a Dark type takes Psychic hits
+  if D.__ndxMiracleEye and (tonumber(o.moveType) or tonumber(move.type)) == 14 then
+    if D.type1 == 17 then set(D, "type1", 9) end
+    if D.type2 == 17 then set(D, "type2", 9) end
+  end
   local okT, Types = pcall(require, "src.core.game3.battle.types")
   local physical = okT and Types.isPhysical and Types.isPhysical(tonumber(o.moveType) or tonumber(move.type) or 0)
   local offense = physical and "attack" or "spAtk"
@@ -217,6 +291,21 @@ local function adjust(rule, A, D, dmg, info)
     end
   end
   if D.__ndxGlaiveRush then dmg = dmg * 2 end
+  local mtype = tonumber(info.moveType)
+  if D.__ndxType3 and mtype then
+    local okT, Types = pcall(require, "src.core.game3.battle.types")
+    if okT and Types.typeCalc then
+      local _, _, eff = Types.typeCalc(mtype, D.__ndxType3, nil, nil, D.expIdentified)
+      eff = tonumber(eff) or 1
+      info.effectiveness = (tonumber(info.effectiveness) or 1) * eff
+      if eff == 0 then
+        info.typeFlags = info.typeFlags or {}
+        info.typeFlags.immune = true
+      end
+      dmg = math.floor(dmg * eff)
+    end
+  end
+  if D.__ndxTarShot and mtype == 10 then dmg = dmg * 2 end
   return dmg, info
 end
 
@@ -300,6 +389,12 @@ local function preFails(rule, M)
     return not shared
   elseif rule == "GIGATON_HAMMER" then
     return M.user.__ndxLastMove == tonumber(M.mnum)
+  elseif rule == "FLING" then
+    return itemOf(M.user) == 0
+  elseif rule == "NATURAL_GIFT" then
+    return not isBerry(itemOf(M.user))
+  elseif rule == "BELCH" then
+    return not isBerry(tonumber(M.user.expUsedHeldItem) or 0)
   end
   return false
 end
@@ -357,7 +452,72 @@ local function after(rule, M)
   elseif rule == "DIRE_CLAW" and landed and targetUp and not M.hitSubstitute and ad:roll(1, 100) <= 50 then
     local okS, Secondary = pcall(require, "src.core.game3.battle.effects.secondary")
     if okS then Secondary.set(M, ({ "POISON", "PARALYSIS", "SLEEP" })[ad:roll(1, 3)], false, false, false) end
+  elseif rule == "FLING" or rule == "NATURAL_GIFT" then
+    if not M.failed then
+      if rule == "FLING" then ad:say(prefixed(ad, user) .. " flung its\n" .. itemName(itemOf(user)) .. "!") end
+      consume(ad, user)
+    end
+  elseif (rule == "BUG_BITE" or rule == "PLUCK" or rule == "INCINERATE") and landed and targetUp and not M.hitSubstitute then
+    local item = itemOf(target)
+    if isBerry(item) then
+      local name = itemName(item)
+      consume(ad, target)
+      if rule == "INCINERATE" then
+        ad:say(prefixed(ad, target) .. "'s " .. name .. "\nwas burned up!")
+      else
+        ad:say(prefixed(ad, user) .. " stole and ate\n" .. prefixed(ad, target) .. "'s " .. name .. "!")
+      end
+    end
+  elseif rule == "CORE_ENFORCER" and landed and targetUp and not M.hitSubstitute
+      and M.st and target.__ndxMovedTurn == M.st.turn and abilityOf(ad, target) then
+    target.expTracedAbility, target.expAbilitySuppressed = nil, true
+    ad:say(prefixed(ad, target) .. "'s ability\nwas suppressed!")
+  elseif rule == "PLASMA_FISTS" and landed and M.st then
+    M.st.__ndxIonDeluge = M.st.turn
+    ad:say("A deluge of ions showers\nthe battlefield!")
+  elseif rule == "EERIE_SPELL" and landed and targetUp and not M.hitSubstitute then
+    local mon = monOf(target)
+    local last = tonumber(target.lastMoveId or target.lastMove) or target.__ndxLastMove
+    for i, m in ipairs(mon.moves or {}) do
+      if tonumber(m) == last and mon.pp and (tonumber(mon.pp[i]) or 0) > 0 then
+        local before = mon.pp[i]
+        mon.pp[i] = math.max(0, mon.pp[i] - 3)
+        local okMo, Moves = pcall(require, "src.core.game3.battle.moves")
+        local name = okMo and Moves.displayName and Moves.displayName(last) or "its move"
+        ad:say(prefixed(ad, target) .. "'s " .. tostring(name) .. "\nlost " .. (before - mon.pp[i]) .. " PP!")
+        break
+      end
+    end
   end
+end
+
+local STATS5 = { "attack", "defense", "spAtk", "spDef", "speed" }
+
+local function changeStats(ad, b, list, delta, flags)
+  local okS, Secondary = pcall(require, "src.core.game3.battle.effects.secondary")
+  if not okS then return false end
+  local any = false
+  for _, stat in ipairs(list) do
+    if Secondary.changeStat(ad, b, stat, delta, flags) == "worked" then any = true end
+  end
+  return any
+end
+
+local function statOf(b, k)
+  local over = b.__ndxStat
+  return tonumber(over and over[k]) or tonumber(monOf(b)[k]) or 0
+end
+
+local function partnerOf(ad, b)
+  local ok, p = pcall(ad.partnerOf, ad, b)
+  if ok and p and p ~= b and ad:hp(p) > 0 then return p end
+  return nil
+end
+
+local function genderOf(b)
+  local g = monOf(b).gender
+  if g == "M" or g == "F" then return g end
+  return nil
 end
 
 -- the status moves with a rule of their own (effect byte 250)
@@ -373,7 +533,225 @@ local function statusRule(rule, ad, user, target, M)
       ad:say(prefixed(ad, user) .. "'s status\nreturned to normal!")
     end
   else
-    return false
+    local okS, Secondary = pcall(require, "src.core.game3.battle.effects.secondary")
+    local function anim() if M and M.attackAnimation then M:attackAnimation() end end
+    local function fail() if M then M.failed = true end ad:sayFail() end
+    local function accuracy(mode)
+      if M and M.accuracyCheck then return M:accuracyCheck(mode or "normal", true) end
+      return true
+    end
+    local foe = target and target ~= user and target or nil
+    local turn = st and st.turn
+    if rule == "WORRY_SEED" or rule == "ENTRAINMENT" or rule == "SIMPLE_BEAM" or rule == "GASTRO_ACID" then
+      if not foe or not accuracy("lockon") then return true end
+      local cur = abilityOf(ad, foe)
+      if cur == "WONDER_GUARD" or (rule == "GASTRO_ACID" and foe.expAbilitySuppressed) then return fail() end
+      anim()
+      if rule == "GASTRO_ACID" then
+        foe.expTracedAbility, foe.expAbilitySuppressed = nil, true
+        ad:say(prefixed(ad, foe) .. "'s ability\nwas suppressed!")
+      else
+        local name = rule == "WORRY_SEED" and "INSOMNIA" or rule == "SIMPLE_BEAM" and "SIMPLE" or abilityOf(ad, user)
+        if not name or name == cur then return fail() end
+        setAbility(foe, name)
+        ad:say(prefixed(ad, foe) .. " acquired\n" .. tostring(name):gsub("_", " ") .. "!")
+      end
+    elseif rule == "DOODLE" then
+      if not foe or not accuracy("lockon") then return true end
+      local name = abilityOf(ad, foe)
+      if not name or name == "WONDER_GUARD" then return fail() end
+      anim()
+      for _, b in ipairs({ user, partnerOf(ad, user) }) do if b then setAbility(b, name) end end
+      ad:say(prefixed(ad, user) .. " acquired\n" .. tostring(name):gsub("_", " ") .. "!")
+    elseif rule == "SOAK" or rule == "MAGIC_POWDER" then
+      if not foe or not accuracy() then return true end
+      local t = rule == "SOAK" and 11 or 14
+      if foe.type1 == t and (foe.type2 == nil or foe.type2 == t) then return fail() end
+      anim()
+      foe.type1, foe.type2, foe.__ndxType3 = t, nil, nil
+      if foe.expTransform then foe.expTransform.type1, foe.expTransform.type2 = t, nil end
+      ad:say(prefixed(ad, foe) .. " transformed into\nthe " .. (t == 11 and "WATER" or "PSYCHIC") .. " type!")
+    elseif rule == "REFLECT_TYPE" then
+      if not foe or (foe.type1 == 9 and foe.type2 == nil) then return fail() end
+      anim()
+      user.type1, user.type2, user.__ndxType3 = foe.type1, foe.type2, foe.__ndxType3
+      if user.expTransform then user.expTransform.type1, user.expTransform.type2 = foe.type1, foe.type2 end
+      ad:say(prefixed(ad, user) .. "'s type became\nthe same as " .. prefixed(ad, foe) .. "'s!")
+    elseif rule == "TRICK_OR_TREAT" or rule == "FORESTS_CURSE" then
+      if not foe or not accuracy() then return true end
+      local t = rule == "TRICK_OR_TREAT" and 7 or 12
+      if foe.type1 == t or foe.type2 == t or foe.__ndxType3 == t then return fail() end
+      anim()
+      foe.__ndxType3 = t
+      ad:say((t == 7 and "GHOST" or "GRASS") .. " type was added\nto " .. prefixed(ad, foe) .. "!")
+    elseif rule == "TAR_SHOT" then
+      if not foe or not accuracy() then return true end
+      if foe.__ndxTarShot then return fail() end
+      anim()
+      foe.__ndxTarShot = true
+      changeStats(ad, foe, { "speed" }, -1, { allowPtr = true })
+      ad:say(prefixed(ad, foe) .. " became weaker\nto fire!")
+    elseif rule == "ELECTRIFY" then
+      if not foe or foe.__ndxMovedTurn == turn then return fail() end
+      anim()
+      foe.__ndxElectrified = turn
+      ad:say(prefixed(ad, foe) .. "'s moves have been\nelectrified!")
+    elseif rule == "ION_DELUGE" then
+      anim()
+      st.__ndxIonDeluge = turn
+      ad:say("A deluge of ions showers\nthe battlefield!")
+    elseif rule == "POWER_SPLIT" or rule == "GUARD_SPLIT" then
+      if not foe then return fail() end
+      anim()
+      local keys = rule == "POWER_SPLIT" and { "attack", "spAtk" } or { "defense", "spDef" }
+      for _, b in ipairs({ user, foe }) do b.__ndxStat = b.__ndxStat or {} end
+      local avg = {}
+      for _, k in ipairs(keys) do avg[k] = math.floor((statOf(user, k) + statOf(foe, k)) / 2) end
+      for _, k in ipairs(keys) do user.__ndxStat[k], foe.__ndxStat[k] = avg[k], avg[k] end
+      ad:say(prefixed(ad, user) .. " shared its\n" .. (rule == "POWER_SPLIT" and "power" or "guard") .. " with the target!")
+    elseif rule == "POWER_SWAP" or rule == "GUARD_SWAP" or rule == "HEART_SWAP" then
+      if not foe then return fail() end
+      anim()
+      local keys = rule == "POWER_SWAP" and { "attack", "spAtk" } or rule == "GUARD_SWAP" and { "defense", "spDef" }
+        or { "attack", "defense", "spAtk", "spDef", "speed", "accuracy", "evasion" }
+      for _, k in ipairs(keys) do
+        user.stages[k], foe.stages[k] = foe.stages[k] or 0, user.stages[k] or 0
+      end
+      ad:say(prefixed(ad, user) .. " switched stat changes\nwith the target!")
+    elseif rule == "SPEED_SWAP" then
+      if not foe then return fail() end
+      anim()
+      local a, b = statOf(user, "speed"), statOf(foe, "speed")
+      user.__ndxStat, foe.__ndxStat = user.__ndxStat or {}, foe.__ndxStat or {}
+      user.__ndxStat.speed, foe.__ndxStat.speed = b, a
+      ad:say(prefixed(ad, user) .. " switched SPEED\nwith the target!")
+    elseif rule == "POWER_TRICK" then
+      anim()
+      local a, d = statOf(user, "attack"), statOf(user, "defense")
+      user.__ndxStat = user.__ndxStat or {}
+      user.__ndxStat.attack, user.__ndxStat.defense = d, a
+      ad:say(prefixed(ad, user) .. " switched its\nATTACK and DEFENSE!")
+    elseif rule == "TOPSY_TURVY" then
+      if not foe or not accuracy() then return true end
+      local any = false
+      for k, v in pairs(foe.stages) do if (tonumber(v) or 0) ~= 0 then foe.stages[k] = -v any = true end end
+      if not any then return fail() end
+      anim()
+      ad:say(prefixed(ad, foe) .. "'s stat changes\nwere all reversed!")
+    elseif rule == "STRENGTH_SAP" then
+      if not foe or not accuracy() then return true end
+      if (foe.stages.attack or 0) <= -6 then return fail() end
+      anim()
+      local okD, Damage = pcall(require, "src.core.game3.battle.damage")
+      local amount = statOf(foe, "attack")
+      if okD and Damage.applyStage then amount = Damage.applyStage(amount, foe.stages.attack or 0) end
+      changeStats(ad, foe, { "attack" }, -1, { allowPtr = true })
+      if ad:hp(user) < ad:maxHp(user) and (user.__ndxHealBlock or 0) <= 0 then
+        ad:heal(user, math.max(1, math.floor(amount)))
+        ad:sayText("STRINGID_PKMNREGAINEDHEALTH", { def = user })
+      end
+    elseif rule == "VENOM_DRENCH" then
+      local status = foe and ad:status(foe)
+      if not (status == "PSN" or status == "TOX") or not accuracy() then
+        if foe and accuracy() then return fail() end
+        return true
+      end
+      anim()
+      changeStats(ad, foe, { "attack", "spAtk", "speed" }, -1, { allowPtr = true })
+    elseif rule == "CAPTIVATE" then
+      if not foe or not accuracy() then return true end
+      local g1, g2 = genderOf(user), genderOf(foe)
+      if not (g1 and g2 and g1 ~= g2) or abilityOf(ad, foe) == "OBLIVIOUS" then return fail() end
+      anim()
+      changeStats(ad, foe, { "spAtk" }, -2, { allowPtr = true })
+    elseif rule == "ACUPRESSURE" then
+      local who = (foe and foe.side == user.side) and foe or user
+      local open = {}
+      for _, k in ipairs({ "attack", "defense", "spAtk", "spDef", "speed", "accuracy", "evasion" }) do
+        if (who.stages[k] or 0) < 6 then open[#open + 1] = k end
+      end
+      if #open == 0 then return fail() end
+      anim()
+      changeStats(ad, who, { open[ad:roll(1, #open)] }, 2, { user = who == user, certain = true })
+    elseif rule == "CLANGOROUS_SOUL" or rule == "FILLET_AWAY" then
+      local cost = rule == "CLANGOROUS_SOUL" and math.floor(ad:maxHp(user) / 3) or math.floor(ad:maxHp(user) / 2)
+      local list = rule == "CLANGOROUS_SOUL" and STATS5 or { "attack", "spAtk", "speed" }
+      local room = false
+      for _, k in ipairs(list) do if (user.stages[k] or 0) < 6 then room = true end end
+      if ad:hp(user) <= cost or not room then return fail() end
+      anim()
+      ad:applyHpLoss(user, cost)
+      changeStats(ad, user, list, rule == "CLANGOROUS_SOUL" and 1 or 2, { user = true, certain = true })
+    elseif rule == "NO_RETREAT" then
+      local room = false
+      for _, k in ipairs(STATS5) do if (user.stages[k] or 0) < 6 then room = true end end
+      if not room or user.__ndxNoRetreat then return fail() end
+      anim()
+      changeStats(ad, user, STATS5, 1, { user = true, certain = true })
+      if not (user.expTrapped or user.escapePrevention) then
+        user.expTrapped, user.escapePrevention, user.__ndxNoRetreat = true, true, true
+        ad:say(prefixed(ad, user) .. " can no longer escape\nbecause it used NO RETREAT!")
+      end
+    elseif rule == "GEAR_UP" or rule == "MAGNETIC_FLUX" then
+      local list = rule == "GEAR_UP" and { "attack", "spAtk" } or { "defense", "spDef" }
+      local any = false
+      for _, b in ipairs({ user, partnerOf(ad, user) }) do
+        local ab = b and abilityOf(ad, b)
+        if ab == "PLUS" or ab == "MINUS" then
+          if not any then anim() end
+          if changeStats(ad, b, list, 1, { user = b == user, certain = true }) then any = true end
+        end
+      end
+      if not any then return fail() end
+    elseif rule == "ROTOTILLER" or rule == "FLOWER_SHIELD" then
+      local any = false
+      for _, b in ipairs(ad:activeBattlers()) do
+        if ad:hasType(b, 12) and (rule == "FLOWER_SHIELD" or (b.semiInvulnerable == nil and ad:hasType(b, 12))) then
+          if not any then anim() end
+          local list = rule == "ROTOTILLER" and { "attack", "spAtk" } or { "defense" }
+          if changeStats(ad, b, list, 1, { user = b == user, certain = b == user, allowPtr = b ~= user }) then any = true end
+        end
+      end
+      if not any then return fail() end
+    elseif rule == "DECORATE" or rule == "AROMATIC_MIST" then
+      local ally = partnerOf(ad, user)
+      if not ally then return fail() end
+      anim()
+      if rule == "DECORATE" then changeStats(ad, ally, { "attack", "spAtk" }, 2, { certain = true })
+      else changeStats(ad, ally, { "spDef" }, 1, { certain = true }) end
+    elseif rule == "STUFF_CHEEKS" then
+      local item = itemOf(user)
+      if not isBerry(item) or (user.stages.defense or 0) >= 6 then return fail() end
+      anim()
+      ad:say(prefixed(ad, user) .. " ate its\n" .. itemName(item) .. "!")
+      consume(ad, user)
+      changeStats(ad, user, { "defense" }, 2, { user = true, certain = true })
+    elseif rule == "POWDER" then
+      if not foe or not accuracy() then return true end
+      anim()
+      foe.__ndxPowder = turn
+      ad:say(prefixed(ad, foe) .. " is covered\nin powder!")
+    elseif rule == "PSYCHO_SHIFT" then
+      local status = ad:status(user)
+      if not foe or not status or ad:status(foe) or not accuracy() then
+        if foe and not (status and not ad:status(foe)) then return fail() end
+        return true
+      end
+      if not ad:applyStatus(foe, status, user) then return fail() end
+      anim()
+      ad:clearStatus(user)
+      ad:say(prefixed(ad, user) .. " transferred its\nstatus to " .. prefixed(ad, foe) .. "!")
+    elseif rule == "MIRACLE_EYE" then
+      if not foe or foe.__ndxMiracleEye or not accuracy() then
+        if foe and foe.__ndxMiracleEye then return fail() end
+        return true
+      end
+      anim()
+      foe.expIdentified, foe.__ndxMiracleEye = true, true
+      ad:sayText("STRINGID_PKMNIDENTIFIED", { atk = user, def = foe })
+    else
+      return false
+    end
   end
   return true
 end
@@ -453,8 +831,12 @@ function MoveRules.install(opts)
     Damage.calc = function(attacker, defender, moveId, o, ...)
       local num = moveNum(moveId)
       local rule = num and MoveRules._rules[num]
+      local st = o and o.adapter and o.adapter._st
       local general = type(attacker) == "table" and type(defender) == "table"
-        and (attacker.__ndxLaserFocus or defender.__ndxGlaiveRush)
+        and (attacker.__ndxLaserFocus or defender.__ndxGlaiveRush or attacker.__ndxStat or defender.__ndxStat
+             or defender.__ndxType3 or defender.__ndxTarShot or defender.__ndxMiracleEye
+             or (attacker.__ndxElectrified and st and attacker.__ndxElectrified == st.turn)
+             or (st and st.__ndxIonDeluge == st.turn))
       if not ((rule or general) and type(attacker) == "table" and type(defender) == "table") then
         return calc(attacker, defender, moveId, o, ...)
       end

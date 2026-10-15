@@ -83,6 +83,8 @@ return function(mod)
   -- one of them are left out
   local NewMoves = loadSibling(mod, "src/moves.lua")
   local TypeIcons = loadSibling(mod, "src/type_icons.lua")
+  -- optional: without it every new move plays the cart animation named in data/moves.lua
+  local MoveAnims = loadSibling(mod, "src/anims.lua")
   -- optional: without it every newer ability stays the closest Gen 3 one
   local RealAbilities = loadSibling(mod, "src/abilities.lua")
   -- optional: without it the moves with new mechanics are plain hits or do nothing
@@ -127,6 +129,16 @@ return function(mod)
     if r.id == "MANAPHY" then manaphySlot = r.slot elseif r.id == "PHIONE" then phioneSlot = r.slot end
   end
   -- a form of a cart species (Hisuian Qwilfish) has no cry of its own: it plays its base's
+  -- the Fairy type's data (data/types.lua) plus this mod's own Fairy moves
+  local function fairyData()
+    local data = read("data/types.lua") or {}
+    data.moves = data.moves or {}
+    for _, id in ipairs(NewMoves and NewMoves.fairy(registeredMoves) or {}) do
+      data.moves[#data.moves + 1] = id
+    end
+    return data
+  end
+
   -- in the save editor, do on mods.loaded what a game does before game.ready, plus this mod's
   -- own repairs, and list every species and form in the editor's picker
   if inEditor then
@@ -144,6 +156,20 @@ return function(mod)
       local n = Editor.addToCatalog(ev and ev.data, registered, registeredForms, mod.content.pokemon)
       local items = Editor.addItems(ev and ev.data, registeredItems, require)
       local moves = Editor.addMoves(ev and ev.data, registeredMoves)
+      -- the Fairy type (src/types.lua): species types, the chart and the type's name; the editor
+      -- writes type names as text, so no badge art
+      if FairyTypes then
+        local okF, errF = pcall(function()
+          local formSlots = {}
+          for _, f in ipairs(registeredForms) do formSlots[f.id] = f.slot end
+          local data = fairyData()
+          FairyTypes.install({ data = data, require = require, log = mod.log, formSlots = formSlots })
+          local nums = {}
+          for _, name in ipairs(data.moves) do nums[#nums + 1] = FairyTypes.moveNum(require, name) end
+          Editor.retypeMoves(ev and ev.data, nums, "FAIRY")
+        end)
+        if not okF then mod.log:warn("save editor: the Fairy type is off (%s)", tostring(errF)) end
+      end
       mod.log:info("save editor: %d species and forms, %d items, %d moves listed", n, items, moves)
     end)
   end
@@ -183,6 +209,12 @@ return function(mod)
       local okMoves, movesErr = pcall(NewMoves.install, { moves = registeredMoves, require = require, log = mod.log,
         family = (gameName:find("firered", 1, true) or gameName:find("leafgreen", 1, true)) and "frlg" or "rse" })
       if not okMoves then mod.log:warn("the new moves are incomplete: %s", tostring(movesErr)) end
+    end
+    -- their battle animations from pokeemerald-expansion (src/anims.lua), outside src/moves.lua's
+    if NewMoves and MoveAnims then
+      local okAn, anErr = pcall(MoveAnims.install, { data = read("data/anims.lua") or {}, moves = registeredMoves,
+        require = require, log = mod.log })
+      if not okAn then mod.log:warn("new move animations are off: %s", tostring(anErr)) end
     end
     -- the new moves' mechanics Gen 3 lacks (src/move_effects.lua)
     if MoveEffects then
@@ -226,12 +258,7 @@ return function(mod)
             frlgIcon = img
           end
         end
-        local fairyData = read("data/types.lua") or {}
-        fairyData.moves = fairyData.moves or {}
-        for _, id in ipairs(NewMoves and NewMoves.fairy(registeredMoves) or {}) do
-          fairyData.moves[#fairyData.moves + 1] = id
-        end
-        FairyTypes.install({ data = fairyData, require = require, log = mod.log,
+        FairyTypes.install({ data = fairyData(), require = require, log = mod.log,
           formSlots = formSlots, art = { frlg = frlgIcon } })
         -- Ruby/Sapphire/Emerald's summary icon draws through a local (src/type_icons.lua)
         local okVer, GVer = pcall(require, "src.core.GameVersion")

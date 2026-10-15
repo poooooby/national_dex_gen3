@@ -50,7 +50,7 @@ end
 
 local MOVE = { ROCK_TOMB = 317, GIGA_DRAIN = 202, AERIAL_ACE = 332, FURY_SWIPES = 154, PSYBEAM = 60,
                TAKE_DOWN = 36, MIMIC = 102, STOMP = 23, TAUNT = 269, OUTRAGE = 200,
-               DRAGONBREATH = 225, CHARM = 204, SWEET_KISS = 186, TACKLE = 33 }
+               DRAGONBREATH = 225, DRAGON_PULSE = 363, CHARM = 204, SWEET_KISS = 186, TACKLE = 33 }
 
 local function knows(from, to, move, level)
   local what = from .. " knowing " .. tostring(move)
@@ -69,10 +69,10 @@ knows("BONSLY", "SUDOWOODO", "MIMIC", 16)
 knows("MIME_JR", "MR_MIME", "MIMIC", 16)
 knows("STEENEE", "TSAREENA", "STOMP", 28)
 knows("CLOBBOPUS", "GRAPPLOCT", "TAUNT", 35)
-knows("POIPOLE", "NAGANADEL", "OUTRAGE", 45)
+knows("POIPOLE", "NAGANADEL", "DRAGON_PULSE", 45)
 knows("DIPPLIN", "HYDRAPPLE", "DRAGONBREATH", 40)
 T.eq(up("LICKITUNG", 29, { moves = { MOVE.ROCK_TOMB } }), nil, "Lickitung has a level floor (30)")
-T.eq(up("POIPOLE", 39, { moves = { MOVE.OUTRAGE } }), nil, "and Poipole one (40)")
+T.eq(up("POIPOLE", 39, { moves = { MOVE.DRAGON_PULSE } }), nil, "and Poipole one (40)")
 
 -- the stand-in moves are teachable (TM) or learnt by level-up by the cart species that use them
 do
@@ -101,6 +101,12 @@ do
   T.check(learns("AIPOM", MOVE.FURY_SWIPES), "Aipom learns Fury Swipes")
   T.check(learns("GIRAFARIG", MOVE.PSYBEAM), "Girafarig learns Psybeam")
   T.check(learns("DUNSPARCE", MOVE.TAKE_DOWN), "Dunsparce learns Take Down")
+  -- this mod's own species: the move each needs is in its own learnset (a newer move becoming
+  -- real must not leave a stand-in nothing teaches)
+  for _, c in ipairs({ { "BONSLY", "MIMIC" }, { "MIME_JR", "MIMIC" }, { "STEENEE", "STOMP" },
+      { "CLOBBOPUS", "TAUNT" }, { "POIPOLE", "DRAGON_PULSE" }, { "DIPPLIN", "DRAGONBREATH" } }) do
+    T.check(learns(c[1], MOVE[c[2]]), c[1] .. " learns " .. c[2])
+  end
 end
 
 -- Eevee: friendship and a Fairy-ish move, ahead of Espeon / Umbreon

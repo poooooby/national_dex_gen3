@@ -1,21 +1,20 @@
 # Added Pokémon
 
 National Dex Gen 3 adds 639 species, National Dex #387–1025 (Generations 4–9), to
-FireRed, LeafGreen, Ruby, Sapphire and Emerald. Each entry lists the Gen 3 typing, the ability it
+FireRed, LeafGreen, Ruby, Sapphire and Emerald. Each entry lists the typing, the abilities it
 has in this game, and its level-up learnset (`level move`).
 
 *Generated from `data/species/` by `tools/build_docs.lua`.*
 
 ## How to read the entries
 
-- **Ability.** Gen 3 can't take new abilities, so each newer ability is mapped to the closest one
-  Gen 3 has (for example Simple becomes Own Tempo, Moxie becomes Guts). A Pokémon shows and acts
-  like the Gen 3 ability listed here, not its real one. A second name is its second ability slot.
-- **Typing.** Gen 3 has no Fairy type: a Fairy half is dropped, and a pure Fairy is Normal. Togekiss
-  and its relatives keep their Gen 5 typing (Normal / Flying).
-- **Learnset.** The list keeps the same length as in the modern games. Gen 3 has only its own 354
-  moves, so a newer move is replaced, at the same level, by the closest Gen 3 move (same type where
-  possible, then similar power and effect). Some moves therefore differ from the real games.
+- **Ability.** 52 newer abilities work for real ([the list](abilities.md));
+  any other is the closest Gen 3 ability (for example Simple becomes Own Tempo), which the
+  Pokémon shows and acts like. A second name is its second ability slot.
+- **Typing.** The modern typing, Fairy included (Gen 6's type chart).
+- **Learnset.** The same moves at the same levels as in the modern games. Newer moves work for
+  real ([the list](moves.md)); the few that can't are replaced, at the same level, by the closest
+  Gen 3 move.
 - TM, HM, tutor and egg moves are not listed here.
 
 ## Generations
