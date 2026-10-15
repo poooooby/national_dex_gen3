@@ -67,6 +67,7 @@ Open **OPTIONS → MODS → National Dex Gen 3**.
 |---|---|---|---|
 | **Clock Source** | In-game / Device | In-game | Which clock time-of-day evolutions read (Midnight Lycanroc, Alcremie's night and day creams, Budew, Riolu, Chingling, Snom). FireRed and LeafGreen have no clock, so they always use the device's. |
 | **National Dex** | On / Off | Off | Turns the National Pokédex on from the start, instead of earning it in the story. Nothing is written to your save. |
+| **Modern Moves** | On / Off | Off | The original 386 Pokémon also learn the newer moves they learn today, at the same levels (Clefairy learns Moonblast at 44), plus newer egg moves. Their Gen 3 moves stay, and moves they already know are kept if you turn it off. The save editor follows this setting. |
 | **Register Owned** | On / Off | On | Opening the Pokédex counts every Pokémon in your party and PC as seen and caught, handy for Pokémon added with a save editor. |
 
 ## 💾 Installation
@@ -99,9 +100,10 @@ This mod adds the Pokémon. Two companions bring them to life:
 - **Some evolutions are adapted.** Conditions Gen 3 can't check (a known move, rain, a held item
   at a time of day ...) get stand-ins, e.g. Piloswine → Mamoswine while knowing Rock Tomb, and
   Galarian Farfetch'd → Sirfetch'd after 3 critical hits in one battle.
-- **TM, tutor and egg moves** are limited to what Gen 3 has.
+- **TM and tutor moves** are Gen 3's own. Newer moves are learned by level-up and as egg moves,
+  and the Move Reminder offers every level-up move up to a Pokémon's level, however long its list.
 - **The original 386 Pokémon,** the story, trainers and maps are unchanged, apart from the
-  originals' Fairy typing and their new evolutions.
+  originals' Fairy typing, their new evolutions and, with **Modern Moves** on, their newer moves.
 - **A few abilities work in part.** Leaf Guard, Sweet Veil and Flower Veil stop status moves but
   not a status an attack can cause; Super Luck doesn't stack with a high critical-hit move;
   Ice Body and Snow Cloak don't block hail damage.

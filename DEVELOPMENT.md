@@ -52,6 +52,18 @@ When the engine reloads its species tables, the mod also repairs evolution targe
 registry write can point them at slot 0) and name / National Dex number lookup, and adds tutor
 compatibility to the engine's tutor data.
 
+## Modern Moves (option)
+
+`data/species/modern.lua` (`python tools/build_modern_learnsets.py`, after `tools/build_moves.py`):
+for National #1-386, the level-up rows and egg moves of the newest game that lists the species
+(`build_species.VERSION_GROUPS`) whose move is a real newer move here. `src/modern_learnsets.lua`
+replaces each cart list with a merged copy while `modern_moves` is on (weak-keyed `ours[list]`
+remembers the cart's list, so turning it off restores it and a reload re-applies), on
+`game.ready`, `mod.options_changed` and, in the save editor, `mods.loaded`. Egg moves only go to
+species that already have a cart egg-move list. `ModernLearnsets.installRelearner` (always on)
+wraps `MoveLearn.relearnableMoves`, whose local cap of 20 rows would hide the rest of a modern
+learnset. Test: `tests/modern_learnsets_test.lua`; the editor half is in `editor_stock_test.lua`.
+
 ## Move animations
 
 `src/anims.lua` wraps `Anim.scriptForMove` (outside `src/moves.lua`'s, which plays the cart move

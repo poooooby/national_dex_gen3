@@ -85,6 +85,8 @@ return function(mod)
   local TypeIcons = loadSibling(mod, "src/type_icons.lua")
   -- optional: without it every new move plays the cart animation named in data/moves.lua
   local MoveAnims = loadSibling(mod, "src/anims.lua")
+  -- the Modern Moves option: the original 386 also learn their newer moves
+  local ModernLearnsets = loadSibling(mod, "src/modern_learnsets.lua")
   -- optional: without it every newer ability stays the closest Gen 3 one
   local RealAbilities = loadSibling(mod, "src/abilities.lua")
   -- optional: without it the moves with new mechanics are plain hits or do nothing
@@ -139,6 +141,27 @@ return function(mod)
     return data
   end
 
+  -- the Modern Moves option (src/modern_learnsets.lua): after the repairs and the new moves'
+  -- numbers; follows the option when it changes in the mod menu
+  local applyModern
+  local function installModern()
+    if not (ModernLearnsets and NewMoves) or applyModern then return end
+    local okM, fn = pcall(ModernLearnsets.install, { data = read("data/species/modern.lua") or {},
+      require = require, log = mod.log,
+      enabled = function()
+        local okGet, value = pcall(function() return mod.options:get("modern_moves") end)
+        return okGet and value == true
+      end })
+    if okM then applyModern = fn else mod.log:warn("modern moves are off: %s", tostring(fn)) end
+    -- the Move Reminder past a learnset's 20th row (this mod's species have longer ones too)
+    pcall(ModernLearnsets.installRelearner, require)
+  end
+  mod.events:on("mod.options_changed", function(ev)
+    if type(ev) == "table" and ev.mod == mod.id and ev.key == "modern_moves" and applyModern then
+      pcall(applyModern)
+    end
+  end)
+
   -- in the save editor, do on mods.loaded what a game does before game.ready, plus this mod's
   -- own repairs, and list every species and form in the editor's picker
   if inEditor then
@@ -146,6 +169,8 @@ return function(mod)
       Editor.prepare(ev, require, function() fixups.install(nil) end, mod.log)
       -- the new moves: learnset numbers, names, texts (src/moves.lua)
       if NewMoves then pcall(NewMoves.install, { moves = registeredMoves, require = require, log = mod.log, family = "frlg" }) end
+      -- the Modern Moves option, as the player set it
+      installModern()
       -- the real abilities' names, texts and ability pairs (src/abilities.lua)
       if RealAbilities then
         local formSlots = {}
@@ -216,6 +241,7 @@ return function(mod)
         require = require, log = mod.log })
       if not okAn then mod.log:warn("new move animations are off: %s", tostring(anErr)) end
     end
+    installModern()
     -- the new moves' mechanics Gen 3 lacks (src/move_effects.lua)
     if MoveEffects then
       local okFx, fxErr = pcall(MoveEffects.install, { moves = registeredMoves, require = require, log = mod.log })

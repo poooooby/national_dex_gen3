@@ -38,10 +38,21 @@ local Data = require("src.core.Data")
 local MonOps = require("MonOps")
 local P = require("src.core.game3.pokemon")
 
--- what App.load does, in its order
+-- what App.load does, in its order; the player has turned Modern Moves on (the editor reads the
+-- same saved options as the game; nothing is written back from this test)
+local SaveData = require("src.core.SaveData")
+local loadOptions, saveOptions = SaveData.loadOptions, SaveData.saveOptions
+SaveData.loadOptions = function(...)
+  local o = loadOptions(...) or {}
+  o.modOptions = o.modOptions or {}
+  o.modOptions.national_dex_gen3 = { modern_moves = true }
+  return o
+end
+SaveData.saveOptions = function() end
 Data:load()
 Gen.bindGame3Data(Data)
 local run = T.sdk.loadMods({ "mods/national_dex_gen3" }, { data = Data, generation = 3 })
+SaveData.loadOptions, SaveData.saveOptions = loadOptions, saveOptions
 T.eq(#run.errors, 0, "the mod loads in the editor (" .. tostring(run.errors[1]) .. ")")
 
 for _, id in ipairs({ "TURTWIG", "ABOMASNOW", "PECHARUNT" }) do
@@ -189,6 +200,24 @@ do
   T.eq(Data.moves.MOONBLAST and Data.moves.MOONBLAST.type, "FAIRY", "MOONBLAST is listed as a Fairy move")
   local charm = Data.moves.CHARM
   T.check(charm and (charm.type == "FAIRY" or charm.type == 18), "and so is the cart's CHARM (" .. tostring(charm and charm.type) .. ")")
+end
+
+-- Modern Moves: on in the player's options, so the editor's learnsets have the newer moves
+do
+  local MOONBLAST = Data.moves.MOONBLAST and Data.moves.MOONBLAST.moveId
+  local clefairy = P.speciesFromNational(35)
+  local function knows(list)
+    for _, r in ipairs(list) do if (r[2] or r) == MOONBLAST then return true end end
+    return false
+  end
+  T.check(knows(P.learnset(clefairy)), "with Modern Moves on, the editor's Clefairy learns Moonblast")
+  local mon = MonOps.create(Data, "CLEFAIRY", 50, 3)
+  local has = false
+  for _, m in ipairs(mon.moves) do if tonumber(m.moveId or m.id or m) == MOONBLAST then has = true end end
+  T.check(has, "and a level 50 Clefairy made in the editor knows it")
+  run.loader.modOptions.national_dex_gen3 = { modern_moves = false }
+  run.loader.events:emit("mod.options_changed", { mod = "national_dex_gen3", key = "modern_moves", value = false })
+  T.check(not knows(P.learnset(clefairy)), "turned off, the cart's learnset is back")
 end
 
 run.release()

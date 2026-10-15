@@ -7,6 +7,16 @@ All notable changes to this mod are documented here, in
 
 ### Added
 
+- **Modern Moves option** (off by default): the original 386 also learn the newer moves they
+  learn today (`data/species/modern.lua` from `tools/build_modern_learnsets.py`: the real newer
+  moves of the newest game listing the species, 1307 level-up rows on 374 species, and newer
+  egg moves). `src/modern_learnsets.lua` swaps each cart list for a merged copy while the option
+  is on and puts the cart's own back when it's off, live on `mod.options_changed`; the save
+  editor applies it on `mods.loaded` from the player's saved options. Test:
+  `modern_learnsets_test.lua`, `editor_stock_test.lua`.
+- **The Move Reminder past 20 rows:** the engine reads only a learnset's first 20 rows (as the cart
+  does); a wrap of `MoveLearn.relearnableMoves` lists every row up to the level for longer ones
+  (many of this mod's species, and the 386 with Modern Moves on).
 - **Move animations from pokeemerald-expansion.** 134 newer moves play their modern-style
   animation, translated from RHH's pokeemerald-expansion 1.17.2 (credited in README, CREDITS.md,
   LICENSE) by `tools/build_anims.py` into `data/anims.lua`: only scripts built from the templates,

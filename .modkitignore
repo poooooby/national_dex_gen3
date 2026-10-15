@@ -59,6 +59,8 @@ tests/move_effects_test.lua
 tests/move_rules_test.lua
 tests/move_field_test.lua
 tests/anims_test.lua
+tests/modern_learnsets_test.lua
+tools/build_modern_learnsets.py
 tools/build_anims.py
 tools/anim_known.lua
 

@@ -21,6 +21,13 @@ return {
     description = "Turn the National Pokedex on from the start, instead of earning it in the story. Nothing is written to your save, so turning this off puts the game back as it was.",
   },
   {
+    key = "modern_moves",
+    label = "Modern Moves",
+    type = "toggle",
+    default = false,
+    description = "Let the original 386 Pokemon learn the newer moves they learn in today's games, at the same levels (Clefairy learns Moonblast at 44), plus their newer egg moves. Their own Gen 3 moves stay. Moves a Pokemon already knows are kept when you turn this off.",
+  },
+  {
     key = "register_owned",
     label = "Register Owned",
     type = "toggle",
