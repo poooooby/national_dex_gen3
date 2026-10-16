@@ -65,6 +65,7 @@ tests/tm_case_test.lua
 tests/tms_test.lua
 tools/build_tms.py
 docs/tms.md
+docs/fairy.md
 tests/fixtures/tm_item/main.lua
 tests/fixtures/tm_item/manifest.json
 tools/build_modern_learnsets.py
