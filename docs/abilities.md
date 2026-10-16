@@ -7,7 +7,7 @@ differently from the newer games. Gen 3 decides physical or special by a move's 
 
 | Ability | Summary screen | What it does |
 |---|---|---|
-| Adaptability | Powers up same-type moves. | STAB moves deal 2x instead of the usual 1.5x. |
+| Adaptability | Powers up same-type moves. | Moves of its own type deal 2x instead of the usual 1.5x. |
 | Aftermath | Hurts the foe as it faints. | If it faints from a contact move, the attacker loses 1/4 of its max HP. |
 | Anticipation | Senses the foe's danger. | On entering battle it shudders if the foe knows a damaging move that is super effective against it. |
 | Beast Boost | KOs raise its best stat. | When it knocks out a foe with a move, its highest stat (not counting HP) rises one stage. |
