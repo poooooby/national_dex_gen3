@@ -11,7 +11,14 @@ return {
       { "In-game", "game" },
       { "Device", "device" },
     },
-    description = "Which clock the time-of-day evolutions read (Midnight Lycanroc, the night and day Alcremie creams, Budew, Riolu, Chingling and Snom). In-game is the cart's own clock; Device is the real time on your device. FireRed and LeafGreen have no clock of their own and always use the device.",
+    description = "Which clock the time of day comes from: the Day & Night look and the time-of-day evolutions (Midnight Lycanroc, the night and day Alcremie creams, Budew, Riolu, Chingling and Snom). In-game is the cart's own clock; Device is the real time on your device. FireRed and LeafGreen have no clock of their own and always use the device.",
+  },
+  {
+    key = "day_night",
+    label = "Day & Night",
+    type = "toggle",
+    default = true,
+    description = "Tints the outdoors by time of day: morning (4-10), afternoon (the game's own look, 10-17), evening (17-20) and night (20-4). It changes when you enter an area. Follows Clock Source. Indoors, caves, battles and menus are never tinted.",
   },
   {
     key = "unlock_national",

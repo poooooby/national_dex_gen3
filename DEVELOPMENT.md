@@ -81,6 +81,24 @@ species that already have a cart egg-move list. `ModernLearnsets.installRelearne
 wraps `MoveLearn.relearnableMoves`, whose local cap of 20 rows would hide the rest of a modern
 learnset. Test: `tests/modern_learnsets_test.lua`; the editor half is in `editor_stock_test.lua`.
 
+## Day & Night (option)
+
+`src/day_night.lua`, option `day_night` (default on), hours from `Clock.phase` (src/clock.lua:
+morning 4-10, afternoon 10-17, evening 17-20, night 20-4; night = `Clock.isNight`). The grade
+(per-phase gain, saturation, lift in `DayNight.PHASES`; afternoon is identity and draws nothing
+extra) is decided on `map.entered` (eased over `EASE` seconds when `via == "connection"`),
+`map.reloaded`, `save.loaded`, `game.ready` and `mod.options_changed` (day_night, clock_source),
+never per frame. Only map types 1, 2, 3, 5, 6 (`DayNight.OUTDOOR`).
+
+Seam: Gen 3's world (tiles, people, weather, Flash) is the Renderer's world canvas, the menus its
+UI canvas. The wrap of `Renderer.blitCanvas` redirects the world blit into a window-size scratch
+canvas and draws that through the shader. gen3-hd-sprites draws its HD overworld sprites inside
+the same blit (its own `blitCanvas` wrap), so ours has to be outermost: the `Renderer.endFrame`
+wrap re-wraps if anything wrapped `blitCanvas` after us (an inner copy passes through on `busy`).
+Tilt mode draws the world without `blitCanvas`, so there (and with no shader) a multiply + add
+overlay goes on the view just before the UI blit. Battles and full-screen menus never open a
+world pass. Test: `tests/day_night_test.lua` (stubbed `love.graphics` and Renderer).
+
 ## Move animations
 
 `src/anims.lua` wraps `Anim.scriptForMove` (outside `src/moves.lua`'s, which plays the cart move

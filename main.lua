@@ -98,6 +98,8 @@ return function(mod)
   local MoveField = loadSibling(mod, "src/move_field.lua")
   if MoveField then MoveField.hooks(mod) end
   if RealAbilities then RealAbilities.hooks(mod) end
+  -- optional: without it the overworld keeps the game's own look at every hour
+  local DayNight = loadSibling(mod, "src/day_night.lua")
   local Api = loadSibling(mod, "src/api.lua")
   if not (Species and Fixups and Items and ItemArt and CryArt and Shops and Art and ConditionalEvos and Clock and Counters and Breeding and DexPatch and NationalUnlock and DexSync and DexRepeat and Editor and MonAnim and Api) then return end
 
@@ -440,5 +442,34 @@ return function(mod)
     isNight = function(session) return Clock.isNight(session, clockSource()) end,
     isDusk = function(session) return Clock.isDusk(session, clockSource()) end,
   })
+  -- the overworld by time of day (src/day_night.lua, the "Day & Night" option): decided on
+  -- entering an area, from the same clock as the evolutions; not in the save editor
+  if DayNight and not inEditor then
+    local function dayNightOn()
+      local okGet, value = pcall(function() return mod.options:get("day_night") end)
+      return okGet and value ~= false
+    end
+    local function phaseNow()
+      local okR, Runtime = pcall(require, "src.core.game3.runtime")
+      local session = okR and Runtime.getSession and Runtime.getSession() or nil
+      return Clock.phase(session, clockSource())
+    end
+    local installed = false
+    mod.events:on("game.ready", function()
+      local okD, errD = pcall(function()
+        installed = DayNight.install({ require = require, log = mod.log, enabled = dayNightOn, phase = phaseNow })
+      end)
+      if not okD then mod.log:warn("day & night is off: %s", tostring(errD)) end
+    end, -100)
+    local function refresh(ev) if installed then pcall(DayNight.refresh, ev) end end
+    mod.events:on("map.entered", refresh)
+    mod.events:on("map.reloaded", function() refresh(nil) end)
+    mod.events:on("save.loaded", function() refresh(nil) end)
+    mod.events:on("mod.options_changed", function(ev)
+      if type(ev) == "table" and ev.mod == mod.id and (ev.key == "day_night" or ev.key == "clock_source") then
+        refresh(nil)
+      end
+    end)
+  end
   Api(mod, { species = registered, forms = registeredForms, bridges = bridges, art = art, dexPatch = DexPatch })
 end

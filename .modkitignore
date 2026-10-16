@@ -31,6 +31,7 @@ tests/forms_test.lua
 tools/form_list.py
 docs/pokemon/forms.md
 tests/clock_test.lua
+tests/day_night_test.lua
 tests/lycanroc_test.lua
 docs/evolutions-and-forms.md
 tests/gender_test.lua

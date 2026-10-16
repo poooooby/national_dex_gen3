@@ -10,12 +10,14 @@
 --             Emerald have one (Rtc.enabled); on FireRed and LeafGreen a "game"
 --             request falls back to the device clock, so those games always use it.
 -- Night is 20:00-04:00 and day is every other hour; dusk is the hour 19:00-20:00
--- (part of the day, the last hour before night).
+-- (part of the day, the last hour before night). The overworld tint (src/day_night.lua)
+-- splits the day HeartGold/SoulSilver's way: morning 04-10, afternoon 10-17, evening 17-20.
 
 local Clock = {}
 
 local NIGHT_BEGIN, NIGHT_END = 20, 4
 local DUSK_BEGIN = 19
+local AFTERNOON_BEGIN, EVENING_BEGIN = 10, 17
 
 local function rtc()
   local ok, Rtc = pcall(require, "src.core.game3.rtc")
@@ -51,6 +53,18 @@ end
 function Clock.isDusk(session, source)
   local hours = Clock.hours(session, source)
   return hours >= DUSK_BEGIN and hours < NIGHT_BEGIN
+end
+
+-- "morning" | "afternoon" | "evening" | "night" for an hour 0-23 (night as isNight)
+function Clock.phaseOf(hours)
+  if hours >= NIGHT_BEGIN or hours < NIGHT_END then return "night" end
+  if hours < AFTERNOON_BEGIN then return "morning" end
+  if hours < EVENING_BEGIN then return "afternoon" end
+  return "evening"
+end
+
+function Clock.phase(session, source)
+  return Clock.phaseOf(Clock.hours(session, source))
 end
 
 return Clock

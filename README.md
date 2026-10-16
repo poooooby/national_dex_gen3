@@ -62,6 +62,12 @@ Paldea Pokémon can live in Kanto and Hoenn.
   Pokémon has its modern typing, the originals too: Clefairy, Jigglypuff, Togepi, Snubbull,
   Marill, Mr. Mime, Ralts and Mawile are part Fairy, and Charm, Sweet Kiss and Moonlight are
   Fairy moves. Steel no longer resists Ghost and Dark, as in today's games.
+- 🌅 **Day and night:** the outdoors follows the clock. Mornings (4–10) are soft and hazy,
+  afternoons (10–17) are the game's own look, evenings (17–20) glow warm orange and nights
+  (20–4) turn a moonlit blue, dim enough to feel like night but bright enough to play. It
+  changes when you enter an area; houses, caves, battles and menus keep their usual colors.
+  Ruby, Sapphire and Emerald use the in-game clock (or your device's, see Clock Source), FireRed
+  and LeafGreen your device's.
 - 📖 **A bigger Pokédex:** The new Pokémon join the National Pokédex, with a FORMS page for
   species with alternate forms, and fast scrolling when you hold a direction.
 
@@ -71,8 +77,9 @@ Open **OPTIONS → MODS → National Dex Gen 3**.
 
 | Option | Choices | Default | What it does |
 |---|---|---|---|
-| **Clock Source** | In-game / Device | In-game | Which clock time-of-day evolutions read (Midnight Lycanroc, Alcremie's night and day creams, Budew, Riolu, Chingling, Snom). FireRed and LeafGreen have no clock, so they always use the device's. |
+| **Clock Source** | In-game / Device | In-game | Which clock Day & Night and the time-of-day evolutions read (Midnight Lycanroc, Alcremie's night and day creams, Budew, Riolu, Chingling, Snom). FireRed and LeafGreen have no clock, so they always use the device's. |
 | **National Dex** | On / Off | Off | Turns the National Pokédex on from the start, instead of earning it in the story. Nothing is written to your save. |
+| **Day & Night** | On / Off | On | Tints the outdoors for morning, evening and night; the afternoon is the game's own look. Changes when you enter an area. Indoors, caves, battles and menus are never tinted. |
 | **Modern Moves** | On / Off | On | The original 386 Pokémon also learn the newer moves they learn today, at the same levels (Clefairy learns Moonblast at 44), plus newer egg moves. Their Gen 3 moves stay, and moves they already know are kept if you turn it off. The save editor follows this setting. |
 | **Register Owned** | On / Off | On | Opening the Pokédex counts every Pokémon in your party and PC as seen and caught, handy for Pokémon added with a save editor. |
 

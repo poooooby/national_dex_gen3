@@ -5,6 +5,19 @@ All notable changes to this mod are documented here, in
 
 ## [Unreleased]
 
+### Added
+
+- **Day & Night** (option `day_night`, on by default): outdoor maps (town, city, route, ocean
+  route, underwater) get a colour grade by time of day: morning 4-10, afternoon 10-17 (the
+  game's own look), evening 17-20, night 20-4 (`Clock.phase`, same clock as the time-of-day
+  evolutions). Decided on `map.entered` / load / option change, eased over 1 s on a walking route
+  change. `src/day_night.lua` wraps `Renderer.blitCanvas` and draws the world blit (with
+  gen3-hd-sprites' HD sprites, drawn inside it) into a scratch canvas, then through a
+  gain / saturation / lift shader; `Renderer.endFrame` keeps the wrap outermost. Tilt mode, or a
+  shader that fails to compile, gets a multiply + add overlay instead. Battles and full-screen
+  menus have no world pass and are never graded. Test: `day_night_test.lua`; in-game on FireRed
+  and Emerald at 07/13/18/22.
+
 ### Changed
 
 - **Ability descriptions:** `docs/abilities.md` gives each added ability's full effect (every
