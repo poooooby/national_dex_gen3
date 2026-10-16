@@ -4,6 +4,7 @@
 --   docs/tms.md              the added TMs: move, price, where to buy, how many Pokemon learn it
 --   docs/moves.md            the added moves: type, power, accuracy, PP, what they do
 --   docs/abilities.md        the added abilities and what they do
+--   docs/fairy.md            every Fairy-type Pokemon, original, added and forms
 --   docs/pokemon.md          index of the added Pokemon
 --   docs/pokemon/genN.md     every added species of one generation: types, its
 --                            Gen 3 ability, and its level-up learnset
@@ -27,7 +28,8 @@ local national = load(cart .. "/national.lua")
 -- "ROCK HEAD" -> "Rock Head", "DOUBLE-EDGE" -> "Double-Edge", "MR. MIME" -> "Mr. Mime"
 local function title(s)
   s = tostring(s):lower():gsub("\226\128\153", "'")   -- a curly apostrophe is a plain one
-  return (s:gsub("(%a)([%w']*)", function(a, b) return a:upper() .. b end))
+  s = s:gsub("\195\137", "\195\169")                    -- lower() leaves UTF-8 alone: FLABÉBÉ
+  return (s:gsub("(%a)([%w'\128-\255]*)", function(a, b) return a:upper() .. b end))
 end
 
 -- ---- data
@@ -333,6 +335,10 @@ I[#I + 1] = "## Alternate forms"
 I[#I + 1] = ""
 I[#I + 1] = "- [Forms](pokemon/forms.md): Alolan, Galarian, Hisuian and Paldean forms, Wormadam's cloaks, the Rotom appliances,"
 I[#I + 1] = "  the Therian and Origin forms and more, each a Pokémon of its own."
+I[#I + 1] = ""
+I[#I + 1] = "## By type"
+I[#I + 1] = ""
+I[#I + 1] = "- [Fairy](fairy.md): every Fairy-type Pokémon, the originals that became part Fairy included."
 out("docs/pokemon.md", I)
 
 for g = 4, 9 do
@@ -432,6 +438,73 @@ for _, base in ipairs(group) do
   end
 end
 out("docs/pokemon/forms.md", F)
+
+-- ---- fairy.md: every Fairy-type Pokemon (data/types.lua is the typing the game uses)
+
+-- GitHub's heading anchor: lower case, punctuation dropped, spaces to hyphens
+local function anchor(text)
+  local a = text:gsub("\226\128\148", ""):lower()
+  return (a:gsub("[^%w%- \128-\255]", ""):gsub(" ", "-"))
+end
+local function hasFairy(list)
+  for _, ty in ipairs(list or {}) do if ty == "FAIRY" then return true end end
+  return false
+end
+local recordByDex = {}
+for _, r in ipairs(species) do recordByDex[r.dex] = r end
+local FY = {
+  "# Fairy-type Pokémon",
+  "",
+  "Every Pokémon that is part Fairy in this mod, with its typing as the game uses it. Fairy beats",
+  "Dragon, Dark and Fighting; Fire, Poison and Steel resist it; Dragon moves can't touch it, and",
+  "Poison and Steel moves hit it hard. [Back to the index](pokemon.md).",
+  "",
+  "*Generated from `data/types.lua` by `tools/build_docs.lua`.*",
+  "",
+  "## Pokémon",
+  "",
+  "| # | Pokémon | Type | |",
+  "|---|---|---|---|",
+}
+local dexes, originals = {}, 0
+for dex, list in pairs(fairy.species or {}) do if hasFairy(list) then dexes[#dexes + 1] = dex end end
+table.sort(dexes)
+for _, dex in ipairs(dexes) do
+  local r = recordByDex[dex]
+  local name = byDex[dex] or ("#" .. dex)
+  local typed = typesText(r or { dex = dex })
+  local where
+  if r then
+    local g = GEN[r.generation] or 0
+    where = string.format("[Generation %d](pokemon/gen%d.md#%s)", g, g, anchor(string.format("#%d %s", dex, title(r.name))))
+  else
+    originals = originals + 1
+    where = "Gen 1–3 original"
+  end
+  FY[#FY + 1] = string.format("| %d | %s | %s | %s |", dex, name, typed, where)
+end
+local fairyForms = {}
+for _, f in ipairs(forms) do
+  if hasFairy(fairy.forms and fairy.forms[f.id]) then fairyForms[#fairyForms + 1] = f end
+end
+table.sort(fairyForms, function(a, b)
+  if a.baseDex ~= b.baseDex then return a.baseDex < b.baseDex end
+  return a.slot < b.slot
+end)
+if #fairyForms > 0 then
+  FY[#FY + 1] = ""
+  FY[#FY + 1] = "## Forms"
+  FY[#FY + 1] = ""
+  FY[#FY + 1] = "| # | Form | Type |"
+  FY[#FY + 1] = "|---|---|---|"
+  for _, f in ipairs(fairyForms) do
+    local heading = string.format("%s — #%d", formName(f), f.baseDex)
+    FY[#FY + 1] = string.format("| %d | [%s](pokemon/forms.md#%s) | %s |", f.baseDex, formName(f), anchor(heading), typesText(f))
+  end
+end
+FY[#FY + 1] = ""
+FY[#FY + 1] = string.format("%d Pokémon (%d of them originals from #1–386) and %d forms.", #dexes, originals, #fairyForms)
+out("docs/fairy.md", FY)
 
 -- ---- moves
 
