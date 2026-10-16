@@ -3,6 +3,12 @@
 All notable changes to this mod are documented here, in
 [keep a changelog](https://keepachangelog.com/en/1.1.0/) format.
 
+## [1.1.1] - 2026-10-16
+
+### Fixed
+
+- The package no longer includes `docs/fairy.md` (a developer-side docs page; `.modkitignore`).
+
 ## [1.1.0] - 2026-10-15
 
 ### Added
