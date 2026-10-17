@@ -241,10 +241,16 @@ return function(mod)
       end
     end
   end
-  -- after Gen3Compat's own reload hook (registered while the game boots), so
-  -- its re-apply of registry data does not undo these repairs
+  -- The National Dex repairs (src/fixups.lua), before every game.ready listener at the default
+  -- priority: a mod that builds its species list on game.ready (Kanto Gear, over
+  -- 1..Dex.NATIONAL_MAX with Pokemon.speciesFromNational) must already see #387-1025 and, on
+  -- Emerald, their Pokedex entries. Gen3Compat applied the registries and registered its reload
+  -- hook while mods loaded, before game.ready, so nothing here waits on it; later reloads are
+  -- repaired by the reload hook fixups registers.
   mod.events:on("game.ready", function(ev)
     fixups.install(ev and ev.game or mod.game)
+  end, 1)
+  mod.events:on("game.ready", function(ev)
     -- the new moves' names, texts, contest rows and animations (src/moves.lua); before the
     -- Fairy type, which retypes the Fairy ones by name
     local okVerM, GVerM = pcall(require, "src.core.GameVersion")

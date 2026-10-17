@@ -3,6 +3,18 @@
 All notable changes to this mod are documented here, in
 [keep a changelog](https://keepachangelog.com/en/1.1.0/) format.
 
+## [1.1.2] - 2026-10-16
+
+### Fixed
+
+- **Kanto Gear shows the new Pokemon's names.** Kanto Gear (checked on 4.0.5 and 4.2.0) builds its species list on
+  `game.ready` at the default priority, over `1..Dex.NATIONAL_MAX` with
+  `Pokemon.speciesFromNational`, which ran before this mod's repairs (priority -100): it saw
+  #1-386 only, and its party screen showed a bare number for every newer Pokemon without a
+  nickname. The National Dex repairs (`fixups.install`) now run at priority 1, before it,
+  instead of -100 (Gen3Compat has applied the registries before game.ready, and later reloads
+  go through fixups' own reload hook). Test: `register_test.lua` (a default-priority listener sees #387-1025).
+
 ## [1.1.1] - 2026-10-16
 
 ### Fixed

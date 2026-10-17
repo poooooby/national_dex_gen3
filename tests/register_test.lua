@@ -101,7 +101,20 @@ T.eq(sylveon.types[1], "NORMAL", "pure Fairy becomes Normal")
 
 -- ------- reload repairs
 
+-- a mod that builds its species list on game.ready at the default priority (Kanto Gear
+-- walks 1..Dex.NATIONAL_MAX through Pokemon.speciesFromNational) sees every new species already
+local seenAtDefault = {}
+run.loader.events:on("game.ready", function()
+  local Dex = require("src.core.game3.dex")
+  local Pk = require("src.core.game3.pokemon")
+  seenAtDefault.max = Dex.NATIONAL_MAX
+  seenAtDefault.turtwig = Pk.speciesFromNational(387)
+  seenAtDefault.pecharunt = Pk.speciesFromNational(1025)
+end, 0)
 run.loader.events:emit("game.ready", {})
+T.eq(seenAtDefault.max, 1025, "a default-priority game.ready listener sees the National Dex up to #1025")
+T.eq(seenAtDefault.turtwig, 387 + 64, "and Turtwig (#387) at its slot")
+T.eq(seenAtDefault.pecharunt, 1025 + 64, "and Pecharunt (#1025)")
 
 -- Safari Zone flee rate (the registry has no field for it; the reload repair adds it):
 -- the band of FireRed's own Safari table by catch rate
