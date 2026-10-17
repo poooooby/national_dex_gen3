@@ -3,6 +3,19 @@
 All notable changes to this mod are documented here, in
 [keep a changelog](https://keepachangelog.com/en/1.1.0/) format.
 
+## [Unreleased]
+
+### Fixed
+
+- **Kanto Gear also gets the Fairy typing, new move names and ability texts.** 1.1.2 moved only
+  the National Dex repairs ahead of Kanto Gear's game.ready snapshot; the Fairy type, the new
+  moves' names and the real abilities still installed after it, so its party screen showed a
+  Fairy Pokemon's pre-Fairy typing (Sylveon as Normal). The whole game.ready install now runs at
+  priority 1, in its old internal order. Alternate forms still show a slot number there: Kanto
+  Gear lists species by National number and a form has none of its own. Test:
+  `register_test.lua` (the default-priority listener also sees Types.ID.FAIRY, Sylveon's Fairy
+  typing and a new move's name).
+
 ## [1.1.2] - 2026-10-16
 
 ### Fixed

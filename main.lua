@@ -241,16 +241,15 @@ return function(mod)
       end
     end
   end
-  -- The National Dex repairs (src/fixups.lua), before every game.ready listener at the default
-  -- priority: a mod that builds its species list on game.ready (Kanto Gear, over
-  -- 1..Dex.NATIONAL_MAX with Pokemon.speciesFromNational) must already see #387-1025 and, on
-  -- Emerald, their Pokedex entries. Gen3Compat applied the registries and registered its reload
-  -- hook while mods loaded, before game.ready, so nothing here waits on it; later reloads are
-  -- repaired by the reload hook fixups registers.
+  -- Priority 1: before every game.ready listener at the default priority. A mod that snapshots
+  -- game data on game.ready (Kanto Gear builds its species, move and type-name tables then,
+  -- over 1..Dex.NATIONAL_MAX) must already see everything this mod changes: the National Dex
+  -- repairs, the new moves' names, the Fairy type (Types.ID.FAIRY) and the real abilities.
+  -- Gen3Compat applied the registries and registered its reload hook while mods loaded, before
+  -- game.ready, so nothing here waits on it; a later reload is repaired by the hooks these
+  -- installs register.
   mod.events:on("game.ready", function(ev)
     fixups.install(ev and ev.game or mod.game)
-  end, 1)
-  mod.events:on("game.ready", function(ev)
     -- the new moves' names, texts, contest rows and animations (src/moves.lua); before the
     -- Fairy type, which retypes the Fairy ones by name
     local okVerM, GVerM = pcall(require, "src.core.GameVersion")
@@ -407,7 +406,7 @@ return function(mod)
       local okV, GV = pcall(require, "src.core.GameVersion")
       return okV and GV and GV.current or nil
     end, mod.log)
-  end, -100)
+  end, 1)
 
   -- art providers are asked about forms too, by their own id and slot
   local everySpecies = {}

@@ -110,11 +110,21 @@ run.loader.events:on("game.ready", function()
   seenAtDefault.max = Dex.NATIONAL_MAX
   seenAtDefault.turtwig = Pk.speciesFromNational(387)
   seenAtDefault.pecharunt = Pk.speciesFromNational(1025)
+  -- it also snapshots type names (Types.ID), each species' types and each move's name
+  local Types = require("src.core.game3.battle.types")
+  seenAtDefault.fairyId = Types.ID.FAIRY
+  local sylveon = Pk.speciesFromNational(700)
+  seenAtDefault.sylveonTypes = sylveon and Pk.types(sylveon) or nil
+  local Moves = require("src.core.game3.battle.moves")
+  seenAtDefault.moonblast = Moves.constName and Moves.constName(Moves.numForName("MOONBLAST"))
 end, 0)
 run.loader.events:emit("game.ready", {})
 T.eq(seenAtDefault.max, 1025, "a default-priority game.ready listener sees the National Dex up to #1025")
 T.eq(seenAtDefault.turtwig, 387 + 64, "and Turtwig (#387) at its slot")
 T.eq(seenAtDefault.pecharunt, 1025 + 64, "and Pecharunt (#1025)")
+T.eq(seenAtDefault.fairyId, 18, "and the Fairy type is already in Types.ID")
+T.eq(seenAtDefault.sylveonTypes and seenAtDefault.sylveonTypes[1], 18, "and Sylveon is already Fairy-typed")
+T.eq(seenAtDefault.moonblast, "MOONBLAST", "and a new move's name already resolves")
 
 -- Safari Zone flee rate (the registry has no field for it; the reload repair adds it):
 -- the band of FireRed's own Safari table by catch rate
