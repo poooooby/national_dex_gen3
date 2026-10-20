@@ -3,6 +3,22 @@
 All notable changes to this mod are documented here, in
 [keep a changelog](https://keepachangelog.com/en/1.1.0/) format.
 
+## [Unreleased]
+
+### Added
+
+- **Bigger PC** (option `big_pc`, on by default): 40 boxes (1200 Pokemon) on every Gen 3 game and
+  in the save editor (`src/big_pc.lua`). `Storage.TOTAL_BOXES_COUNT` is set while mods load, so a
+  Continue restores 40 boxes; every storage function, the box screen and catching read it live.
+  Boxes 15-40 are saved in `modData.national_dex_gen3.pc` (moved out on `save.writing`, back in on
+  `save.loading`), never in the save's own storage, so the core save stays a 14-box save:
+  option off, mod removed, the Box tool and .sav export keep them. Toggling in the menu moves them
+  live. `Storage.defaultWallpaper` gives boxes 15+ the 16 cart wallpapers in turn. Save editor:
+  `Gen.boxCount`, `Game3Adapter.ensureStorage` (its own 14) and the Gen 3 deposit replaced,
+  `hydrate`/`export` merge and split the save data. Tests: `big_pc_test.lua` (FireRed, Emerald,
+  Ruby), `editor_stock_test.lua`; in game: box 1 <-> 40 wrap and boxes 37/40 on FireRed,
+  Emerald, Ruby.
+
 ## [1.1.3] - 2026-10-16
 
 ### Fixed

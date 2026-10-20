@@ -35,6 +35,13 @@ return {
     description = "Let the original 386 Pokemon learn the newer moves they learn in today's games, at the same levels (Clefairy learns Moonblast at 44), plus their newer egg moves. Their own Gen 3 moves stay. Moves a Pokemon already knows are kept when you turn this off.",
   },
   {
+    key = "big_pc",
+    label = "Bigger PC",
+    type = "toggle",
+    default = true,
+    description = "40 PC boxes (1200 Pokemon) instead of 14. Turning it off hides boxes 15-40; the Pokemon in them are kept in your save and come back when you turn it on again.",
+  },
+  {
     key = "register_owned",
     label = "Register Owned",
     type = "toggle",

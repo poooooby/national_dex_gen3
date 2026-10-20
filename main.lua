@@ -100,6 +100,8 @@ return function(mod)
   if RealAbilities then RealAbilities.hooks(mod) end
   -- optional: without it the overworld keeps the game's own look at every hour
   local DayNight = loadSibling(mod, "src/day_night.lua")
+  -- optional: without it the PC keeps the game's 14 boxes
+  local BigPc = loadSibling(mod, "src/big_pc.lua")
   local Api = loadSibling(mod, "src/api.lua")
   if not (Species and Fixups and Items and ItemArt and CryArt and Shops and Art and ConditionalEvos and Clock and Counters and Breeding and DexPatch and NationalUnlock and DexSync and DexRepeat and Editor and MonAnim and Api) then return end
 
@@ -152,6 +154,10 @@ return function(mod)
   -- the Modern Moves option (src/modern_learnsets.lua): after the repairs and the new moves'
   -- numbers; follows the option when it changes in the mod menu
   local applyModern
+  local function bigPcOn()
+    local okGet, value = pcall(function() return mod.options:get("big_pc") end)
+    return okGet and value ~= false
+  end
   local function installModern()
     if not (ModernLearnsets and NewMoves) or applyModern then return end
     local okM, fn = pcall(ModernLearnsets.install, { data = read("data/species/modern.lua") or {},
@@ -189,6 +195,12 @@ return function(mod)
       installModern()
       -- the new TMs: their moves, who learns them, the TM Case's size
       installTms()
+      -- the Bigger PC option: 40 boxes in the editor too, boxes 15-40 read from and written to
+      -- this mod's save data (src/big_pc.lua)
+      if BigPc then
+        local okPc, pcErr = pcall(BigPc.installEditor, { require = require, log = mod.log, enabled = bigPcOn })
+        if not okPc then mod.log:warn("bigger PC is off in the save editor: %s", tostring(pcErr)) end
+      end
       -- the real abilities' names, texts and ability pairs (src/abilities.lua)
       if RealAbilities then
         local formSlots = {}
@@ -449,6 +461,13 @@ return function(mod)
   })
   -- the overworld by time of day (src/day_night.lua, the "Day & Night" option): decided on
   -- entering an area, from the same clock as the evolutions; not in the save editor
+  -- the Bigger PC option (src/big_pc.lua): the box count is set now, while mods load, so a
+  -- Continue already restores 40 boxes; boxes 15-40 travel in this mod's save data
+  if BigPc and not inEditor then
+    local okPc, pcErr = pcall(BigPc.installGame, { mod = mod, require = require, log = mod.log, enabled = bigPcOn })
+    if not okPc then mod.log:warn("bigger PC is off: %s", tostring(pcErr)) end
+  end
+
   if DayNight and not inEditor then
     local function dayNightOn()
       local okGet, value = pcall(function() return mod.options:get("day_night") end)

@@ -62,6 +62,9 @@ Paldea Pokémon can live in Kanto and Hoenn.
   Pokémon has its modern typing, the originals too: Clefairy, Jigglypuff, Togepi, Snubbull,
   Marill, Mr. Mime, Ralts and Mawile are part Fairy, and Charm, Sweet Kiss and Moonlight are
   Fairy moves. Steel no longer resists Ghost and Dark, as in today's games.
+- 📦 **A bigger PC:** 40 boxes, room for 1,200 Pokémon, so every species and form fits with
+  space to spare. The extra boxes use the game's own wallpapers and work everywhere the first
+  14 do: switching boxes, depositing, catching straight into the PC and the save editor.
 - 🌅 **Day and night:** the outdoors follows the clock. Mornings (4–10) are soft and hazy,
   afternoons (10–17) are the game's own look, evenings (17–20) glow warm orange and nights
   (20–4) turn a moonlit blue, dim enough to feel like night but bright enough to play. It
@@ -81,6 +84,7 @@ Open **OPTIONS → MODS → National Dex Gen 3**.
 | **National Dex** | On / Off | Off | Turns the National Pokédex on from the start, instead of earning it in the story. Nothing is written to your save. |
 | **Day & Night** | On / Off | On | Tints the outdoors for morning, evening and night; the afternoon is the game's own look. Changes when you enter an area. Indoors, caves, battles and menus are never tinted. |
 | **Modern Moves** | On / Off | On | The original 386 Pokémon also learn the newer moves they learn today, at the same levels (Clefairy learns Moonblast at 44), plus newer egg moves. Their Gen 3 moves stay, and moves they already know are kept if you turn it off. The save editor follows this setting. |
+| **Bigger PC** | On / Off | On | 40 PC boxes (1,200 Pokémon) instead of 14. Turning it off hides boxes 15–40; the Pokémon in them stay in your save and come back when you turn it on again. |
 | **Register Owned** | On / Off | On | Opening the Pokédex counts every Pokémon in your party and PC as seen and caught, handy for Pokémon added with a save editor. |
 
 ## 💾 Installation
@@ -116,6 +120,10 @@ This mod adds the Pokémon. Two companions bring them to life:
 - **Newer moves** are learned by level-up, as egg moves and from the new TMs; move tutors are
   Gen 3's own. The Move Reminder offers every level-up move up to a Pokémon's level, however
   long its list. The new TMs don't pass on to eggs from the father, as Gen 3's TMs do.
+- **Boxes 15–40 are kept in this mod's part of your save,** so the save stays a normal 14-box
+  save underneath: turning Bigger PC off or removing the mod never loses them. Tools that only
+  know the 14 boxes see boxes 1–14: exporting to a cartridge .sav, the cross-game Pokémon Box,
+  online team picking, and Ruby/Sapphire's lottery and PokéNav condition search.
 - **Ruby and Sapphire's Bag** squeezes the three-digit numbers of TM100 and up against the move
   name; FireRed, LeafGreen and Emerald show them in full.
 - **The original 386 Pokémon,** the story, trainers and maps are unchanged, apart from the

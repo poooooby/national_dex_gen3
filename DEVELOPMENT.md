@@ -99,6 +99,24 @@ Tilt mode draws the world without `blitCanvas`, so there (and with no shader) a 
 overlay goes on the view just before the UI blit. Battles and full-screen menus never open a
 world pass. Test: `tests/day_night_test.lua` (stubbed `love.graphics` and Renderer).
 
+## Bigger PC (option)
+
+`src/big_pc.lua`, option `big_pc` (default on). The engine reads one field for the box count,
+`Storage.TOTAL_BOXES_COUNT` (src/core/game3/storage.lua), set while mods load (before a Continue's
+`fromSaveTable`) and on `save.loading`. Boxes 15-40 never stay in the save's own `storage`: with a
+14 count the engine skips them on load and the next save loses them (option off, mod removed),
+the Box tool refuses such a save, and .sav export keeps 14. So `save.writing` moves them into
+`save.modData.national_dex_gen3.pc` (only boxes with a Pokemon, a name or a non-default
+wallpaper, plus `currentBox` when > 14) and `save.loading` puts them back into the raw save before
+the engine restores it. `modData` is the session's own table (`toSaveTable`), carried whole by
+the engine. The menu toggle moves them live (`BigPc.toggleLive`). Boxes 15+ default to the 16
+cart wallpapers (`Storage.defaultWallpaper` wrapped). Save editor (on `mods.loaded`):
+`Gen.boxCount`, `Game3Adapter.ensureStorage` (a copy with the count for its 14) and the Gen 3
+deposit replaced; `hydrate`/`export` merge and split. Only boxes 1-14: RS lottery
+(`natives_rs.lua:345`), RS PokéNav condition search (`condition_data.lua:44`), online team
+picking, the Box tool, .sav export. FireRed/LeafGreen page boxes with L/R only in Button Mode LR,
+as on the cart; the box-name header switches in every mode. Test: `tests/big_pc_test.lua [game]`.
+
 ## Move animations
 
 `src/anims.lua` wraps `Anim.scriptForMove` (outside `src/moves.lua`'s, which plays the cart move

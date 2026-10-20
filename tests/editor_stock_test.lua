@@ -232,5 +232,36 @@ do
   T.check(not knows(P.learnset(clefairy)), "turned off, the cart's learnset is back")
 end
 
+-- Bigger PC (on by default): 40 boxes in the editor; boxes 15-40 are read from and written back to
+-- this mod's save data, so the core save stays a 14-box save (src/big_pc.lua)
+do
+  local Adapter = require("Game3Adapter")
+  local Ops = require("Ops")
+  local Storage = require("src.core.game3.storage")
+  T.eq(Gen.boxCount({ version = "firered", generation = 3 }), 40, "the editor shows 40 boxes")
+  local kept = { species = P.speciesFromName("TURTWIG"), level = 5 }
+  local save = {
+    version = "firered", generation = 3, party = {}, inventory = {},
+    storage = { currentBox = 1, boxes = {}, items = {} },
+    modData = { national_dex_gen3 = { pc = { boxes = { [37] = { name = "BOX 37", wallpaper = 5, mons = { [4] = kept } } },
+      currentBox = 37 } } },
+  }
+  local okH, errH = pcall(Adapter.hydrate, Data, save)
+  T.check(okH, "a save with boxes past 14 loads in the editor (" .. tostring(errH) .. ")")
+  T.check(save.storage.boxes[37] and save.storage.boxes[37].mons[4] == kept, "box 37's Pokemon is in the editor's box 37")
+  T.eq(#save.storage.boxes, 40, "with all 40 boxes")
+  local S = { data = Data, save = save, selectedBox = 20, selectedParty = 1 }
+  save.party[1] = { species = P.speciesFromName("ROWLET"), level = 5 }
+  Ops.deposit(S)
+  T.check(save.storage.boxes[20].mons[1] ~= nil and #save.party == 0, "depositing into box 20 works")
+  local out = Adapter.export(save)
+  local maxBox = 0
+  for b in pairs(out.storage.boxes) do if b > maxBox then maxBox = b end end
+  T.check(maxBox <= 14, "the exported save's own storage holds boxes 1-14 only (got " .. maxBox .. ")")
+  local pc = out.modData and out.modData.national_dex_gen3 and out.modData.national_dex_gen3.pc
+  T.check(pc and pc.boxes[37] and pc.boxes[20], "boxes 20 and 37 are written to the mod's save data")
+  T.check(Storage.TOTAL_BOXES_COUNT == 40, "the engine storage count matches")
+end
+
 run.release()
 T.finish("national_dex_gen3 stock save editor")
