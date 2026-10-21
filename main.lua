@@ -473,6 +473,12 @@ return function(mod)
     isNight = function(session) return Clock.isNight(session, clockSource()) end,
     isDusk = function(session) return Clock.isDusk(session, clockSource()) end,
   })
+  -- day/night friendship and the Dawn Stone gender pair through the engine's evolution_methods
+  -- (native-method overrides: the rows stay numeric for every reader)
+  ConditionalEvos.registerMethods(mod, {
+    isNight = function(session) return Clock.isNight(session, clockSource()) end, log = mod.log,
+  })
+  ConditionalEvos.installItemGender(bridges)
   -- the overworld by time of day (src/day_night.lua, the "Day & Night" option): decided on
   -- entering an area, from the same clock as the evolutions; not in the save editor
   -- the Bigger PC option (src/big_pc.lua): the box count is set now, while mods load, so a

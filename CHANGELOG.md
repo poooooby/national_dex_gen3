@@ -51,6 +51,13 @@ All notable changes to this mod are documented here, in
     takes one fixed script per move at load, with no per-cart resolution, no pack labels and no
     "borrow another move's animation". `anims_test.lua` covers the look-only case; in game the
     four driver animations play on Emerald and FireRed.
+  - **Evolutions through the engine's `evolution_methods` registry**: overrides of the native
+    `EVO_FRIENDSHIP_DAY` / `_NIGHT` (friendship 220+, day or night from this mod's clock) and
+    `EVO_ITEM` (the engine's item check plus the Dawn Stone gender pair). Overrides keep every
+    evolution row numeric, so other readers (Kanto Gear, Modern Spawns, the Pokedex) see the same
+    tables. Removed: the `Evolution.targetSpecies` wrap and the friendship branch of the
+    `evolution.check` hook (which keeps the conditional `when` steps). In game on Emerald and
+    FireRed: Dawn Stone evolves male Kirlia only (use and the Bag check), Budew by day only.
   - Test harness: `H.useCart` points the engine's dataset cache at the imported cart and the tests
     bind the live move module and run `Gen3Compat.applyMerged`, as a game does, instead of
     hand-loading move packs and names.

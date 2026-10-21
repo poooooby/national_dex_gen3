@@ -205,12 +205,6 @@ function ConditionalEvos.install(mod, species, itemIndex, opts)
   mod.hooks:wrap("evolution.check", function(nextFn, game, mon, view, ctx)
     local matched = nextFn()
     if type(ctx) ~= "table" or ctx.kind ~= "levelup" then return matched end
-    -- engine methods 2 / 3: friendship by day / by night
-    local methodId = view and tonumber(view.methodId)
-    if methodId == ConditionalEvos.FRIENDSHIP_DAY or methodId == ConditionalEvos.FRIENDSHIP_NIGHT then
-      if friendship(mon) < ConditionalEvos.FRIENDSHIP_NEEDED then return false end
-      return isNight(ctx.session) == (methodId == ConditionalEvos.FRIENDSHIP_NIGHT)
-    end
     if not matched then return matched end
     local slot = okP and Pokemon.speciesOf and Pokemon.speciesOf(mon)
       or tonumber(mon and (mon.species or mon.speciesId))
@@ -263,14 +257,21 @@ function ConditionalEvos.install(mod, species, itemIndex, opts)
   end)
 end
 
--- Evolution by item has no hook (the engine only hands the "evolution.check" hook the
--- level-up scan), so a gendered item evolution (Dawn Stone: male Kirlia -> Gallade,
--- female Snorunt -> Froslass) is vetoed by wrapping src.core.game3.evolution's
--- targetSpecies: when the item scan finds the row but the Pokemon is the wrong gender,
--- the answer becomes "no evolution".
--- evolutions: the cross-generation bookkeeping (Species.register's `bridges`), whose
--- steps carry `gender`. Safe to call again; the wrapper is installed once and reads the
--- latest rules, which live on the engine module so a reload replaces them.
+-- The engine's evolution_methods registry (engine 0.3.95+): every level-up, trade and item scan
+-- asks a method's record `check(game, mon, view, trigger)`, and overriding a NATIVE method keeps
+-- the species' rows numeric (other mods and the Pokedex keep reading them as before). Two
+-- overrides, registered at load (ConditionalEvos.registerMethods):
+--   * EVO_FRIENDSHIP_DAY / _NIGHT: friendship as the cart (220+), day or night from this mod's
+--     clock (src/clock.lua: the player's choice, and the device on FireRed/LeafGreen, which
+--     have no clock of their own)
+--   * EVO_ITEM: the engine's own item check, plus a gender for the cross-generation Dawn Stone
+--     pair (male Kirlia -> Gallade, female Snorunt -> Froslass); it covers using the item and
+--     the Bag's "able to evolve" check alike
+-- The gender rules come from the bridges' `gender` (Species.register), set by installItemGender.
+ConditionalEvos._itemGender = {}
+
+-- evolutions: the cross-generation bookkeeping (Species.register's `bridges`), whose steps carry
+-- `gender`. Safe to call again (a reload replaces the rules).
 function ConditionalEvos.installItemGender(evolutions)
   local rules = {}
   for _, step in ipairs(evolutions or {}) do
@@ -279,24 +280,45 @@ function ConditionalEvos.installItemGender(evolutions)
       rules[step.sourceSlot][step.targetSlot] = step.gender
     end
   end
+  ConditionalEvos._itemGender = rules
+  return true
+end
+
+-- At load. opts: { isNight = fn(session) -> bool, log }
+function ConditionalEvos.registerMethods(mod, opts)
   local okE, Evolution = pcall(require, "src.core.game3.evolution")
   local okP, Pokemon = pcall(require, "src.core.game3.pokemon")
-  if not (okE and okP and type(Evolution) == "table") then return false end
-  Evolution._nationalDexItemGender = rules
-  if Evolution._nationalDexItemGenderWrapped then return true end
-  Evolution._nationalDexItemGenderWrapped = true
-  local original = Evolution.targetSpecies
-  Evolution.targetSpecies = function(mon, mode, ...)
-    local target, param = original(mon, mode, ...)
-    if (target or 0) ~= 0 and (mode == Evolution.EVO_MODE_ITEM_USE or mode == Evolution.EVO_MODE_ITEM_CHECK) then
-      local slot = Pokemon.speciesOf(mon)
-      local want = slot and Evolution._nationalDexItemGender[slot]
-        and Evolution._nationalDexItemGender[slot][target]
-      if want and Pokemon.gender(slot, tonumber(mon.personality) or 0) ~= want then return 0, 0 end
-    end
-    return target, param
+  local methods = mod.content and mod.content.evolution_methods
+  if not (okE and okP and methods and type(Evolution.nativeCheck) == "function") then
+    if opts and opts.log then opts.log:warn("day/night friendship and Dawn Stone gender use the cart's rules: no evolution_methods registry") end
+    return false
   end
-  return true
+  local isNight = opts and opts.isNight or function() return false end
+  local function friendship(mon)
+    return Pokemon.friendshipOf and Pokemon.friendshipOf(mon) or 0
+  end
+  local function byClock(night)
+    return function(_, mon, _, trigger)
+      if not (type(trigger) == "table" and trigger.kind == "levelup") then return false end
+      if friendship(mon) < ConditionalEvos.FRIENDSHIP_NEEDED then return false end
+      return isNight(trigger.session) == night
+    end
+  end
+  local itemNative = Evolution.nativeCheck(Evolution.EVO_ITEM or 7)
+  local ok, err = pcall(function()
+    methods:override("EVO_FRIENDSHIP_DAY", { check = byClock(false) })
+    methods:override("EVO_FRIENDSHIP_NIGHT", { check = byClock(true) })
+    methods:override("EVO_ITEM", { check = function(game, mon, view, trigger)
+      if not itemNative(game, mon, view, trigger) then return false end
+      local slot = Pokemon.speciesOf and Pokemon.speciesOf(mon)
+      local want = slot and ConditionalEvos._itemGender[slot]
+        and ConditionalEvos._itemGender[slot][tonumber(view and view.speciesId) or -1]
+      if want then return Pokemon.gender(slot, tonumber(mon.personality) or 0) == want end
+      return true
+    end })
+  end)
+  if not ok and opts and opts.log then opts.log:warn("evolution method overrides failed: %s", tostring(err)) end
+  return ok
 end
 
 ConditionalEvos.FRIENDSHIP_DAY, ConditionalEvos.FRIENDSHIP_NIGHT = 2, 3
