@@ -13,7 +13,6 @@
 --     LeafGreen's 4-line box or Ruby/Sapphire/Emerald's 2-line one
 --   * Ruby/Sapphire/Emerald's contest data (the summary's contest page, the move relearner and
 --     contests index it by move and fail on a missing row): a row each, in the cached tables
---   * the battle animation: the cart move it borrows (`look`), instead of the plain hit
 -- FAIRY moves are registered FAIRY: src/types.lua registers the type in the engine's type_chart.
 
 local NewMoves = {}
@@ -120,19 +119,6 @@ function NewMoves.install(opts)
     end
   end
 
-  -- animation: the cart move it borrows
-  local okA, Anim = pcall(require, "src.core.game3.battle.anim")
-  if okA and type(Anim) == "table" and type(Anim.scriptForMove) == "function" and not Anim.__nationalDexMoves then
-    Anim.__nationalDexMoves = true
-    local scriptForMove = Anim.scriptForMove
-    Anim.scriptForMove = function(moveId, ...)
-      local num = tonumber(moveId)
-      if not num and type(moveId) == "string" then num = byConst[moveId] or byConst[const(moveId)] end
-      local r = num and NewMoves._byIndex[num]
-      if r and r.look then return scriptForMove(r.look, ...) end
-      return scriptForMove(moveId, ...)
-    end
-  end
   return true
 end
 

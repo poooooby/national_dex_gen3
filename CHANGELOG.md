@@ -45,6 +45,12 @@ All notable changes to this mod are documented here, in
     A plain wrap rather than the engine's `held_item.trigger` hook, which would make every
     held-item check in every battle copy the item's info table. In game on Emerald: no Leftovers
     heal while the room is up, the item stays held, Leftovers heals again once it ends.
+  - **One animation hookup.** `src/anims.lua`'s `Anim.scriptForMove` wrap now answers every new
+    move (its own script, a closer cart look, or data/moves.lua's `look`); `src/moves.lua`'s
+    second wrap is gone. The engine's `battle_anims` registry was considered and not used: it
+    takes one fixed script per move at load, with no per-cart resolution, no pack labels and no
+    "borrow another move's animation". `anims_test.lua` covers the look-only case; in game the
+    four driver animations play on Emerald and FireRed.
   - Test harness: `H.useCart` points the engine's dataset cache at the imported cart and the tests
     bind the live move module and run `Gen3Compat.applyMerged`, as a game does, instead of
     hand-loading move packs and names.

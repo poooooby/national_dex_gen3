@@ -101,6 +101,21 @@ T.eq(moon[1].op, "loadspritegfx", "and loads its graphics first")
 -- a move without one plays the closest cart animation: Bulldoze shakes the ground like Earthquake
 T.eq(anims.looks.BULLDOZE, 89, "Bulldoze borrows EARTHQUAKE")
 T.eq(Anim.scriptForMove(byId.BULLDOZE.index), Anim._pack.moves[89], "and plays it")
+-- a move with neither a script nor a closer look of its own plays data/moves.lua's `look`
+-- (one wrap answers all three cases)
+do
+  local plain
+  for _, r in ipairs(dofile("mods/national_dex_gen3/data/moves.lua")) do
+    if r.look and not (anims.moves and anims.moves[r.id]) and not (anims.looks and anims.looks[r.id]) then
+      plain = r break
+    end
+  end
+  T.check(plain ~= nil, "some move only has data/moves.lua's look")
+  if plain then
+    T.eq(Anim.scriptForMove(plain.index), Anim.scriptForMove(plain.look),
+      plain.id .. " plays the cart animation it borrows (" .. tostring(plain.look) .. ")")
+  end
+end
 -- and a move with neither keeps its look
 local plain
 for id, r in pairs(byId) do

@@ -3,9 +3,11 @@
 -- scripts, as the rows the engine's animation player runs, built only from pieces the Gen 3 carts
 -- already have.
 --
--- A wrap of Anim.scriptForMove (src.core.game3.battle.anim; outside src/moves.lua's, which hands
--- a new move the cart animation named in `look`) answers a new move with its script, resolved
--- against the running cart the first time it is asked for:
+-- One wrap of Anim.scriptForMove (src.core.game3.battle.anim) answers every new move: its own
+-- script, resolved against the running cart the first time it is asked for, or else the cart
+-- animation it borrows (`looks` here, else data/moves.lua's `look`). The engine's battle_anims
+-- registry is not used: it takes one fixed `seq` per move at load, with no per-cart resolution,
+-- no pack labels and no "borrow move X". Resolution:
 --   * a sprite template takes the cart's own tag, palette, callback and size (from the cart's
 --     scripts that use it), and the script starts by loading those graphics, as the cart's do
 --   * a sound effect is the cart's number for its name ("SE_M_BARRIER"; "SE:" in task arguments)
@@ -32,10 +34,11 @@ function MoveAnims.install(opts)
   if Anim.__nationalDexAnims then return true end
   Anim.__nationalDexAnims = true
 
-  local idOf = {}
+  local idOf, lookOf = {}, {}
   for _, r in ipairs(opts.moves or {}) do
-    if r.index and r.id and ((data.moves and data.moves[r.id]) or (data.looks and data.looks[r.id])) then
+    if r.index and r.id and ((data.moves and data.moves[r.id]) or (data.looks and data.looks[r.id]) or r.look) then
       idOf[tonumber(r.index)] = r.id
+      lookOf[r.id] = (data.looks and data.looks[r.id]) or r.look
     end
   end
 
@@ -167,7 +170,7 @@ function MoveAnims.install(opts)
     end
     local id = num and idOf[num]
     if id then
-      local look = data.looks and data.looks[id]
+      local look = lookOf[id]
       local fallback = scriptForMove(look or moveId, ...)  -- also loads the pack
       if data.moves[id] then
         local okR, script = pcall(resolve, id)
