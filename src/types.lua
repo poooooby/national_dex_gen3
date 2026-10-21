@@ -46,9 +46,13 @@ function FairyTypes.rows(data, ID)
   return out
 end
 
--- Fairy's rows in, Gen 6 removals out, all before the sentinel. Returns rows added.
+-- Fairy's rows in, Gen 6 removals out, all before the sentinel. The stock chart
+-- (Types.NATIVE_TABLE) is never edited: the engine's progression seeding walks it with a fixed
+-- 0..17 name map and would stop on a Fairy row the next time mods load in this process (another
+-- cart in one run, the save editor, the test harness). The Fairy chart is a fresh table assigned
+-- to Types.TABLE, which is what every damage path and the AI read. Returns rows added.
 function FairyTypes.patchChart(T, data)
-  local t = T.TABLE
+  local t = T.NATIVE_TABLE or T.TABLE
   local ID = T.ID
   local drop = {}
   for _, pair in ipairs(FairyTypes.GEN6_REMOVED) do
@@ -66,9 +70,10 @@ function FairyTypes.patchChart(T, data)
   end
   local rows = FairyTypes.rows(data, ID)
   for _, r in ipairs(rows) do before[#before + 1] = r end
-  for i = #t, 1, -1 do t[i] = nil end
-  for _, r in ipairs(before) do t[#t + 1], t[#t + 2], t[#t + 3] = r[1], r[2], r[3] end
-  for _, r in ipairs(after) do t[#t + 1], t[#t + 2], t[#t + 3] = r[1], r[2], r[3] end
+  local out = {}
+  for _, r in ipairs(before) do out[#out + 1], out[#out + 2], out[#out + 3] = r[1], r[2], r[3] end
+  for _, r in ipairs(after) do out[#out + 1], out[#out + 2], out[#out + 3] = r[1], r[2], r[3] end
+  T.TABLE = out
   return #rows
 end
 

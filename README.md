@@ -90,7 +90,8 @@ Open **OPTIONS → MODS → National Dex Gen 3**.
 ## 💾 Installation
 
 1. Import your own FireRed, LeafGreen, Ruby, Sapphire or Emerald into
-   [Gen1Recomp](https://github.com/bryanthaboi/gen1recomp).
+   [Gen1Recomp](https://github.com/bryanthaboi/gen1recomp) **0.3.95 or newer** (older versions
+   can't hold this many Pokémon; on those, keep National Dex Gen 3 1.1.4).
 2. Download the latest `national_dex_gen3-….zip` from the
    [Releases](https://github.com/poooooby/national_dex_gen3/releases/latest) page.
 3. In the game, go to **MODS → Import mod .zip** and choose the file.

@@ -3,6 +3,31 @@
 All notable changes to this mod are documented here, in
 [keep a changelog](https://keepachangelog.com/en/1.1.0/) format.
 
+## [Unreleased]
+
+### Fixed
+
+- **Requires gen1recomp 0.3.95 or newer** (manifest `game_version`): the first release with
+  both the API 3 registry write and the raised native index cap. Older engines keep 1.1.4.
+- **Works again on the updated engine (API 3, Oct 20).** The engine's API 3 update broke the
+  mod; its index cap was fixed upstream (bryanthaboi 79ea62f4: native slots up to 65535), and
+  the rest is handled here:
+  - The new Gen 3 registry write records each species' display name in `P._byName` and maps
+    its National number back to its slot. A form shares its base's name and number, so it took
+    the base over: MEOWTH resolved to the Galarian form and Modern Moves' rows for #211 landed
+    on Hisuian Qwilfish. `src/schema_patch.lua` re-runs the engine's own write (dex_patch-style
+    source patch) with forms kept to their own id key and out of `toSpecies`, as this mod's
+    fixups always did. On a build from before the cap fix it also raises the 1023 ceiling to
+    2047 so the species still register.
+  - The species and item caps this mod sets (`gen3Fields.index`) are only ever raised now, so
+    they no longer pull the engine's 65535 back down for other mods.
+  - The engine's new progression seeding walks the stock type chart with a fixed 0..17 name map
+    and crashed on Fairy rows at the next in-process load: `src/types.lua` builds the Fairy chart
+    as a fresh `Types.TABLE` and leaves `Types.NATIVE_TABLE` stock.
+  - The rewritten battle moves module caches move names per table: `src/moves.lua` hands it a
+    fresh name table after adding the new moves', or the editor dropped learnset rows naming one.
+  - Test harness: the battle stubs feed the cart's `move_names` pack.
+
 ## [1.1.4] - 2026-10-20
 
 ### Added

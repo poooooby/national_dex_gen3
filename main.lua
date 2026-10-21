@@ -58,6 +58,14 @@ local function loadSibling(mod, name)
 end
 
 return function(mod)
+  -- the engine's new 1023-slot ceiling, raised before anything registers (src/schema_patch.lua);
+  -- without it every species past slot 1023 (and the TMs) is refused at the registry freeze
+  local SchemaPatch = loadSibling(mod, "src/schema_patch.lua")
+  if SchemaPatch then
+    local okCap, errCap = pcall(SchemaPatch.install, { require = require, log = mod.log,
+      generation = mod.generation })
+    if not okCap then mod.log:warn("species and item slots stay capped at 1023: %s", tostring(errCap)) end
+  end
   local Species = loadSibling(mod, "src/species.lua")
   local Fixups = loadSibling(mod, "src/fixups.lua")
   local Items = loadSibling(mod, "src/items.lua")

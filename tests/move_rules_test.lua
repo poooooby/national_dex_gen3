@@ -17,7 +17,10 @@ do
   Moves._rom = dofile(pack).moves
   Moves._romLoaded = true
   Pokemon._battleMoves = dofile(pack).moves
-  Pokemon._romMoveNames = Pokemon._romMoveNames or Pokemon._moveNames
+  local romNames = dofile(GAME .. "/data/generated/gba/pokemon/move_names.lua")
+  Pokemon._moveNames = Pokemon._moveNames or romNames
+  Pokemon._romMoveNames = Pokemon._romMoveNames or romNames
+  Moves._numByName = nil                       -- rebuild the engine's name index from these
   data.gen3Moves = Moves
 end
 -- the hit itself stands in: it lands for 40 (what comes before and after it is under test)
@@ -32,6 +35,17 @@ Hit.run = function(M)
 end
 
 local run = T.sdk.loadMods({ "mods/national_dex_gen3" }, { data = data, generation = 3 })
+
+-- the engine's install during load rebuilds the name tables from its (headless, empty) cache,
+-- so the cart's names go back in before anything asks the battle for a move
+do
+  local P2 = require("src.core.game3.pokemon")
+  local M2 = require("src.core.game3.battle.moves")
+  local romNames = dofile(GAME .. "/data/generated/gba/pokemon/move_names.lua")
+  P2._moveNames = P2._moveNames or romNames
+  P2._romMoveNames = romNames
+  M2._numByName = nil
+end
 T.eq(#run.errors, 0, "loads clean (" .. tostring(run.errors[1]) .. ")")
 run.loader.events:emit("game.ready", {})
 

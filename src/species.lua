@@ -51,15 +51,19 @@ function Species.loadPayload(load)
 end
 
 -- The Gen 3 species registry (one schema shared by every Gen 3 game -- see
--- Schemas.REGISTRIES.pokemon.gen3Fields in the engine) caps `index` at 1023;
--- this payload needs 1089. The cap is a schema constant with no mod API,
--- hence engine_internals.
+-- Schemas.REGISTRIES.pokemon.gen3Fields in the engine) capped `index` at 1023
+-- before the engine raised it to 65535 (Oct 2026); this payload needs up to
+-- 1217 (forms). Only ever raised, never lowered: on a newer engine the field
+-- already allows it and is left alone, so other mods keep the engine's cap.
 local function raiseSlotCap(mod)
   local ok, Schemas = pcall(require, "src.mods.Schemas")
   local fields = ok and type(Schemas) == "table" and Schemas.REGISTRIES
     and Schemas.REGISTRIES.pokemon and Schemas.REGISTRIES.pokemon.gen3Fields
   if fields and Schemas.f and Schemas.f.opt and Schemas.f.int then
-    fields.index = Schemas.f.opt(Schemas.f.int(1, SLOT_CAP))
+    local current = type(fields.index) == "table" and (fields.index.inner or fields.index)
+    if not (current and tonumber(current.max) and current.max >= SLOT_CAP) then
+      fields.index = Schemas.f.opt(Schemas.f.int(1, SLOT_CAP))
+    end
     return true
   end
   mod.log:warn("could not raise the Gen 3 species slot cap -- species past "

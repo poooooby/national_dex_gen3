@@ -99,6 +99,21 @@ Tilt mode draws the world without `blitCanvas`, so there (and with no shader) a 
 overlay goes on the view just before the UI blit. Battles and full-screen menus never open a
 world pass. Test: `tests/day_night_test.lua` (stubbed `love.graphics` and Renderer).
 
+## Engine registry write (schema patch)
+
+`src/schema_patch.lua`, run first in the entry (game and editor). The API 3 engine writes Gen 3
+species/moves/items through a local `prepareNativeWrite` + per-registry `gen3Write` closures
+(`src/mods/Schemas.lua`). They record each species' DISPLAY name in `P._byName` (last wins) and
+set `toSpecies[dex] = slot` for every record, so a form (named and numbered like its base) took
+its base over. The module reads the engine source (CacheBlob in a game, `tests.fs_io` headless),
+makes those two writes skip records with a `baseSpecies` (and other display names first-wins),
+runs the copy (its one `package.loaded` read goes through require), and installs the fresh
+`gen3Write` closures on `Schemas.REGISTRIES[name]`, on the `shapeFor`-cached derived specs the
+loader already holds, and the whole `Schemas.gen3View` (preindex shares the name-index cache).
+On a build from before bryanthaboi's cap fix (79ea62f4, 1023 -> 65535) it also raises the two
+cap literals to 2047. Exact-match failures log once and leave stock. Retire it if the engine
+skips forms in `updateNativeNames` / `writeMon`.
+
 ## Bigger PC (option)
 
 `src/big_pc.lua`, option `big_pc` (default on). The engine reads one field for the box count,

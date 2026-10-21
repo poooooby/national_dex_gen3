@@ -9,7 +9,7 @@
   "games": [
     "gen3"
   ],
-  "game_version": ">=0.3.0",
+  "game_version": ">=0.3.95",
   "priority": 90,
   "permissions": [
     "engine_internals"

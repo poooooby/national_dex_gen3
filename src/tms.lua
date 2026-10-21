@@ -29,7 +29,11 @@ function Tms.register(mod, list, moveRows, require)
     mod.log:warn("new TMs are off: could not raise the item index cap")
     return {}
   end
-  fields.index = Schemas.f.opt(Schemas.f.int(1, INDEX_CAP))
+  -- only ever raised: a newer engine already allows 65535, and other mods keep that
+  local current = type(fields.index) == "table" and (fields.index.inner or fields.index)
+  if not (current and tonumber(current.max) and current.max >= INDEX_CAP) then
+    fields.index = Schemas.f.opt(Schemas.f.int(1, INDEX_CAP))
+  end
   local okV, GV = pcall(require, "src.core.GameVersion")
   local game = okV and GV and tostring(GV.current) or ""
   local frlg = game:find("firered", 1, true) or game:find("leafgreen", 1, true)

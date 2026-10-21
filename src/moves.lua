@@ -143,6 +143,14 @@ function NewMoves.install(opts)
         P._moveNames[index] = r.name
       end
     end
+    -- the engine's registry views index move names per TABLE (a cache keyed by the table
+    -- itself, built before these names went in): a fresh table makes the next view see them,
+    -- or the editor's records would drop every learnset row that names a new move
+    if okP and type(P._moveNames) == "table" then
+      local fresh = {}
+      for k, v in pairs(P._moveNames) do fresh[k] = v end
+      P._moveNames = fresh
+    end
   end
   writeRows()
   if okM and Moves.onReload then Moves.onReload(writeRows, "national_dex_gen3.moves") end
