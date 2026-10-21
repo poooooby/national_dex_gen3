@@ -17,7 +17,7 @@
 --   * RealAbilities.effectiveSpeed / reverseSpeed   Tailwind and Trick Room in the turn order
 --   * Adapter              canApplyStatus (Misty / Electric Terrain), heal (Heal Block),
 --                          abilityOf (Levitate while grounded)
---   * Engine.canSwitch / canRun (Fairy Lock), HeldItems.itemOf (Magic Room), Hazards.clear
+--   * Engine.canSwitch / canRun (Fairy Lock), HeldItems.of (Magic Room), Hazards.clear
 --     (Rapid Spin), Abilities.soundproofBlocks + Commands.selectionError + Engine.moveLimitations
 --     (Throat Chop), the battle.accuracy (Gravity) and battle.crit (Lucky Chant) hooks
 --   * Engine.performSwitch + switchCandidates + the "baton_pass" choice (the party prompt)
@@ -1017,17 +1017,24 @@ function MoveField.install(opts)
     end
   end
 
-  -- Magic Room: no held items
+  -- Magic Room: held items stay held but do nothing. Every held-item EFFECT the battle reads goes
+  -- through HeldItems.of (-> hold effect, parameter, item); the item itself (HeldItems.itemOf,
+  -- b.item) is untouched, so Knock Off, Trick, Thief and Fling still see and move it, as in the
+  -- real games. (The engine's held_item.trigger hook could do the same, but registering it makes
+  -- every held-item check in every battle copy the item's info table; this wrap allocates nothing.)
   local okHI, HeldItems = pcall(require, "src.core.game3.battle.held_items")
-  if okHI and type(HeldItems.itemOf) == "function" and not HeldItems.__nationalDexMoveField then
+  if okHI and type(HeldItems.of) == "function" and not HeldItems.__nationalDexMoveField then
     HeldItems.__nationalDexMoveField = true
-    local itemOf = HeldItems.itemOf
-    HeldItems.itemOf = function(b, ...)
+    local heldOf = HeldItems.of
+    HeldItems.of = function(b, trigger, st, ...)
       if MoveField._on then
-        local ad = adapter()
-        if ad and fieldOn(ad._st, "magicRoom") then return 0 end
+        local field = st or (adapter() and adapter()._st)
+        if fieldOn(field, "magicRoom") then
+          local _, _, item = heldOf(b, trigger, st, ...)
+          return 0, 0, item
+        end
       end
-      return itemOf(b, ...)
+      return heldOf(b, trigger, st, ...)
     end
   end
 

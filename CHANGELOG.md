@@ -40,6 +40,11 @@ All notable changes to this mod are documented here, in
     `src/fixups.lua` stops writing `_byName` keys and `_national` maps and matching slot-0
     evolution targets. Kept: "used MOVE!" count, move descriptions, contest rows, animations,
     late-item / conditional evolution rows, Safari flee rates, tutors, the Pokedex data.
+  - **Magic Room** keeps held items held: only their effects stop (`HeldItems.of`), so Knock Off,
+    Trick, Thief and Fling still see the item, as in the real games (it used to hide the item).
+    A plain wrap rather than the engine's `held_item.trigger` hook, which would make every
+    held-item check in every battle copy the item's info table. In game on Emerald: no Leftovers
+    heal while the room is up, the item stays held, Leftovers heals again once it ends.
   - Test harness: `H.useCart` points the engine's dataset cache at the imported cart and the tests
     bind the live move module and run `Gen3Compat.applyMerged`, as a game does, instead of
     hand-loading move packs and names.

@@ -365,12 +365,18 @@ do
 end
 do
   local st, ad = battle()
-  st.player.item = 1
-  status("MAGIC_ROOM", st, ad)
+  local LEFTOVERS = 200
+  st.player.item = LEFTOVERS
   local HeldItems = require("src.core.game3.battle.held_items")
-  T.eq(HeldItems.itemOf(st.player), 0, "Magic Room hides held items")
+  local before = HeldItems.of(st.player, "check", st)
+  T.check(before ~= 0, "Leftovers has a hold effect (" .. tostring(before) .. ")")
   status("MAGIC_ROOM", st, ad)
-  T.eq(HeldItems.itemOf(st.player), 1, "until it is used again")
+  local he, _, item = HeldItems.of(st.player, "check", st)
+  T.eq(he, 0, "Magic Room switches held items' effects off")
+  T.eq(item, LEFTOVERS, "but the item is still held")
+  T.eq(HeldItems.itemOf(st.player), LEFTOVERS, "so Knock Off, Trick and Thief still see it")
+  status("MAGIC_ROOM", st, ad)
+  T.eq(HeldItems.of(st.player, "check", st), before, "until it is used again")
 end
 do
   local st, ad = battle()
