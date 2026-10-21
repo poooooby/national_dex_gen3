@@ -4,4 +4,9 @@ return function(mod)
   mod.content.items:register("PROTECTOR", {
     id = "PROTECTOR", name = "Protector", index = 400, pocket = "ITEMS", price = 0,
   })
+  -- a copy of a stone under its own id but the same display name, as PlayNav ships
+  -- (ST_DAWN_STONE, "Dawn Stone"): it must never take the Dawn Stone evolutions
+  mod.content.items:register("ST_DAWN_STONE", {
+    id = "ST_DAWN_STONE", name = "Dawn Stone", index = 409, pocket = "ITEMS", price = 0,
+  })
 end

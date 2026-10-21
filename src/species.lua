@@ -58,11 +58,15 @@ local function lookups(mod, payload)
   end
   local itemId = {}
   if content.items then
-    for _, id in ipairs(ids(content.items)) do
+    -- an exact id beats another item's display name (play_nav's ST_DAWN_STONE is also
+    -- "Dawn Stone"), whatever order the registry lists them in
+    local list = ids(content.items)
+    for _, id in ipairs(list) do
       local record = get(content.items, id)
-      itemId[normalize(id)] = id
-      if type(record) == "table" and record.name then itemId[normalize(record.name)] = id end
+      local key = type(record) == "table" and record.name and normalize(record.name)
+      if key and itemId[key] == nil then itemId[key] = id end
     end
+    for _, id in ipairs(list) do itemId[normalize(id)] = id end
   end
   -- dex -> { id, slot } for the cart's species and this payload
   local byDex = {}
@@ -334,14 +338,18 @@ function Species.itemIndex(mod)
   return function(slug)
     if not (slug and mod.content.items) then return nil end
     local key = normalize(slug)
+    local byName
     for _, id in ipairs(ids(mod.content.items)) do
       local record = get(mod.content.items, id)
-      if normalize(id) == key
-        or (type(record) == "table" and record.name and normalize(record.name) == key) then
-        return type(record) == "table" and tonumber(record.index) or nil
+      if type(record) == "table" then
+        if normalize(id) == key then return tonumber(record.index) end
+        -- a display-name match only if no item has the exact id (see lookups)
+        if byName == nil and record.name and normalize(record.name) == key then
+          byName = tonumber(record.index) or false
+        end
       end
     end
-    return nil
+    return byName or nil
   end
 end
 

@@ -10,7 +10,9 @@ local T = require("tests.modkit")
 local H = dofile((arg[0]:gsub("\\", "/"):match("^(.*)/") or ".") .. "/_gen3.lua")
 
 local data = H.gen3Data()
-local run = T.sdk.loadMods({ "mods/national_dex_gen3" }, { data = data, generation = 3 })
+-- the fixture adds ST_DAWN_STONE ("Dawn Stone", 409), a second stone of the same name
+local run = T.sdk.loadMods({ "mods/national_dex_gen3", H.modRoot() .. "/tests/fixtures/item_mod" },
+                           { data = data, generation = 3 })
 T.eq(#run.errors, 0, "loads clean (" .. tostring(run.errors[1]) .. ")")
 run.loader.events:emit("game.ready", {})
 
@@ -105,6 +107,17 @@ T.eq(stone(snorunt, "F"), api.slotOf("FROSLASS"), "a female Snorunt evolves into
 T.eq(stone(snorunt, "M"), nil, "a male Snorunt does not")
 T.eq(Evolution.itemCheck({ species = kirlia, level = 30, personality = personalityFor(kirlia, "F") }, dawn), nil,
      "the party menu's can-it-evolve check agrees")
+-- the engine indexes items by name, lowest number first, so a reload can write the other
+-- "Dawn Stone" (409) into Kirlia's row: either stone still evolves, gender still decides
+for _, row in ipairs(Pokemon._evolutions[kirlia] or {}) do
+  if row.target == api.slotOf("GALLADE") then row.param = 409 end
+end
+T.eq(stone(kirlia, "M"), api.slotOf("GALLADE"), "a row re-written as 409 still takes our Dawn Stone")
+T.eq(Evolution.itemTarget({ species = kirlia, level = 30, personality = personalityFor(kirlia, "M") }, 409),
+     api.slotOf("GALLADE"), "and the other mod's Dawn Stone")
+T.eq(stone(kirlia, "F"), nil, "a female Kirlia still does not")
+T.eq(Evolution.itemTarget({ species = kirlia, level = 30, personality = personalityFor(kirlia, "M") }, 200), nil,
+     "an unrelated item (Leftovers) does nothing")
 
 -- other item evolutions are untouched
 local magneton = Pokemon.speciesFromName("MAGNETON")

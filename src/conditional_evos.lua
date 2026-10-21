@@ -305,11 +305,37 @@ function ConditionalEvos.registerMethods(mod, opts)
     end
   end
   local itemNative = Evolution.nativeCheck(Evolution.EVO_ITEM or 7)
+  -- Two registered items with one name (ours DAWN_STONE 900, PlayNav's ST_DAWN_STONE 409,
+  -- both "Dawn Stone"): the engine's item index is by name, lowest number first, so a
+  -- record re-written on a reload may carry the other's number. Either one evolves.
+  local function itemName(num)
+    local items = mod.content and mod.content.items
+    num = tonumber(num)
+    if not (items and num) then return nil end
+    local okE, each = pcall(items.each, items)
+    if not okE then return nil end
+    local list = {}
+    if type(each) == "function" then for id in each do list[#list + 1] = id end
+    elseif type(each) == "table" then list = each end
+    for _, id in ipairs(list) do
+      local okG, r = pcall(items.get, items, id)
+      if okG and type(r) == "table" and tonumber(r.index) == num and r.name then
+        return (tostring(r.name):upper():gsub("[^A-Z0-9]", ""))
+      end
+    end
+    return nil
+  end
+  local function sameItem(view, trigger)
+    if not (type(trigger) == "table" and trigger.kind == "item") then return false end
+    local used = type(trigger.item) == "number" and trigger.item or tonumber(trigger.item)
+    local a, b = itemName(view and view.param), itemName(used)
+    return a ~= nil and a == b
+  end
   local ok, err = pcall(function()
     methods:override("EVO_FRIENDSHIP_DAY", { check = byClock(false) })
     methods:override("EVO_FRIENDSHIP_NIGHT", { check = byClock(true) })
     methods:override("EVO_ITEM", { check = function(game, mon, view, trigger)
-      if not itemNative(game, mon, view, trigger) then return false end
+      if not (itemNative(game, mon, view, trigger) or sameItem(view, trigger)) then return false end
       local slot = Pokemon.speciesOf and Pokemon.speciesOf(mon)
       local want = slot and ConditionalEvos._itemGender[slot]
         and ConditionalEvos._itemGender[slot][tonumber(view and view.speciesId) or -1]

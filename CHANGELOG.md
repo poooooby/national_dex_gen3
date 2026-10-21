@@ -7,6 +7,12 @@ All notable changes to this mod are documented here, in
 
 ### Fixed
 
+- **Dawn Stone with PlayNav (Super Training) installed.** PlayNav registers its own "Dawn Stone"
+  (ST_DAWN_STONE, item 409). The engine indexes items by display name, lowest number first, so
+  each reload re-wrote Kirlia's and Snorunt's Dawn Stone rows to 409, and this mod's Dawn Stone
+  (900) then did nothing, depending on timing. The Dawn Stone/Shiny Stone/Dusk Stone check now
+  accepts either same-named stone (gender still decides), and item lookups prefer an exact id
+  over another item's display name.
 - **Requires gen1recomp 0.3.95 or newer** (manifest `game_version`): the first release with
   both the API 3 registry write and the raised native index cap. Older engines keep 1.1.4.
 - **Works again on the updated engine (API 3, Oct 20).** The engine's API 3 update broke the

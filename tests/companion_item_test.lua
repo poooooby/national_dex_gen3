@@ -100,6 +100,23 @@ for _, mods in ipairs({ { "mods/national_dex_gen3" },
   run.release()
 end
 
+-- ------- a same-named stone under another id never takes the Dawn Stone evolutions,
+-- in either load order (PlayNav's ST_DAWN_STONE, "Dawn Stone", index 409)
+
+for _, mods in ipairs({
+  { "mods/national_dex_gen3", H.modRoot() .. "/tests/fixtures/item_mod" },
+  { H.modRoot() .. "/tests/fixtures/item_mod", "mods/national_dex_gen3" },
+}) do
+  local data = H.gen3Data()
+  local run = T.sdk.loadMods(mods, { data = data, generation = 3 })
+  run.loader.events:emit("game.ready", {})
+  local P = data.gen3Pokemon
+  local kirlia = P.speciesFromName("KIRLIA")
+  local row = liveRow(P, kirlia, 475 + 64)
+  T.eq(row and row.param, 900, "Kirlia -> Gallade uses this mod's Dawn Stone (900), not 409")
+  run.release()
+end
+
 -- ------- Species.itemIndex itself, directly
 
 do
@@ -110,6 +127,8 @@ do
   T.eq(Species.itemIndex(run.loader)("protector"), 400,
        "Species.itemIndex resolves whichever mod's item registered, by its PokéAPI slug "
        .. "(the fixture, which loads first)")
+  T.eq(Species.itemIndex(run.loader)("dawn-stone"), 900,
+       "an exact id (DAWN_STONE) beats another item named \"Dawn Stone\" (ST_DAWN_STONE)")
   T.eq(Species.itemIndex(run.loader)("no-such-item"), nil,
        "and answers nil, not an error, for one nothing provides")
   run.release()
