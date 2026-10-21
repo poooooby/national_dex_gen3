@@ -272,6 +272,16 @@ T.eq(sprite(452, "front"), "data/generated/gba/pokemon/front/452.rgba",
      "an .rgba answer is ignored")
 T.eq(sprite(25, "front"), "data/generated/gba/pokemon/front/25.rgba",
      "the cart's own species are never asked about")
+-- a provider also hears whether the picture is shiny, and where it is drawn
+local heard
+T.check(api.setArtProvider(function(id, side, slot, shiny, kind)
+  if id == "PIPLUP" then heard = { shiny = shiny, kind = kind } return "art/piplup.png" end
+end), "a second provider can register")
+T.eq(Runtime.call("pokemon.sprite", function(p) return p end, "x.rgba",
+  { gen3Species = 393 + 64, side = "front", shiny = true, kind = "dex" }), "art/piplup.png",
+  "the provider answers")
+T.eq(heard and heard.shiny, true, "and is told the picture is shiny")
+T.eq(heard and heard.kind, "dex", "and where it is drawn")
 
 run.release()
 T.finish("national_dex_gen3 register")

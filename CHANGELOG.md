@@ -58,6 +58,14 @@ All notable changes to this mod are documented here, in
     tables. Removed: the `Evolution.targetSpecies` wrap and the friendship branch of the
     `evolution.check` hook (which keeps the conditional `when` steps). In game on Emerald and
     FireRed: Dawn Stone evolves male Kirlia only (use and the Bag check), Budew by day only.
+  - **Art providers hear `shiny` and `kind`**: `setArtProvider(fn)` providers are now called as
+    `fn(speciesId, side, slot, shiny, kind)` from the engine's sprite ctx, so a sprite mod can
+    give the new species shiny pictures (providers taking three arguments are unaffected).
+  - Cries stay in `cries.pak` with this mod's player: the engine's `cries` registry was
+    considered and not used (one decoded source per species kept for the whole session instead
+    of this mod's small cache, 639 files instead of one pack, and our player already follows the
+    sound-effect volume).
+  - README: a cartridge .sav export leaves Hall of Fame entries past slot 511 out (engine).
   - Test harness: `H.useCart` points the engine's dataset cache at the imported cart and the tests
     bind the live move module and run `Gen3Compat.applyMerged`, as a game does, instead of
     hand-loading move packs and names.

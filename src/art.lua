@@ -2,13 +2,16 @@
 --
 --   local dex = mod:find("national_dex_gen3")
 --   if dex then
---     dex.exports.setArtProvider(function(speciesId, side, slot)
+--     dex.exports.setArtProvider(function(speciesId, side, slot, shiny, kind)
 --       return mod.assets:path("front/" .. speciesId .. ".png")   -- or nil
 --     end)
 --   end
 --
--- `side` is "front" or "back". Return a PNG path (any size; the engine
--- centres and crops it to 64x64) or nil to let the next provider answer.
+-- `side` is "front" or "back"; `shiny` is true for a shiny Pokemon's picture and
+-- `kind` says where it is drawn ("battle", "dex", ...), both from the engine's
+-- sprite ctx (providers written for three arguments simply ignore them). Return
+-- a PNG path (any size; the engine centres and crops it to 64x64) or nil to let
+-- the next provider answer.
 -- Only this mod's species are asked about; the cart's own 386 are untouched.
 --
 -- Wired through the Gen 3 pokemon.sprite hook (src/mods/Gen3Compat.lua), whose
@@ -28,7 +31,7 @@ function Art.install(mod, registered)
     local record = slot and bySlot[slot]
     if not record then return out end
     for _, provider in ipairs(providers) do
-      local ok, result = pcall(provider, record.id, ctx.side, slot)
+      local ok, result = pcall(provider, record.id, ctx.side, slot, ctx.shiny == true, ctx.kind)
       if ok and type(result) == "string" and result ~= ""
         and not result:lower():find("%.rgba$") then
         return result

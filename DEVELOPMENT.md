@@ -164,14 +164,16 @@ Pictures (battle, summary and Pokédex) come from a sprite mod:
 ```lua
 local dex = mod:find("national_dex_gen3")
 if dex then
-  dex.exports.setArtProvider(function(speciesId, side, slot)
+  dex.exports.setArtProvider(function(speciesId, side, slot, shiny, kind)
     return mod.assets:path(side .. "/" .. speciesId .. ".png")  -- or nil
   end)
 end
 ```
 
-`side` is `"front"` or `"back"`. Return a PNG path (the engine centres and crops it to 64×64),
-or nil to let the next provider answer.
+`side` is `"front"` or `"back"`; `shiny` is true for a shiny Pokémon's picture and `kind` says
+where it is drawn (`"battle"`, `"dex"`, ...), both from the engine's `pokemon.sprite` ctx (a
+provider written for three arguments ignores them). Return a PNG path (the engine centres and
+crops it to 64×64), or nil to let the next provider answer.
 
 ## API (`mod.exports`)
 

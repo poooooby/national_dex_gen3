@@ -125,6 +125,9 @@ This mod adds the Pokémon. Two companions bring them to life:
   save underneath: turning Bigger PC off or removing the mod never loses them. Tools that only
   know the 14 boxes see boxes 1–14: exporting to a cartridge .sav, the cross-game Pokémon Box,
   online team picking, and Ruby/Sapphire's lottery and PokéNav condition search.
+- **Exporting to a cartridge .sav** leaves Hall of Fame entries for Pokémon from #448 on (and
+  the alternate forms) out: the cartridge format can't store them. The game says so when it
+  exports; your save itself keeps them.
 - **Ruby and Sapphire's Bag** squeezes the three-digit numbers of TM100 and up against the move
   name; FireRed, LeafGreen and Emerald show them in full.
 - **The original 386 Pokémon,** the story, trainers and maps are unchanged, apart from the
