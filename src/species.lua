@@ -11,9 +11,6 @@
 
 local Species = {}
 
-local SLOT_CAP = 1300 -- the last base species is slot 1089 (dex 1025 + 64); forms follow at
-                      -- 1090+ (tools/form_list.py), with headroom
-
 local function normalize(name)
   return (tostring(name or ""):upper():gsub("[^A-Z0-9]", ""))
 end
@@ -48,27 +45,6 @@ function Species.loadPayload(load)
   end
   table.sort(out, function(a, b) return a.dex < b.dex end)
   return #out > 0 and out or nil
-end
-
--- The Gen 3 species registry (one schema shared by every Gen 3 game -- see
--- Schemas.REGISTRIES.pokemon.gen3Fields in the engine) capped `index` at 1023
--- before the engine raised it to 65535 (Oct 2026); this payload needs up to
--- 1217 (forms). Only ever raised, never lowered: on a newer engine the field
--- already allows it and is left alone, so other mods keep the engine's cap.
-local function raiseSlotCap(mod)
-  local ok, Schemas = pcall(require, "src.mods.Schemas")
-  local fields = ok and type(Schemas) == "table" and Schemas.REGISTRIES
-    and Schemas.REGISTRIES.pokemon and Schemas.REGISTRIES.pokemon.gen3Fields
-  if fields and Schemas.f and Schemas.f.opt and Schemas.f.int then
-    local current = type(fields.index) == "table" and (fields.index.inner or fields.index)
-    if not (current and tonumber(current.max) and current.max >= SLOT_CAP) then
-      fields.index = Schemas.f.opt(Schemas.f.int(1, SLOT_CAP))
-    end
-    return true
-  end
-  mod.log:warn("could not raise the Gen 3 species slot cap -- species past "
-    .. "slot 1023 (dex > 959) will not register")
-  return false
 end
 
 -- Lookups read from the running game.
@@ -255,7 +231,6 @@ end
 -- { id, dex, slot, name, teach, evolutions = { {method, level?, item?, targetSlot} } },
 -- and the cross-generation evolutions added to the cart's species.
 function Species.register(mod, payload, crossgen, forms)
-  raiseSlotCap(mod)
   local moveName, itemId, byDex = lookups(mod, payload)
   local formById = {}
   for _, f in ipairs(forms or {}) do formById[f.id] = { id = f.id, slot = f.slot } end

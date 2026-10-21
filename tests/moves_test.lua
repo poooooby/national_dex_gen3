@@ -48,6 +48,9 @@ local function learns(slot, num)
 end
 T.eq(learns(sylveon, moon.index), 50, "Sylveon learns MOONBLAST at 50 (a number, not a name)")
 
+-- as a game does after loading mods: the registries go into the live tables, and the engine
+-- re-applies them after every reload (Gen3Compat)
+pcall(require("src.mods.Gen3Compat").applyMerged, { mods = run.loader, data = data })
 run.loader.events:emit("game.ready", {})
 
 -- the row and the names
@@ -85,19 +88,11 @@ end
 T.eq(#bad, 0, "every learnset and egg move is a known number (" .. table.concat(bad, ", "):sub(1, 100) .. ")")
 T.check(new > 1000, "over a thousand learnset rows are real newer moves (" .. new .. ")")
 
--- a reload writes names again; they are numbers again after
-Pokemon._learnsets[sylveon][#Pokemon._learnsets[sylveon]][2] = "MOONBLAST"
-for _, r in ipairs(Pokemon._learnsets[sylveon]) do if r[1] == 50 then r[2] = "MOONBLAST" end end
-Pokemon._runReloadHooks()
-T.eq(learns(sylveon, moon.index), 50, "after a reload, MOONBLAST is a number again")
-
--- a real reload: the game hands out FRESH move and species tables (a new game, a reload), and
--- the registry's own re-write puts the new moves under their names; they are back at their
--- numbers, Fairy, after the hooks
+-- a real reload: Pokemon.install hands out FRESH species tables (move names, the battle-move
+-- mirror, learnsets) while the battle keeps its move table; the engine's re-apply (Gen3Compat,
+-- moves before species) puts the new moves back at their numbers, Fairy, in every table
 do
   local pack = GAME .. "/data/generated/gba/pokemon/battle_moves.lua"
-  Moves._rom = dofile(pack).moves
-  Moves._runReloadHooks()
   Pokemon._battleMoves = dofile(pack).moves
   local names = {}
   for k, v in pairs(Pokemon._moveNames) do if type(k) == "number" and k < 355 then names[k] = v end end
@@ -107,6 +102,7 @@ do
   T.eq(Moves.get(moon.index).type, 18, "still Fairy")
   T.eq(Pokemon.battleMove(moon.index) and Pokemon.battleMove(moon.index).power, 95, "and so does the species module")
   T.eq(Pokemon.moveName(moon.index), "MOONBLAST", "with its name")
+  T.eq(learns(sylveon, moon.index), 50, "and Sylveon still learns it at 50")
 end
 
 -- text and "used MOVE!"

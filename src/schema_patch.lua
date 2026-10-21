@@ -1,15 +1,12 @@
--- The engine's Gen 3 registry write (src/mods/Schemas.lua, from the API 3 update), adjusted for
--- this mod's alternate forms -- and, on an engine from before the cap fix, its slot ceiling.
+-- The engine's Gen 3 registry write (src/mods/Schemas.lua, engine 0.3.95+), adjusted for this
+-- mod's alternate forms.
 --
--- 1. Forms. The write records each species' DISPLAY name in the live P._byName (last one wins)
---    and maps its National number back to its slot (toSpecies[dex] = slot). A form carries its
---    base's name and number (MEOWTH_GALAR shows "MEOWTH", dex 52), so it took over the base:
---    MEOWTH resolved to the Galarian form, and Modern Moves' rows for #211 landed on Hisuian
---    Qwilfish. Here a form keeps only its own id key and never claims the base's number (the
---    rule this mod's fixups have always followed); other display names are first-wins.
--- 2. The cap. The first API 3 build capped every native slot at 1..1023 in a local function,
---    below our saved slots (species to 1217, TM items to 1213). bryanthaboi's fix (79ea62f4)
---    raised it to 65535; on an older build the two literals are raised to 2047 here.
+-- The write records each species' DISPLAY name in the live P._byName (last one wins) and maps
+-- its National number back to its slot (toSpecies[dex] = slot). A form carries its base's name
+-- and number (MEOWTH_GALAR shows "MEOWTH", dex 52), so it took over the base: MEOWTH resolved to
+-- the Galarian form, and Modern Moves' rows for #211 landed on Hisuian Qwilfish. Here a form
+-- keeps only its own id key and never claims the base's number (the rule this mod's fixups have
+-- always followed); other display names are first-wins.
 --
 -- A mod cannot wrap a local, but it can do what src/dex_patch.lua does to the Pokedex: read the
 -- engine source, replace exact text, run the copy, and take just what it needs from it -- the
@@ -20,15 +17,13 @@
 --     spec when the loader built the registries, BEFORE this mod's entry ran -- and both call
 --     sites (Loader's merge, Gen3Compat's reload) look it up on `registry.spec` at call time.
 -- Any failure (source unreadable, text not the expected one, compile error) logs once and leaves
--- the stock write. On the fixed engine that only loses the form rules (forms would shadow their
--- base's name and number, as described above); on an older build the species fail to register.
+-- the stock write: forms then shadow their base's name and number, as described above.
 --
 -- The engine-side change that would retire this file: skip the display-name and toSpecies
 -- writes for records with a `baseSpecies` in `updateNativeNames` / `writeMon`.
 local SchemaPatch = {}
 
 local PATH = "src/mods/Schemas.lua"
-local CAP = 2047                     -- the outer gate only; gen3Fields still caps each registry
 local REGISTRIES = { "pokemon", "moves", "items" }
 
 -- the engine source, in the game/editor (CacheBlob reads through love) or headless (the test
@@ -47,7 +42,7 @@ local function readSource(require)
   return nil
 end
 
--- opts: { require, log, registry = fn(name) -> the live registry (mod.content[name]) or nil }
+-- opts: { require, log, generation }
 function SchemaPatch.install(opts)
   local require, log = opts.require, opts.log
   local function fail(why)
@@ -58,26 +53,17 @@ function SchemaPatch.install(opts)
   if not (okS and type(Schemas) == "table" and type(Schemas.REGISTRIES) == "table") then
     return fail("the schema module was not found")
   end
-  if Schemas.__nationalDexIndexCap then return true end
+  if Schemas.__nationalDexForms then return true end
 
   local src = readSource(require)
   if not src then return fail("engine source not readable") end
-  -- an engine from before the native write path has no 1023 gate: nothing to patch
-  if not src:find("prepareNativeWrite", 1, true) then return true end
-  local n1, n2, n3
-  src, n1 = src:gsub("num >= 1 and num <= 1023", "num >= 1 and num <= " .. CAP)
-  src, n2 = src:gsub("for num = 1, 1023 do", "for num = 1, " .. CAP .. " do")
+  local n3
   -- the copy starts with an empty `bound` map (Schemas.bindGen3 ran on the live module before
   -- this mod loaded), so its sibling() lookups must reach the live engine modules; `package` is
   -- not in a mod's sandbox, so its one package.loaded read goes through require instead
   src, n3 = src:gsub('return package%.loaded%[path or ""%]',
     'return __nationalDexPkgLoaded(path)')
-  -- the cap: an engine from before the fix (bryanthaboi 79ea62f4, cap 65535) has the two 1023
-  -- literals; a fixed engine has neither and needs no change
-  local capped = n1 == 1 and n2 == 1
-  if not ((capped or (n1 == 0 and n2 == 0)) and n3 == 1) then
-    return fail("engine source is not the expected one")
-  end
+  if n3 ~= 1 then return fail("engine source is not the expected one") end
   -- the write also puts each species record's DISPLAY name into the live P._byName, last
   -- registration wins: an alternate form named like its base (MEOWTH_GALAR shows "MEOWTH",
   -- MR_MIME_GALAR shows "MR. MIME") would then answer for the base species everywhere a name is
@@ -146,11 +132,8 @@ function SchemaPatch.install(opts)
     end
   end
   for key, value in pairs(copy.gen3View) do Schemas.gen3View[key] = value end
-  Schemas.__nationalDexIndexCap = CAP
-  if log then
-    if capped then log:info("native index cap raised to %d (species, moves, items)", CAP)
-    else log:info("forms kept out of their base's name and National number") end
-  end
+  Schemas.__nationalDexForms = true
+  if log then log:info("forms kept out of their base's name and National number") end
   return true
 end
 

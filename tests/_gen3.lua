@@ -94,4 +94,33 @@ function H.gen3Data(game)
   }
 end
 
+
+-- The engine's dataset cache, pointed at the imported cart: every Pokemon.install / move pack
+-- load reads the cart's real tables (names, rows), as in a game. Without it a headless install
+-- loads empty tables and the cart's move names vanish mid-test.
+function H.useCart(game)
+  game = game or "firered"
+  local CacheBlob = require("src.import.CacheBlob")
+  local function path(rel) return game .. "/" .. rel end
+  local reader = {
+    read = function(_, rel)
+      local f = io.open(path(rel), "rb")
+      if not f then return nil end
+      local data = f:read("*a"); f:close()
+      return CacheBlob.decode(rel, data)
+    end,
+    exists = function(_, rel)
+      local f = io.open(path(rel), "rb")
+      if f then f:close() return true end
+      return false
+    end,
+  }
+  require("src.core.game3.dataset").cache = function() return reader end
+  -- tables already built from the empty cache are rebuilt from the cart on next use
+  local P = require("src.core.game3.pokemon")
+  P._moveNames, P._romMoveNames = nil, nil
+  local Moves = require("src.core.game3.battle.moves")
+  Moves._numByName, Moves._rom, Moves._romLoaded = nil, nil, false   -- the engine loads the pack
+  return reader
+end
 return H

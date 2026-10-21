@@ -10,19 +10,10 @@ local H = dofile((arg[0]:gsub("\\", "/"):match("^(.*)/") or ".") .. "/_gen3.lua"
 local GAME = arg[1] or "firered"
 
 local data = H.gen3Data(GAME)
+H.useCart(GAME)                               -- the engine reads the cart, as in a game
 local Pokemon = require("src.core.game3.pokemon")
 local Moves = require("src.core.game3.battle.moves")
-do
-  local pack = GAME .. "/data/generated/gba/pokemon/battle_moves.lua"
-  Moves._rom = dofile(pack).moves
-  Moves._romLoaded = true
-  Pokemon._battleMoves = dofile(pack).moves
-  local romNames = dofile(GAME .. "/data/generated/gba/pokemon/move_names.lua")
-  Pokemon._moveNames = Pokemon._moveNames or romNames
-  Pokemon._romMoveNames = Pokemon._romMoveNames or romNames
-  Moves._numByName = nil                       -- rebuild the engine's name index from these
-  data.gen3Moves = Moves
-end
+data.gen3Moves = Moves                         -- the battle's own module, as a game binds it
 -- the hit itself stands in: it lands for 40 (what comes before and after it is under test)
 local Hit = require("src.core.game3.battle.effects.hit")
 local hits = 0
@@ -35,18 +26,10 @@ Hit.run = function(M)
 end
 
 local run = T.sdk.loadMods({ "mods/national_dex_gen3" }, { data = data, generation = 3 })
-
--- the engine's install during load rebuilds the name tables from its (headless, empty) cache,
--- so the cart's names go back in before anything asks the battle for a move
-do
-  local P2 = require("src.core.game3.pokemon")
-  local M2 = require("src.core.game3.battle.moves")
-  local romNames = dofile(GAME .. "/data/generated/gba/pokemon/move_names.lua")
-  P2._moveNames = P2._moveNames or romNames
-  P2._romMoveNames = romNames
-  M2._numByName = nil
-end
 T.eq(#run.errors, 0, "loads clean (" .. tostring(run.errors[1]) .. ")")
+-- as a game does after loading mods: the registries go into the live tables, and the engine
+-- re-applies them after every reload (Gen3Compat)
+pcall(require("src.mods.Gen3Compat").applyMerged, { mods = run.loader, data = data })
 run.loader.events:emit("game.ready", {})
 
 local Adapter = require("src.core.game3.battle.adapter")

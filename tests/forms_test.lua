@@ -11,8 +11,13 @@ local T = require("tests.modkit")
 local H = dofile((arg[0]:gsub("\\", "/"):match("^(.*)/") or ".") .. "/_gen3.lua")
 
 local data = H.gen3Data()
+H.useCart()                                    -- the engine reads the cart, as in a game
+data.gen3Moves = require("src.core.game3.battle.moves")   -- the battle's own module, bound as a game does
 local run = T.sdk.loadMods({ "mods/national_dex_gen3" }, { data = data, generation = 3 })
 T.eq(#run.errors, 0, "loads clean (" .. tostring(run.errors[1]) .. ")")
+-- as a game does after loading mods: the registries go into the live tables, and the engine
+-- re-applies them after every reload (Gen3Compat)
+pcall(require("src.mods.Gen3Compat").applyMerged, { mods = run.loader, data = data })
 run.loader.events:emit("game.ready", {})
 local P = data.gen3Pokemon
 local reg = run.loader.content.pokemon

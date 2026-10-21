@@ -15,25 +15,11 @@
 -- Battle Frontier Apprentice) does not see these.
 local Tms = {}
 
-local INDEX_CAP = 2047
 local GAMES = { "firered", "leafgreen", "ruby", "sapphire", "emerald" }
 
--- At load: the Gen 3 item registry caps `index` at 1023 (a schema constant, no mod API: the
--- same engine_internals reach as the species slot cap), then one item per TM.
+-- At load: one item per TM (indices 1100+; the engine allows item indices to 65535).
 -- list: data/tms.lua; moveRows: data/moves.lua rows by id (a fallback description).
 function Tms.register(mod, list, moveRows, require)
-  local okS, Schemas = pcall(require, "src.mods.Schemas")
-  local fields = okS and type(Schemas) == "table" and Schemas.REGISTRIES and Schemas.REGISTRIES.items
-    and Schemas.REGISTRIES.items.gen3Fields
-  if not (fields and Schemas.f and Schemas.f.opt and Schemas.f.int) then
-    mod.log:warn("new TMs are off: could not raise the item index cap")
-    return {}
-  end
-  -- only ever raised: a newer engine already allows 65535, and other mods keep that
-  local current = type(fields.index) == "table" and (fields.index.inner or fields.index)
-  if not (current and tonumber(current.max) and current.max >= INDEX_CAP) then
-    fields.index = Schemas.f.opt(Schemas.f.int(1, INDEX_CAP))
-  end
   local okV, GV = pcall(require, "src.core.GameVersion")
   local game = okV and GV and tostring(GV.current) or ""
   local frlg = game:find("firered", 1, true) or game:find("leafgreen", 1, true)

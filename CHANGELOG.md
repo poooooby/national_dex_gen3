@@ -33,7 +33,16 @@ All notable changes to this mod are documented here, in
     a second mods load in one process.
   - The rewritten battle moves module caches move names per table: `src/moves.lua` hands it a
     fresh name table after adding the new moves', or the editor dropped learnset rows naming one.
-  - Test harness: the battle stubs feed the cart's `move_names` pack.
+  - **Engine work no longer duplicated** (engine 0.3.95+ does it): `src/moves.lua` drops its
+    repair layer (learnset/egg-move numbers, the `Moves.constName`/`numForName` wraps, re-writing
+    rows into `Moves._rom` / `P._battleMoves` / `P._moveNames` after reloads); the species and TM
+    index-cap raises and `schema_patch`'s 1023 branch go (it keeps only the form rules);
+    `src/fixups.lua` stops writing `_byName` keys and `_national` maps and matching slot-0
+    evolution targets. Kept: "used MOVE!" count, move descriptions, contest rows, animations,
+    late-item / conditional evolution rows, Safari flee rates, tutors, the Pokedex data.
+  - Test harness: `H.useCart` points the engine's dataset cache at the imported cart and the tests
+    bind the live move module and run `Gen3Compat.applyMerged`, as a game does, instead of
+    hand-loading move packs and names.
 
 ## [1.1.4] - 2026-10-20
 

@@ -30,20 +30,6 @@ local METHOD = {
   EVO_LEVEL = 4, EVO_TRADE = 5, EVO_TRADE_ITEM = 6, EVO_ITEM = 7,
 }
 
-local function nameKeys(record)
-  local keys = {}
-  -- a form shares its base's display name (MR. MIME); only its own id may name it, or a
-  -- form of a cart species would take that species' name (MR_MIME -> Galarian Mr. Mime)
-  for _, s in ipairs(record.form and { record.id } or { record.id, record.name }) do
-    if type(s) == "string" then
-      local k = s:upper():gsub("[%.']", ""):gsub("[%s%-]+", "_")
-      keys[#keys + 1] = k
-      keys[#keys + 1] = (k:gsub("_", ""))
-    end
-  end
-  return keys
-end
-
 -- The step's engine PARAM (a level, or an item's number in the running game), and
 -- whether it resolved. An item step that does not resolve is not "param 0"
 -- -- that would be a real, wrong item id -- it is "not yet": the caller
@@ -116,8 +102,7 @@ function Fixups.new(registered, itemIndex, bridges, log, forms)
           P._evolutions[b.sourceSlot] = rows
           local found
           for _, row in ipairs(rows) do
-            if row.target == b.targetSlot
-              or ((row.target or 0) == 0 and row.method == method) then
+            if row.target == b.targetSlot then
               found = row
               break
             end
@@ -190,11 +175,6 @@ function Fixups.new(registered, itemIndex, bridges, log, forms)
         end
       end
       P._evolutions[r.slot] = rows
-      if type(P._byName) == "table" then
-        for _, key in ipairs(nameKeys(r)) do
-          if P._byName[key] == nil then P._byName[key] = r.slot end
-        end
-      end
       -- the Safari Zone flee rate the registry cannot carry (kept if one is already there).
       -- The registry's own reload pass may come after this one and builds the slot's meta
       -- afresh from whatever the slot holds, so the entry is started here if need be and
@@ -205,12 +185,6 @@ function Fixups.new(registered, itemIndex, bridges, log, forms)
         if (tonumber(meta.safariZoneFleeRate) or 0) == 0 then
           meta.safariZoneFleeRate = Fixups.safariFleeRate(meta.catchRate or r.catchRate)
         end
-      end
-      if type(P._national) == "table" then
-        P._national.toNational = P._national.toNational or {}
-        P._national.toSpecies = P._national.toSpecies or {}
-        P._national.toNational[r.slot] = r.dex -- a form's dex is its base's
-        if not r.form then P._national.toSpecies[r.dex] = r.slot end
       end
     end
     -- the cart's own species without a Safari flee rate (all but the Safari Zone's)
@@ -541,7 +515,6 @@ function Fixups.new(registered, itemIndex, bridges, log, forms)
   return self
 end
 
-Fixups._nameKeys = nameKeys
 Fixups._METHOD = METHOD
 
 return Fixups
