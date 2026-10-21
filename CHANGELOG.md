@@ -21,9 +21,16 @@ All notable changes to this mod are documented here, in
     2047 so the species still register.
   - The species and item caps this mod sets (`gen3Fields.index`) are only ever raised now, so
     they no longer pull the engine's 65535 back down for other mods.
-  - The engine's new progression seeding walks the stock type chart with a fixed 0..17 name map
-    and crashed on Fairy rows at the next in-process load: `src/types.lua` builds the Fairy chart
-    as a fresh `Types.TABLE` and leaves `Types.NATIVE_TABLE` stock.
+  - **Fairy through the engine's `type_chart` registry.** The engine now rebuilds the Gen 3 type
+    chart from that registry on every mods load, which wiped the chart this mod rebuilt by hand
+    (Fairy moves went neutral after a second load in one run, e.g. a hot reload) and crashed the
+    engine's seeding on Fairy rows. FAIRY is now content: the type (index 18, special), its
+    matchups from `data/types.lua`, the two Gen 6 Steel removals, and record patches for every
+    Fairy typing (cart species, forms, Charm/Sweet Kiss/Moonlight); this mod's own Fairy species
+    and moves register FAIRY directly. Removed: the chart rebuild, the `Types.effectiveness` /
+    `Types.name` wraps and the live retyping with its reload hooks. Kept: gTypeNames[18], the
+    Battle Factory count, the FRLG badges, the RSE summary icon. `fairy_test.lua` now also checks
+    a second mods load in one process.
   - The rewritten battle moves module caches move names per table: `src/moves.lua` hands it a
     fresh name table after adding the new moves', or the editor dropped learnset rows naming one.
   - Test harness: the battle stubs feed the cart's `move_names` pack.

@@ -57,13 +57,12 @@ T.eq(badAbility, nil, "and only ever one the cart has (1-75 or 77)")
 T.eq(P._abilities[451][1], 65, "Turtwig keeps Overgrow")
 T.check(P._abilities[875 + 64][1] ~= 0, "Eiscue (Ice Face has no Gen 3 id) gets a mapped ability")
 
--- Typing: the Gen 3-era typing. Togekiss was Normal/Flying before Fairy
--- existed (PokeAPI past_types); dropping Fairy from today's typing alone would
--- leave it pure Flying.
+-- Typing: the modern typing, FAIRY included, now that the engine's type_chart registry
+-- carries the type (src/types.lua). Togekiss is Fairy/Flying, Sylveon pure Fairy.
 local togekiss = run.loader.content.pokemon:get("TOGEKISS")
-T.eq(togekiss.types[1], "NORMAL", "Togekiss keeps its pre-Fairy Normal half")
+T.eq(togekiss.types[1], "FAIRY", "Togekiss is Fairy")
 T.eq(togekiss.types[2], "FLYING", "and Flying")
-T.eq(run.loader.content.pokemon:get("SYLVEON").types[1], "NORMAL", "a pure Gen 6+ Fairy is Normal")
+T.eq(run.loader.content.pokemon:get("SYLVEON").types[1], "FAIRY", "a pure Gen 6+ Fairy is Fairy")
 
 -- Learnsets keep the modern games' length: a move Gen 3 lacks is replaced by
 -- the closest Gen 3 move (tools/move_map.py), never dropped.
@@ -95,9 +94,10 @@ for slot = 451, 1089 do
 end
 T.eq(unresolved, 0, "every learnset move is a number the game knows (FireRed's or one this mod registers)")
 
--- Fairy is dropped: Sylveon (pure Fairy) is Normal, Flabebe too
+-- a cart species retyped through the registry: Clefairy is Fairy on its record too
 local sylveon = run.loader.content.pokemon:get("SYLVEON")
-T.eq(sylveon.types[1], "NORMAL", "pure Fairy becomes Normal")
+T.eq(sylveon.types[1], "FAIRY", "pure Fairy stays Fairy")
+T.eq(run.loader.content.pokemon:get("CLEFAIRY").types[1], "FAIRY", "the cart's Clefairy is patched to Fairy")
 
 -- ------- reload repairs
 

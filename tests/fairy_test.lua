@@ -1,8 +1,10 @@
 -- Standalone: luajit mods/national_dex_gen3/tests/fairy_test.lua [game] (from the gen1recomp
 -- root; needs that cart imported, FireRed by default).
 --
--- The FAIRY type (src/types.lua): type id 18, the Gen 6 chart, every species and form that is
--- Fairy today, the cart's moves that became Fairy, kept across reloads.
+-- The FAIRY type (src/types.lua): type id 18 in the engine's type_chart registry, the Gen 6
+-- chart, every species and form that is Fairy today, the cart's moves that became Fairy, kept
+-- across reloads -- and across a second mods load in the same process (the engine rebuilds the
+-- chart on every load).
 package.path = "./?.lua;./?/init.lua;" .. package.path
 
 local T = require("tests.modkit")
@@ -22,11 +24,23 @@ do
   Moves._romLoaded = true
   Pokemon._battleMoves = dofile(pack).moves
   Pokemon._romMoveNames = Pokemon._romMoveNames or Pokemon._moveNames
+  data.gen3Moves = Moves
 end
 
-local run = T.sdk.loadMods({ "mods/national_dex_gen3" }, { data = data, generation = 3 })
-T.eq(#run.errors, 0, "loads clean (" .. tostring(run.errors[1]) .. ")")
-run.loader.events:emit("game.ready", {})
+-- as a game does: load the mods, apply the registries to the live tables, then game.ready
+local function load(fresh)
+  if fresh then                                   -- a real second load starts from fresh data
+    data = H.gen3Data(GAME)
+    data.gen3Moves = Moves
+  end
+  local r = T.sdk.loadMods({ "mods/national_dex_gen3" }, { data = data, generation = 3 })
+  T.eq(#r.errors, 0, "loads clean (" .. tostring(r.errors[1]) .. ")")
+  local okA, errA = pcall(require("src.mods.Gen3Compat").applyMerged, { mods = r.loader, data = data })
+  T.check(okA, "the registries apply (" .. tostring(errA) .. ")")
+  r.loader.events:emit("game.ready", {})
+  return r
+end
+local run = load()
 local api = run.loader.exports.national_dex_gen3
 
 local FAIRY = 18
@@ -108,4 +122,13 @@ if okC then
 end
 
 run.release()
+-- ------- a second mods load in the same process (another cart, the editor, a hot reload): the
+-- engine rebuilds the chart from the registries, and Fairy comes back with them
+run.release()
+local run2 = load(true)
+T.eq(Types.name(FAIRY), "FAIRY", "after a second load FAIRY is still named")
+T.eq(x(FAIRY, ID.DRAGON), 2, "and still beats Dragon")
+T.eq(x(ID.DRAGON, FAIRY), 0, "and Dragon still can't touch it")
+run2.release()
+
 T.finish("national_dex_gen3 Fairy type (" .. GAME .. ")")

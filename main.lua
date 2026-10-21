@@ -158,6 +158,12 @@ return function(mod)
     end
     return data
   end
+  -- the Fairy type through the engine's type_chart, and every Fairy typing as a record patch
+  -- (src/types.lua): after species, forms and moves are registered, before the registries freeze
+  if FairyTypes then
+    local okFairy, fairyErr = pcall(FairyTypes.register, { mod = mod, data = fairyData(), log = mod.log })
+    if not okFairy then mod.log:warn("the Fairy type is off: %s", tostring(fairyErr)) end
+  end
 
   -- the Modern Moves option (src/modern_learnsets.lua): after the repairs and the new moves'
   -- numbers; follows the option when it changes in the mod menu

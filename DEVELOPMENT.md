@@ -23,7 +23,7 @@ move. Forms are registered as species of their own, each reporting its base spec
 | Field | Source |
 |---|---|
 | Name, dex number, base stats, catch rate, base experience (capped at 255), growth rate, gender ratio, egg cycles, friendship, Pokédex kind/height/weight | PokéAPI |
-| Types | PokéAPI. Gen 3 has no Fairy type, so Fairy is dropped; a pure Fairy type becomes Normal |
+| Types | PokéAPI. The species shards keep the Gen V typing (Fairy dropped, pure Fairy → Normal); `data/types.lua` carries the modern Fairy typings, which `src/types.lua` patches onto the records through the engine's `type_chart` (FAIRY = type 18) |
 | Learnset | The level-up list from the newest game that has one, at its full length. A move Gen 3 lacks is replaced, at the same level, by the closest Gen 3 move the species doesn't already learn (`tools/move_map.py`: same type, then similar power, accuracy, priority and effect). Move names are read from the running game's own move registry |
 | TM/HM compatibility | Every TM or HM (the same 58 machines in all five games) whose move the species can be taught by machine or tutor in any game (636 species; 37 of 58 machines on average) |
 | Move tutors | Whichever tutors the running game has (FireRed/LeafGreen's 15, Ruby/Sapphire's none, or Emerald's own larger set) whose move the species can be taught in any game |

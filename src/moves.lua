@@ -15,7 +15,7 @@
 --   * Ruby/Sapphire/Emerald's contest data (the summary's contest page, the move relearner and
 --     contests index it by move and fail on a missing row): a row each, in the cached tables
 --   * the battle animation: the cart move it borrows (`look`), instead of the plain hit
--- FAIRY moves are registered as NORMAL; src/types.lua turns them Fairy.
+-- FAIRY moves are registered FAIRY: src/types.lua registers the type in the engine's type_chart.
 
 local NewMoves = {}
 
@@ -26,7 +26,7 @@ function NewMoves.register(mod, payload)
     local ok, err = pcall(function()
       mod.content.moves:register(r.id, {
         id = r.id, name = r.name, index = r.index,
-        type = r.type == "FAIRY" and "NORMAL" or r.type,
+        type = r.type,
         power = r.power, accuracy = r.accuracy, pp = r.pp, effect = r.effect,
         secondaryChance = r.secondaryChance, target = r.target, priority = r.priority, flags = r.flags,
       })
@@ -121,13 +121,12 @@ function NewMoves.install(opts)
   -- the rows themselves. The same registry fault (see repairLearnsets) makes its re-write after
   -- a reload of the move tables put a new move under its NAME (rows["MOONBLAST"]), so after
   -- every reload the battle's table, the species module's mirror and the move names lose them:
-  -- write each row back at its number. Type FAIRY is written as NORMAL; src/types.lua, whose
-  -- reload hooks run after these, turns it Fairy.
+  -- write each row back at its number (FAIRY is type 18, the engine's type_chart id).
   local okP, P = pcall(require, "src.core.game3.pokemon")
   local okT, Types = pcall(require, "src.core.game3.battle.types")
   local function rowOf(r)
-    local t = r.type == "FAIRY" and "NORMAL" or r.type
-    return { effect = r.effect, power = r.power, type = okT and Types.ID[t] or 0, accuracy = r.accuracy,
+    local t = r.type == "FAIRY" and 18 or (okT and Types.ID[r.type]) or 0
+    return { effect = r.effect, power = r.power, type = t, accuracy = r.accuracy,
              pp = r.pp, secondaryChance = r.secondaryChance, target = r.target, priority = r.priority,
              flags = r.flags }
   end

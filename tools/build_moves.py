@@ -22,7 +22,7 @@ newer move becomes a real move when its effect is one Gen 3 already has:
             shortens the longer ones)
   text      an English flavor text that fits each summary box: FireRed/LeafGreen 4 lines of
             19, Ruby/Sapphire/Emerald 2 lines of 28
-  type      FAIRY moves are registered as NORMAL and turned FAIRY by src/types.lua
+  type      FAIRY moves are registered FAIRY (src/types.lua registers the type in the engine's type_chart)
 
 Only moves the species of this mod learn (level-up or egg) are built. Indices start at 355
 and are append-only (a move's index is saved in a Pokemon's moves): a move already in
