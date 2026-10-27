@@ -24,6 +24,14 @@ Paldea Pokémon can live in Kanto and Hoenn.
 - 🍬 **Exp. Candies XS to XL:** use one on a Pokémon from the Bag for a boost of Exp. Points, with
   its level-ups, new moves and evolutions just as a Rare Candy gives them. The base games don't
   hand them out; Max Raids gives them as raid rewards.
+- 🔴 **Dynamax Levels and the Gigantamax Factor:** every Pokémon has a Dynamax Level (0–10) and can
+  carry the Gigantamax Factor, shown on its summary - a Dynamax Level gauge on the info page, with the
+  Dynamax icon beside it when it has the factor - and the icon in the PC too. **Dynamax Candy** raises
+  the level; three **Max Mushrooms** make a Max Soup that gives a Pokémon with a Gigantamax form the
+  factor, or takes it away (Urshifu's takes a **Max Honey** too). All three are sold beside the
+  vitamins. Battles don't Dynamax here: Max Raids uses them in its raids, gives Dynamax Candy and the
+  marks on what you catch there, and takes a **Dynamax Crystal** at a den for a legendary Pokémon's
+  raid.
 - 🌍 **128 alternate forms:** Alolan, Galarian, Hisuian and Paldean forms (of the originals too,
   each evolving into its own region's form), Rotom's appliances, Wormadam's cloaks,
   Oricorio's styles, Alcremie's creams, Giratina Origin, Kyurem Black and many more, each a

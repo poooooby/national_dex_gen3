@@ -78,3 +78,5 @@ tools/anim_known.lua
 # dist/ (managed by tools/build_dist.py; do not edit)
 dist/national_dex_gen3-0.7.0.zip
 # end dist/
+tests/drivers/dynamax_summary_probe.lua
+tests/dynamax_test.lua

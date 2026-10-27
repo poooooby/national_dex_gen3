@@ -19,6 +19,10 @@ local index = {}
 for _, r in ipairs(itemRows) do index[r.slug] = r.index end
 -- and the new TMs (data/tms.lua), sold by slug "tm51" ...
 for _, t in ipairs(dofile(root .. "/data/tms.lua")) do index[t.id:lower()] = t.index end
+-- and the Dynamax items (src/dynamax.lua), "dynamax-candy" ...
+for _, it in ipairs(dofile(root .. "/src/dynamax.lua")({}, { data = {} }).ITEMS) do
+  index[it.id:lower():gsub("_", "-")] = it.index
+end
 
 -- the distinct stores of a cart: ptr -> items (the same list is stored under
 -- three keys)

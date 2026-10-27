@@ -72,6 +72,10 @@ return function(mod)
   local ItemArt = loadSibling(mod, "src/item_art.lua")
   -- Exp. Candies XS..XL (src/exp_candies.lua): items with their effect and Bag icons (optional)
   local ExpCandies = loadSibling(mod, "src/exp_candies.lua")
+  -- Dynamax (src/dynamax.lua): a Pokemon's Dynamax Level and G-Max Factor, Dynamax Candy, Max
+  -- Mushrooms and Max Honey, the marks on the summary (src/dynamax_summary.lua) (optional)
+  local makeDynamax = loadSibling(mod, "src/dynamax.lua")
+  local DynamaxSummary = loadSibling(mod, "src/dynamax_summary.lua")
   local CryArt = loadSibling(mod, "src/cry_art.lua")
   local Shops = loadSibling(mod, "src/shops.lua")
   local Art = loadSibling(mod, "src/art.lua")
@@ -137,6 +141,20 @@ return function(mod)
     local okC, nC = pcall(ExpCandies.register, mod)
     if okC then mod.log:info("registered %d Exp. Candies", nC) else mod.log:warn("Exp. Candies not registered: %s", tostring(nC)) end
   end
+  -- (a form's id by its slot, filled once the forms are registered below)
+  local formIdBySlot = {}
+  local Dynamax = nil
+  if makeDynamax then
+    local okD, dx = pcall(makeDynamax, mod, { data = read("data/dynamax.lua") or {},
+      formIdOf = function(slot) return formIdBySlot[tonumber(slot) or -1] end })
+    if okD and type(dx) == "table" then
+      Dynamax = dx
+      local okI, nI = pcall(Dynamax.registerItems, mod)
+      if okI then mod.log:info("registered %d Dynamax items", nI) else mod.log:warn("Dynamax items not registered: %s", tostring(nI)) end
+    else
+      mod.log:warn("Dynamax is off: %s", tostring(dx))
+    end
+  end
   -- moves newer than Gen 3 that run on a Gen 3 effect (src/moves.lua), before the species,
   -- whose learnsets name them
   local registeredMoves = NewMoves and NewMoves.register(mod, read("data/moves.lua") or {}) or {}
@@ -148,6 +166,9 @@ return function(mod)
   local crossgen = Species.loadCrossGeneration(read)
   local forms = Species.loadForms(read)
   local registered, bridges, registeredForms = Species.register(mod, payload, crossgen, forms)
+  for _, f in ipairs(registeredForms or {}) do
+    if f.slot and f.id then formIdBySlot[f.slot] = f.id end
+  end
   local fixups = Fixups.new(registered, Species.itemIndex(mod), bridges, mod.log, registeredForms)
   -- a bred Manaphy lays a Phione egg (src/breeding.lua)
   local manaphySlot, phioneSlot
@@ -408,7 +429,13 @@ return function(mod)
       DexPatch.install(patchOpts)
     end
     Breeding.install(manaphySlot, phioneSlot)
-    ItemArt.install(mod, read, ExpCandies and ExpCandies.icons or nil)
+    -- (one icon source for every item drawn here: ItemArt wraps the Bag once)
+    ItemArt.install(mod, read, function()
+      local all = {}
+      for k, v in pairs(ExpCandies and ExpCandies.icons() or {}) do all[k] = v end
+      if Dynamax then for k, v in pairs(Dynamax.icons()) do all[k] = v end end
+      return all
+    end)
     if ExpCandies then pcall(ExpCandies.installMenu) end
     -- after DexPatch, which replaces the RSE screen's functions (and its Host) with its copy's
     DexRepeat.install(require)
@@ -439,6 +466,24 @@ return function(mod)
       local okV, GV = pcall(require, "src.core.GameVersion")
       return okV and GV and GV.current or nil
     end, mod.log)
+    -- the Dynamax marks on the summary (src/dynamax_summary.lua): after TypeIcons, which rebuilds
+    -- Emerald's and Ruby / Sapphire's summary draw
+    if Dynamax and DynamaxSummary then
+      local which = (current:find("firered", 1, true) or current:find("leafgreen", 1, true)) and "frlg"
+        or current:find("emerald", 1, true) and "rse"
+        or ((current:find("ruby", 1, true) or current:find("sapphire", 1, true)) and "rs") or nil
+      -- (the Gigantamax Factor's mark: the Dynamax icon)
+      local icon = nil
+      pcall(function()
+        local bytes = mod:read("assets/ui/icon_dynamax.png")
+        if bytes then
+          icon = love.graphics.newImage(love.image.newImageData(love.filesystem.newFileData(bytes, "icon_dynamax.png")))
+          icon:setFilter("nearest", "nearest")
+        end
+      end)
+      local okS, done, why = pcall(DynamaxSummary.install, { which = which, dynamax = Dynamax, require = require, icon = icon })
+      if not (okS and done) then mod.log:warn("the summary's Dynamax marks are off: %s", tostring(okS and why or done)) end
+    end
   end, 1)
 
   -- art providers are asked about forms too, by their own id and slot
@@ -523,7 +568,7 @@ return function(mod)
     end)
   end
   Api(mod, { species = registered, forms = registeredForms, bridges = bridges, art = art, dexPatch = DexPatch,
-    moves = registeredMoves })
+    moves = registeredMoves, dynamax = Dynamax })
   -- the Exp. Candies' item indexes, for a mod that gives them (Max Raids): { EXP_CANDY_XS = 950, ... }
   if ExpCandies then mod.exports.expCandies = ExpCandies.ids end
 end

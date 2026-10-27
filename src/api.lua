@@ -177,6 +177,32 @@ return function(mod, state)
     return e and copy(e) or nil
   end
 
+  -- Dynamax (src/dynamax.lua): a Pokemon's Dynamax Level (0-10) and Gigantamax Factor, kept on
+  -- the Pokemon (saved with it), and the items that change them. For a mod that Dynamaxes in its
+  -- own battles (max_raids). Added in 1.4.0; test for it by presence.
+  --   level(mon) -> 0..10 ; setLevel(mon, n) ; hasFactor(mon) ; setFactor(mon, on)
+  --   canDynamax(monOrSlot)   false for Zacian, Zamazenta and Eternatus
+  --   gmaxMoveOf(monOrSlot)   its species' G-Max Move id ("WILDFIRE") | nil (no Gigantamax form)
+  --   canGigantamax(mon)      the factor and a species with the form
+  --   hpMult(level)           HP x this while Dynamaxed (1.5 .. 2.0)
+  --   raidStartLevel(stars, rng)   a Max Raid catch's starting level (Sword / Shield's roll)
+  --   ids                     { DYNAMAX_CANDY = 955, MAX_MUSHROOMS = 956, MAX_HONEY = 957 }
+  local Dx = state.dynamax
+  if Dx then
+    exports.dynamax = {
+      level = function(mon) return Dx.level(mon) end,
+      setLevel = function(mon, n) return Dx.setLevel(mon, n) end,
+      hasFactor = function(mon) return Dx.hasFactor(mon) end,
+      setFactor = function(mon, on) return Dx.setFactor(mon, on) end,
+      canDynamax = function(x) return Dx.canDynamax(x) end,
+      gmaxMoveOf = function(x) return Dx.gmaxMoveOf(x) end,
+      canGigantamax = function(mon) return Dx.canGigantamax(mon) end,
+      hpMult = function(level) return Dx.hpMult(level) end,
+      raidStartLevel = function(stars, rng) return Dx.raidStartLevel(stars, rng) end,
+      ids = copy(Dx.ids),
+    }
+  end
+
   -- Art seam (src/art.lua): fn(speciesId, side, slot) -> PNG path | nil.
   exports.setArtProvider = function(fn)
     return state.art ~= nil and state.art.add(fn) or false

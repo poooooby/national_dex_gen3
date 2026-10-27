@@ -27,6 +27,8 @@ ships are fan-made, and the credits below belong to their authors.
 - **Gen 9 item sprites:** lichenprincess, Caruban, jinxed
 - **PLA item sprites:** AztecCroc, 3DJackArt, Caruban, lichenprincess
 - **PLZA item sprites:** Caruban
+- **Dynamax Candy, Dynamax Crystal, Max Mushrooms, Max Honey:** the pokesprite project
+  (msikma/pokesprite, MIT), fitted to the Bag's 24 x 24 cell (assets/items/dynamax/)
 - **Auspicious Armor:** Wooble
 - **Malicious Armor:** Wooble
 - **Black Augurite:** Anarlaurendil

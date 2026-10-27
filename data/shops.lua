@@ -13,7 +13,8 @@
 -- Kanto (FireRed / LeafGreen), Celadon being the mid-game department store,
 -- the Sevii islands after the Elite Four:
 --   Celadon Dept. Store 4F  stones, and the Gen 6 trade items
---   Celadon Dept. Store 5F  battle items: the held trade items
+--   Celadon Dept. Store 5F  battle items: the held trade items; Dynamax Candy, Max Mushrooms and
+--                           Max Honey beside the vitamins (Lilycove's vitamin counter too)
 --   Six Island Mart         the Gen 8-9 items
 -- Hoenn (Ruby / Sapphire / Emerald), Lilycove being the late department
 -- store (it has no stone floor of its own, so stones join the supplements):
@@ -29,7 +30,8 @@ return {
   { games = { "firered", "leafgreen" }, store = "Celadon Dept. Store 5F (battle items)",
     match = { 63, 64, 65, 67, 70, 66 },
     add = { "protector", "electirizer", "magmarizer", "dubious-disc", "reaper-cloth",
-            "razor-claw", "razor-fang", "oval-stone", "leaders-crest" } },
+            "razor-claw", "razor-fang", "oval-stone", "leaders-crest",
+            "dynamax-candy", "max-mushrooms", "max-honey" } },
   { games = { "firered", "leafgreen" }, store = "Six Island Mart",
     match = { 2, 19, 20, 24, 23, 85, 84, 130 },
     add = { "metal-alloy", "black-augurite", "peat-block", "auspicious-armor", "malicious-armor",
@@ -45,7 +47,8 @@ return {
   { games = { "ruby", "sapphire", "emerald" }, store = "Lilycove Dept. Store (battle items)",
     match = { 64, 67, 65, 70, 66, 63 },
     add = { "protector", "electirizer", "magmarizer", "dubious-disc", "reaper-cloth",
-            "razor-claw", "razor-fang", "oval-stone", "leaders-crest" } },
+            "razor-claw", "razor-fang", "oval-stone", "leaders-crest",
+            "dynamax-candy", "max-mushrooms", "max-honey" } },
   { games = { "ruby", "sapphire", "emerald" }, store = "Mossdeep City Mart",
     match = { 2, 6, 7, 21, 23, 24, 84, 75, 76 },
     add = { "tart-apple", "sweet-apple", "syrupy-apple", "cracked-pot", "chipped-pot",
