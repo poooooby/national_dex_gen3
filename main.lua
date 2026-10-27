@@ -515,5 +515,6 @@ return function(mod)
       end
     end)
   end
-  Api(mod, { species = registered, forms = registeredForms, bridges = bridges, art = art, dexPatch = DexPatch })
+  Api(mod, { species = registered, forms = registeredForms, bridges = bridges, art = art, dexPatch = DexPatch,
+    moves = registeredMoves })
 end

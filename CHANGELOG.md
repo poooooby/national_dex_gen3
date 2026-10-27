@@ -3,6 +3,14 @@
 All notable changes to this mod are documented here, in
 [keep a changelog](https://keepachangelog.com/en/1.1.0/) format.
 
+## [Unreleased]
+
+### Added
+
+- **`exports.moveExtra(idOrNum)`**: what a newer move does besides its damage (the `extra` this
+  mod carries out: stat changes, a status, drain, recoil, healing), a copy, for mods that run
+  moves outside the engine's battle (Max Raids). Nothing existing changed; `apiVersion` stays 2.
+
 ## [1.2.0] - 2026-10-20
 
 ### Fixed

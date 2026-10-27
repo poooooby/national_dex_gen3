@@ -160,6 +160,23 @@ return function(mod, state)
     return true
   end
 
+  -- What a move newer than Gen 3 does besides its damage, as this mod carries it out
+  -- (data/moves.lua `extra`, src/move_effects.lua): { kind = "status" | "hit", self = { stat = n },
+  -- foe = { stat = n }, status, chance, drain, recoil, heal, ... } or nil (a Gen 3 move, or one
+  -- with nothing extra). By id ("WORK_UP") or move number. A copy. For a mod that runs moves
+  -- outside the engine's battle (max_raids). Added in 1.3.0; test for it by presence.
+  local extraById, extraByNum = {}, {}
+  for _, r in ipairs(state.moves or {}) do
+    if type(r.extra) == "table" then
+      extraById[r.id] = r.extra
+      if r.index then extraByNum[r.index] = r.extra end
+    end
+  end
+  exports.moveExtra = function(idOrNum)
+    local e = extraById[idOrNum] or extraByNum[tonumber(idOrNum) or -1]
+    return e and copy(e) or nil
+  end
+
   -- Art seam (src/art.lua): fn(speciesId, side, slot) -> PNG path | nil.
   exports.setArtProvider = function(fn)
     return state.art ~= nil and state.art.add(fn) or false
