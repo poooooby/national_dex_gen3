@@ -50,7 +50,7 @@ local Bag = require("src.core.game3.bag")
 local SaveData = require("src.core.SaveData")
 local Profile = require("src.core.game3.profile")
 pcall(ItemsData.applyProfile, GAME)
-local TM = 950
+local TM = 960   -- (950-954: the Exp. Candies)
 
 T.eq(ItemsData.pocketOf(TM), "TM_CASE", "a 900+ item with pocket TM_CASE belongs in the TM Case")
 

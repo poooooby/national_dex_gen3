@@ -7,5 +7,5 @@
   "profile": "content",
   "games": ["gen3"],
   "priority": 10,
-  "description": "Test stub: registers one TM Case item at index 950, the way national_dex_gen3's TMs would, to check that a 900+ item in the TM Case is stored and saved."
+  "description": "Test stub: registers one TM Case item at index 960, the way national_dex_gen3's TMs would, to check that a 900+ item in the TM Case is stored and saved."
 }

@@ -21,6 +21,9 @@ Paldea Pokémon can live in Kanto and Hoenn.
   Nosepass into Probopass, Scyther into Kleavor, Togetic into Togekiss and more.
 - 💎 **The items to do it:** Dusk Stone, Protector, Dubious Disc and 35 more evolution items,
   sold in department stores and late-game marts.
+- 🍬 **Exp. Candies XS to XL:** use one on a Pokémon from the Bag for a boost of Exp. Points, with
+  its level-ups, new moves and evolutions just as a Rare Candy gives them. The base games don't
+  hand them out; Max Raids gives them as raid rewards.
 - 🌍 **128 alternate forms:** Alolan, Galarian, Hisuian and Paldean forms (of the originals too,
   each evolving into its own region's form), Rotom's appliances, Wormadam's cloaks,
   Oricorio's styles, Alcremie's creams, Giratina Origin, Kyurem Black and many more, each a

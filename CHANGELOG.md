@@ -5,6 +5,8 @@ All notable changes to this mod are documented here, in
 
 ## [Unreleased]
 
+## [1.3.0] - 2026-10-27
+
 ### Added
 
 - **`exports.moveExtra(idOrNum)`**: what a newer move does besides its damage (the `extra` this
