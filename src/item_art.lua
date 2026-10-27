@@ -102,9 +102,32 @@ end
 -- Installs over whichever Bag chrome module(s) this boot has loaded. Safe to
 -- call more than once: an already-wrapped function is left alone. Returns
 -- how many of the two it reached.
-function ItemArt.install(mod, load)
+-- extra: an optional function returning { [index] = Image } of icons drawn elsewhere (the Exp.
+-- Candies'), asked first; made on the first icon drawn (CPU pixels, no canvas)
+function ItemArt.install(mod, load, extra)
   local atlas = loadAtlas(mod, load)
-  if not atlas then return 0 end
+  if not atlas and not extra then return 0 end
+  if extra then
+    local base = atlas
+    local whole = {}
+    atlas = {
+      size = base and base.size or 24,
+      quadFor = function(index)
+        local ok, set = pcall(extra)
+        local img = ok and type(set) == "table" and index and set[index] or nil
+        if img then
+          local q = whole[img]
+          if not q then
+            q = love.graphics.newQuad(0, 0, img:getWidth(), img:getHeight(), img:getDimensions())
+            whole[img] = q
+          end
+          return img, q
+        end
+        if base then return base.quadFor(index) end
+        return nil
+      end,
+    }
+  end
   local n = 0
   if installFrlg(atlas) then n = n + 1 end
   if installRse(atlas) then n = n + 1 end

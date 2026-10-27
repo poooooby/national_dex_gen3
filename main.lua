@@ -70,6 +70,8 @@ return function(mod)
   local Fixups = loadSibling(mod, "src/fixups.lua")
   local Items = loadSibling(mod, "src/items.lua")
   local ItemArt = loadSibling(mod, "src/item_art.lua")
+  -- Exp. Candies XS..XL (src/exp_candies.lua): items with their effect and Bag icons (optional)
+  local ExpCandies = loadSibling(mod, "src/exp_candies.lua")
   local CryArt = loadSibling(mod, "src/cry_art.lua")
   local Shops = loadSibling(mod, "src/shops.lua")
   local Art = loadSibling(mod, "src/art.lua")
@@ -131,6 +133,10 @@ return function(mod)
 
   local itemPayload = Items.loadPayload(read)
   local registeredItems = Items.register(mod, itemPayload)
+  if ExpCandies then
+    local okC, nC = pcall(ExpCandies.register, mod)
+    if okC then mod.log:info("registered %d Exp. Candies", nC) else mod.log:warn("Exp. Candies not registered: %s", tostring(nC)) end
+  end
   -- moves newer than Gen 3 that run on a Gen 3 effect (src/moves.lua), before the species,
   -- whose learnsets name them
   local registeredMoves = NewMoves and NewMoves.register(mod, read("data/moves.lua") or {}) or {}
@@ -402,7 +408,8 @@ return function(mod)
       DexPatch.install(patchOpts)
     end
     Breeding.install(manaphySlot, phioneSlot)
-    ItemArt.install(mod, read)
+    ItemArt.install(mod, read, ExpCandies and ExpCandies.icons or nil)
+    if ExpCandies then pcall(ExpCandies.installMenu) end
     -- after DexPatch, which replaces the RSE screen's functions (and its Host) with its copy's
     DexRepeat.install(require)
     -- the FORMS page (src/dex_forms.lua): after DexPatch, whose patches it needs. Each form's
@@ -517,4 +524,6 @@ return function(mod)
   end
   Api(mod, { species = registered, forms = registeredForms, bridges = bridges, art = art, dexPatch = DexPatch,
     moves = registeredMoves })
+  -- the Exp. Candies' item indexes, for a mod that gives them (Max Raids): { EXP_CANDY_XS = 950, ... }
+  if ExpCandies then mod.exports.expCandies = ExpCandies.ids end
 end

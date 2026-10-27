@@ -10,6 +10,12 @@ All notable changes to this mod are documented here, in
 - **`exports.moveExtra(idOrNum)`**: what a newer move does besides its damage (the `extra` this
   mod carries out: stat changes, a status, drain, recoil, healing), a copy, for mods that run
   moves outside the engine's battle (Max Raids). Nothing existing changed; `apiVersion` stays 2.
+- **Exp. Candies XS, S, M, L and XL** (Sword / Shield's): items 950-954 in the Items pocket, used on
+  a Pokemon from the Bag for 100 / 800 / 3,000 / 10,000 / 30,000 Exp. Points (not at Lv 100, not on a
+  fainted Pokemon). A candy that levels a Pokemon up then plays the Rare Candy's own steps in the
+  Party menu: the stat growth, each new level's moves (the forget prompt), a level evolution. Bag
+  icons drawn by the mod (crystals: a pyramid, a cube, a diamond, two cut gems). Nothing gives them
+  in the base games; `exports.expCandies` lists their item numbers for a mod that does (Max Raids).
 
 ## [1.2.0] - 2026-10-20
 
