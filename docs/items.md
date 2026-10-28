@@ -4,7 +4,10 @@ National Dex Gen 3 adds 39 evolution items that no Gen 3 game has, so the Pokém
 need them can evolve. The real games sell almost none of these, so where each one is sold is a
 design choice: by item type, and by how far into the game the store is.
 
-*Generated from `data/items.lua` and `data/shops.lua` by `tools/build_docs.lua`.*
+Further down: [other items](#other-items), the Exp. Candies and the Dynamax items.
+
+*Generated from `data/items.lua`, `data/shops.lua`, the Exp. Candy and Dynamax item lists by
+`tools/build_docs.lua`.*
 
 ## Summary
 
@@ -327,19 +330,82 @@ evolution stone price, where there is none. See [CREDITS](../CREDITS.md).
 - Price: ₽2100
 - FireRed / LeafGreen: Celadon Dept. Store 4F
 - Ruby / Sapphire / Emerald: Lilycove Dept. Store (supplements)
+- Evolves: Boldore → Gigalith (use it on, in place of a trade); Graveler (Alola) → Golem (Alola) (use it on, in place of a trade); Graveler → Golem (use it on, in place of a trade); Gurdurr → Conkeldurr (use it on, in place of a trade); Haunter → Gengar (use it on, in place of a trade); Kadabra → Alakazam (use it on, in place of a trade); Machoke → Machamp (use it on, in place of a trade); Phantump → Trevenant (use it on, in place of a trade); Pumpkaboo (Large) → Gourgeist (Large) (use it on, in place of a trade); Pumpkaboo (Small) → Gourgeist (Small) (use it on, in place of a trade); Pumpkaboo (Super) → Gourgeist (Super) (use it on, in place of a trade); Pumpkaboo → Gourgeist (use it on, in place of a trade)
+
+## Other items
+
+Not for evolving: the Exp. Candies, and the Dynamax items for a Pokémon's Dynamax Level and
+Gigantamax Factor (shown on its summary and in the PC).
+
+| Item | Price | FireRed / LeafGreen | Ruby / Sapphire / Emerald |
+|---|---|---|---|
+| Exp. Candy XS | ₽20 | not sold | not sold |
+| Exp. Candy S | ₽240 | not sold | not sold |
+| Exp. Candy M | ₽1000 | not sold | not sold |
+| Exp. Candy L | ₽3000 | not sold | not sold |
+| Exp. Candy XL | ₽10000 | not sold | not sold |
+| Dynamax Candy | ₽3000 | Celadon Dept. Store 5F (battle items) | Lilycove Dept. Store (battle items) |
+| Max Mushrooms | ₽1500 | Celadon Dept. Store 5F (battle items) | Lilycove Dept. Store (battle items) |
+| Max Honey | ₽3000 | Celadon Dept. Store 5F (battle items) | Lilycove Dept. Store (battle items) |
+| Dynamax Crystal | ₽10000 | not sold | not sold |
+
+### Exp. Candy XS
+
+- Price: ₽20
+- Use it on a Pokémon from the Bag: 100 Exp. Points, with any level-ups, new moves and evolution a Rare Candy would give. Not sold: Dynamax Raids gives them as rewards.
+
+### Exp. Candy S
+
+- Price: ₽240
+- Use it on a Pokémon from the Bag: 800 Exp. Points, with any level-ups, new moves and evolution a Rare Candy would give. Not sold: Dynamax Raids gives them as rewards.
+
+### Exp. Candy M
+
+- Price: ₽1000
+- Use it on a Pokémon from the Bag: 3,000 Exp. Points, with any level-ups, new moves and evolution a Rare Candy would give. Not sold: Dynamax Raids gives them as rewards.
+
+### Exp. Candy L
+
+- Price: ₽3000
+- Use it on a Pokémon from the Bag: 10,000 Exp. Points, with any level-ups, new moves and evolution a Rare Candy would give. Not sold: Dynamax Raids gives them as rewards.
+
+### Exp. Candy XL
+
+- Price: ₽10000
+- Use it on a Pokémon from the Bag: 30,000 Exp. Points, with any level-ups, new moves and evolution a Rare Candy would give. Not sold: Dynamax Raids gives them as rewards.
+
+### Dynamax Candy
+
+- Price: ₽3000
+- Use it on a Pokémon from the Bag: its Dynamax Level rises by 1, up to 10 (not Zacian, Zamazenta or Eternatus).
+
+### Max Mushrooms
+
+- Price: ₽1500
+- Use it on a Pokémon that has a Gigantamax form, with 3 in the Bag: they make a Max Soup that gives it the Gigantamax Factor, or takes the factor away if it has it (never Melmetal).
+
+### Max Honey
+
+- Price: ₽3000
+- Not used on its own: Urshifu's Max Soup takes 1 Max Honey along with the 3 Max Mushrooms.
+
+### Dynamax Crystal
+
+- Price: ₽10000
+- No use from the Bag: Dynamax Raids spends one at a den for a legendary or mythical Pokémon's raid.
 
 ## By store
 
 ### FireRed / LeafGreen
 
 - **Celadon Dept. Store 4F**: DUSK STONE (₽2100), DAWN STONE (₽2100), SHINY STONE (₽2100), ICE STONE (₽3000), SACHET (₽2100), WHIPPED DREAM (₽2100), LINKING CORD (₽2100)
-- **Celadon Dept. Store 5F (battle items)**: PROTECTOR (₽2100), ELECTIRIZER (₽2100), MAGMARIZER (₽2100), DUBIOUS DISC (₽2100), REAPER CLOTH (₽2100), RAZOR CLAW (₽2100), RAZOR FANG (₽2100), OVAL STONE (₽2100), LEADER'S CREST (₽2100)
+- **Celadon Dept. Store 5F (battle items)**: PROTECTOR (₽2100), ELECTIRIZER (₽2100), MAGMARIZER (₽2100), DUBIOUS DISC (₽2100), REAPER CLOTH (₽2100), RAZOR CLAW (₽2100), RAZOR FANG (₽2100), OVAL STONE (₽2100), LEADER'S CREST (₽2100), Dynamax Candy (₽3000), Max Mushrooms (₽1500), Max Honey (₽3000)
 - **Six Island Mart**: METAL ALLOY (₽3000), BLACK AUGURITE (₽1000), PEAT BLOCK (₽1000), AUSPIC. ARMOR (₽2100), MALIC. ARMOR (₽2100), TART APPLE (₽2100), SWEET APPLE (₽2100), SYRUPY APPLE (₽2100), CRACKED POT (₽3000), CHIPPED POT (₽3000), UNREMARK. CUP (₽2100), MASTERPC. CUP (₽2100), STRAWBRY SWEET (₽2100), BERRY SWEET (₽2100), LOVE SWEET (₽2100), STAR SWEET (₽2100), CLOVER SWEET (₽2100), FLOWER SWEET (₽2100), RIBBON SWEET (₽2100), DARK SCROLL (₽2100), WATER SCROLL (₽2100), GALARICA CUFF (₽2100), GALAR. WREATH (₽2100)
 
 ### Ruby / Sapphire / Emerald
 
 - **Lilycove Dept. Store (supplements)**: DUSK STONE (₽2100), DAWN STONE (₽2100), SHINY STONE (₽2100), ICE STONE (₽3000), SACHET (₽2100), WHIPPED DREAM (₽2100), LINKING CORD (₽2100)
-- **Lilycove Dept. Store (battle items)**: PROTECTOR (₽2100), ELECTIRIZER (₽2100), MAGMARIZER (₽2100), DUBIOUS DISC (₽2100), REAPER CLOTH (₽2100), RAZOR CLAW (₽2100), RAZOR FANG (₽2100), OVAL STONE (₽2100), LEADER'S CREST (₽2100)
+- **Lilycove Dept. Store (battle items)**: PROTECTOR (₽2100), ELECTIRIZER (₽2100), MAGMARIZER (₽2100), DUBIOUS DISC (₽2100), REAPER CLOTH (₽2100), RAZOR CLAW (₽2100), RAZOR FANG (₽2100), OVAL STONE (₽2100), LEADER'S CREST (₽2100), Dynamax Candy (₽3000), Max Mushrooms (₽1500), Max Honey (₽3000)
 - **Mossdeep City Mart**: TART APPLE (₽2100), SWEET APPLE (₽2100), SYRUPY APPLE (₽2100), CRACKED POT (₽3000), CHIPPED POT (₽3000), STRAWBRY SWEET (₽2100), BERRY SWEET (₽2100), LOVE SWEET (₽2100), STAR SWEET (₽2100), CLOVER SWEET (₽2100), FLOWER SWEET (₽2100), RIBBON SWEET (₽2100), DARK SCROLL (₽2100), WATER SCROLL (₽2100), GALARICA CUFF (₽2100), GALAR. WREATH (₽2100)
 - **Sootopolis City Mart**: AUSPIC. ARMOR (₽2100), MALIC. ARMOR (₽2100), METAL ALLOY (₽3000), UNREMARK. CUP (₽2100), MASTERPC. CUP (₽2100)
 - **Ever Grande City Pokemon League mart**: BLACK AUGURITE (₽1000), PEAT BLOCK (₽1000)

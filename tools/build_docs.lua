@@ -89,7 +89,8 @@ end
 
 -- slug -> list of "Source -> Target (how)"
 local uses = {}
-local METHOD = { EVO_ITEM = "use it on", EVO_TRADE_ITEM = "trade holding it" }
+local METHOD = { EVO_ITEM = "use it on", EVO_TRADE_ITEM = "trade holding it",
+                 EVO_TRADE = "use it on, in place of a trade" }
 local function addUse(slug, source, target, method, note)
   uses[slug] = uses[slug] or {}
   table.insert(uses[slug], string.format("%s → %s (%s%s)", source, target, METHOD[method] or method,
@@ -175,6 +176,47 @@ for _, e in ipairs(crossgen) do
   end
 end
 
+-- the Linking Cord (src/conditional_evos.lua): used in place of a plain trade, so it evolves the
+-- cart's four trade evolutions and every plain EVO_TRADE row of this mod's species and forms
+local CART_TRADES = { { 64, 65 }, { 67, 68 }, { 75, 76 }, { 93, 94 } }  -- Kadabra, Machoke, Graveler, Haunter
+for _, p in ipairs(CART_TRADES) do addUse("linking-cord", byDex[p[1]], byDex[p[2]], "EVO_TRADE") end
+for _, r in ipairs(species) do
+  for _, e in ipairs(r.evolutions or {}) do
+    if e.method == "EVO_TRADE" and not e.item then addUse("linking-cord", title(r.name), stepTarget(e), "EVO_TRADE") end
+  end
+end
+for _, f in ipairs(forms) do
+  for _, e in ipairs(f.evolutions or {}) do
+    if e.method == "EVO_TRADE" and not e.item then addUse("linking-cord", formLabel(f), stepTarget(e), "EVO_TRADE") end
+  end
+end
+
+-- the items that are not for evolving, from the modules that register them: Exp. Candies
+-- (src/exp_candies.lua) and the Dynamax items (src/dynamax.lua); slug as data/shops.lua spells it
+local others = {}
+local function slugOf(id) return (id:lower():gsub("_", "-")) end
+for _, c in ipairs(load("src/exp_candies.lua").LIST) do
+  others[#others + 1] = { slug = slugOf(c.id), name = c.name, price = c.price,
+    use = "Use it on a Pokémon from the Bag: " .. c.amount .. " Exp. Points, with any level-ups, new moves "
+      .. "and evolution a Rare Candy would give. Not sold: Dynamax Raids gives them as rewards." }
+end
+local DYNAMAX_USE = {
+  DYNAMAX_CANDY = "Use it on a Pokémon from the Bag: its Dynamax Level rises by 1, up to 10 (not Zacian, "
+    .. "Zamazenta or Eternatus).",
+  MAX_MUSHROOMS = "Use it on a Pokémon that has a Gigantamax form, with 3 in the Bag: they make a Max Soup "
+    .. "that gives it the Gigantamax Factor, or takes the factor away if it has it (never Melmetal).",
+  MAX_HONEY = "Not used on its own: Urshifu's Max Soup takes 1 Max Honey along with the 3 Max Mushrooms.",
+  DYNAMAX_CRYSTAL = "No use from the Bag: Dynamax Raids spends one at a den for a legendary or mythical "
+    .. "Pokémon's raid.",
+}
+do
+  local okD, Dx = pcall(load("src/dynamax.lua"), { log = { info = function() end, warn = function() end } },
+    { data = load("data/dynamax.lua") })
+  for _, it in ipairs(okD and Dx.ITEMS or {}) do
+    others[#others + 1] = { slug = slugOf(it.id), name = it.name, price = it.price, use = DYNAMAX_USE[it.id] }
+  end
+end
+
 local function join(list, sep) return table.concat(list, sep) end
 
 local L = {
@@ -184,7 +226,10 @@ local L = {
   "need them can evolve. The real games sell almost none of these, so where each one is sold is a",
   "design choice: by item type, and by how far into the game the store is.",
   "",
-  "*Generated from `data/items.lua` and `data/shops.lua` by `tools/build_docs.lua`.*",
+  "Further down: [other items](#other-items), the Exp. Candies and the Dynamax items.",
+  "",
+  "*Generated from `data/items.lua`, `data/shops.lua`, the Exp. Candy and Dynamax item lists by",
+  "`tools/build_docs.lua`.*",
   "",
   "## Summary",
   "",
@@ -220,6 +265,29 @@ for _, it in ipairs(items) do
   L[#L + 1] = ""
 end
 
+if #others > 0 then
+  L[#L + 1] = "## Other items"
+  L[#L + 1] = ""
+  L[#L + 1] = "Not for evolving: the Exp. Candies, and the Dynamax items for a Pokémon's Dynamax Level and"
+  L[#L + 1] = "Gigantamax Factor (shown on its summary and in the PC)."
+  L[#L + 1] = ""
+  L[#L + 1] = "| Item | Price | FireRed / LeafGreen | Ruby / Sapphire / Emerald |"
+  L[#L + 1] = "|---|---|---|---|"
+  for _, it in ipairs(others) do
+    local s = sold[it.slug] or { frlg = {}, rse = {} }
+    L[#L + 1] = string.format("| %s | ₽%d | %s | %s |", it.name, it.price,
+      #s.frlg > 0 and join(s.frlg, "; ") or "not sold", #s.rse > 0 and join(s.rse, "; ") or "not sold")
+  end
+  L[#L + 1] = ""
+  for _, it in ipairs(others) do
+    L[#L + 1] = "### " .. it.name
+    L[#L + 1] = ""
+    L[#L + 1] = "- Price: ₽" .. it.price
+    if it.use then L[#L + 1] = "- " .. it.use end
+    L[#L + 1] = ""
+  end
+end
+
 -- stores
 local stores = {}
 for _, rule in ipairs(shops) do stores[#stores + 1] = rule end
@@ -232,8 +300,10 @@ for _, g in ipairs({ "frlg", "rse" }) do
     if groupOf(rule) == g then
       local names = {}
       for _, slug in ipairs(rule.add) do
-        for _, it in ipairs(items) do
-          if it.slug == slug then names[#names + 1] = string.format("%s (₽%d)", it.name, it.price) end
+        for _, list in ipairs({ items, others }) do
+          for _, it in ipairs(list) do
+            if it.slug == slug then names[#names + 1] = string.format("%s (₽%d)", it.name, it.price) end
+          end
         end
       end
       if #names > 0 then L[#L + 1] = "- **" .. rule.store .. "**: " .. join(names, ", ") end
