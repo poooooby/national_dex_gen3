@@ -3,6 +3,13 @@
 All notable changes to this mod are documented here, in
 [keep a changelog](https://keepachangelog.com/en/1.1.0/) format.
 
+## [1.4.2] - 2026-10-28
+
+### Fixed
+
+- The mod reports the version it was released as (manifest.json was left at 1.4.0 in 1.4.1's
+  source).
+
 ## [1.4.1] - 2026-10-28
 
 ### Fixed
