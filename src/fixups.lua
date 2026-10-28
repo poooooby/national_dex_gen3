@@ -15,8 +15,9 @@
 --     the registry has no such field). Any other species met there -- a new one, or a
 --     cart species a spawn mod puts there -- had 0 and almost never ran. Every species
 --     without one gets the rate its catch rate's band has in the game's own table
---     (Fixups.safariFleeRate); the Safari species keep theirs, so a game without a
---     spawn mod plays exactly as before.
+--     (Fixups.safariFleeRate), given when the Safari battle starts
+--     (Fixups.installSafariFlee), not written into the species meta; the Safari species
+--     keep theirs, so a game without a spawn mod plays exactly as before.
 --
 -- Reaches into src.core.game3.pokemon (engine_internals): none of this has a
 -- registry or hook.
@@ -59,6 +60,28 @@ function Fixups.safariFleeRate(catchRate)
     if c >= band[1] then return band[2] end
   end
   return Fixups.SAFARI_FLEE[#Fixups.SAFARI_FLEE][2]
+end
+
+-- The flee rate is given where the Safari battle starts (battle/init.lua hands the species'
+-- catch rate and flee rate to Rules.safari.newState), never written into the species tables:
+-- those stay exactly as the cart has them, which other mods check (Event Distributions refuses
+-- a gift when a species' meta differs from the ROM's). A rate of 0 - every species but the
+-- Safari Zone's own - becomes its band; the Safari species keep theirs. Once per process.
+function Fixups.installSafariFlee()
+  local ok, Rules = pcall(require, "src.core.game3.battle.rules")
+  local safari = ok and type(Rules) == "table" and Rules.safari
+  if not (type(safari) == "table" and type(safari.newState) == "function") or safari.__nationalDexFlee then
+    return false
+  end
+  safari.__nationalDexFlee = true
+  local newState = safari.newState
+  safari.newState = function(catchRate, fleeRate, ...)
+    if (tonumber(fleeRate) or 0) == 0 and (tonumber(catchRate) or 0) > 0 then
+      fleeRate = Fixups.safariFleeRate(catchRate)
+    end
+    return newState(catchRate, fleeRate, ...)
+  end
+  return true
 end
 
 function Fixups.new(registered, itemIndex, bridges, log, forms)
@@ -175,26 +198,6 @@ function Fixups.new(registered, itemIndex, bridges, log, forms)
         end
       end
       P._evolutions[r.slot] = rows
-      -- the Safari Zone flee rate the registry cannot carry (kept if one is already there).
-      -- The registry's own reload pass may come after this one and builds the slot's meta
-      -- afresh from whatever the slot holds, so the entry is started here if need be and
-      -- the rate carried over into it.
-      if type(P._speciesMeta) == "table" then
-        local meta = P._speciesMeta[r.slot]
-        if type(meta) ~= "table" then meta = {} P._speciesMeta[r.slot] = meta end
-        if (tonumber(meta.safariZoneFleeRate) or 0) == 0 then
-          meta.safariZoneFleeRate = Fixups.safariFleeRate(meta.catchRate or r.catchRate)
-        end
-      end
-    end
-    -- the cart's own species without a Safari flee rate (all but the Safari Zone's)
-    if type(P._speciesMeta) == "table" then
-      for slot, meta in pairs(P._speciesMeta) do
-        if type(slot) == "number" and slot > 0 and type(meta) == "table"
-          and (tonumber(meta.catchRate) or 0) > 0 and (tonumber(meta.safariZoneFleeRate) or 0) == 0 then
-          meta.safariZoneFleeRate = Fixups.safariFleeRate(meta.catchRate)
-        end
-      end
     end
     applyBridges(P)
   end
@@ -496,6 +499,7 @@ function Fixups.new(registered, itemIndex, bridges, log, forms)
 
   function self.install(_)
     installTutors()
+    Fixups.installSafariFlee()
     raiseNationalMax()
     installNamelessSlots()
     installFormDex()

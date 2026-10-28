@@ -81,3 +81,5 @@ dist/national_dex_gen3-0.7.0.zip
 tests/drivers/dynamax_summary_probe.lua
 tests/dynamax_test.lua
 docs/plans/
+tests/linking_cord_test.lua
+tests/cart_untouched_test.lua

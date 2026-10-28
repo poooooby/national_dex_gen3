@@ -125,6 +125,9 @@ This mod adds the Pokémon. Two companions bring them to life:
 - 🌿 [Wilds of Hoenn](https://github.com/poooooby/wilds-of-hoenn): see them roaming the overworld,
   each with its own sprite.
 
+It also plays well with [Event Distributions](https://github.com/CapnJames95/gen1recomp-event-distributions):
+the game's own Pokémon keep their original data, so its event gifts arrive as usual.
+
 ## 📌 Good to Know
 
 - **Forms can't be found in the wild yet.** Gen 3 can't change a Pokémon's form, so they come

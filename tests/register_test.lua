@@ -131,28 +131,35 @@ T.eq(seenAtDefault.fairyId, 18, "and the Fairy type is already in Types.ID")
 T.eq(seenAtDefault.sylveonTypes and seenAtDefault.sylveonTypes[1], 18, "and Sylveon is already Fairy-typed")
 T.eq(seenAtDefault.moonblast, "MOONBLAST", "and a new move's name already resolves")
 
--- Safari Zone flee rate (the registry has no field for it; the reload repair adds it):
--- the band of FireRed's own Safari table by catch rate
-local function flee(dex) local m = P.speciesMeta(dex + 64) return m and m.safariZoneFleeRate end
-T.eq(flee(387), 125, "Turtwig (catch rate 45) flees like FireRed's rare Safari Pokemon: 125")
-T.eq(flee(399), 50, "Bidoof (catch rate 255): 50, like Nidoran / Doduo")
-T.eq(flee(446), 125, "Munchlax (catch rate 50): 125")
-T.eq(flee(403), 50, "Shinx (catch rate 235): 50")
+-- Safari Zone flee rate (the registry has no field for it): given when a Safari battle starts
+-- (Fixups.installSafariFlee wraps Rules.safari.newState), the band of FireRed's own Safari table by
+-- catch rate; the species tables themselves stay as the cart has them
+local Rules = require("src.core.game3.battle.rules")
 local Fixups = H.module("src/fixups.lua")
+local function escape(slot)
+  local m = P.speciesMeta(slot)
+  return Rules.safari.newState(m and m.catchRate, m and m.safariZoneFleeRate).escapeFactor
+end
+local function band(rate) return Rules.safari.escapeFactor(rate) end
+T.eq(escape(387 + 64), band(125), "Turtwig (catch rate 45) flees like FireRed's rare Safari Pokemon: 125")
+T.eq(escape(399 + 64), band(50), "Bidoof (catch rate 255): 50, like Nidoran / Doduo")
+T.eq(escape(446 + 64), band(125), "Munchlax (catch rate 50): 125")
+T.eq(escape(403 + 64), band(50), "Shinx (catch rate 235): 50")
 T.eq(Fixups.safariFleeRate(120), 75, "catch rate 120 (Rhyhorn's): 75, its own Safari rate")
 T.eq(Fixups.safariFleeRate(30), 125, "catch rate 30 (Chansey's): 125")
 T.eq(Fixups.safariFleeRate(225), 50, "catch rate 225 (Goldeen's): 50")
 local missing = 0
 for slot = 451, 1089 do
   local m = P.speciesMeta(slot)
-  if m and (tonumber(m.safariZoneFleeRate) or 0) == 0 then missing = missing + 1 end
+  if not (m and (tonumber(m.catchRate) or 0) > 0) then missing = missing + 1 end
 end
-T.eq(missing, 0, "every new species has a Safari flee rate")
-T.eq(P.speciesMeta(129).safariZoneFleeRate, 25, "the Safari Zone's own species keep theirs (Magikarp 25)")
-T.eq(P.speciesMeta(147).safariZoneFleeRate, 100, "...Dratini 100")
-T.eq(P.speciesMeta(113).safariZoneFleeRate, 125, "...Chansey 125")
-T.eq(P.speciesMeta(25).safariZoneFleeRate, 50, "a cart species that never lived there gets its band: Pikachu (catch rate 190) 50")
-T.eq(P.speciesMeta(6).safariZoneFleeRate, 125, "...Charizard (45) 125")
+T.eq(missing, 0, "every new species has a catch rate for the Safari battle")
+T.eq(escape(129), band(25), "the Safari Zone's own species keep theirs (Magikarp 25)")
+T.eq(escape(147), band(100), "...Dratini 100")
+T.eq(escape(113), band(125), "...Chansey 125")
+T.eq(escape(25), band(50), "a cart species that never lived there gets its band: Pikachu (catch rate 190) 50")
+T.eq(escape(6), band(125), "...Charizard (45) 125")
+T.eq(P.speciesMeta(25).safariZoneFleeRate, 0, "and Pikachu's species data keeps the cart's 0")
 local evo = P._evolutions[451] and P._evolutions[451][1]
 T.check(evo ~= nil, "TURTWIG has an evolution row")
 T.eq(evo and evo.target, 452, "that evolves into GROTLE's slot, not slot 0")

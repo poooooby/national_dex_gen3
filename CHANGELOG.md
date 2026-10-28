@@ -3,6 +3,19 @@
 All notable changes to this mod are documented here, in
 [keep a changelog](https://keepachangelog.com/en/1.1.0/) format.
 
+## [Unreleased]
+
+### Fixed
+
+- **Event Distributions could not hand out any gift** ("Modified species data: delivery
+  blocked."): it checks that a species' data matches the ROM before delivering, and this mod wrote
+  a Safari Zone flee rate into the species data of every cart species that is not a Safari native
+  (387 of 411 in FireRed). The rate is now given when a Safari battle starts (a wrap of
+  `Rules.safari.newState`) and the cart's species data stays exactly as the ROM has it; Safari
+  battles behave the same. `tests/cart_untouched_test.lua` checks every cart species on each game.
+- `tests/linking_cord_test.lua` had shipped inside the 1.5.0 and 1.5.1 downloads; tests stay out of
+  the package again.
+
 ## [1.5.1] - 2026-10-28
 
 ### Changed
