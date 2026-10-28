@@ -5,6 +5,8 @@ All notable changes to this mod are documented here, in
 
 ## [Unreleased]
 
+## [1.4.0] - 2026-10-27
+
 ### Added
 
 - **Dynamax marks** (Sword / Shield's): every Pokemon now has a **Dynamax Level** (0-10) and can
