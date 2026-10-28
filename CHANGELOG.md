@@ -43,6 +43,18 @@ All notable changes to this mod are documented here, in
   icons drawn by the mod (crystals: a pyramid, a cube, a diamond, two cut gems). Nothing gives them
   in the base games; `exports.expCandies` lists their item numbers for a mod that does (Max Raids).
 
+## [Unreleased]
+
+### Fixed
+
+- **Regional forms took over their base species again** on the gen1recomp update of Oct 23:
+  the engine's schema module now requires a Gen 2 module (src.core.gen2.Phone, for Gen 2 phone
+  contacts), which a mod's require refuses on a Gen 3 game, so the form-safe copy of the species
+  write failed to build and the stock write ran. Picking Rattata in the save editor gave an
+  Alolan Rattata (also Raticate, Meowth, Vulpix...), and in game a form could take its base's
+  National number. The copy now gets a stand-in for another generation's engine modules (never
+  used by the Gen 3 writes; it errors if anything reads it).
+
 ## [1.2.0] - 2026-10-20
 
 ### Fixed

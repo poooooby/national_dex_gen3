@@ -65,6 +65,13 @@ for _, id in ipairs({ "TURTWIG", "ABOMASNOW", "PECHARUNT" }) do
   T.check(#mon.moves > 0, id .. " made in the editor has moves")
 end
 T.eq(Data.pokemon[P.speciesFromName("TURTWIG")], Data.pokemon.TURTWIG, "the list finds it by slot too")
+
+-- picking a cart species sets it by name: a regional form must never answer for its base
+for _, pair in ipairs({ { "RATTATA", 19 }, { "RATICATE", 20 }, { "MEOWTH", 52 }, { "VULPIX", 37 } }) do
+  T.eq(P.speciesFromName(pair[1]), pair[2], pair[1] .. " is the cart's own, not its regional form")
+  T.check(P.speciesFromName(pair[1] .. "_ALOLA") ~= pair[2] or P.speciesFromName(pair[1] .. "_GALAR") ~= pair[2],
+    pair[1] .. "'s form keeps its own slot")
+end
 T.eq(Data.pokemon.TURTWIG.dex, 387, "and by its National number")
 
 local galar = Data.pokemon.DARUMAKA_GALAR

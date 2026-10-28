@@ -87,6 +87,24 @@ function SchemaPatch.install(opts)
   if not s3 then return fail("engine source is not the expected one (national)") end
   src = src:sub(1, s3 - 1) .. REPL2 .. src:sub(e3 + 1)
   if src:find(FIND2, 1, true) then return fail("engine source is not the expected one (national twice)") end
+  -- the copy's own requires go through the mod's require, which refuses another generation's
+  -- engine modules on a Gen 3 game (Schemas.lua requires src.core.gen2.Phone for Gen 2 phone
+  -- contacts, never on the Gen 3 writes taken from the copy): such a module is a stand-in that
+  -- errors if anything ever reads it, everything else is the real module
+  local nr
+  src, nr = src:gsub("%f[%w_.]require%(", "__nationalDexRequire(")
+  if nr < 1 then return fail("engine source is not the expected one (requires)") end
+  __nationalDexRequire = function(path)
+    local okM, m = pcall(require, path)
+    if okM then return m end
+    if type(path) == "string" and path:match("^src%.core%.gen[12]%.") then
+      return setmetatable({}, { __index = function(_, key)
+        error(path .. " is not loaded on a Gen 3 game (national_dex_gen3's Schemas copy read "
+          .. tostring(key) .. ")", 2)
+      end })
+    end
+    error(m, 2)
+  end
   __nationalDexPkgLoaded = function(path)
     if type(path) ~= "string" or path == "" then return nil end
     local okM, m = pcall(require, path)
