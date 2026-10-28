@@ -7,29 +7,29 @@
 -- registers each at its own fixed slot (index = 900 + position here). price is
 -- the shop price from tools/item_prices.json (Bulbapedia): 2x the earliest sell price.
 return {
-  { slug = "dawn-stone", id = "DAWN_STONE", name = "DAWN STONE", index = 900, price = 2100, description = "A peculiar stone\nthat sparkles like\na glittering eye." }, -- 2x sell price 1050 (DPPtHGSS,W,XYORAS,BDSP)
+  { slug = "dawn-stone", id = "DAWN_STONE", name = "DAWN STONE", index = 900, price = 2100, use = "evo", description = "A peculiar stone\nthat sparkles like\na glittering eye." }, -- 2x sell price 1050 (DPPtHGSS,W,XYORAS,BDSP)
   { slug = "dubious-disc", id = "DUBIOUS_DISC", name = "DUBIOUS DISC", index = 901, price = 2100, description = "A transparent\ndevice overflowing\nwith dubious data." }, -- 2x sell price 1050 (DPPtHGSS,BW,XYORAS,BDSP)
-  { slug = "dusk-stone", id = "DUSK_STONE", name = "DUSK STONE", index = 902, price = 2100, description = "A peculiar stone, as\ndark as dark can be." }, -- 2x sell price 1050 (DPPtHGSS,WW2,XYORAS,BDSP)
+  { slug = "dusk-stone", id = "DUSK_STONE", name = "DUSK STONE", index = 902, price = 2100, use = "evo", description = "A peculiar stone, as\ndark as dark can be." }, -- 2x sell price 1050 (DPPtHGSS,WW2,XYORAS,BDSP)
   { slug = "electirizer", id = "ELECTIRIZER", name = "ELECTIRIZER", index = 903, price = 2100, description = "A box packed with\nelectric energy." }, -- 2x sell price 1050 (DPPtHGSS,BWB2W2,XYORAS,BDSP)
-  { slug = "ice-stone", id = "ICE_STONE", name = "ICE STONE", index = 904, price = 3000, description = "A peculiar stone\nwith a snowflake\npattern." }, -- 2x sell price 1500 (SMUSUM,SwSh)
+  { slug = "ice-stone", id = "ICE_STONE", name = "ICE STONE", index = 904, price = 3000, use = "evo", description = "A peculiar stone\nwith a snowflake\npattern." }, -- 2x sell price 1500 (SMUSUM,SwSh)
   { slug = "magmarizer", id = "MAGMARIZER", name = "MAGMARIZER", index = 905, price = 2100, description = "A box packed with\nfire energy." }, -- 2x sell price 1050 (DPPtHGSS,BWB2W2,XYORAS,BDSP)
   { slug = "protector", id = "PROTECTOR", name = "PROTECTOR", index = 906, price = 2100, description = "Protective gear\nthat is very hard." }, -- 2x sell price 1050 (DPPtHGSS,BW,XYORAS,BDSP)
   { slug = "reaper-cloth", id = "REAPER_CLOTH", name = "REAPER CLOTH", index = 907, price = 2100, description = "A cloth imbued with\nhorrifying energy." }, -- 2x sell price 1050 (DPPtHGSS,BWB2W2,XYORAS,BDSP)
   { slug = "sachet", id = "SACHET", name = "SACHET", index = 908, price = 2100, description = "A sachet filled with\nlovely perfume." }, -- 2x sell price 1050 (XYORAS)
-  { slug = "shiny-stone", id = "SHINY_STONE", name = "SHINY STONE", index = 909, price = 2100, description = "A peculiar stone\nthat shines." }, -- 2x sell price 1050 (DPPtHGSS,W,XYORAS,BDSP)
-  { slug = "sweet-apple", id = "SWEET_APPLE", name = "SWEET APPLE", index = 910, price = 2100, description = "A very sweet apple." }, -- no price data; classic stone price
-  { slug = "tart-apple", id = "TART_APPLE", name = "TART APPLE", index = 911, price = 2100, description = "A very tart apple." }, -- no price data; classic stone price
+  { slug = "shiny-stone", id = "SHINY_STONE", name = "SHINY STONE", index = 909, price = 2100, use = "evo", description = "A peculiar stone\nthat shines." }, -- 2x sell price 1050 (DPPtHGSS,W,XYORAS,BDSP)
+  { slug = "sweet-apple", id = "SWEET_APPLE", name = "SWEET APPLE", index = 910, price = 2100, use = "evo", description = "A very sweet apple." }, -- no price data; classic stone price
+  { slug = "tart-apple", id = "TART_APPLE", name = "TART APPLE", index = 911, price = 2100, use = "evo", description = "A very tart apple." }, -- no price data; classic stone price
   { slug = "whipped-dream", id = "WHIPPED_DREAM", name = "WHIPPED DREAM", index = 912, price = 2100, description = "A soft and sweet\ntreat of sugar." }, -- 2x sell price 1050 (XYORAS)
-  { slug = "auspicious-armor", id = "AUSPICIOUS_ARMOR", name = "AUSPIC. ARMOR", index = 913, price = 2100, description = "Armor fit for a\nchampion." }, -- no price data; classic stone price
-  { slug = "black-augurite", id = "BLACK_AUGURITE", name = "BLACK AUGURITE", index = 914, price = 1000, description = "A black, glossy\nstone." }, -- 2x sell price 500 (LA)
-  { slug = "malicious-armor", id = "MALICIOUS_ARMOR", name = "MALIC. ARMOR", index = 915, price = 2100, description = "Armor filled\nwith spite." }, -- no price data; classic stone price
-  { slug = "metal-alloy", id = "METAL_ALLOY", name = "METAL ALLOY", index = 916, price = 3000, description = "A mysterious metal\nof fused metals." }, -- 2x sell price 1500 (SV)
-  { slug = "peat-block", id = "PEAT_BLOCK", name = "PEAT BLOCK", index = 917, price = 1000, description = "Plant matter that\nsmolders eerily." }, -- 2x sell price 500 (LA)
-  { slug = "syrupy-apple", id = "SYRUPY_APPLE", name = "SYRUPY APPLE", index = 918, price = 2100, description = "A very syrupy\napple." }, -- no price data; classic stone price
-  { slug = "cracked-pot", id = "CRACKED_POT", name = "CRACKED POT", index = 919, price = 3000, description = "A cracked,\nworthless pot." }, -- Bulbapedia buy price
-  { slug = "chipped-pot", id = "CHIPPED_POT", name = "CHIPPED POT", index = 920, price = 3000, description = "A chipped antique\npot." }, -- Bulbapedia buy price
-  { slug = "unremarkable-teacup", id = "UNREMARKABLE_TEACUP", name = "UNREMARK. CUP", index = 921, price = 2100, description = "A plain, ordinary\nteacup." }, -- no price data; classic stone price
-  { slug = "masterpiece-teacup", id = "MASTERPIECE_TEACUP", name = "MASTERPC. CUP", index = 922, price = 2100, description = "A splendid teacup, a\nwork of art." }, -- no price data; classic stone price
+  { slug = "auspicious-armor", id = "AUSPICIOUS_ARMOR", name = "AUSPIC. ARMOR", index = 913, price = 2100, use = "evo", description = "Armor fit for a\nchampion." }, -- no price data; classic stone price
+  { slug = "black-augurite", id = "BLACK_AUGURITE", name = "BLACK AUGURITE", index = 914, price = 1000, use = "evo", description = "A black, glossy\nstone." }, -- 2x sell price 500 (LA)
+  { slug = "malicious-armor", id = "MALICIOUS_ARMOR", name = "MALIC. ARMOR", index = 915, price = 2100, use = "evo", description = "Armor filled\nwith spite." }, -- no price data; classic stone price
+  { slug = "metal-alloy", id = "METAL_ALLOY", name = "METAL ALLOY", index = 916, price = 3000, use = "evo", description = "A mysterious metal\nof fused metals." }, -- 2x sell price 1500 (SV)
+  { slug = "peat-block", id = "PEAT_BLOCK", name = "PEAT BLOCK", index = 917, price = 1000, use = "evo", description = "Plant matter that\nsmolders eerily." }, -- 2x sell price 500 (LA)
+  { slug = "syrupy-apple", id = "SYRUPY_APPLE", name = "SYRUPY APPLE", index = 918, price = 2100, use = "evo", description = "A very syrupy\napple." }, -- no price data; classic stone price
+  { slug = "cracked-pot", id = "CRACKED_POT", name = "CRACKED POT", index = 919, price = 3000, use = "evo", description = "A cracked,\nworthless pot." }, -- Bulbapedia buy price
+  { slug = "chipped-pot", id = "CHIPPED_POT", name = "CHIPPED POT", index = 920, price = 3000, use = "evo", description = "A chipped antique\npot." }, -- Bulbapedia buy price
+  { slug = "unremarkable-teacup", id = "UNREMARKABLE_TEACUP", name = "UNREMARK. CUP", index = 921, price = 2100, use = "evo", description = "A plain, ordinary\nteacup." }, -- no price data; classic stone price
+  { slug = "masterpiece-teacup", id = "MASTERPIECE_TEACUP", name = "MASTERPC. CUP", index = 922, price = 2100, use = "evo", description = "A splendid teacup, a\nwork of art." }, -- no price data; classic stone price
   { slug = "strawberry-sweet", id = "STRAWBERRY_SWEET", name = "STRAWBRY SWEET", index = 923, price = 2100, description = "A sweet with a\nstrawberry on top." }, -- no price data; classic stone price
   { slug = "berry-sweet", id = "BERRY_SWEET", name = "BERRY SWEET", index = 924, price = 2100, description = "A sweet with a\nberry on top." }, -- no price data; classic stone price
   { slug = "love-sweet", id = "LOVE_SWEET", name = "LOVE SWEET", index = 925, price = 2100, description = "A sweet with a\nheart on top." }, -- no price data; classic stone price
@@ -41,8 +41,9 @@ return {
   { slug = "razor-fang", id = "RAZOR_FANG", name = "RAZOR FANG", index = 931, price = 2100, description = "A sharp, hard fang." }, -- 2x sell price 1050 (DPPtHGSS,BWB2W2,XYORAS,BDSP)
   { slug = "oval-stone", id = "OVAL_STONE", name = "OVAL STONE", index = 932, price = 2100, description = "A peculiar,\negg-shaped stone." }, -- 2x sell price 1050 (DPPtHGSS,W,XYORAS,BDSP)
   { slug = "leaders-crest", id = "LEADERS_CREST", name = "LEADER'S CREST", index = 933, price = 2100, description = "A crest worn by\na leader." }, -- no price data; classic stone price
-  { slug = "scroll-of-darkness", id = "SCROLL_OF_DARKNESS", name = "DARK SCROLL", index = 934, price = 2100, description = "A scroll of the\ndark style." }, -- no price data; classic stone price
-  { slug = "scroll-of-waters", id = "SCROLL_OF_WATERS", name = "WATER SCROLL", index = 935, price = 2100, description = "A scroll of the\nwater style." }, -- no price data; classic stone price
-  { slug = "galarica-cuff", id = "GALARICA_CUFF", name = "GALARICA CUFF", index = 936, price = 2100, description = "A cuff woven from\nGalarica twigs." }, -- no price data; classic stone price
-  { slug = "galarica-wreath", id = "GALARICA_WREATH", name = "GALAR. WREATH", index = 937, price = 2100, description = "A wreath woven\nfrom Galarica\ntwigs." }, -- no price data; classic stone price
+  { slug = "scroll-of-darkness", id = "SCROLL_OF_DARKNESS", name = "DARK SCROLL", index = 934, price = 2100, use = "evo", description = "A scroll of the\ndark style." }, -- no price data; classic stone price
+  { slug = "scroll-of-waters", id = "SCROLL_OF_WATERS", name = "WATER SCROLL", index = 935, price = 2100, use = "evo", description = "A scroll of the\nwater style." }, -- no price data; classic stone price
+  { slug = "galarica-cuff", id = "GALARICA_CUFF", name = "GALARICA CUFF", index = 936, price = 2100, use = "evo", description = "A cuff woven from\nGalarica twigs." }, -- no price data; classic stone price
+  { slug = "galarica-wreath", id = "GALARICA_WREATH", name = "GALAR. WREATH", index = 937, price = 2100, use = "evo", description = "A wreath woven\nfrom Galarica\ntwigs." }, -- no price data; classic stone price
+  { slug = "linking-cord", id = "LINKING_CORD", name = "LINKING CORD", index = 938, price = 2100, use = "evo", description = "A mysterious cord\nthat gives off a\nstrange energy." }, -- no price data; classic stone price
 }

@@ -42,5 +42,6 @@ return {
     [935] = { x = 72, y = 48 }, -- scroll-of-waters
     [936] = { x = 96, y = 48 }, -- galarica-cuff
     [937] = { x = 120, y = 48 }, -- galarica-wreath
+    [938] = { x = 144, y = 48 }, -- linking-cord
   },
 }

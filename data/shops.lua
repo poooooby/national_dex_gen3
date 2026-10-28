@@ -12,13 +12,13 @@
 --
 -- Kanto (FireRed / LeafGreen), Celadon being the mid-game department store,
 -- the Sevii islands after the Elite Four:
---   Celadon Dept. Store 4F  stones, and the Gen 6 trade items
+--   Celadon Dept. Store 4F  stones, the Linking Cord and the Gen 6 trade items
 --   Celadon Dept. Store 5F  battle items: the held trade items; Dynamax Candy, Max Mushrooms and
 --                           Max Honey beside the vitamins (Lilycove's vitamin counter too)
 --   Six Island Mart         the Gen 8-9 items
 -- Hoenn (Ruby / Sapphire / Emerald), Lilycove being the late department
 -- store (it has no stone floor of its own, so stones join the supplements):
---   Lilycove Dept. Store    stones + Gen 6 trade items (supplements floor),
+--   Lilycove Dept. Store    stones, Linking Cord + Gen 6 trade items (supplements floor),
 --                           held trade items (battle-item floor)
 --   Mossdeep / Sootopolis / Ever Grande marts: the Gen 8-9 items, by stage
 -- The new TMs (data/tms.lua, TM51-TM164) are sold where each game sells TMs: Celadon Dept.
@@ -26,7 +26,8 @@
 return {
   { games = { "firered", "leafgreen" }, store = "Celadon Dept. Store 4F",
     match = { 80, 132, 95, 96, 97, 98 },
-    add = { "dusk-stone", "dawn-stone", "shiny-stone", "ice-stone", "sachet", "whipped-dream" } },
+    add = { "dusk-stone", "dawn-stone", "shiny-stone", "ice-stone", "sachet", "whipped-dream",
+            "linking-cord" } },
   { games = { "firered", "leafgreen" }, store = "Celadon Dept. Store 5F (battle items)",
     match = { 63, 64, 65, 67, 70, 66 },
     add = { "protector", "electirizer", "magmarizer", "dubious-disc", "reaper-cloth",
@@ -43,7 +44,8 @@ return {
 
   { games = { "ruby", "sapphire", "emerald" }, store = "Lilycove Dept. Store (supplements)",
     match = { 77, 79, 75, 76, 74, 73, 78 },
-    add = { "dusk-stone", "dawn-stone", "shiny-stone", "ice-stone", "sachet", "whipped-dream" } },
+    add = { "dusk-stone", "dawn-stone", "shiny-stone", "ice-stone", "sachet", "whipped-dream",
+            "linking-cord" } },
   { games = { "ruby", "sapphire", "emerald" }, store = "Lilycove Dept. Store (battle items)",
     match = { 64, 67, 65, 70, 66, 63 },
     add = { "protector", "electirizer", "magmarizer", "dubious-disc", "reaper-cloth",

@@ -3,6 +3,24 @@
 All notable changes to this mod are documented here, in
 [keep a changelog](https://keepachangelog.com/en/1.1.0/) format.
 
+## [Unreleased]
+
+### Added
+
+- **Linking Cord** (Legends: Arceus's, item 938, ₽2100, Bag icon from the Gen 9 Pack): used on
+  a Pokemon that evolves by a plain trade (Kadabra, Machoke, Graveler, Haunter; Boldore, Gurdurr,
+  Phantump, Pumpkaboo, Alolan Graveler) it evolves at once; not a stand-in for a held-item trade.
+  Sold beside the stones (Celadon Dept. Store 4F, Lilycove Dept. Store). An override of the
+  native EVO_TRADE method (evolution_methods), so trades still work and rows stay numeric.
+
+### Fixed
+
+- **This mod's stones and other used evolution items could not be used from the Bag**: the Bag
+  only knows an item is used on a Pokemon by its `fieldUse` (or "STONE" in a cart item's name),
+  and these were registered without one, so Dawn / Dusk / Shiny / Ice Stone, the apples, armors,
+  pots, teacups, scrolls, Galarica items, Black Augurite, Metal Alloy and Peat Block offered no
+  USE on the party. They now register `fieldUse = "evo"` (held items are unchanged).
+
 ## [1.4.2] - 2026-10-28
 
 ### Fixed

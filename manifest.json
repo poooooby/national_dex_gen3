@@ -22,6 +22,6 @@
     "1025dex"
   ],
   "options_schema": "options.lua",
-  "description": "FireRed, LeafGreen, Ruby, Sapphire and Emerald: National Dex #387-1025 (Gen 4-9) and 128 alternate forms as data, with modern learnsets, 419 newer moves and 52 newer abilities that work in battle, the Fairy type, 114 new TMs, 38 evolution items Gen 3 lacks (with Bag icons and shops), evolutions by time of day, gender, held item, known move and more, cries for every species, and battle animations for the newer moves. A framework, not an art pack: species sprites come from sprite mods through setArtProvider.",
+  "description": "FireRed, LeafGreen, Ruby, Sapphire and Emerald: National Dex #387-1025 (Gen 4-9) and 128 alternate forms as data, with modern learnsets, 419 newer moves and 52 newer abilities that work in battle, the Fairy type, 114 new TMs, 39 evolution items Gen 3 lacks, the Linking Cord among them (with Bag icons and shops), evolutions by time of day, gender, held item, known move and more, cries for every species, and battle animations for the newer moves. A framework, not an art pack: species sprites come from sprite mods through setArtProvider.",
   "github": "poooooby/national_dex_gen3"
 }

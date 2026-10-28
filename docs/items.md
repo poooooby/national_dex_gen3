@@ -1,6 +1,6 @@
 # Added items
 
-National Dex Gen 3 adds 38 evolution items that no Gen 3 game has, so the Pokémon that
+National Dex Gen 3 adds 39 evolution items that no Gen 3 game has, so the Pokémon that
 need them can evolve. The real games sell almost none of these, so where each one is sold is a
 design choice: by item type, and by how far into the game the store is.
 
@@ -48,6 +48,7 @@ design choice: by item type, and by how far into the game the store is.
 | WATER SCROLL | ₽2100 | Six Island Mart | Mossdeep City Mart |
 | GALARICA CUFF | ₽2100 | Six Island Mart | Mossdeep City Mart |
 | GALAR. WREATH | ₽2100 | Six Island Mart | Mossdeep City Mart |
+| LINKING CORD | ₽2100 | Celadon Dept. Store 4F | Lilycove Dept. Store (supplements) |
 
 Prices are what a store charges; it buys the item back at half. They come from Bulbapedia
 (twice the sell price listed for the earliest game that has one), or ₽2100, the Gen 3
@@ -321,17 +322,23 @@ evolution stone price, where there is none. See [CREDITS](../CREDITS.md).
 - Ruby / Sapphire / Emerald: Mossdeep City Mart
 - Evolves: Slowpoke (Galar) → Slowking (Galar) (use it on)
 
+### LINKING CORD
+
+- Price: ₽2100
+- FireRed / LeafGreen: Celadon Dept. Store 4F
+- Ruby / Sapphire / Emerald: Lilycove Dept. Store (supplements)
+
 ## By store
 
 ### FireRed / LeafGreen
 
-- **Celadon Dept. Store 4F**: DUSK STONE (₽2100), DAWN STONE (₽2100), SHINY STONE (₽2100), ICE STONE (₽3000), SACHET (₽2100), WHIPPED DREAM (₽2100)
+- **Celadon Dept. Store 4F**: DUSK STONE (₽2100), DAWN STONE (₽2100), SHINY STONE (₽2100), ICE STONE (₽3000), SACHET (₽2100), WHIPPED DREAM (₽2100), LINKING CORD (₽2100)
 - **Celadon Dept. Store 5F (battle items)**: PROTECTOR (₽2100), ELECTIRIZER (₽2100), MAGMARIZER (₽2100), DUBIOUS DISC (₽2100), REAPER CLOTH (₽2100), RAZOR CLAW (₽2100), RAZOR FANG (₽2100), OVAL STONE (₽2100), LEADER'S CREST (₽2100)
 - **Six Island Mart**: METAL ALLOY (₽3000), BLACK AUGURITE (₽1000), PEAT BLOCK (₽1000), AUSPIC. ARMOR (₽2100), MALIC. ARMOR (₽2100), TART APPLE (₽2100), SWEET APPLE (₽2100), SYRUPY APPLE (₽2100), CRACKED POT (₽3000), CHIPPED POT (₽3000), UNREMARK. CUP (₽2100), MASTERPC. CUP (₽2100), STRAWBRY SWEET (₽2100), BERRY SWEET (₽2100), LOVE SWEET (₽2100), STAR SWEET (₽2100), CLOVER SWEET (₽2100), FLOWER SWEET (₽2100), RIBBON SWEET (₽2100), DARK SCROLL (₽2100), WATER SCROLL (₽2100), GALARICA CUFF (₽2100), GALAR. WREATH (₽2100)
 
 ### Ruby / Sapphire / Emerald
 
-- **Lilycove Dept. Store (supplements)**: DUSK STONE (₽2100), DAWN STONE (₽2100), SHINY STONE (₽2100), ICE STONE (₽3000), SACHET (₽2100), WHIPPED DREAM (₽2100)
+- **Lilycove Dept. Store (supplements)**: DUSK STONE (₽2100), DAWN STONE (₽2100), SHINY STONE (₽2100), ICE STONE (₽3000), SACHET (₽2100), WHIPPED DREAM (₽2100), LINKING CORD (₽2100)
 - **Lilycove Dept. Store (battle items)**: PROTECTOR (₽2100), ELECTIRIZER (₽2100), MAGMARIZER (₽2100), DUBIOUS DISC (₽2100), REAPER CLOTH (₽2100), RAZOR CLAW (₽2100), RAZOR FANG (₽2100), OVAL STONE (₽2100), LEADER'S CREST (₽2100)
 - **Mossdeep City Mart**: TART APPLE (₽2100), SWEET APPLE (₽2100), SYRUPY APPLE (₽2100), CRACKED POT (₽3000), CHIPPED POT (₽3000), STRAWBRY SWEET (₽2100), BERRY SWEET (₽2100), LOVE SWEET (₽2100), STAR SWEET (₽2100), CLOVER SWEET (₽2100), FLOWER SWEET (₽2100), RIBBON SWEET (₽2100), DARK SCROLL (₽2100), WATER SCROLL (₽2100), GALARICA CUFF (₽2100), GALAR. WREATH (₽2100)
 - **Sootopolis City Mart**: AUSPIC. ARMOR (₽2100), MALIC. ARMOR (₽2100), METAL ALLOY (₽3000), UNREMARK. CUP (₽2100), MASTERPC. CUP (₽2100)

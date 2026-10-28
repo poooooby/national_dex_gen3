@@ -46,11 +46,11 @@ hour of the day, so anything that asks for "day" also works at dusk.
 ## Getting the evolution items
 
 Most of the newer evolutions need an item that none of the five games has. The mod adds
-38 of them and puts them on sale, by kind and by how far into the game the store is:
+39 of them and puts them on sale, by kind and by how far into the game the store is:
 
 | Kind of item | FireRed / LeafGreen | Ruby / Sapphire / Emerald |
 |---|---|---|
-| Stones, Sachet, Whipped Dream | Celadon Dept. Store 4F | Lilycove Dept. Store (supplements) |
+| Stones, Linking Cord, Sachet, Whipped Dream | Celadon Dept. Store 4F | Lilycove Dept. Store (supplements) |
 | Trade and held items (Protector, Electirizer, Magmarizer, Dubious Disc, Reaper Cloth, Razor Claw, Razor Fang, Oval Stone, Leader's Crest) | Celadon Dept. Store 5F | Lilycove Dept. Store (battle items) |
 | Apples, pots, sweets, scrolls, Galarica Cuff and Wreath | Six Island Mart | Mossdeep City Mart |
 | Armors, Metal Alloy, teacups | Six Island Mart | Sootopolis City Mart |
@@ -115,6 +115,13 @@ each item goes with one of the two looks of the Pokémon, and it evolves into th
 The Antique and Artisan looks are [forms](#alternate-forms): they can turn up in the wild
 with Modern Spawns (see [Alternate forms](#alternate-forms)), or come from the save editor. The
 wrong item does nothing.
+
+## Linking Cord
+
+Use the Linking Cord on a Pokémon that evolves by trading and it evolves at once, as if it had
+been traded: Kadabra, Machoke, Graveler and Haunter, and the newer ones (Boldore, Gurdurr,
+Phantump, Pumpkaboo and the others that only need a trade). It does not stand in for a trade
+with a held item: Onix still needs a Metal Coat and a trade. A real trade still works too.
 
 ## Original Pokémon with new evolutions
 

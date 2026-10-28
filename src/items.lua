@@ -24,6 +24,7 @@ function Items.register(mod, payload)
       mod.content.items:register(r.id, {
         id = r.id, name = r.name, index = r.index,
         price = r.price or 0, pocket = "ITEMS", description = r.description,
+        fieldUse = r.use,  -- "evo": the Bag offers USE on the party (stones, Linking Cord)
       })
     end)
     if ok then

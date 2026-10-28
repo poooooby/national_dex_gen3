@@ -58,13 +58,26 @@ ORDER = [
     "scroll-of-darkness", "scroll-of-waters",
     # Galarian Slowpoke -> Galarian Slowbro / Slowking
     "galarica-cuff", "galarica-wreath",
+    # Legends: Arceus's cord, used on a Pokemon that evolves by trading (src/conditional_evos.lua)
+    "linking-cord",
 ]
+
+# Used on a Pokemon from the Bag: the registry's fieldUse = "evo", which the Bag reads to offer
+# USE on the party. Every other item here is held (the trade items, Razor Claw, the sweets...).
+BAG_USE = {
+    "dawn-stone", "dusk-stone", "ice-stone", "shiny-stone",
+    "sweet-apple", "tart-apple", "syrupy-apple",
+    "auspicious-armor", "malicious-armor", "black-augurite", "metal-alloy", "peat-block",
+    "cracked-pot", "chipped-pot", "unremarkable-teacup", "masterpiece-teacup",
+    "scroll-of-darkness", "scroll-of-waters", "galarica-cuff", "galarica-wreath",
+    "linking-cord",
+}
 
 # Items whose icon is not in the pokesprite folder (--icons) but in the Gen 9 Pack's
 # Graphics/Items (--extra-icons, one 48x48 PNG per item, named without separators).
 EXTRA_ICON_FILES = {"galarica-cuff": "GALARICACUFF", "galarica-wreath": "GALARICAWREATH",
                     "leaders-crest": "LEADERSCREST", "scroll-of-darkness": "SCROLLOFDARKNESS",
-                    "scroll-of-waters": "SCROLLOFWATERS"}
+                    "scroll-of-waters": "SCROLLOFWATERS", "linking-cord": "LINKINGCORD"}
 
 # slug -> file stem when the pack spells the item differently (pokesprite
 # calls the teacups "teapot")
@@ -127,6 +140,7 @@ DESCRIPTIONS = {
     "scroll-of-waters": "A scroll of the\nwater style.",
     "galarica-cuff": "A cuff woven from\nGalarica twigs.",
     "galarica-wreath": "A wreath woven\nfrom Galarica\ntwigs.",
+    "linking-cord": "A mysterious cord\nthat gives off a\nstrange energy.",
 }
 
 for _slug, _text in DESCRIPTIONS.items():
@@ -186,7 +200,8 @@ def write_items(path: Path, prices: dict) -> None:
         price, why = derive_price(slug, prices)
         lines.append(f'  {{ slug = "{slug}", id = "{engine_id(slug)}", '
                      f'name = "{display_name(slug)}", index = {INDEX_BASE + i}, '
-                     f'price = {price}, description = {json.dumps(DESCRIPTIONS[slug], ensure_ascii=False)} }}, -- {why}')
+                     f'price = {price}, ' + ('use = "evo", ' if slug in BAG_USE else '')
+                     + f'description = {json.dumps(DESCRIPTIONS[slug], ensure_ascii=False)} }}, -- {why}')
     lines += ["}", ""]
     path.write_text("\n".join(lines), encoding="utf-8")
 

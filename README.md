@@ -19,8 +19,11 @@ Paldea Pokémon can live in Kanto and Hoenn.
   battle with them. Each has its stats, typing, Pokédex entry and cry.
 - 🔄 **New evolutions for old favourites:** Rhydon into Rhyperior, Magneton into Magnezone,
   Nosepass into Probopass, Scyther into Kleavor, Togetic into Togekiss and more.
-- 💎 **The items to do it:** Dusk Stone, Protector, Dubious Disc and 35 more evolution items,
+- 💎 **The items to do it:** Dusk Stone, Protector, Dubious Disc and 36 more evolution items,
   sold in department stores and late-game marts.
+- 🔗 **Linking Cord:** use it on a Pokémon that evolves by trading (Kadabra, Machoke, Graveler,
+  Haunter, Boldore and more) and it evolves on the spot, no trade partner needed. Sold beside
+  the evolution stones.
 - 🍬 **Exp. Candies XS to XL:** use one on a Pokémon from the Bag for a boost of Exp. Points, with
   its level-ups, new moves and evolutions just as a Rare Candy gives them. The base games don't
   hand them out; Dynamax Raids gives them as raid rewards.

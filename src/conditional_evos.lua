@@ -331,7 +331,28 @@ function ConditionalEvos.registerMethods(mod, opts)
     local a, b = itemName(view and view.param), itemName(used)
     return a ~= nil and a == b
   end
+  -- the Linking Cord (Legends: Arceus): used from the Bag, it evolves a Pokemon that evolves by
+  -- a plain trade, the trade itself still works; resolved by slug on every use, so another
+  -- mod's LINKING_CORD counts too
+  local tradeNative = Evolution.nativeCheck(Evolution.EVO_TRADE or 5)
+  local itemIndex = opts and opts.itemIndex
+  local function linkingCord(trigger)
+    if not (itemIndex and type(trigger) == "table" and trigger.kind == "item") then return false end
+    local cord = itemIndex("linking-cord")
+    local used = tonumber(trigger.item)
+    if used == nil and trigger.item ~= nil then
+      local okI, ItemsData = pcall(require, "src.core.game3.items_data")
+      if okI and type(ItemsData.toNumericId) == "function" then
+        local okN, n = pcall(ItemsData.toNumericId, trigger.item)
+        used = okN and tonumber(n) or nil
+      end
+    end
+    return cord ~= nil and used ~= nil and used == cord
+  end
   local ok, err = pcall(function()
+    methods:override("EVO_TRADE", { check = function(game, mon, view, trigger)
+      return tradeNative(game, mon, view, trigger) or linkingCord(trigger)
+    end })
     methods:override("EVO_FRIENDSHIP_DAY", { check = byClock(false) })
     methods:override("EVO_FRIENDSHIP_NIGHT", { check = byClock(true) })
     methods:override("EVO_ITEM", { check = function(game, mon, view, trigger)

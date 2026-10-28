@@ -529,6 +529,7 @@ return function(mod)
   -- (native-method overrides: the rows stay numeric for every reader)
   ConditionalEvos.registerMethods(mod, {
     isNight = function(session) return Clock.isNight(session, clockSource()) end, log = mod.log,
+    itemIndex = Species.itemIndex(mod),
   })
   ConditionalEvos.installItemGender(bridges)
   -- the overworld by time of day (src/day_night.lua, the "Day & Night" option): decided on
