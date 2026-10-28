@@ -1,6 +1,6 @@
 -- Dynamax (Sword / Shield): which species have a Gigantamax form and its G-Max Move, which take
 -- Max Soup and how, which can never Dynamax, and the numbers src/dynamax.lua runs on.
---   GMAX[national] = G-Max Move id (the move ids Max Raids' data/raid_gmax.lua uses); a form of
+--   GMAX[national] = G-Max Move id (the move ids Dynamax Raids' data/raid_gmax.lua uses); a form of
 --     the species has it too unless it is a regional form (FORM_EXCLUDE), and FORM_MOVE gives a
 --     form its own move (Urshifu's Rapid Strike Style)
 return {

@@ -1,8 +1,8 @@
 -- Dynamax (Sword / Shield), the part a Pokemon carries: its Dynamax Level (0-10: its HP while
 -- Dynamaxed, x1.5 .. x2) and its Gigantamax Factor, and the three items that change them -
 -- Dynamax Candy (a level), Max Mushrooms (three cook a Max Soup: the factor given, or taken away)
--- and Max Honey (Urshifu's soup takes one) - and the Dynamax Crystal (no use of its own: Max Raids
--- spends one at a den for a legendary Pokemon's raid). No battle here Dynamaxes: Max Raids does, in its raids,
+-- and Max Honey (Urshifu's soup takes one) - and the Dynamax Crystal (no use of its own: Dynamax Raids
+-- spends one at a den for a legendary Pokemon's raid). No battle here Dynamaxes: Dynamax Raids does, in its raids,
 -- through exports.dynamax (src/api.lua).
 --
 -- The marks live in the engine's mod bag on the Pokemon, mon.extra.national_dex_gen3 =
@@ -26,7 +26,7 @@ return function(mod, deps)
       description = "Three make a Max\nSoup: it gives or\ntakes G-Max Factor." },
     { id = "MAX_HONEY", name = "Max Honey", index = 957, price = 3000,
       description = "Sweet honey. With\nMax Mushrooms, a\nsoup for Urshifu." },
-    -- (no use from the Bag: Max Raids takes one at a den for a legendary Pokemon's raid)
+    -- (no use from the Bag: Dynamax Raids takes one at a den for a legendary Pokemon's raid)
     { id = "DYNAMAX_CRYSTAL", name = "Dynamax Crystal", index = 958, price = 10000,
       description = "Dynamax energy in a\ncrystal. At a den,\na legendary awaits." },
   }

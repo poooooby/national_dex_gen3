@@ -10,7 +10,7 @@ All notable changes to this mod are documented here, in
 - **Dynamax marks** (Sword / Shield's): every Pokemon now has a **Dynamax Level** (0-10) and can
   carry the **Gigantamax Factor**, kept on the Pokemon (saved with it, through the PC and evolution;
   not sent by a cable trade). A wild or hatched Pokemon starts at Level 0 with no factor. Battles do
-  not Dynamax: a mod does that in its own battles (Max Raids).
+  not Dynamax: a mod does that in its own battles (Dynamax Raids).
 - **The summary shows them**: the **DYNAMAX LV** gauge of ten on the info page with the **Dynamax
   icon** beside it for the Gigantamax Factor (a species with a Gigantamax form), the icon by the
   picture on the other pages; the gauge moves into the picture frame while a status takes its place
@@ -21,7 +21,7 @@ All notable changes to this mod are documented here, in
   egg). **Max Mushrooms** (956): three make a Max Soup that gives a Pokemon with a Gigantamax form the
   factor, or takes it away from one that has it (never Melmetal; Urshifu's soup takes a **Max Honey**,
   957, too). All three sold beside the vitamins (Celadon Dept. Store 5F, Lilycove Dept. Store).
-  **Dynamax Crystal** (958): no use from the Bag; Max Raids spends one at a den for a legendary or
+  **Dynamax Crystal** (958): no use from the Bag; Dynamax Raids spends one at a den for a legendary or
   mythical Pokemon's raid. Bag icons from the pokesprite project.
 - **`exports.dynamax`**: `level`, `setLevel`, `hasFactor`, `setFactor`, `canDynamax`, `gmaxMoveOf`,
   `canGigantamax`, `hpMult`, `raidStartLevel`, `ids` (the four items), for a mod that Dynamaxes.

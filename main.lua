@@ -569,6 +569,6 @@ return function(mod)
   end
   Api(mod, { species = registered, forms = registeredForms, bridges = bridges, art = art, dexPatch = DexPatch,
     moves = registeredMoves, dynamax = Dynamax })
-  -- the Exp. Candies' item indexes, for a mod that gives them (Max Raids): { EXP_CANDY_XS = 950, ... }
+  -- the Exp. Candies' item indexes, for a mod that gives them (Dynamax Raids): { EXP_CANDY_XS = 950, ... }
   if ExpCandies then mod.exports.expCandies = ExpCandies.ids end
 end
