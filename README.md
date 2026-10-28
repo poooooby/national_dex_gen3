@@ -21,9 +21,10 @@ Paldea Pokémon can live in Kanto and Hoenn.
   Nosepass into Probopass, Scyther into Kleavor, Togetic into Togekiss and more.
 - 💎 **The items to do it:** Dusk Stone, Protector, Dubious Disc and 36 more evolution items,
   sold in department stores and late-game marts.
-- 🔗 **Linking Cord:** use it on a Pokémon that evolves by trading (Kadabra, Machoke, Graveler,
-  Haunter, Boldore and more) and it evolves on the spot, no trade partner needed. Sold beside
-  the evolution stones.
+- 🔗 **Linking Cord:** use it on a Pokémon that evolves by trading and it evolves on the spot, no
+  trade partner needed: Kadabra, Machoke, Boldore and the rest, and the ones that trade holding an
+  item too (Porygon2 holding a Dubious Disc, Onix holding a Metal Coat), which use the item up just
+  as a trade would. Sold beside the evolution stones.
 - 🍬 **Exp. Candies XS to XL:** use one on a Pokémon from the Bag for a boost of Exp. Points, with
   its level-ups, new moves and evolutions just as a Rare Candy gives them. The base games don't
   hand them out; Dynamax Raids gives them as raid rewards.

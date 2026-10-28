@@ -120,8 +120,13 @@ wrong item does nothing.
 
 Use the Linking Cord on a Pokémon that evolves by trading and it evolves at once, as if it had
 been traded: Kadabra, Machoke, Graveler and Haunter, and the newer ones (Boldore, Gurdurr,
-Phantump, Pumpkaboo and the others that only need a trade). It does not stand in for a trade
-with a held item: Onix still needs a Metal Coat and a trade. A real trade still works too.
+Phantump, Pumpkaboo and the others that only need a trade).
+
+It stands in for a trade with a held item too, as long as the Pokémon is holding that item:
+Porygon2 holding a Dubious Disc becomes Porygon-Z, Onix holding a Metal Coat becomes Steelix,
+Rhydon holding a Protector becomes Rhyperior. The held item is used up, just as in a trade.
+Holding the wrong item (or none), it has no effect. A real trade still works too. The full list
+is in the [items guide](items.md#linking-cord).
 
 ## Original Pokémon with new evolutions
 

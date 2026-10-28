@@ -3,6 +3,15 @@
 All notable changes to this mod are documented here, in
 [keep a changelog](https://keepachangelog.com/en/1.1.0/) format.
 
+## [Unreleased]
+
+### Changed
+
+- **The Linking Cord stands in for any trade**, a held-item one too: used on a Pokemon holding
+  its trade item (Porygon2 + Dubious Disc, Onix + Metal Coat, Rhydon + Protector, Seadra + Dragon
+  Scale...) it evolves, and the held item is used up as the trade uses it. The wrong item, or none,
+  does nothing. An override of the native EVO_TRADE_ITEM method; real trades are unchanged.
+
 ## [1.5.0] - 2026-10-28
 
 ### Added

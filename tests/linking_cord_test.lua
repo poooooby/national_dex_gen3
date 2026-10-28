@@ -39,7 +39,32 @@ T.eq(cordTarget("KADABRA"), P.speciesFromName("ALAKAZAM"), "Kadabra + Linking Co
 T.eq(cordTarget("HAUNTER"), P.speciesFromName("GENGAR"), "Haunter + Linking Cord -> Gengar")
 T.eq(cordTarget("BOLDORE"), P.speciesFromName("GIGALITH"), "Boldore + Linking Cord -> Gigalith (this mod's trade)")
 T.eq(cordTarget("PIKACHU"), nil, "Pikachu: the cord does nothing")
-T.eq(cordTarget("ONIX"), nil, "Onix (a held-item trade) does not evolve by the cord")
+-- a trade holding an item: the cord stands in for that trade too, with the item held
+local function holding(id, item)
+  local m = mon(id)
+  m.item, m.heldItem = item, item
+  return m
+end
+local DISC = run.loader.content.items:get("DUBIOUS_DISC").index
+T.eq(cordTarget("ONIX"), nil, "Onix holding nothing: the cord does nothing")
+T.eq(Evolution.itemTarget(holding("ONIX", 199), CORD), P.speciesFromName("STEELIX"), "Onix holding a Metal Coat -> Steelix")
+T.eq(Evolution.itemTarget(holding("SEADRA", 201), CORD), P.speciesFromName("KINGDRA"), "Seadra holding a Dragon Scale -> Kingdra")
+T.eq(Evolution.itemTarget(holding("PORYGON2", DISC), CORD), P.speciesFromName("PORYGON_Z"),
+     "Porygon2 holding a Dubious Disc -> Porygon-Z (this mod's item)")
+T.eq(Evolution.itemTarget(holding("PORYGON2", 199), CORD), nil, "Porygon2 holding the wrong item: nothing")
+T.eq(Evolution.tradeTarget(holding("ONIX", 199)), P.speciesFromName("STEELIX"), "a real trade holding the item still works")
+
+-- the evolution uses the held item up, as the trade would; a stone evolution keeps its held item
+do
+  local p2 = holding("PORYGON2", DISC)
+  local target = Evolution.itemTarget(p2, CORD)
+  Evolution.apply(p2, target, nil, nil, "item")
+  T.eq(P.speciesOf(p2), P.speciesFromName("PORYGON_Z"), "Porygon2 became Porygon-Z")
+  T.eq(tonumber(p2.item) or 0, 0, "and its Dubious Disc is used up")
+  local clefairy = holding("CLEFAIRY", 199)
+  Evolution.apply(clefairy, Evolution.itemTarget(clefairy, 94), nil, nil, "item")
+  T.eq(clefairy.item, 199, "a Moon Stone evolution keeps the Pokemon's held item")
+end
 T.eq(Evolution.itemCheck(mon("MACHOKE"), CORD), P.speciesFromName("MACHAMP"),
      "the party menu's can-it-evolve check agrees (Machoke)")
 T.eq(Evolution.itemTarget(mon("KADABRA"), 94), nil, "a Moon Stone still does nothing to Kadabra")

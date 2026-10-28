@@ -331,10 +331,35 @@ function ConditionalEvos.registerMethods(mod, opts)
     local a, b = itemName(view and view.param), itemName(used)
     return a ~= nil and a == b
   end
-  -- the Linking Cord (Legends: Arceus): used from the Bag, it evolves a Pokemon that evolves by
-  -- a plain trade, the trade itself still works; resolved by slug on every use, so another
-  -- mod's LINKING_CORD counts too
+  -- the Linking Cord: used from the Bag it stands in for a trade, any trade - a plain one, or one
+  -- holding an item (Porygon2 holding a Dubious Disc), whose held item the evolution then uses up
+  -- as the trade would; real trades still work. Resolved by slug on every use, so another mod's
+  -- LINKING_CORD counts too
   local tradeNative = Evolution.nativeCheck(Evolution.EVO_TRADE or 5)
+  local tradeItemNative = Evolution.nativeCheck(Evolution.EVO_TRADE_ITEM or 6)
+  local function heldItem(mon)
+    local held = type(mon) == "table" and (mon.item or mon.heldItem)
+    local n = tonumber(held)
+    if n == nil and held ~= nil then
+      local okI, ItemsData = pcall(require, "src.core.game3.items_data")
+      if okI and type(ItemsData.toNumericId) == "function" then
+        local okN, v = pcall(ItemsData.toNumericId, held)
+        n = okN and tonumber(v) or nil
+      end
+    end
+    return n or 0
+  end
+  -- the held item the row asks for: its number, or another item of the same name (the Dawn Stone
+  -- case above: a re-written row may carry another mod's number for the same item)
+  local function holdsRowItem(mon, view)
+    local want, held = tonumber(view and view.param), heldItem(mon)
+    if not want or want == 0 or held == 0 then return false end
+    if held == want then return true end
+    local a = itemName(want)
+    return a ~= nil and a == itemName(held)
+  end
+  -- a Pokemon the cord just let through a held-item trade row: { [mon] = target slot }
+  local cordTrades = setmetatable({}, { __mode = "k" })
   local itemIndex = opts and opts.itemIndex
   local function linkingCord(trigger)
     if not (itemIndex and type(trigger) == "table" and trigger.kind == "item") then return false end
@@ -353,6 +378,14 @@ function ConditionalEvos.registerMethods(mod, opts)
     methods:override("EVO_TRADE", { check = function(game, mon, view, trigger)
       return tradeNative(game, mon, view, trigger) or linkingCord(trigger)
     end })
+    methods:override("EVO_TRADE_ITEM", { check = function(game, mon, view, trigger)
+      if tradeItemNative(game, mon, view, trigger) then return true end
+      if linkingCord(trigger) and holdsRowItem(mon, view) then
+        cordTrades[mon] = tonumber(view and view.speciesId)
+        return true
+      end
+      return false
+    end })
     methods:override("EVO_FRIENDSHIP_DAY", { check = byClock(false) })
     methods:override("EVO_FRIENDSHIP_NIGHT", { check = byClock(true) })
     methods:override("EVO_ITEM", { check = function(game, mon, view, trigger)
@@ -365,6 +398,19 @@ function ConditionalEvos.registerMethods(mod, opts)
     end })
   end)
   if not ok and opts and opts.log then opts.log:warn("evolution method overrides failed: %s", tostring(err)) end
+  -- the held item of a cord-made trade evolution goes, as a trade's does (Evolution.tradeTarget)
+  if ok and mod.events and mod.events.on then
+    mod.events:on("pokemon.evolved", function(ev)
+      local mon = type(ev) == "table" and ev.mon
+      local target = mon and cordTrades[mon]
+      if not target then return end
+      cordTrades[mon] = nil
+      if ev.via == "item" and tonumber(ev.toSpeciesId) == target then
+        mon.item, mon.heldItem = 0, 0
+      end
+    end)
+  end
+  ConditionalEvos._cordTrades = cordTrades
   return ok
 end
 

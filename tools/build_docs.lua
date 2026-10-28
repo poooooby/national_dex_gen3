@@ -176,18 +176,37 @@ for _, e in ipairs(crossgen) do
   end
 end
 
--- the Linking Cord (src/conditional_evos.lua): used in place of a plain trade, so it evolves the
--- cart's four trade evolutions and every plain EVO_TRADE row of this mod's species and forms
-local CART_TRADES = { { 64, 65 }, { 67, 68 }, { 75, 76 }, { 93, 94 } }  -- Kadabra, Machoke, Graveler, Haunter
-for _, p in ipairs(CART_TRADES) do addUse("linking-cord", byDex[p[1]], byDex[p[2]], "EVO_TRADE") end
+-- the Linking Cord (src/conditional_evos.lua): used in place of any trade, so it evolves the cart's
+-- trade evolutions and every EVO_TRADE / EVO_TRADE_ITEM row of this mod's species, forms and the
+-- cart species' new evolutions; a held-item trade still needs its item held (and uses it up)
+local CART_TRADES = {  -- source dex, target dex, held item (nil: a plain trade)
+  { 64, 65 }, { 67, 68 }, { 75, 76 }, { 93, 94 },                    -- Kadabra, Machoke, Graveler, Haunter
+  { 61, 186, "King's Rock" }, { 79, 199, "King's Rock" }, { 95, 208, "Metal Coat" },
+  { 123, 212, "Metal Coat" }, { 117, 230, "Dragon Scale" }, { 137, 233, "Up-Grade" },
+  { 366, 367, "Deep Sea Tooth" }, { 366, 368, "Deep Sea Scale" },
+}
+local itemTitle = {}
+for _, it in ipairs(items) do itemTitle[it.slug] = title(it.name) end
+local function cordUse(source, target, slug)
+  addUse("linking-cord", source, target, "EVO_TRADE",
+    slug and ("while it holds " .. (itemTitle[slug] or title((slug:gsub("-", " "))))) or nil)
+end
+for _, p in ipairs(CART_TRADES) do
+  addUse("linking-cord", byDex[p[1]], byDex[p[2]], "EVO_TRADE", p[3] and ("while it holds " .. p[3]) or nil)
+end
 for _, r in ipairs(species) do
   for _, e in ipairs(r.evolutions or {}) do
-    if e.method == "EVO_TRADE" and not e.item then addUse("linking-cord", title(r.name), stepTarget(e), "EVO_TRADE") end
+    if e.method == "EVO_TRADE" or e.method == "EVO_TRADE_ITEM" then cordUse(title(r.name), stepTarget(e), e.item) end
   end
 end
 for _, f in ipairs(forms) do
   for _, e in ipairs(f.evolutions or {}) do
-    if e.method == "EVO_TRADE" and not e.item then addUse("linking-cord", formLabel(f), stepTarget(e), "EVO_TRADE") end
+    if e.method == "EVO_TRADE" or e.method == "EVO_TRADE_ITEM" then cordUse(formLabel(f), stepTarget(e), e.item) end
+  end
+end
+for _, e in ipairs(crossgen) do
+  if e.method == "EVO_TRADE" or e.method == "EVO_TRADE_ITEM" then
+    cordUse(byDex[e.source] or ("#" .. e.source), byDex[e.target] or ("#" .. e.target), e.item)
   end
 end
 
