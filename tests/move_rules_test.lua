@@ -539,4 +539,57 @@ do
   T.eq(acc("MOONBLAST", 100), 100, "a 100% move stays 100%")
 end
 
+-- weather: Hurricane and the storms never miss in rain (Hurricane 50 in sun), Solar Blade and
+-- Electro Shot skip their charge in sun / rain, Hydro Steam is stronger in sun, Solar Blade weaker in
+-- rain / sand / hail; Cloud Nine switches all of it off, SNOWY counts as hail
+do
+  local st = battle()
+  local function acc(id, w, a)
+    st.weather = w
+    return run.loader.hooks:call("battle.accuracy", function(c) return c.accuracy end,
+      { battle = st, moveNum = num(id), accuracy = a })
+  end
+  for _, id in ipairs({ "HURRICANE", "BLEAKWIND_STORM", "WILDBOLT_STORM", "SANDSEAR_STORM" }) do
+    T.eq(acc(id, "RAIN", 70), 100, id .. " never misses in rain")
+    T.eq(acc(id, nil, 70), 70, id .. " keeps its accuracy without weather")
+  end
+  T.eq(acc("HURRICANE", "SUN", 70), 50, "Hurricane is 50% in sun")
+  T.eq(acc("HURRICANE", "DOWNPOUR", 70), 100, "the engine's DOWNPOUR is rain too")
+  local function charge(id, w)
+    st.weather = w
+    return run.loader.hooks:call("battle.charge_required", function(c) return c.charge end,
+      { battle = st, move = { id = id, num = num(id) }, charge = true })
+  end
+  T.eq(charge("SOLAR_BLADE", "SUN"), false, "Solar Blade needs no charge in sun")
+  T.eq(charge("SOLAR_BLADE", nil), true, "Solar Blade charges without it")
+  T.eq(charge("ELECTRO_SHOT", "RAIN"), false, "Electro Shot needs no charge in rain")
+  T.eq(charge("ELECTRO_SHOT", "SUN"), true, "Electro Shot charges in sun")
+  T.eq(charge(73, "SUN"), true, "another move is left to the engine")
+
+  local st2, ad2 = battle(nil, mon({ species = 1, hp = 999, maxHp = 999 }))
+  -- the weather as the hit passes it (effects/hit.lua: weatherKind = Rules.weather.effective)
+  local function dmg(id, w)
+    return (Damage.calc(st2.player, st2.enemy, Moves.get(num(id)),
+      { adapter = ad2, noRandom = true, forceCrit = false, weatherKind = w }))
+  end
+  local plain, sunny = dmg("HYDRO_STEAM", nil), dmg("HYDRO_STEAM", "SUN")
+  T.check(sunny == math.floor(plain * 1.5),
+    "Hydro Steam is 1.5x in sun, not halved (" .. plain .. " -> " .. sunny .. ")")
+  local blade = dmg("SOLAR_BLADE", nil)
+  for _, w in ipairs({ "RAIN", "SAND", "HAIL" }) do
+    T.check(math.abs(dmg("SOLAR_BLADE", w) - math.floor(blade / 2)) <= 1, "Solar Blade is halved in " .. w)
+  end
+  T.eq(dmg("SOLAR_BLADE", "SUN"), blade, "Solar Blade keeps its power in sun")
+  -- Cloud Nine on the field: the engine's weather is none (what accuracy and charge read)
+  local Rules = require("src.core.game3.battle.rules")
+  local MR = H.module("src/move_rules.lua")
+  st2.weather = "SUN"
+  local cloud = { activeBattlers = function() return { st2.player, st2.enemy } end,
+                  abilityOf = function(_, b) return b == st2.player and "CLOUD_NINE" or nil end }
+  T.eq(Rules.weather.effective(st2, cloud), nil, "Cloud Nine: no weather")
+  T.eq(MR.weatherOf(st2, cloud), nil, "and the rules' weather agrees")
+  st2.weather = "SNOWY"
+  T.eq(MR.weatherOf(st2, nil), "HAIL", "SNOWY is hail")
+end
+
 T.finish("national_dex_gen3 move rules (" .. GAME .. ")")

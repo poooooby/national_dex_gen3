@@ -398,7 +398,9 @@ local function statusRule(rule, ad, user, target, M)
   elseif rule == "TAILWIND" then
     sideTimer(own, "tailwind", 4, "The tailwind blew from\nbehind " .. teamName(ad, own) .. "!")
   elseif rule == "AURORA_VEIL" then
-    if st.weather ~= "HAIL" then return fail(ad, M) end
+    local okR, Rules = pcall(require, "src.core.game3.battle.rules")
+    local okW, w = pcall(function() return Rules.weather.effective(st, ad) end)
+    if not (okR and okW and w == "HAIL") then return fail(ad, M) end
     sideTimer(own, "auroraVeil", 5, "AURORA VEIL made " .. teamName(ad, own) .. "\nstronger against attacks!")
   elseif rule == "LUCKY_CHANT" then
     sideTimer(own, "luckyChant", 5, "The LUCKY CHANT shielded " .. teamName(ad, own) .. "\nfrom critical hits!")

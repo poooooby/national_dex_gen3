@@ -3,6 +3,22 @@
 All notable changes to this mod are documented here, in
 [keep a changelog](https://keepachangelog.com/en/1.1.0/) format.
 
+## [Unreleased]
+
+### Fixed
+
+- **Weather now affects the newer moves the way it should** (the Gen 3 battle engine only knew
+  its own: Thunder, Solar Beam...):
+  - Hurricane, Bleakwind Storm, Wildbolt Storm and Sandsear Storm never miss in rain; Hurricane's
+    accuracy drops to 50% in sun.
+  - Solar Blade needs no charging turn in sun, and is halved in rain, sandstorm and hail as Solar
+    Beam is; Electro Shot needs no charging turn in rain.
+  - Hydro Steam is 1.5x stronger in sun instead of halved like other Water moves.
+- **Weather checks agree with the engine's**: Aurora Veil, Shore Up's extra healing in a
+  sandstorm, Protosynthesis, Snow Cloak, Sand Force, Leaf Guard and the weather speed abilities now
+  read the battle's weather the engine's way, so Cloud Nine and Air Lock switch them off, and the
+  engine's other names for a weather (SNOWY for hail, DOWNPOUR for rain) count.
+
 ## [1.5.3] - 2026-10-28
 
 ### Fixed

@@ -82,9 +82,21 @@ local function abilityOf(ad, b)
   return ok and name or nil
 end
 
+local WeatherRules
+local function weatherRules()
+  if WeatherRules == nil then
+    local ok, R = pcall(require, "src.core.game3.battle.rules")
+    WeatherRules = ok and type(R) == "table" and R.weather or false
+  end
+  return WeatherRules or nil
+end
+-- the battle's weather as the engine decides it (SNOWY is hail; none under Cloud Nine / Air Lock)
 local function weather(ad)
   local st = ad and ad._st
-  return st and st.weather or nil
+  local W = weatherRules()
+  if not (st and W and W.effective) then return st and st.weather or nil end
+  local ok, w = pcall(W.effective, st, ad)
+  return ok and w or nil
 end
 
 -- Protosynthesis in sun, Quark Drive on Electric Terrain (src/move_field.lua keeps the terrain)
@@ -433,7 +445,9 @@ function RealAbilities.install(opts)
       local ok, acted = safe(function()
         local ab = abilityOf(ad, b)
         local st = ad._st
-        if ab == "SNOW_WARNING" and st and st.weather ~= "HAIL" then
+        local W = weatherRules()
+        local kind = st and (W and W.kind and W.kind(st.weather) or st.weather)
+        if ab == "SNOW_WARNING" and st and kind ~= "HAIL" then
           st.weather, st.weatherTurns = "HAIL", 0
           ad:sayText("STRINGID_STARTEDHAIL", {})
           pcall(ad.playAnim, ad, "general", "HAIL_CONTINUES", nil, nil)

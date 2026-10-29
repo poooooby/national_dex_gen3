@@ -94,7 +94,11 @@ function MoveEffects.install(opts)
             ad:sayText("STRINGID_PKMNHPFULL", { def = who })
           else
             local pct = spec.heal
-            if spec.sandHeal and ad._st and ad._st.weather == "SAND" then pct = spec.sandHeal end
+            if spec.sandHeal and ad._st then
+              local okR, Rules = pcall(require, "src.core.game3.battle.rules")
+              local okW, w = pcall(function() return Rules.weather.effective(ad._st, ad) end)
+              if okR and okW and w == "SAND" then pct = spec.sandHeal end
+            end
             if M and M.attackAnimation then M:attackAnimation() end
             ad:heal(who, math.max(1, math.floor(maxHp * pct / 100)))
             ad:sayText("STRINGID_PKMNREGAINEDHEALTH", { def = who })

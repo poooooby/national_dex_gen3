@@ -19,7 +19,31 @@ MoveRules._rules = {}                             -- move number -> rule name (i
 MoveRules._hits = {}                              -- move number -> hit count (true: 2-5)
 MoveRules._formWeight = {}                        -- form slot -> hectograms
 MoveRules._neverMiss = {}                         -- move number -> true: a damaging move that never misses
+MoveRules._weather = {}                           -- move number -> its id, for the weather rules below
 local ALWAYS_HIT = 17                             -- the cart's EFFECT_ALWAYS_HIT (Swift, Aerial Ace)
+
+-- Newer moves the weather changes (the Gen 3 engine knows only its own: Thunder, Solar Beam...):
+--   accuracy  never miss in rain; Hurricane's accuracy is 50 in sun
+--   charge    no charging turn in that weather
+--   damage    Hydro Steam x1.5 in sun (worked out without the weather, which would halve a
+--             Water move there); Solar Blade halved in rain, sand and hail, as Solar Beam is
+local WEATHER_ACCURACY = { HURRICANE = { RAIN = true, SUN = 50 }, BLEAKWIND_STORM = { RAIN = true },
+                           WILDBOLT_STORM = { RAIN = true }, SANDSEAR_STORM = { RAIN = true } }
+local WEATHER_CHARGE = { SOLAR_BLADE = "SUN", ELECTRO_SHOT = "RAIN" }
+local WEATHER_DAMAGE = { HYDRO_STEAM = { SUN = 1.5 }, SOLAR_BLADE = { RAIN = 0.5, SAND = 0.5, HAIL = 0.5 } }
+-- the weather that must not apply its own type factor first (the engine halves Water in sun)
+local WEATHER_BYPASS = { HYDRO_STEAM = "SUN" }
+MoveRules.WEATHER_ACCURACY, MoveRules.WEATHER_CHARGE, MoveRules.WEATHER_DAMAGE =
+  WEATHER_ACCURACY, WEATHER_CHARGE, WEATHER_DAMAGE
+
+-- The battle's weather as the engine decides it: its own names normalized (SNOWY is hail), and
+-- none while a Cloud Nine or Air Lock Pokemon is out
+function MoveRules.weatherOf(st, ad)
+  local okR, Rules = pcall(require, "src.core.game3.battle.rules")
+  if not (okR and Rules.weather and Rules.weather.effective) then return nil end
+  local ok, w = pcall(Rules.weather.effective, st, ad)
+  return ok and w or nil
+end
 
 -- Fling: power by the cart's item name (Showdown's data for the items Gen 3 has); a berry is 10,
 -- anything else 30
@@ -806,10 +830,24 @@ function MoveRules.hooks(mod)
   -- so it hits here instead (still not a Pokemon mid-Fly or Dig, as Swift: checked before this)
   mod.hooks:wrap("battle.accuracy", function(nextFn, c)
     if type(c) == "table" and tonumber(c.accuracy) then
-      if (c.target and c.target.__ndxGlaiveRush) or MoveRules._neverMiss[tonumber(c.moveNum) or -1] then
+      local num = tonumber(c.moveNum) or -1
+      local byWeather = WEATHER_ACCURACY[MoveRules._weather[num] or ""]
+      local w = byWeather and MoveRules.weatherOf(c.battle, adapter())
+      if (c.target and c.target.__ndxGlaiveRush) or MoveRules._neverMiss[num] or (w and byWeather[w] == true) then
         c.accuracy = 100
+      elseif w and tonumber(byWeather[w]) then
+        -- Hurricane in sun: its 70 becomes 50, the stage changes already worked in
+        c.accuracy = math.floor(c.accuracy * byWeather[w] / 70)
       end
     end
+    return nextFn(c)
+  end)
+  -- Solar Blade in sun, Electro Shot in rain: no charging turn
+  mod.hooks:wrap("battle.charge_required", function(nextFn, c)
+    local move = type(c) == "table" and c.move
+    local id = type(move) == "table" and (MoveRules._weather[tonumber(move.num or move.index) or -1] or move.id)
+    local need = id and WEATHER_CHARGE[id]
+    if need and MoveRules.weatherOf(c.battle, adapter()) == need then return false end
     return nextFn(c)
   end)
 end
@@ -817,8 +855,11 @@ end
 -- opts: { moves = src/moves.lua's registered rows, require, log }
 function MoveRules.install(opts)
   local require, log = opts.require, opts.log
-  local rules, hits, neverMiss = {}, {}, {}
+  local rules, hits, neverMiss, weather = {}, {}, {}, {}
   for _, r in ipairs(opts.moves or {}) do
+    if tonumber(r.index) and (WEATHER_ACCURACY[r.id] or WEATHER_CHARGE[r.id] or WEATHER_DAMAGE[r.id]) then
+      weather[tonumber(r.index)] = r.id
+    end
     if type(r.rule) == "string" and tonumber(r.index) then rules[tonumber(r.index)] = r.rule end
     if r.hits and tonumber(r.index) then hits[tonumber(r.index)] = r.hits end
     if tonumber(r.index) and (tonumber(r.accuracy) or 0) == 0 and (tonumber(r.power) or 0) > 0
@@ -829,6 +870,7 @@ function MoveRules.install(opts)
   MoveRules._rules = rules                        -- a later install replaces what the wraps read
   MoveRules._hits = hits
   MoveRules._neverMiss = neverMiss
+  MoveRules._weather = weather
   MoveRules._formWeight = opts.formWeight or {}
 
   local okD, Damage = pcall(require, "src.core.game3.battle.damage")
@@ -888,6 +930,37 @@ function MoveRules.install(opts)
       end
       local okA, d2, i2 = pcall(adjust, rule, attacker, defender, dmg, info)
       if okA then dmg, info = d2, i2 end
+      return dmg, info
+    end
+  end
+
+  -- Hydro Steam in sun, Solar Blade in rain / sand / hail (WEATHER_DAMAGE): on the engine's
+  -- result, which has already applied the weather's own Water / Fire factor
+  if not Damage.__nationalDexWeatherMoves then
+    Damage.__nationalDexWeatherMoves = true
+    local calcW = Damage.calc
+    Damage.calc = function(attacker, defender, moveId, o, ...)
+      local num = moveNum(moveId)
+      local id = num and MoveRules._weather[num]
+      local byWeather = id and WEATHER_DAMAGE[id]
+      if not (byWeather and type(o) == "table") then return calcW(attacker, defender, moveId, o, ...) end
+      -- the weather this very calculation is given (the hit passes its effective weather, Cloud
+      -- Nine already worked in), so the factors never disagree
+      local w = o.weatherKind
+      if w == nil and o.weather ~= nil then
+        local okR, Rules = pcall(require, "src.core.game3.battle.rules")
+        w = okR and Rules.weather.kind(o.weather) or nil
+      end
+      local factor = byWeather[w or ""]
+      if not factor then return calcW(attacker, defender, moveId, o, ...) end
+      local o2 = o
+      if WEATHER_BYPASS[id] == w then
+        o2 = {}
+        for k, v in pairs(o) do o2[k] = v end
+        o2.weather, o2.weatherKind = nil, nil
+      end
+      local dmg, info = calcW(attacker, defender, moveId, o2, ...)
+      if (tonumber(dmg) or 0) > 0 then dmg = math.max(1, math.floor(dmg * factor)) end
       return dmg, info
     end
   end
