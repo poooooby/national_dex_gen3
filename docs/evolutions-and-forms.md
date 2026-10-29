@@ -96,7 +96,7 @@ Which Alcremie you get depends on the time and on the Milcery itself:
 - Day, dusk and night follow [the clock the game reads](#which-clock-the-game-reads).
 - In the real games each cream also comes in seven decorations; here there is one Alcremie
   per cream, and the sweet does not change how it looks.
-- With the [G9 Battle Sprites Gen3](https://github.com/poooooby/g9-battle-sprites-gen3)
+- With the [WoobleSpritePack](https://github.com/poooooby/g9-battle-sprites-gen3)
   companion mod, every Alcremie uses the Vanilla Cream artwork, because that mod has only one
   Alcremie picture.
 
@@ -353,5 +353,5 @@ If you turn the mod off while a form is in your party or PC, the game cannot dra
 can crash. The same is true of every other Pokémon this mod adds.
 
 **Pictures.** The mod ships no artwork. Install
-[G9 Battle Sprites Gen3](https://github.com/poooooby/g9-battle-sprites-gen3) to see them;
+[WoobleSpritePack](https://github.com/poooooby/g9-battle-sprites-gen3) to see them;
 without it a form has no picture.

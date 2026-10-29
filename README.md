@@ -116,7 +116,7 @@ Open **OPTIONS → MODS → WoobleDex**.
 
 This mod adds the Pokémon. Two companions bring them to life:
 
-- 🎞️ [G9 Battle Sprites (Gen 3)](https://github.com/poooooby/g9-battle-sprites-gen3): **the
+- 🎞️ [WoobleSpritePack](https://github.com/poooooby/g9-battle-sprites-gen3): **the
   pictures.** Animated battle sprites, summary and Pokédex pictures and party icons. Without it,
   new Pokémon show a blank or garbled picture.
 - 🗺️ [Modern Spawns](https://github.com/poooooby/g1r_modern_spawns): **the wild.** Fills every
