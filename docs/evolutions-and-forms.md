@@ -8,7 +8,7 @@ that work differently from the games you know. For every Pokémon's stats and mo
 
 **How do I catch them?** None of the five games has a Gen 4-9 Pokémon (or any alternate form)
 in its own wild encounter tables, so this mod only adds them to the game. A mod that changes
-the spawn tables puts them in the wild: [Modern Spawns](https://github.com/poooooby/g1r_modern_spawns)
+the spawn tables puts them in the wild: [WoobleSpawns](https://github.com/poooooby/g1r_modern_spawns)
 re-picks the species on every map and also places the wild forms, and any other mod that edits
 the encounter tables can do the same. **You do not need a save editor** to catch them, to find
 the forms that appear in the wild, or to evolve them.
@@ -113,7 +113,7 @@ each item goes with one of the two looks of the Pokémon, and it evolves into th
 | Poltchageist (Artisan) | Masterpiece Teacup | Sinistcha (Masterpiece) |
 
 The Antique and Artisan looks are [forms](#alternate-forms): they can turn up in the wild
-with Modern Spawns (see [Alternate forms](#alternate-forms)), or come from the save editor. The
+with WoobleSpawns (see [Alternate forms](#alternate-forms)), or come from the save editor. The
 wrong item does nothing.
 
 ## Linking Cord
@@ -189,7 +189,7 @@ with a Dusk Stone, or Doublade → Aegislash). They are listed under each item i
   takes none). A male becomes Basculegion and a female the female Basculegion, which has her own
   stats. It evolves at the end of the battle in which it reaches 294 (a battle you win), like a
   level-up evolution. Only the white-striped Basculin does this; the normal red-striped one never
-  evolves. The white-striped form can turn up in the wild with Modern Spawns, or come from the save editor.
+  evolves. The white-striped form can turn up in the wild with WoobleSpawns, or come from the save editor.
 - **Friendship at day or night.** Budew → Roselia and Riolu → Lucario need friendship in the
   daytime, and Chingling → Chimecho and Snom → Frosmoth need it at night (friendship 220 or
   more). They follow [the clock the game reads](#which-clock-the-game-reads), so they work in all
@@ -287,7 +287,7 @@ Raichu, Exeggutor and Marowak (Alola), Weezing (Galar), Typhlosion (Hisui) and t
 Paldean Tauros breeds have no evolution here: in the real games they come from an original
 Pokémon evolving in that region, and the regions are not part of these games. The Galarian
 birds (Articuno, Zapdos, Moltres) never evolve. Every regional form except the Galarian birds
-and Hisuian Typhlosion can turn up in the wild with Modern Spawns.
+and Hisuian Typhlosion can turn up in the wild with WoobleSpawns.
 
 ## Alternate forms
 
@@ -298,7 +298,7 @@ it seen or caught also marks Darumaka. Forms never add to the Pokédex totals.
 **How to get them.** None of the games has a form in its own wild tables, and the games have
 no way to change one Pokémon into a form. A form can come from:
 
-- **The wild**, with a spawn mod. [Modern Spawns](https://github.com/poooooby/g1r_modern_spawns)
+- **The wild**, with a spawn mod. [WoobleSpawns](https://github.com/poooooby/g1r_modern_spawns)
   places the forms that are wild Pokémon in the real games: the regional forms (see
   [above](#regional-forms-of-the-original-pokémon), and Darumaka, Darmanitan, Yamask, Stunfisk,
   Zorua, Zoroark, Lilligant, Braviary, Sliggoo, Goodra, Avalugg and Qwilfish) and the looks of Rotom, Oricorio, Pumpkaboo, Gourgeist, Wormadam, Lycanroc (Midnight),
@@ -324,7 +324,7 @@ no way to change one Pokémon into a form. A form can come from:
 
 The starting forms of those lines (Darumaka (Galar), Zorua (Hisui), Shellos (East), the Antique
 Sinistea, the Artisan Poltchageist, the white-striped Basculin and the yellow, orange, blue and
-white Flabébé) are all forms Modern Spawns can put in the wild, so you can catch them and evolve
+white Flabébé) are all forms WoobleSpawns can put in the wild, so you can catch them and evolve
 them. Only the forms that are not wild Pokémon need the save editor or a mod that places them:
 the Origin, Therian, Black/White Kyurem, Crowned, Ogerpon-mask and other item or fusion forms,
 Floette (Eternal), Bloodmoon Ursaluna, the Galarian birds, and the Hisuian Samurott, Decidueye

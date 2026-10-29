@@ -119,7 +119,7 @@ This mod adds the Pokémon. Two companions bring them to life:
 - 🎞️ [WoobleSpritePack](https://github.com/poooooby/g9-battle-sprites-gen3): **the
   pictures.** Animated battle sprites, summary and Pokédex pictures and party icons. Without it,
   new Pokémon show a blank or garbled picture.
-- 🗺️ [Modern Spawns](https://github.com/poooooby/g1r_modern_spawns): **the wild.** Fills every
+- 🗺️ [WoobleSpawns](https://github.com/poooooby/g1r_modern_spawns): **the wild.** Fills every
   area with Pokémon from all generations. With it, the Pokédex can even show where to find a
   species you haven't seen yet.
 - 🌿 [Wilds of Hoenn](https://github.com/poooooby/wilds-of-hoenn): see them roaming the overworld,
