@@ -1,4 +1,4 @@
-# National Dex Gen 3: developer guide
+# WoobleDex: developer guide
 
 For mod authors and contributors. Players only need the [README](README.md).
 

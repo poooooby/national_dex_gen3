@@ -1,6 +1,6 @@
 # Added Pokémon
 
-National Dex Gen 3 adds 639 species, National Dex #387–1025 (Generations 4–9), to
+WoobleDex adds 639 species, National Dex #387–1025 (Generations 4–9), to
 FireRed, LeafGreen, Ruby, Sapphire and Emerald. Each entry lists the typing, the abilities it
 has in this game, and its level-up learnset (`level move`).
 

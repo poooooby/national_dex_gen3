@@ -1,6 +1,6 @@
 <div align="center">
 
-# National Dex Gen 3 📖
+# WoobleDex 📖
 
 *All 1025 Pokémon in FireRed, LeafGreen, Ruby, Sapphire and Emerald. Catch, train, evolve and
 battle with every species from Turtwig to Pecharunt.*
@@ -91,7 +91,7 @@ Paldea Pokémon can live in Kanto and Hoenn.
 
 ## ⚙️ Options
 
-Open **OPTIONS → MODS → National Dex Gen 3**.
+Open **OPTIONS → MODS → WoobleDex**.
 
 | Option | Choices | Default | What it does |
 |---|---|---|---|
@@ -106,7 +106,7 @@ Open **OPTIONS → MODS → National Dex Gen 3**.
 
 1. Import your own FireRed, LeafGreen, Ruby, Sapphire or Emerald into
    [Gen1Recomp](https://github.com/bryanthaboi/gen1recomp) **0.3.95 or newer** (older versions
-   can't hold this many Pokémon; on those, keep National Dex Gen 3 1.1.4).
+   can't hold this many Pokémon; on those, keep version 1.1.4).
 2. Download the latest `national_dex_gen3-….zip` from the
    [Releases](https://github.com/poooooby/national_dex_gen3/releases/latest) page.
 3. In the game, go to **MODS → Import mod .zip** and choose the file.
@@ -130,6 +130,8 @@ the game's own Pokémon keep their original data, so its event gifts arrive as u
 
 ## 📌 Good to Know
 
+- **WoobleDex is the mod once called National Dex Gen 3.** It updates in place: your saves,
+  settings and every mod made for it keep working.
 - **Forms can't be found in the wild yet.** Gen 3 can't change a Pokémon's form, so they come
   from a save editor, plus a few that evolve into each other. Megas and Gigantamax forms aren't
   included.

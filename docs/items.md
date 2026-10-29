@@ -1,6 +1,6 @@
 # Added items
 
-National Dex Gen 3 adds 39 evolution items that no Gen 3 game has, so the Pokémon that
+WoobleDex adds 39 evolution items that no Gen 3 game has, so the Pokémon that
 need them can evolve. The real games sell almost none of these, so where each one is sold is a
 design choice: by item type, and by how far into the game the store is.
 

@@ -241,7 +241,7 @@ local function join(list, sep) return table.concat(list, sep) end
 local L = {
   "# Added items",
   "",
-  "National Dex Gen 3 adds " .. #items .. " evolution items that no Gen 3 game has, so the Pokémon that",
+  "WoobleDex adds " .. #items .. " evolution items that no Gen 3 game has, so the Pokémon that",
   "need them can evolve. The real games sell almost none of these, so where each one is sold is a",
   "design choice: by item type, and by how far into the game the store is.",
   "",
@@ -392,7 +392,7 @@ os.execute("mkdir docs\\pokemon 2> nul")
 local I = {
   "# Added Pokémon",
   "",
-  "National Dex Gen 3 adds " .. #species .. " species, National Dex #387–1025 (Generations 4–9), to",
+  "WoobleDex adds " .. #species .. " species, National Dex #387–1025 (Generations 4–9), to",
   "FireRed, LeafGreen, Ruby, Sapphire and Emerald. Each entry lists the typing, the abilities it",
   "has in this game, and its level-up learnset (`level move`).",
   "",
@@ -491,7 +491,7 @@ end
 local F = {
   "# Alternate forms",
   "",
-  "National Dex Gen 3 adds " .. #forms .. " alternate forms. Each is a Pokémon of its own with its own",
+  "WoobleDex adds " .. #forms .. " alternate forms. Each is a Pokémon of its own with its own",
   "stats, typing, ability and moves, and shows its base Pokémon's Pokédex number. Seeing or catching a",
   "form also counts the base Pokémon in your Pokédex.",
   "",

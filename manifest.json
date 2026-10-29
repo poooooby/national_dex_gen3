@@ -1,6 +1,6 @@
 {
   "id": "national_dex_gen3",
-  "name": "National Dex Gen 3",
+  "name": "WoobleDex",
   "version": "1.5.5",
   "api": 2,
   "entry": "main.lua",

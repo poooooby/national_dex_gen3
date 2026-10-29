@@ -1,6 +1,6 @@
 # Alternate forms
 
-National Dex Gen 3 adds 128 alternate forms. Each is a Pokémon of its own with its own
+WoobleDex adds 128 alternate forms. Each is a Pokémon of its own with its own
 stats, typing, ability and moves, and shows its base Pokémon's Pokédex number. Seeing or catching a
 form also counts the base Pokémon in your Pokédex.
 

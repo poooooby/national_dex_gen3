@@ -3,6 +3,14 @@
 All notable changes to this mod are documented here, in
 [keep a changelog](https://keepachangelog.com/en/1.1.0/) format.
 
+## [Unreleased]
+
+### Changed
+
+- **The mod is called WoobleDex** (it was National Dex Gen 3): its name in the mods list, the
+  README and the player guides. Its id stays `national_dex_gen3`, so it updates in place and saves,
+  settings, Bigger PC boxes, Dynamax marks and every mod that depends on it are untouched.
+
 ## [1.5.5] - 2026-10-29
 
 ### Added

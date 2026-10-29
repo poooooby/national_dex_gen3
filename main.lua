@@ -1,4 +1,4 @@
--- National Dex Gen 3: species #387-1025 for every Gen 3 game -- Pokémon
+-- WoobleDex (mod id national_dex_gen3): species #387-1025 for every Gen 3 game -- Pokémon
 -- FireRed, LeafGreen, Ruby, Sapphire and Emerald (manifest.json: games =
 -- ["gen3"]).
 --
