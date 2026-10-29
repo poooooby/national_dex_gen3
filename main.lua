@@ -572,4 +572,7 @@ return function(mod)
     moves = registeredMoves, dynamax = Dynamax })
   -- the Exp. Candies' item indexes, for a mod that gives them (Dynamax Raids): { EXP_CANDY_XS = 950, ... }
   if ExpCandies then mod.exports.expCandies = ExpCandies.ids end
+  -- the CLOCK SOURCE option, "game" | "device", for a mod whose days follow the same clock (Galar
+  -- Rising's dens): another mod's options are not readable through the mod API
+  mod.exports.clockSource = clockSource
 end

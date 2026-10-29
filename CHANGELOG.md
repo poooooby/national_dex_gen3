@@ -3,6 +3,14 @@
 All notable changes to this mod are documented here, in
 [keep a changelog](https://keepachangelog.com/en/1.1.0/) format.
 
+## [1.5.5] - 2026-10-29
+
+### Added
+
+- **Other mods can follow the Clock Source setting.** National Dex Gen 3 now shares it with other
+  mods, so their daily features turn over on the same clock as its day and night. Galar Rising's
+  dens use it: with Clock Source set to Device, they reset at your device's midnight.
+
 ## [1.5.4] - 2026-10-29
 
 ### Fixed
