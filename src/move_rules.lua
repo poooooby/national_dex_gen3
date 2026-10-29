@@ -18,6 +18,8 @@ local MoveRules = {}
 MoveRules._rules = {}                             -- move number -> rule name (install fills it)
 MoveRules._hits = {}                              -- move number -> hit count (true: 2-5)
 MoveRules._formWeight = {}                        -- form slot -> hectograms
+MoveRules._neverMiss = {}                         -- move number -> true: a damaging move that never misses
+local ALWAYS_HIT = 17                             -- the cart's EFFECT_ALWAYS_HIT (Swift, Aerial Ace)
 
 -- Fling: power by the cart's item name (Showdown's data for the items Gen 3 has); a berry is 10,
 -- anything else 30
@@ -798,9 +800,16 @@ function MoveRules.hooks(mod)
     local mon = monOf(target)
     st.__ndxHits[mon] = (st.__ndxHits[mon] or 0) + 1
   end)
-  -- Glaive Rush: the user can't dodge until it moves again
+  -- Glaive Rush: the user can't dodge until it moves again. A newer damaging move that never
+  -- misses (PokeAPI accuracy none -> 0 here: Flower Trick, Clear Smog, Hyperspace Hole...) and
+  -- whose effect isn't the cart's ALWAYS_HIT: the engine reads its accuracy 0 as a 0% chance,
+  -- so it hits here instead (still not a Pokemon mid-Fly or Dig, as Swift: checked before this)
   mod.hooks:wrap("battle.accuracy", function(nextFn, c)
-    if type(c) == "table" and c.target and c.target.__ndxGlaiveRush and tonumber(c.accuracy) then c.accuracy = 100 end
+    if type(c) == "table" and tonumber(c.accuracy) then
+      if (c.target and c.target.__ndxGlaiveRush) or MoveRules._neverMiss[tonumber(c.moveNum) or -1] then
+        c.accuracy = 100
+      end
+    end
     return nextFn(c)
   end)
 end
@@ -808,13 +817,18 @@ end
 -- opts: { moves = src/moves.lua's registered rows, require, log }
 function MoveRules.install(opts)
   local require, log = opts.require, opts.log
-  local rules, hits = {}, {}
+  local rules, hits, neverMiss = {}, {}, {}
   for _, r in ipairs(opts.moves or {}) do
     if type(r.rule) == "string" and tonumber(r.index) then rules[tonumber(r.index)] = r.rule end
     if r.hits and tonumber(r.index) then hits[tonumber(r.index)] = r.hits end
+    if tonumber(r.index) and (tonumber(r.accuracy) or 0) == 0 and (tonumber(r.power) or 0) > 0
+        and tonumber(r.effect) ~= ALWAYS_HIT then
+      neverMiss[tonumber(r.index)] = true
+    end
   end
   MoveRules._rules = rules                        -- a later install replaces what the wraps read
   MoveRules._hits = hits
+  MoveRules._neverMiss = neverMiss
   MoveRules._formWeight = opts.formWeight or {}
 
   local okD, Damage = pcall(require, "src.core.game3.battle.damage")

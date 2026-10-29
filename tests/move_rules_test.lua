@@ -525,4 +525,18 @@ do
 end
 
 run.release()
+-- moves that never miss (PokeAPI accuracy none, stored as 0): the engine reads 0 as a 0% chance
+-- unless the effect is ALWAYS_HIT, so the accuracy hook makes them hit
+do
+  local function acc(id, a)
+    return run.loader.hooks:call("battle.accuracy", function(c) return c.accuracy end,
+      { moveNum = num(id), accuracy = a })
+  end
+  for _, id in ipairs({ "FLOWER_TRICK", "CLEAR_SMOG", "HYPERSPACE_HOLE", "HYPERSPACE_FURY", "TACHYON_CUTTER", "TRUMP_CARD" }) do
+    T.eq(acc(id, 0), 100, id .. " never misses")
+  end
+  T.eq(acc(33, 95), 95, "Tackle keeps its own accuracy")
+  T.eq(acc("MOONBLAST", 100), 100, "a 100% move stays 100%")
+end
+
 T.finish("national_dex_gen3 move rules (" .. GAME .. ")")

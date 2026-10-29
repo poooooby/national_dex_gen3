@@ -3,6 +3,17 @@
 All notable changes to this mod are documented here, in
 [keep a changelog](https://keepachangelog.com/en/1.1.0/) format.
 
+## [Unreleased]
+
+### Fixed
+
+- **Flower Trick always missed**, and so did the other newer attacks that never miss: Clear Smog,
+  Hyperspace Hole, Hyperspace Fury, Tachyon Cutter and Trump Card. They are stored with accuracy 0
+  ("never misses"), but the Gen 3 battle engine skips the accuracy roll only for its own
+  always-hit effect (Swift's) and read 0 as a 0% chance. The battle's accuracy hook now lets them
+  hit (still not a Pokemon in the middle of Fly or Dig, as with Swift). Flower Trick is a critical
+  hit every time, as before: in game, 10 uses, 10 hits, 10 critical hits.
+
 ## [1.5.2] - 2026-10-28
 
 ### Fixed
