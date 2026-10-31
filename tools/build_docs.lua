@@ -252,7 +252,7 @@ local L = {
   "WoobleDex adds " .. #items .. " evolution items that no Gen 3 game has, so the Pokémon that",
   "need them can evolve. The real games sell almost none of these, so where each one is sold is a",
   "design choice: by item type, and by how far into the game the store is. In Ruby, Sapphire and",
-  "Emerald they are all sold by a vending machine in Lilycove Dept. Store 1F.",
+  "Emerald they are all sold by a vending machine in Lilycove Dept. Store 4F.",
   "",
   "Further down: [other items](#other-items), the Exp. Candies and the Dynamax items.",
   "",

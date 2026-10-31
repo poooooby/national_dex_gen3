@@ -47,7 +47,7 @@ hour of the day, so anything that asks for "day" also works at dusk.
 
 Most of the newer evolutions need an item that none of the five games has. The mod adds
 39 of them and puts them on sale. In Ruby, Sapphire and Emerald all 39 are sold by the
-evolution item vending machine in Lilycove Dept. Store 1F, left of the counter (its neighbour
+evolution item vending machine in Lilycove Dept. Store 4F, against the back wall (its neighbour
 sells the new TMs). In FireRed and LeafGreen they're in the stores, by kind and by how far into
 the game the store is:
 

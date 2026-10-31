@@ -22,7 +22,7 @@ Paldea Pokémon can live in Kanto and Hoenn.
 - 💎 **The items to do it:** Dusk Stone, Protector, Dubious Disc and 36 more evolution items,
   sold in department stores and late-game marts in FireRed / LeafGreen, and by a vending machine
   in Ruby / Sapphire / Emerald.
-- 🏪 **Vending machines:** two touch-screen machines in Lilycove Dept. Store 1F (Ruby / Sapphire /
+- 🏪 **Vending machines:** two touch-screen machines in Lilycove Dept. Store 4F (Ruby / Sapphire /
   Emerald), one for the evolution items and one for the new TMs. Browse by tab (stones, trade
   items, held items...; TMs by move type), see each item's description and a TM's type, power,
   accuracy and PP before you buy, pick how many, and watch it drop into the tray. Works with the
@@ -62,7 +62,7 @@ Paldea Pokémon can live in Kanto and Hoenn.
   the rest borrow the closest Gen 3 animation (Bulldoze shakes the ground like Earthquake).
 - 💿 **114 new TMs (TM51–TM164):** every newer move that's a TM in today's games, from Dazzling
   Gleam and Earth Power to Scald, Stealth Rock and U-turn. Buy them at the Celadon Dept. Store
-  (FireRed / LeafGreen) or the TM vending machine in Lilycove Dept. Store 1F (Ruby / Sapphire /
+  (FireRed / LeafGreen) or the TM vending machine in Lilycove Dept. Store 4F (Ruby / Sapphire /
   Emerald); the TM Case
   holds them all, and a Pokémon can learn one if it learns that move by TM in the modern games.
   They follow Scarlet / Violet's TM order after Gen 3's own 50 (Fire Fang is TM51), with the

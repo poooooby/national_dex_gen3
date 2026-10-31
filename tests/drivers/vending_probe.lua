@@ -1,5 +1,5 @@
 -- Driver: the vending machines (src/vending.lua, src/vending_screen.lua) in the engine. A new game,
--- money, then Lilycove Dept. Store 1F: both machines stand at their tiles; A on the evolution item
+-- money, then Lilycove Dept. Store 4F: both machines stand at their tiles; A on the evolution item
 -- machine opens its screen, and the buttons buy three of an item (the Bag and the money checked);
 -- B twice leaves and the player walks again; A on the TM machine, then the mouse alone (through
 -- the engine's pointer path): a tab, a tile, +, BUY, YES, the close button. Shots v*.png.
@@ -38,8 +38,8 @@ local function body(game, log)
   local S = V.screen
 
   local prefix = Profile.forSession(s0).map.enginePrefix
-  local store = prefix .. "LILYCOVE_CITY_DEPARTMENT_STORE_1F"
-  Warp.request(nil, game, store, 4, 3, "up", {})
+  local store = prefix .. "LILYCOVE_CITY_DEPARTMENT_STORE_4F"
+  Warp.request(nil, game, store, 7, 3, "up", {})
   check(waitFor(function() return Map.current == store and not Warp.isBusy() end, 1200), "warped to " .. store)
   U.wait(60)
   local placed = V.spawned[store] or {}
@@ -86,7 +86,7 @@ local function body(game, log)
   check(not S.isOpen() and not Stack.has("national_dex_gen3_vending"), "B twice leaves")
   -- walk: right a tile, then face the TM machine
   U.hold(game, "right", 16); U.wait(20)
-  check(Player.cellX == 5 and Player.cellY == 3, "the player walks again (" .. tostring(Player.cellX) .. ","
+  check(Player.cellX == 8 and Player.cellY == 3, "the player walks again (" .. tostring(Player.cellX) .. ","
     .. tostring(Player.cellY) .. ")")
   U.tap(game, "up"); U.wait(10)
 

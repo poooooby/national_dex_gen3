@@ -53,7 +53,7 @@ in each machine's data, read off its sprite. Stock is by item slug, resolved liv
 `Species.itemIndex` (names, prices and descriptions from the running game's items; a TM's move,
 type, power, accuracy and PP from its battle row). Buying takes the money and fills the Bag
 through `src.core.game3.bag`, as the Mart does. In Ruby / Sapphire / Emerald the two machines in
-Lilycove Dept. Store 1F (tiles 4,2 and 5,2) sell every evolution item and every new TM; those
+Lilycove Dept. Store 4F (tiles 7,2 and 8,2) sell every evolution item and every new TM; those
 games' Marts keep only the Dynamax items. Tests: `tests/vending_test.lua [game]` (headless: the
 data, the stock, a purchase by buttons and one by taps, the tabs by D-pad, seven window shapes),
 `tests/drivers/vending_probe.lua` (in the engine: both machines, buttons, then the mouse, then

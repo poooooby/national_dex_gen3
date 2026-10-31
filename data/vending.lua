@@ -16,8 +16,8 @@ for n = 51, 164 do tms[#tms + 1] = "tm" .. n end
 local HOENN = { "ruby", "sapphire", "emerald" }
 
 return {
-  { id = "evo", games = HOENN, map = "LILYCOVE_CITY_DEPARTMENT_STORE_1F", x = 4, y = 2,
-    store = "Lilycove Dept. Store 1F (evolution item machine)",
+  { id = "evo", games = HOENN, map = "LILYCOVE_CITY_DEPARTMENT_STORE_4F", x = 7, y = 2,
+    store = "Lilycove Dept. Store 4F (evolution item machine)",
     title = "EVOLUTION ITEMS",
     sprite = "assets/shop/EVOvendor2.png",
     bezel = { body = { 193, 99, 221 }, lower = { 114, 88, 191 }, trim = { 160, 99, 221 },
@@ -36,8 +36,8 @@ return {
                                    "scroll-of-darkness", "scroll-of-waters",
                                    "galarica-cuff", "galarica-wreath" } },
     } },
-  { id = "tm", games = HOENN, map = "LILYCOVE_CITY_DEPARTMENT_STORE_1F", x = 5, y = 2,
-    store = "Lilycove Dept. Store 1F (TM machine)",
+  { id = "tm", games = HOENN, map = "LILYCOVE_CITY_DEPARTMENT_STORE_4F", x = 8, y = 2,
+    store = "Lilycove Dept. Store 4F (TM machine)",
     title = "TECHNICAL MACHINES",
     sprite = "assets/shop/TMvendor2.png",
     bezel = { body = { 88, 116, 232 }, lower = { 79, 165, 200 }, trim = { 88, 155, 232 },
