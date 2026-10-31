@@ -142,10 +142,41 @@ local function input(press, down)
   return { wasPressed = function(_, k) return p[k] == true end, isDown = function(_, k) return d[k] == true end }
 end
 local function press(k) S.input(input({ k }, { k })) end
+local BOOT = S.BOOT.BLACK + S.BOOT.LINE + S.BOOT.LOGO + S.BOOT.REVEAL
+-- open a machine, past its boot
+local function openBooted(machine, tabs)
+  S.open(machine, tabs)
+  clock = clock + BOOT + 0.01
+end
 
--- buttons
+-- the boot: black, the logo, the reveal; the shop doesn't answer until it reveals, and a button
+-- (or a tap) skips to the reveal
 S.open(byId.evo, evoTabs)
 local st = S.state()
+S.input(input({ "a" }, { "a" }))
+S.input(input({}, { "a" }))
+T.check(S.booting(), "it boots first")
+press("right")
+T.eq(st.cursor, 1, "a button while booting moves nothing")
+T.check(not S.booting(), "but skips to the reveal")
+clock = clock + S.BOOT.REVEAL + 0.01
+press("right")
+T.eq(st.cursor, 2, "after the reveal the D-pad works")
+clock = clock + 0.01
+S.close()
+closed = 0
+S.open(byId.evo, evoTabs)
+st = S.state()
+clock = clock + S.BOOT.BLACK + S.BOOT.LINE + 0.2
+T.check(S.booting(), "still booting at the logo")
+clock = clock + S.BOOT.LOGO + S.BOOT.REVEAL
+T.check(not S.booting(), "the boot runs out by itself")
+S.close()
+closed = 0
+
+-- buttons
+openBooted(byId.evo, evoTabs)
+st = S.state()
 -- the A that opened the machine, still held: not read as a choice
 S.input(input({ "a" }, { "a" }))
 S.input(input({}, { "a" }))
@@ -278,8 +309,17 @@ local function tapOn(kind, arg)
   S.pointer({ phase = "released", id = 1, x = x, y = y })
 end
 
+-- while booting only the close button and a skip can be tapped
 S.open(byId.tm, tmTabs)
 st = S.state()
+draw()
+T.check(find("tile") == nil and find("tab") == nil, "booting: no tiles or tabs to tap")
+T.check(find("close") ~= nil, "booting: the close button can be")
+tapOn("skip")
+T.check(not S.booting(), "a tap skips the boot")
+clock = clock + S.BOOT.REVEAL + 0.01
+draw()
+T.check(find("tile") ~= nil and find("skip") == nil, "then the shop can be tapped")
 T.check(#st.tabs > 2, "the TM machine: ALL and a tab per move type")
 local fire
 for i, tab in ipairs(st.tabs) do if tab.type == 10 then fire = i end end
@@ -348,7 +388,7 @@ local layouts = {}
 for _, shape in ipairs(shapes) do
   VP = { gameX = 0, gameY = 0, gameWidth = shape.w, gameHeight = shape.h, width = shape.w, height = shape.h }
   session.money = 100000
-  S.open(byId.evo, evoTabs)
+  openBooted(byId.evo, evoTabs)
   st = S.state()
   draw()
   local L = st.layout

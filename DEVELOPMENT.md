@@ -48,7 +48,9 @@ buttons and holds the field) and opens a touch screen drawn from `render.hud` ov
 window (its safe area), laid out for its shape by `S.layout`: landscape is a page 160 units tall
 and up to 380 wide (more grid columns beside the card), portrait 180 wide (the card under the
 grid, more rows). Taps and clicks come from `input.pointer`, the wheel from `input.wheel`, and
-the on-screen touch pad is put away while it is up. Up from the grid's top row focuses the tabs. The bezel's colours are
+the on-screen touch pad is put away while it is up. Up from the grid's top row focuses the tabs.
+Opening plays a boot (`S.BOOT`: black, a tube line, the W logo `S.drawLogo` with a loading bar,
+the reveal); until the reveal only the close button answers, and any button or tap skips to it. The bezel's colours are
 in each machine's data, read off its sprite. Stock is by item slug, resolved live through
 `Species.itemIndex` (names, prices and descriptions from the running game's items; a TM's move,
 type, power, accuracy and PP from its battle row). Buying takes the money and fills the Bag

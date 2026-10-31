@@ -27,7 +27,8 @@ Paldea Pokémon can live in Kanto and Hoenn.
   items, held items...; TMs by move type), see each item's description and a TM's type, power,
   accuracy and PP before you buy, pick how many, and watch it drop into the tray. Works with the
   buttons alone (the D-pad reaches the tabs too) or with touch and the mouse, and the screen fills
-  your window, wide or held upright.
+  your window, wide or held upright. Each machine boots up with its own logo first (a tap or any
+  button skips it).
 - 🔗 **Linking Cord:** use it on a Pokémon that evolves by trading and it evolves on the spot, no
   trade partner needed: Kadabra, Machoke, Boldore and the rest, and the ones that trade holding an
   item too (Porygon2 holding a Dubious Disc, Onix holding a Metal Coat), which use the item up just

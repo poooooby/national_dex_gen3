@@ -50,6 +50,15 @@ local function body(game, log)
   -- the evolution item machine, by buttons
   U.tap(game, "a")
   check(waitFor(function() return S.isOpen() end, 120), "A on the evolution item machine opens its screen")
+  -- the boot, frame by frame: black, the tube opening, the logo, its shine, the reveal
+  U.wait(4)
+  shot("b1_black")
+  check(S.booting(), "it boots first")
+  for i, at in ipairs({ 0.44, 0.75, 1.25, 1.75 }) do
+    waitFor(function() return S.state() and (love.timer.getTime() - S.state().t0) >= at end, 240)
+    shot("b" .. (i + 1) .. "_boot")
+  end
+  check(waitFor(function() return not S.booting() end, 240), "then reveals the shop")
   U.wait(30)
   shot("v2_evo_grid")
   local st = S.state()
@@ -93,6 +102,18 @@ local function body(game, log)
   -- the TM machine, by the mouse alone
   U.tap(game, "a")
   check(waitFor(function() return S.isOpen() end, 120), "A on the TM machine opens its screen")
+  -- (a tap skips the boot)
+  U.wait(10)
+  local skip
+  for _, h in ipairs(S.state().hit) do if h.kind == "skip" then skip = h end end
+  check(skip ~= nil, "booting: a tap to skip")
+  if skip then
+    game:mousepressed(skip[1] + skip[3] / 2, skip[2] + skip[4] / 2, 1, false)
+    U.wait(2)
+    game:mousereleased(skip[1] + skip[3] / 2, skip[2] + skip[4] / 2, 1, false)
+  end
+  U.wait(4)
+  check(not S.booting(), "a click skips the boot")
   U.wait(30)
   shot("v6_tm_grid")
   st = S.state()
@@ -140,6 +161,9 @@ local function body(game, log)
     U.wait(20)
     U.tap(game, "a")
     check(waitFor(function() return S.isOpen() end, 120), shape[1] .. ": A opens the TM machine")
+    U.wait(50)
+    shot("v11_" .. shape[1] .. "_boot")
+    waitFor(function() return not S.booting() end, 240)
     U.wait(30)
     st = S.state()
     local L = st.layout or {}

@@ -31,6 +31,11 @@ return function(deps)
   local S = { COLS = 4, ROWS = 3, MAX_QTY = 99 }
   -- held D-pad: first repeat after REPEAT_START steps, then every REPEAT_EVERY (the game's menus)
   S.REPEAT_START, S.REPEAT_EVERY = 20, 4
+  -- the boot (seconds): the glass black, a line opening it like a tube, the W logo with its
+  -- loading bar, then the logo zooming away to reveal the shop. Any button or tap skips to the
+  -- reveal; the shop takes input from the reveal on.
+  S.BOOT = { BLACK = 0.35, LINE = 0.18, LOGO = 1.1, REVEAL = 0.35 }
+  local function bootLength() return S.BOOT.BLACK + S.BOOT.LINE + S.BOOT.LOGO + S.BOOT.REVEAL end
   -- the page, in units: a landscape window is 160 tall and MIN_WIDTH .. MAX_WIDTH wide (centred
   -- past it), a portrait one (narrower than PORTRAIT_ASPECT) 180 wide and at least 260 tall
   S.PAGE = { HEIGHT = 160, MIN_WIDTH = 200, MAX_WIDTH = 380, PORTRAIT_WIDTH = 180, PORTRAIT_HEIGHT = 260,
@@ -58,6 +63,7 @@ return function(deps)
       tabs = { { "< >", "Tab" }, { "A", "Items" }, { "B", "Back" } },
       card = { { "< >", "Amount" }, { "A", "Buy" }, { "B", "Back" } },
       confirm = { { "A", "OK" }, { "B", "Cancel" } },
+      boot = { { "A", "Skip" } },
     },
   }
 
@@ -162,6 +168,26 @@ return function(deps)
           waitRelease = true }
     se("SE_PC_ON")
     return true
+  end
+
+  -- seconds into the boot, or nil once it has run (or was skipped) to the reveal's end
+  local function bootAge()
+    if not r or r.booted then return nil end
+    local age = now() - r.t0
+    if age >= bootLength() then
+      r.booted = true
+      return nil
+    end
+    return age
+  end
+  -- still booting: the shop doesn't answer yet
+  local function booting()
+    local age = bootAge()
+    return age ~= nil and age < bootLength() - S.BOOT.REVEAL
+  end
+  function S.booting() return r ~= nil and booting() end
+  function S.skipBoot()
+    if booting() then r.t0 = now() - (bootLength() - S.BOOT.REVEAL) end
   end
 
   function S.close()
@@ -302,6 +328,12 @@ return function(deps)
       if input:wasPressed("a") or (okD and down) then return end
       r.waitRelease = false
     end
+    if booting() then
+      for _, k in ipairs({ "a", "b", "start", "select", "l", "r", "up", "down", "left", "right" }) do
+        if input:wasPressed(k) then return S.skipBoot() end
+      end
+      return
+    end
     local p = {}
     for _, k in ipairs(DIRS) do p[k] = input.isDown and repeated(input, k) or input:wasPressed(k) end
     local function pressed(k) return input:wasPressed(k) end
@@ -360,6 +392,7 @@ return function(deps)
 
   function S.wheel(dy)
     if not r then return false end
+    if booting() then return true end
     r.scroll = clampScroll(floor(r.scroll + 0.5) - (dy > 0 and 1 or (dy < 0 and -1 or 0)))
     return true
   end
@@ -382,6 +415,7 @@ return function(deps)
       if inside(h, x, y) then
         local kind, arg = h.kind, h.arg
         if kind == "close" then S.close()
+        elseif kind == "skip" then S.skipBoot()
         elseif kind == "dim" or kind == "no" then r.focus = "card"; se("SE_SELECT")
         elseif kind == "yes" then S.buy()
         elseif kind == "tab" then S.setTab(arg)
@@ -1017,7 +1051,7 @@ return function(deps)
     -- the foot: the hints, the tray, the coin slots
     local hb = L.hints
     local hx, hy = hb[1], hb[2]
-    local hints = S.TEXT.hints[r.focus] or {}
+    local hints = (booting() and S.TEXT.hints.boot) or S.TEXT.hints[r.focus] or {}
     local hintW = 0
     for _, h in ipairs(hints) do hintW = hintW + max(8, width(h[1], 4.5) + 4) + 2 + width(h[2], 5) + 6 end
     if portrait then hx = hb[1] + max(0, (hb[3] - hintW + 6) / 2) end
@@ -1113,13 +1147,124 @@ return function(deps)
       end
     end
 
-    -- the screen switching on
-    local lit = min(1, t / 0.25)
-    if lit < 1 then
-      col(BLACK, 1 - lit)
-      box("fill", gl, 6)
+    -- the boot over the glass
+    local bt = bootAge()
+    if bt then
+      local B = S.BOOT
+      local backdrop, backdropFoot = dark(body, 0.62), dark(body, 0.8)
+      local logoAt = B.BLACK + B.LINE
+      local revealAt = logoAt + B.LOGO
+      if bt < revealAt then
+        -- nothing to tap behind it but the close button; a tap anywhere else skips (the skip
+        -- first in the list: taps try the last first)
+        local keep = { false }
+        for _, h in ipairs(hit) do
+          if h.kind == "close" then keep[#keep + 1] = h end
+        end
+        r.hit, hit = keep, keep
+        addHit({ 0, 0, pw, ph }, "skip")
+        keep[1] = table.remove(keep)
+      end
+      if bt < B.BLACK then
+        col({ 8, 8, 12 })
+        box("fill", gl, 6)
+      elseif bt < logoAt then
+        -- the tube opening: a bright line that grows to the glass's height
+        local k = (bt - B.BLACK) / B.LINE
+        col({ 8, 8, 12 })
+        box("fill", gl, 6)
+        local h = max(0.8, gl[4] * k * k)
+        local band = { gl[1], gl[2] + (gl[4] - h) / 2, gl[3], h }
+        grad(band, min(6, h / 2), mix(backdrop, WHITE, 1 - k), mix(backdropFoot, WHITE, 1 - k))
+      else
+        -- the logo, then (the reveal) the logo zooming away as the backdrop fades
+        local into = bt - logoAt
+        local out = max(0, bt - revealAt) / B.REVEAL
+        local fadeA = 1 - out * out
+        grad(gl, 6, fade(backdrop, fadeA), fade(backdropFoot, fadeA))
+        if not r.chimed then
+          r.chimed = true
+          se("SE_PC_LOGIN")
+        end
+        -- (pops in a little past full size and settles)
+        local p = min(1, into / 0.4)
+        local pop = 1 + 0.24 * math.sin(p * math.pi) * (1 - p)
+        local size = min(gl[4] * 0.42, gl[3] * 0.3) * (0.82 + 0.18 * p) * pop * (1 + out * 0.5)
+        local la = min(1, into / 0.25) * (1 - out)
+        local cx, cy = gl[1] + gl[3] / 2, gl[2] + gl[4] / 2 - 5
+        S.drawLogo(G, X(cx), Y(cy), size * sc, accent, la)
+        -- the loading bar, filling over the logo's time
+        if out == 0 then
+          local fill = min(1, max(0, (into - 0.15) / (B.LOGO - 0.3)))
+          local bw = min(60, gl[3] * 0.4)
+          local bar = { cx - bw / 2, cy + size * 0.31 + 9, bw, 2.5 }
+          col(WHITE, 0.15 * la)
+          box("fill", bar, 1.25)
+          if fill > 0 then
+            grad({ bar[1], bar[2], bar[3] * fill, bar[4] }, 1.25, fade(light(accent, 0.3), la), fade(accent, la))
+          end
+        end
+        -- a shine sweeping across the glass once
+        local sweep = (into - 0.55) / 0.45
+        if sweep > 0 and sweep < 1 and out == 0 then
+          local sx = gl[1] - 30 + (gl[3] + 60) * sweep
+          scissor(gl)
+          col(WHITE, 0.12)
+          G.polygon("fill", X(sx), Y(gl[2]), X(sx + 14), Y(gl[2]), X(sx - 6), Y(gl[2] + gl[4]),
+            X(sx - 20), Y(gl[2] + gl[4]))
+          scissor(nil)
+        end
+      end
     end
     G.setColor(1, 1, 1, 1)
+  end
+
+  -- the W: four slanted strokes folded like a ribbon (the outer two in the machine's accent, the
+  -- inner two lighter, under them), over a soft glow; centred on cx, cy (window pixels), `size` wide
+  function S.drawLogo(G, cx, cy, size, accent, a)
+    if a <= 0 then return end
+    local w, h = size, size * 0.62
+    local x0, y0 = cx - w / 2, cy - h / 2
+    local th = w * 0.17      -- a stroke's width, across
+    local slant = w * 0.07   -- (leaning forward)
+    -- each stroke: its top and bottom x (0..1 of the width less a stroke), its ends' heights (0..1)
+    local strokes = { { 0, 0.25, 0, 1 }, { 0.25, 0.5, 1, 0.3 }, { 0.5, 0.75, 0.3, 1 }, { 0.75, 1, 1, 0 } }
+    local function pt(fx, fy) return x0 + fx * (w - th - slant) + (1 - fy) * slant, y0 + fy * h end
+    local function quad(sx)
+      local ax, ay = pt(sx[1], sx[3])
+      local bx, by = pt(sx[2], sx[4])
+      return { ax, ay, ax + th, ay, bx + th, by, bx, by }
+    end
+    local soft = { accent[1] + (255 - accent[1]) * 0.45, accent[2] + (255 - accent[2]) * 0.45,
+                   accent[3] + (255 - accent[3]) * 0.45 }
+    -- the glow
+    for i = 3, 1, -1 do
+      G.setColor(accent[1] / 255, accent[2] / 255, accent[3] / 255, 0.07 * a)
+      G.push()
+      G.translate(cx, cy)
+      G.scale(1 + i * 0.07, 1 + i * 0.1)
+      G.translate(-cx, -cy)
+      for _, sx in ipairs(strokes) do G.polygon("fill", quad(sx)) end
+      G.pop()
+    end
+    -- the shadow, then the strokes
+    G.setColor(0, 0, 0, 0.3 * a)
+    G.push()
+    G.translate(size * 0.02, size * 0.03)
+    for _, sx in ipairs(strokes) do G.polygon("fill", quad(sx)) end
+    G.pop()
+    for _, i in ipairs({ 2, 3, 1, 4 }) do
+      local c = (i == 1 or i == 4) and accent or soft
+      G.setColor(c[1] / 255, c[2] / 255, c[3] / 255, a)
+      G.polygon("fill", quad(strokes[i]))
+    end
+    -- a highlight along the outer strokes' leading edges
+    G.setColor(1, 1, 1, 0.35 * a)
+    G.setLineWidth(math.max(1, size * 0.012))
+    for _, i in ipairs({ 1, 4 }) do
+      local q = quad(strokes[i])
+      G.line(q[1], q[2], q[7], q[8])
+    end
   end
 
   return S
