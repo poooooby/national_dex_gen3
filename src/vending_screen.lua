@@ -31,6 +31,8 @@ return function(deps)
   local S = { COLS = 4, ROWS = 3, MAX_QTY = 99 }
   -- held D-pad: first repeat after REPEAT_START steps, then every REPEAT_EVERY (the game's menus)
   S.REPEAT_START, S.REPEAT_EVERY = 20, 4
+  -- the money box's flash when there isn't enough (seconds, flashes)
+  S.MONEY_FLASH, S.MONEY_FLASHES = 0.6, 2
   -- the boot (seconds): the glass black, a line opening it like a tube, the W logo with its
   -- loading bar, then the logo zooming away to reveal the shop. Any button or tap skips to the
   -- reveal; the shop takes input from the reveal on.
@@ -149,13 +151,15 @@ return function(deps)
     if row > scroll + r.rows - 1 then scroll = row - r.rows + 1 end
     r.scroll = clampScroll(scroll)
   end
-  local function maxQty(e)
-    if not e or (e.price or 0) <= 0 then return S.MAX_QTY end
-    return max(1, min(S.MAX_QTY, floor(money() / e.price)))
-  end
+  -- (any amount up to MAX_QTY, whatever the money: one that can't be paid for greys BUY, and
+  -- BUY says why; capping it by the money left a player who can afford one with an amount that
+  -- wouldn't move)
+  local function maxQty() return S.MAX_QTY end
 
   local function toast(text, bad)
     r.toast = { text = text, bad = bad, t = now() }
+    -- (too little money: the money box flashes red too)
+    if text == S.TEXT.noMoney then r.moneyFlash = now() end
   end
 
   -- ------- the actions (buttons and taps both end here)
@@ -1048,8 +1052,24 @@ return function(deps)
     local mw = max(48, min(pw * 0.4, width(held, 6.5) + 20))
     local mb = R(L.close[1] - 4 - mw, 5.5, mw, 14)
     drawPlate(r.machine.title or "", 7, 4, mb[1] - 4 - 7, accent, body, outline)
+    -- (not enough money: flashing red and shaking, S.MONEY_FLASH long)
+    local flash = 0
+    if r.moneyFlash then
+      local age = clock - r.moneyFlash
+      if age >= S.MONEY_FLASH then
+        r.moneyFlash = nil
+      else
+        local k = age / S.MONEY_FLASH
+        flash = abs(math.sin(k * math.pi * S.MONEY_FLASHES))
+        mb[1] = mb[1] + math.sin(age * 55) * 1.2 * (1 - k)
+      end
+    end
     grad(mb, 7, fade(dark(outline, 0.35), 0.8), fade(dark(outline, 0.5), 0.8))
-    ring(mb, 7, WHITE, 0.12, 0.6)
+    if flash > 0 then
+      col(C.bad, 0.9 * flash)
+      box("fill", mb, 7)
+    end
+    ring(mb, 7, flash > 0 and C.badDot or WHITE, flash > 0 and (0.12 + 0.6 * flash) or 0.12, 0.6)
     gradient(G, X(mb[1] + 3), Y(mb[2] + 3), 8 * sc, 8 * sc, 4 * sc, C.coinTop, C.coinFoot)
     local sw = sign(0, 0, 4.6, nil, nil, true)
     sign(mb[1] + 7 - sw / 2, mb[2] + 4.1, 4.6, C.coinMark)

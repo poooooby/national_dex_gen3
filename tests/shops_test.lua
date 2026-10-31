@@ -82,37 +82,38 @@ if fr then
   local function keyOf(match)
     for _, e in ipairs(fr) do if matches(e.items, match) then return e.key end end
   end
-  local celadon4 = keyOf({ 80, 132, 95, 96, 97, 98 })
-  local items = fake.itemsFor(celadon4)
+  -- (the evolution items and the new TMs are sold by the vending machines: the Marts keep the
+  -- Dynamax items, at Celadon 5F beside the vitamins)
+  local celadon5 = keyOf({ 63, 64, 65, 67, 70, 66 })
+  local items = fake.itemsFor(celadon5)
   local function has(list, id) for _, v in ipairs(list) do if tonumber(v) == id then return true end end end
-  T.check(has(items, index["dusk-stone"]) and has(items, index["ice-stone"]),
-          "Celadon 4F now sells the new stones")
-  T.check(has(items, 95), "and still sells the Fire Stone")
+  T.check(has(items, index["dynamax-candy"]) and has(items, index["max-honey"]),
+          "Celadon 5F sells the Dynamax items")
+  T.check(has(items, 63), "and still sells its own")
   local n = #items
-  fake.itemsFor(celadon4)
+  fake.itemsFor(celadon5)
   T.eq(#items, n, "asking again adds nothing twice")
 
   local viridian = keyOf({ 4, 13, 14, 18 })
   T.eq(#fake.itemsFor(viridian), 4, "an unrelated store is untouched")
+  local celadon4 = keyOf({ 80, 132, 95, 96, 97, 98 })
+  T.eq(#fake.itemsFor(celadon4), 6, "Celadon 4F keeps its own stock (the machine sells the new stones)")
   local sixKey = keyOf({ 2, 19, 20, 24, 23, 85, 84, 130 })
-  local six = fake.itemsFor(sixKey)
-  T.check(type(six) == "table" and has(six, 130), "Six Island mart still resolves, with its own stock")
-  T.check(has(six, index["metal-alloy"]),
-          "Six Island sells the Gen 9 items")
+  T.eq(#fake.itemsFor(sixKey), 8, "and so does Six Island")
 
-  -- the same list in a game the rule does not name is not touched
-  local wrongGame = { itemsFor = function() return { 80, 132, 95, 96, 97, 98 } end }
+  -- a rule only applies in the games it lists
+  local wrongGame = { itemsFor = function() return { 63, 64, 65, 67, 70, 66 } end }
   package.loaded["src.core.game3.marts"] = wrongGame
   Shops.install(rules, provided, function() return "emerald" end)
   T.eq(#wrongGame.itemsFor("x"), 6, "a rule only applies in the games it lists")
 
   -- an item nothing provides is skipped, not sold as a broken id
-  local lone = { itemsFor = function() return { 80, 132, 95, 96, 97, 98 } end }
+  local lone = { itemsFor = function() return { 63, 64, 65, 67, 70, 66 } end }
   package.loaded["src.core.game3.marts"] = lone
-  Shops.install(rules, function(slug) return slug ~= "dusk-stone" and index[slug] or nil end,
+  Shops.install(rules, function(slug) return slug ~= "dynamax-candy" and index[slug] or nil end,
                 function() return "firered" end)
   local got = lone.itemsFor("x")
-  T.check(not has(got, index["dusk-stone"]) and has(got, index["dawn-stone"]),
+  T.check(not has(got, index["dynamax-candy"]) and has(got, index["max-honey"]),
           "an item no mod provides is skipped; the others still sell")
 else
   print("firered not imported: behavior checks skipped")

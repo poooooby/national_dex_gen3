@@ -108,14 +108,14 @@ local all = true
 for _, t in ipairs(tms) do all = (Bag.add(full, t.index, 1)) and all end
 T.check(all, "every cart TM and HM and every new TM fit at once")
 
--- sold at the TM counters
-local Marts = require("src.core.game3.marts")
-pcall(Marts.ensure, require("src.core.game3.dataset").cache())
+-- sold by the TM vending machine (data/vending.lua), which stands somewhere in this game
+local V = run.loader.exports and run.loader.exports.national_dex_gen3 and run.loader.exports.national_dex_gen3._vending
+local tmMachine
+for _, m in ipairs(V and V.machines or {}) do if m.id == "tm" then tmMachine = m end end
+T.check(tmMachine ~= nil and V.placeIn(tmMachine, "firered") ~= nil, "the TM machine stands in FireRed")
 local sold = {}
-for key in pairs(Marts._byKey or {}) do
-  for _, id in ipairs(Marts.itemsFor(key) or {}) do
-    if tonumber(id) and tonumber(id) >= 1100 then sold[tonumber(id)] = true end
-  end
+for _, tab in ipairs(tmMachine and V.stock(tmMachine) or {}) do
+  for _, e in ipairs(tab.entries) do sold[e.id] = true end
 end
 local n = 0
 for _, t in ipairs(tms) do if sold[t.index] then n = n + 1 end end

@@ -38,13 +38,24 @@ local function body(game, log)
   local S = V.screen
 
   local prefix = Profile.forSession(s0).map.enginePrefix
-  local store = prefix .. "LILYCOVE_CITY_DEPARTMENT_STORE_4F"
-  Warp.request(nil, game, store, 7, 3, "up", {})
-  check(waitFor(function() return Map.current == store and not Warp.isBusy() end, 1200), "warped to " .. store)
-  U.wait(60)
-  local placed = V.spawned[store] or {}
-  check(placed.evo ~= nil and placed.tm ~= nil, "both machines placed (" .. tostring(placed.evo) .. ", "
-    .. tostring(placed.tm) .. ")")
+  local byId = {}
+  for _, m in ipairs(V.machines) do byId[m.id] = m end
+  -- in front of a machine, facing it
+  local function goTo(id)
+    local place = V.placeIn(byId[id])
+    if not place then
+      check(false, id .. " stands somewhere in this game")
+      return nil
+    end
+    local mapId = prefix .. place.map
+    Warp.request(nil, game, mapId, place.x, place.y + 1, "up", {})
+    check(waitFor(function() return Map.current == mapId and not Warp.isBusy() end, 1200), "warped to " .. mapId)
+    U.wait(60)
+    local placed = V.spawned[mapId] or {}
+    check(placed[id] ~= nil, id .. " placed at " .. place.x .. "," .. place.y .. " (" .. tostring(placed[id]) .. ")")
+    return place
+  end
+  goTo("evo")
   shot("v1_store")
 
   -- the evolution item machine, by buttons
@@ -150,11 +161,16 @@ local function body(game, log)
   local closedKb = kbPerSecond()
   log(("  garbage, screen closed: %.0f KB/s"):format(closedKb))
   log(("  (the whole game's, open - closed: %.0f KB/s; the engine draws other things in each)"):format(openKb - closedKb))
-  -- walk: right a tile, then face the TM machine
-  U.hold(game, "right", 16); U.wait(20)
-  check(Player.cellX == 8 and Player.cellY == 3, "the player walks again (" .. tostring(Player.cellX) .. ","
+  -- the player walks again: a step whichever way is clear
+  local x0, y0 = Player.cellX, Player.cellY
+  for _, dir in ipairs({ "left", "right", "down" }) do
+    U.hold(game, dir, 16); U.wait(20)
+    if Player.cellX ~= x0 or Player.cellY ~= y0 then break end
+  end
+  check(Player.cellX ~= x0 or Player.cellY ~= y0, "the player walks again (" .. tostring(Player.cellX) .. ","
     .. tostring(Player.cellY) .. ")")
-  U.tap(game, "up"); U.wait(10)
+  goTo("tm")
+  shot("v1b_tm_store")
 
   -- the TM machine, by the mouse alone
   U.tap(game, "a")
@@ -205,6 +221,18 @@ local function body(game, log)
   shot("v9_tm_bought")
   check(Bag.get(s0.bag, tm.id) == tmBefore + 2, "two " .. tostring(tm.name) .. " in the Bag")
   check(st.focus == "grid", "bought: back to browsing")
+  -- too little money: BUY refuses, the money box flashes red
+  local money1 = s0.money
+  s0.money = 10
+  click("tile", 1)
+  click("plus")
+  check(st.qty == 2, "the amount still moves with too little money")
+  click("buy")
+  U.wait(4)
+  shot("v9b_no_money")
+  check(st.toast and st.toast.text == S.TEXT.noMoney and st.moneyFlash ~= nil,
+    "BUY with too little money: refused, the money box flashing")
+  s0.money = money1
   click("close")
   U.wait(20)
   check(not S.isOpen() and not Field.isLocked(), "the close button leaves")

@@ -50,11 +50,18 @@ return function(mod, deps)
     return tostring(deps.game and deps.game() or "")
   end
   local bagIcon
-  local function inGame(machine, game)
-    for _, g in ipairs(machine.games or {}) do
+  local function inGame(place, game)
+    for _, g in ipairs(place.games or {}) do
       if game:find(g, 1, true) then return true end
     end
     return false
+  end
+  -- where a machine stands in this game, if it does (data/vending.lua `places`)
+  function V.placeIn(machine, game)
+    for _, place in ipairs(machine.places or {}) do
+      if inGame(place, game or gameName()) then return place end
+    end
+    return nil
   end
 
   -- a map id without its game's prefix (EM_, FR_ ...)
@@ -330,12 +337,13 @@ return function(mod, deps)
     local game, here = gameName(), bareMap(mapId)
     local any, retry = false, false
     for _, m in ipairs(V.machines) do
-      if m.map == here and inGame(m, game) then
+      local place = V.placeIn(m, game)
+      if place and place.map == here then
         any = true
         spawned[mapId] = spawned[mapId] or {}
         local id = spawned[mapId][m.id]
         if not (id and alive(mapId, id)) then
-          local newId, why = mod.world:spawnNpc(m.map, { x = m.x, y = m.y, sprite = spriteId(m),
+          local newId, why = mod.world:spawnNpc(place.map, { x = place.x, y = place.y, sprite = spriteId(m),
             movement = "MOVEMENT_TYPE_FACE_DOWN", facing = "down" })
           if newId then
             spawned[mapId][m.id] = newId

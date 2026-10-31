@@ -74,11 +74,18 @@ for _, m in ipairs(machines) do
   for _, k in ipairs({ "body", "lower", "trim", "outline", "screen", "accent" }) do
     T.check(type(m.bezel[k]) == "table" and #m.bezel[k] == 3, m.id .. ": bezel " .. k)
   end
-  for _, g in ipairs(m.games) do
-    if g == GAME then
-      T.check(data.maps[PREFIX[g] .. m.map] ~= nil, m.id .. ": " .. m.map .. " is a map in " .. g)
+  local here = 0
+  for _, place in ipairs(m.places) do
+    for _, g in ipairs(place.games) do
+      if g == GAME then
+        here = here + 1
+        -- (LeafGreen's maps are FireRed's)
+        T.check(data.maps[PREFIX[g] .. place.map] ~= nil or data.maps["FR_" .. place.map] ~= nil,
+          m.id .. ": " .. place.map .. " is a map in " .. g)
+      end
     end
   end
+  T.eq(here, 1, m.id .. ": stands in one place in " .. GAME)
 end
 -- every evolution item in one machine, every new TM in the other, each once
 local sells = {}
@@ -92,14 +99,10 @@ for _, m in ipairs(machines) do
 end
 for _, it in ipairs(items) do T.eq(sells[it.slug], "evo", it.slug .. " is in the evolution item machine") end
 for _, t in ipairs(tms) do T.eq(sells[t.id:lower()], "tm", t.id .. " is in the TM machine") end
--- and no longer in a Mart of a game with the machines
+-- and no longer in any Mart (every game has the machines)
 for _, rule in ipairs(shops) do
-  local hoenn = false
-  for _, g in ipairs(rule.games) do if g == "emerald" then hoenn = true end end
-  if hoenn then
-    for _, slug in ipairs(rule.add) do
-      T.check(sells[slug] == nil, rule.store .. " no longer sells " .. slug .. " (a machine does)")
-    end
+  for _, slug in ipairs(rule.add) do
+    T.check(sells[slug] == nil, rule.store .. " no longer sells " .. slug .. " (a machine does)")
   end
 end
 
@@ -273,14 +276,20 @@ T.eq(st.qty, 1, "the amount back to one")
 T.eq(st.focus, "grid", "and back to browsing")
 T.eq(st.cursor, 1, "on the same item")
 press("a")
--- too little money: the amount stops at what it pays for, and a refusal buys nothing
-session.money = first.price * 2 + 1
+-- too little money: the amount still moves (to 99 and round), and a refusal buys nothing
+session.money = first.price + 1
+press("right")
+T.eq(st.qty, 2, "Right raises the amount past what the money pays for")
 press("left")
-T.eq(st.qty, 2, "Left from one wraps to what the money pays for")
+press("left")
+T.eq(st.qty, S.MAX_QTY, "Left from one wraps to the most")
+press("right")
+T.eq(st.qty, 1, "and Right from the most back to one")
 session.money = 5
 press("a")
 T.eq(st.focus, "card", "too little money: no question")
 T.eq(st.toast and st.toast.text, S.TEXT.noMoney, "it says so")
+T.check(st.moneyFlash ~= nil, "and the money box flashes red")
 T.eq(sounds[#sounds], "SE_FAILURE", "with the failure sound")
 T.eq(Bag.get(session.bag, first.id), 3, "and nothing is bought")
 session.money = 10000

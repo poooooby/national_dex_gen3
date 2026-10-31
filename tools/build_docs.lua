@@ -37,12 +37,15 @@ end
 local items = load("data/items.lua")
 local shops = load("data/shops.lua")
 -- the vending machines (data/vending.lua) are stores too: each one's tabs as one list
+-- (one per place it stands)
 for _, m in ipairs(load("data/vending.lua")) do
   local add = {}
   for _, tab in ipairs(m.tabs) do
     for _, slug in ipairs(tab.add) do add[#add + 1] = slug end
   end
-  shops[#shops + 1] = { games = m.games, store = m.store, add = add }
+  for _, place in ipairs(m.places) do
+    shops[#shops + 1] = { games = place.games, store = place.store, add = add }
+  end
 end
 local crossgen = load("data/species/crossgen.lua")
 local forms = load("data/species/forms.lua")
@@ -250,9 +253,8 @@ local L = {
   "# Added items",
   "",
   "WoobleDex adds " .. #items .. " evolution items that no Gen 3 game has, so the Pokémon that",
-  "need them can evolve. The real games sell almost none of these, so where each one is sold is a",
-  "design choice: by item type, and by how far into the game the store is. In Ruby, Sapphire and",
-  "Emerald they are all sold by a vending machine in Lilycove Dept. Store 4F.",
+  "need them can evolve. They are all sold by the EVO EXPRESS vending machine: Celadon Dept. Store",
+  "4F in FireRed / LeafGreen, Lilycove Dept. Store 2F in Ruby / Sapphire / Emerald.",
   "",
   "Further down: [other items](#other-items), the Exp. Candies and the Dynamax items.",
   "",

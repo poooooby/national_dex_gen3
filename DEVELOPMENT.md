@@ -31,14 +31,9 @@ move. Forms are registered as species of their own, each reporting its base spec
 | Abilities | Gen 3 abilities only: the cart's own are kept, and each newer ability is mapped to the closest Gen 3 one (`tools/ability_map.py`), e.g. Simple → Own Tempo, Moxie → Guts. The Gen 3 battle engine cannot take new abilities from a mod |
 | Evolutions | Level, item, friendship and trade steps between species 1–1025, plus steps from the cart's own species into new ones (Magneton → Magnezone, Nosepass → Probopass ...) |
 
-**Shops** (`data/shops.lua`), by item type and how far into the game a store is (FireRed /
-LeafGreen; Ruby / Sapphire / Emerald sell them from vending machines, below):
-
-| | FireRed / LeafGreen |
-|---|---|
-| Dusk, Dawn, Shiny and Ice Stone, Sachet, Whipped Dream | Celadon Dept. Store 4F |
-| Protector, Electirizer, Magmarizer, Dubious Disc, Reaper Cloth | Celadon Dept. Store 5F |
-| Gen 8-9 items | Six Island Mart (after the Elite Four) |
+**Shops** (`data/shops.lua`): the Marts sell only Dynamax Candy, Max Mushrooms and Max Honey,
+beside the vitamins (Celadon Dept. Store 5F, Lilycove Dept. Store); the evolution items and the new
+TMs are sold by the vending machines, below.
 
 **Vending machines** (`data/vending.lua`, `src/vending.lua`, `src/vending_screen.lua`): stationary
 NPCs placed with `mod.world:spawnNpc` on entering their map (runtime objects: never saved), with
@@ -59,9 +54,10 @@ or money changes. `vending_probe.lua` meters the draw in the engine (under 0.5 K
 in each machine's data, read off its sprite. Stock is by item slug, resolved live through
 `Species.itemIndex` (names, prices and descriptions from the running game's items; a TM's move,
 type, power, accuracy and PP from its battle row). Buying takes the money and fills the Bag
-through `src.core.game3.bag`, as the Mart does. In Ruby / Sapphire / Emerald the two machines in
-Lilycove Dept. Store 4F (tiles 7,2 and 8,2) sell every evolution item and every new TM; those
-games' Marts keep only the Dynamax items. Tests: `tests/vending_test.lua [game]` (headless: the
+through `src.core.game3.bag`, as the Mart does. Each machine has a `place` per group of carts (`V.placeIn`):
+EVO EXPRESS at Celadon Dept. Store 4F (9,5) and TM EXPRESS at 2F (9,5) in FireRed / LeafGreen
+(LeafGreen's maps are FireRed's); EVO EXPRESS at Lilycove Dept. Store 2F (5,2) and TM EXPRESS at 4F
+(8,2) in Ruby / Sapphire / Emerald. Tests: `tests/vending_test.lua [game]` (headless: the
 data, the stock, a purchase by buttons and one by taps, the tabs by D-pad, seven window shapes),
 `tests/drivers/vending_probe.lua` (in the engine: both machines, buttons, then the mouse, then
 16:9, portrait and 21:9 windows).
