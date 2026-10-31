@@ -61,6 +61,59 @@ local function body(game, log)
   check(waitFor(function() return not S.booting() end, 240), "then reveals the shop")
   U.wait(30)
   shot("v2_evo_grid")
+  -- the garbage the whole game makes per second with the screen up (idle on the grid)
+  local function kbPerSecond()
+    collectgarbage("collect")
+    local t0, kb0 = love.timer.getTime(), collectgarbage("count")
+    collectgarbage("stop")
+    U.wait(120)
+    local kb = collectgarbage("count") - kb0
+    collectgarbage("restart")
+    return kb / math.max(0.001, love.timer.getTime() - t0)
+  end
+  local openKb = kbPerSecond()
+  log(("  garbage, screen open: %.0f KB/s"):format(openKb))
+  -- the screen's own share: its draw, measured around each call
+  -- (and the engine calls it makes, each metered on its own)
+  local metered = {}
+  local function meter(mod, fname, label)
+    local orig = mod and mod[fname]
+    if type(orig) ~= "function" then return end
+    local m = { label = label, kb = 0, calls = 0 }
+    metered[#metered + 1] = { mod = mod, fname = fname, orig = orig, m = m }
+    mod[fname] = function(...)
+      local kb0 = collectgarbage("count")
+      local a, b2, c = orig(...)
+      m.kb, m.calls = m.kb + (collectgarbage("count") - kb0), m.calls + 1
+      return a, b2, c
+    end
+  end
+  meter(Bag, "get", "Bag.get")
+  meter(Bag, "canAdd", "Bag.canAdd")
+  meter(require("src.ui.game3.frlg_font"), "drawGlyph", "FrlgFont.drawGlyph")
+  meter(require("src.ui.game3.frlg_font"), "advance", "FrlgFont.advance")
+  meter(require("src.ui.game3.rse.bag_chrome"), "drawItemIcon", "BagChrome.drawItemIcon")
+  meter(Runtime, "getSession", "Runtime.getSession")
+  meter(require("src.core.SafeArea"), "windowRect", "SafeArea.windowRect")
+  local draw, drawKb, draws = S.draw, 0, 0
+  S.draw = function(...)
+    local was = collectgarbage("isrunning")
+    collectgarbage("stop")
+    local kb0 = collectgarbage("count")
+    draw(...)
+    drawKb, draws = drawKb + (collectgarbage("count") - kb0), draws + 1
+    if was then collectgarbage("restart") end
+  end
+  U.wait(120)
+  S.draw = draw
+  for _, e in ipairs(metered) do
+    e.mod[e.fname] = e.orig
+    log(("    %s: %.3f KB per frame (%d calls)"):format(e.m.label, e.m.kb / math.max(1, draws), e.m.calls))
+  end
+  local perFrame = drawKb / math.max(1, draws)
+  log(("  the screen's draw: %.3f KB per frame over %d frames (%.1f KB/s at 60 fps)"):format(perFrame, draws,
+    perFrame * 60))
+  check(perFrame < 0.5, "the screen's draw makes next to no garbage")
   local st = S.state()
   -- Up from the top row: the tabs; Right there changes tab; Left and Down come back
   U.tap(game, "up"); U.wait(4)
@@ -93,6 +146,10 @@ local function body(game, log)
   check(st.focus == "grid", "bought: back to browsing")
   U.tap(game, "b"); U.wait(20)
   check(not S.isOpen() and not Stack.has("national_dex_gen3_vending"), "B leaves")
+  U.wait(30)
+  local closedKb = kbPerSecond()
+  log(("  garbage, screen closed: %.0f KB/s"):format(closedKb))
+  log(("  (the whole game's, open - closed: %.0f KB/s; the engine draws other things in each)"):format(openKb - closedKb))
   -- walk: right a tile, then face the TM machine
   U.hold(game, "right", 16); U.wait(20)
   check(Player.cellX == 8 and Player.cellY == 3, "the player walks again (" .. tostring(Player.cellX) .. ","

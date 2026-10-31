@@ -22,7 +22,10 @@ return function(mod, deps)
   -- the Pokédollar sign (charmap.asm 0xB7, every Gen 3 game's), its size against the screen's font
   -- (BOLD: drawn again that many font pixels to the right, so its one-pixel strokes don't look thin
   -- beside the screen's text)
-  V.CURRENCY_GLYPH, V.CURRENCY_EM, V.CURRENCY_DROP, V.CURRENCY_BOLD = 0xB7, 11, -0.04, 0.6   -- Gen 3 puts the anchor's row 12 px down the tile: row 28 of 32
+  V.CURRENCY_GLYPH, V.CURRENCY_EM, V.CURRENCY_DROP, V.CURRENCY_BOLD = 0xB7, 11, -0.04, 0.6
+  local glyphOpts = setmetatable({}, { __mode = "k" })
+  local signAdvance, signAdvanceFor
+  local NONE = { 0, 0, 0, 0 }   -- Gen 3 puts the anchor's row 12 px down the tile: row 28 of 32
   local LAYER_ID = "national_dex_gen3_vending"
 
   local engineMods = {}
@@ -39,7 +42,14 @@ return function(mod, deps)
   local function spriteId(machine) return "NATIONAL_DEX_VENDING_" .. tostring(machine.id):upper() end
   V.spriteId = spriteId
 
-  local function gameName() return tostring(deps.game and deps.game() or "") end
+  -- (the version module kept, not required again: the screen asks a few dozen times a frame, and
+  -- a mod's require checks every call)
+  local function gameName()
+    local GV = engine("src.core.GameVersion")
+    if GV and GV.current then return tostring(GV.current) end
+    return tostring(deps.game and deps.game() or "")
+  end
+  local bagIcon
   local function inGame(machine, game)
     for _, g in ipairs(machine.games or {}) do
       if game:find(g, 1, true) then return true end
@@ -130,6 +140,54 @@ return function(mod, deps)
     end
   end
 
+  -- the running game's Bag drawing (FireRed / LeafGreen's, or Ruby / Sapphire / Emerald's)
+  local function bagChrome()
+    local family = gameName():find("firered", 1, true) or gameName():find("leafgreen", 1, true)
+    return engine(family and "src.ui.game3.bag_chrome" or "src.ui.game3.rse.bag_chrome")
+  end
+  -- the Bag's icons, each drawn once into a 24 x 24 canvas of its own and kept: the engine's
+  -- draw makes garbage on every call, and the screen draws a dozen a frame. Kept per game; drawn
+  -- again into the same canvases each time a machine opens (V.staleIcons), so an icon pack that
+  -- finished loading late still shows.
+  local icons = { game = nil, canvas = {}, fresh = {} }
+  local function paintIcon(G, canvas, id)
+    local Chrome = bagChrome()
+    if not (Chrome and Chrome.drawItemIcon) then return false end
+    G.push("all")
+    local ok = pcall(function()
+      G.setCanvas(canvas)
+      G.origin()
+      G.setScissor()
+      G.setShader()
+      G.clear(0, 0, 0, 0)
+      G.setColor(1, 1, 1, 1)
+      Chrome.drawItemIcon(id, 0, 0)
+    end)
+    G.pop()
+    return ok
+  end
+  function bagIcon(G, id)
+    if not G.newCanvas then return nil end
+    local game = gameName()
+    if icons.game ~= game then icons.game, icons.canvas, icons.fresh = game, {}, {} end
+    local c = icons.canvas[id]
+    if c == nil then
+      local ok, made = pcall(G.newCanvas, 24, 24, { dpiscale = 1 })
+      c = ok and made or false
+      if c then c:setFilter("nearest", "nearest") end
+      icons.canvas[id] = c
+    end
+    if c and not icons.fresh[id] then
+      icons.fresh[id] = true
+      if not paintIcon(G, c, id) then
+        icons.canvas[id] = false
+        return nil
+      end
+    end
+    return c or nil
+  end
+  function V.staleIcons() icons.fresh = {} end
+
   local Layer = { isMenu = true }
   local Screen
   Screen = deps.screen({
@@ -146,8 +204,13 @@ return function(mod, deps)
     -- the Bag's own icon, drawn at `size` px (the Bag draws 24 x 24; ItemArt and the TMs' wraps
     -- answer for this mod's items there)
     icon = function(G, id, x, y, size)
-      local family = gameName():find("firered", 1, true) or gameName():find("leafgreen", 1, true)
-      local Chrome = engine(family and "src.ui.game3.bag_chrome" or "src.ui.game3.rse.bag_chrome")
+      local c = bagIcon(G, id)
+      if c then
+        G.setColor(1, 1, 1, 1)
+        G.draw(c, x, y, 0, size / 24, size / 24)
+        return
+      end
+      local Chrome = bagChrome()
       if not (Chrome and Chrome.drawItemIcon) then return end
       G.push()
       G.translate(x, y)
@@ -169,17 +232,27 @@ return function(mod, deps)
       G.push()
       G.translate(x, y + px * V.CURRENCY_DROP)
       G.scale(k, k)
-      local colors = { fg = rgba, shadow = { 0, 0, 0, 0 }, bg = { 0, 0, 0, 0 } }
-      local adv = Font.drawGlyph(V.CURRENCY_GLYPH, 0, 0, { colors = colors })
-      Font.drawGlyph(V.CURRENCY_GLYPH, V.CURRENCY_BOLD, 0, { colors = colors })
+      -- (the glyph's options, kept per colour: the screen hands the same rgba table each frame)
+      local opts = glyphOpts[rgba]
+      if not opts then
+        opts = { colors = { fg = rgba, shadow = NONE, bg = NONE } }
+        glyphOpts[rgba] = opts
+      end
+      local adv = Font.drawGlyph(V.CURRENCY_GLYPH, 0, 0, opts)
+      Font.drawGlyph(V.CURRENCY_GLYPH, V.CURRENCY_BOLD, 0, opts)
       G.pop()
       return ((tonumber(adv) or 7) + V.CURRENCY_BOLD) * k
     end,
     currencyWidth = function(px)
-      local Font = engine("src.ui.game3.frlg_font")
-      if not (Font and Font.advance) then return nil end
-      local ok, adv = pcall(Font.advance, V.CURRENCY_GLYPH)
-      return ((ok and tonumber(adv) or 7) + V.CURRENCY_BOLD) * px / V.CURRENCY_EM
+      -- (the glyph's width, read once per game: the font's own lookup makes garbage)
+      local game = gameName()
+      if signAdvanceFor ~= game then
+        local Font = engine("src.ui.game3.frlg_font")
+        if not (Font and Font.advance) then return nil end
+        local ok, adv = pcall(Font.advance, V.CURRENCY_GLYPH)
+        signAdvance, signAdvanceFor = (ok and tonumber(adv) or 7) + V.CURRENCY_BOLD, game
+      end
+      return signAdvance * px / V.CURRENCY_EM
     end,
     -- the window's safe area (a phone's notch and rounded corners), where the screen lays out
     safeArea = function()
@@ -209,6 +282,7 @@ return function(mod, deps)
     if Screen.isOpen() then return false end
     local Stack = engine("src.ui.game3.stack")
     if not Stack then return false end
+    V.staleIcons()
     Screen.open(machine, V.stock(machine))
     local ok, err = pcall(Stack.push, LAYER_ID, Layer, { hideBelow = true, fullscreen = true })
     if not ok then

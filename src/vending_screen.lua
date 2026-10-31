@@ -260,6 +260,20 @@ return function(deps)
     return nil
   end
 
+  -- what the card shows from the Bag (how many are in it, whether this amount can be bought),
+  -- asked again only when the item, the amount or the money changes, or after a purchase: the
+  -- Bag's own calls make garbage, and the card is drawn every frame
+  local function cardFacts(e)
+    local m = money()
+    if r.factsFor ~= e or r.factsQty ~= r.qty or r.factsMoney ~= m then
+      r.factsFor, r.factsQty, r.factsMoney = e, r.qty, m
+      r.factsInBag = inBag(e.id)
+      r.factsAble = refusal(e, r.qty) == nil
+    end
+    return r.factsInBag, r.factsAble
+  end
+  S.cardFacts = cardFacts
+
   function S.askBuy()
     local e = selected()
     if not e then return end
@@ -294,8 +308,8 @@ return function(deps)
       return false
     end
     s.money = money() - (e.price or 0) * qty
-    -- (bought: back to browsing, on the same item)
-    r.qty, r.focus = 1, "grid"
+    -- (bought: back to browsing, on the same item; the card's Bag numbers asked again)
+    r.qty, r.focus, r.factsFor = 1, "grid", nil
     r.vend = { id = e.id, entry = e, t = now() }
     toast((qty > 1 and (e.name .. " x" .. qty) or e.name) .. " dropped down.")
     se("SE_VEND")
@@ -484,13 +498,53 @@ return function(deps)
 
   -- colours are { r, g, b [, a] }: r, g, b 0..255, a 0..1
   local WHITE, BLACK = { 255, 255, 255 }, { 0, 0, 0 }
+  -- derived colours are made once and kept (by their parents and the amount, in 64ths), so the
+  -- same table comes back every frame: no garbage, and the gradient meshes can be kept by them.
+  -- Bounded: a long animation through many amounts starts the store over.
+  local mixed, mixedCount = {}, 0
+  local function memo(a, b, t)
+    t = floor(t * 64 + 0.5)
+    local byB = mixed[a]
+    if not byB then
+      byB = {}
+      mixed[a] = byB
+    end
+    local byT = byB[b]
+    if not byT then
+      byT = {}
+      byB[b] = byT
+    end
+    return byT, t
+  end
   local function mix(a, b, t)
-    return { a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t, a[3] + (b[3] - a[3]) * t,
-             (a[4] or 1) + ((b[4] or 1) - (a[4] or 1)) * t }
+    local cache, k = memo(a, b, t)
+    local c = cache[k]
+    if not c then
+      if mixedCount > 4000 then
+        mixed, mixedCount = {}, 0
+        cache, k = memo(a, b, t)
+      end
+      t = k / 64
+      c = { a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t, a[3] + (b[3] - a[3]) * t,
+            (a[4] or 1) + ((b[4] or 1) - (a[4] or 1)) * t }
+      cache[k] = c
+      mixedCount = mixedCount + 1
+    end
+    return c
   end
   local function light(c, t) return mix(c, WHITE, t) end
   local function dark(c, t) return mix(c, BLACK, t) end
-  local function fade(c, a) return { c[1], c[2], c[3], a } end
+  local FADE = {}
+  local function fade(c, a)
+    local cache, k = memo(c, FADE, a)
+    local f = cache[k]
+    if not f then
+      f = { c[1], c[2], c[3], k / 64 }
+      cache[k] = f
+      mixedCount = mixedCount + 1
+    end
+    return f
+  end
 
   -- a rounded rectangle's outline, as points (rad 0: its corners)
   local function roundPoints(x, y, w, h, rad)
@@ -508,15 +562,25 @@ return function(deps)
     return pts
   end
 
-  -- a rounded rectangle shaded from `top` to `foot` (window pixels): a fan mesh, kept by its size
-  -- and colours (the layout is steady, so the same few are drawn every frame); flat without meshes
+  -- a rounded rectangle shaded from `top` to `foot` (window pixels): a fan mesh, kept by its
+  -- colours (the same tables every frame: constants or mix()'s) and size (the layout is steady, so
+  -- the same few are drawn every frame); flat without meshes
   local meshes, meshCount = {}, 0
-  local function gradient(G, x, y, w, h, rad, top, foot)
+  -- (alpha: the whole of it fainter, the same mesh)
+  local function gradient(G, x, y, w, h, rad, top, foot, alpha)
     if w <= 0 or h <= 0 then return end
-    local key = string.format("%d,%d,%d|%d,%d,%d,%d|%d,%d,%d,%d", floor(w * 2), floor(h * 2), floor(rad * 2),
-      floor(top[1]), floor(top[2]), floor(top[3]), floor((top[4] or 1) * 100),
-      floor(foot[1]), floor(foot[2]), floor(foot[3]), floor((foot[4] or 1) * 100))
-    local m = meshes[key]
+    local byFoot = meshes[top]
+    if not byFoot then
+      byFoot = {}
+      meshes[top] = byFoot
+    end
+    local bySize = byFoot[foot]
+    if not bySize then
+      bySize = {}
+      byFoot[foot] = bySize
+    end
+    local key = floor(w * 2) + floor(h * 2) * 16384 + floor(rad * 2) * 268435456
+    local m = bySize[key]
     if m == nil then
       local function vertex(px, py)
         local c = mix(top, foot, py / h)
@@ -527,15 +591,19 @@ return function(deps)
       verts[#verts + 1] = verts[2]
       local ok, made = pcall(G.newMesh, verts, "fan", "static")
       m = ok and made or false
-      if meshCount > 300 then meshes, meshCount = {}, 0 end
-      meshes[key], meshCount = m, meshCount + 1
+      if meshCount > 400 then
+        meshes, meshCount = {}, 0
+        bySize = {}
+        meshes[top] = { [foot] = bySize }
+      end
+      bySize[key], meshCount = m, meshCount + 1
     end
     if m then
-      G.setColor(1, 1, 1, 1)
+      G.setColor(1, 1, 1, alpha or 1)
       G.draw(m, x, y)
     else
       local c = mix(top, foot, 0.5)
-      G.setColor(c[1] / 255, c[2] / 255, c[3] / 255, c[4])
+      G.setColor(c[1] / 255, c[2] / 255, c[3] / 255, (c[4] or 1) * (alpha or 1))
       G.rectangle("fill", x, y, w, h, rad, rad)
     end
   end
@@ -566,11 +634,36 @@ return function(deps)
     end
   end
 
-  local function lines(text)
-    local out = {}
-    for line in tostring(text or ""):gmatch("[^\n]+") do out[#out + 1] = line end
-    return out
+  -- what an entry shows, worked out once (weak: entries come and go with the machine)
+  local shown = setmetatable({}, { __mode = "k" })
+  local function entryText(e)
+    local c = shown[e]
+    if c then return c end
+    c = { lines = {} }
+    for line in tostring(e.description or ""):gmatch("[^\n]+") do c.lines[#c.lines + 1] = line end
+    if e.tm then
+      c.tag = "TM" .. tostring(e.tm.number)
+      c.pricePrefix = c.tag .. "  ·  "
+      local function num(v, none) v = tonumber(v) or 0; return v > none and tostring(v) or "---" end
+      c.stats = { "PWR " .. num(e.tm.power, 1), "ACC " .. num(e.tm.accuracy, 0), "PP " .. num(e.tm.pp, 0) }
+    end
+    shown[e] = c
+    return c
   end
+  -- numbers as text, kept ("IN BAG  3", "×12", amounts)
+  local function textCache(make)
+    local cache, count = {}, 0
+    return function(n)
+      local v = cache[n]
+      if not v then
+        if count > 500 then cache, count = {}, 0 end
+        v = make(n)
+        cache[n], count = v, count + 1
+      end
+      return v
+    end
+  end
+  local amountText = textCache(amount)
 
   -- the page's rectangles (units) for a pw x ph page
   function S.layout(pw, ph, portrait)
@@ -610,8 +703,282 @@ return function(deps)
     return L
   end
 
-  function S.draw(G, vp)
-    if not (r and G and vp) then return end
+  -- the frame being drawn, for the helpers below (set by S.draw)
+  local G, ox, oy, sc, t
+  local hit, hitPool, nHitRec = {}, {}, 0
+  -- rectangles made while drawing, kept and handed out again each frame (R(x, y, w, h); valid
+  -- until the next draw)
+  local rects, nRect = {}, 0
+  local function R(x, y, w, h)
+    nRect = nRect + 1
+    local q = rects[nRect]
+    if not q then
+      q = {}
+      rects[nRect] = q
+    end
+    q[1], q[2], q[3], q[4] = x, y, w, h
+    return q
+  end
+  -- a colour as LÖVE's 0..1 rgba, kept (the Pokédollar sign's)
+  local rgbaOf = setmetatable({}, { __mode = "k" })
+  local function rgba(c, a)
+    local byA = rgbaOf[c]
+    if not byA then
+      byA = {}
+      rgbaOf[c] = byA
+    end
+    local k = floor(a * 64 + 0.5)
+    local v = byA[k]
+    if not v then
+      v = { c[1] / 255, c[2] / 255, c[3] / 255, k / 64 }
+      byA[k] = v
+    end
+    return v
+  end
+
+  local function X(v) return ox + v * sc end
+  local function Y(v) return oy + v * sc end
+  local function col(c, a)
+    c = c or WHITE
+    G.setColor(c[1] / 255, c[2] / 255, c[3] / 255, (a or 1) * (c[4] or 1))
+  end
+  local function box(mode, b, rad)
+    G.rectangle(mode, X(b[1]), Y(b[2]), b[3] * sc, b[4] * sc, (rad or 0) * sc, (rad or 0) * sc)
+  end
+  local function grad(b, rad, top, foot, alpha)
+    gradient(G, X(b[1]), Y(b[2]), b[3] * sc, b[4] * sc, (rad or 0) * sc, top, foot, alpha)
+  end
+  -- a soft shadow under b, `lift` units down
+  local function shadow(b, rad, lift, a)
+    for i = 1, 3 do
+      local s = i * 0.7
+      col(BLACK, (a or 0.18) / 3)
+      box("fill", R(b[1] - s * 0.6, b[2] - s * 0.4 + lift, b[3] + s * 1.2, b[4] + s * 1.2), (rad or 0) + s)
+    end
+  end
+  local function ring(b, rad, c, a, w)
+    col(c, a)
+    G.setLineWidth(max(1, (w or 1) * sc))
+    box("line", b, rad)
+  end
+  local function addHit(b, kind, arg, clip)
+    local x, y, w, h = X(b[1]), Y(b[2]), b[3] * sc, b[4] * sc
+    if clip then
+      local cx, cy, cw, ch = X(clip[1]), Y(clip[2]), clip[3] * sc, clip[4] * sc
+      local x2, y2 = min(x + w, cx + cw), min(y + h, cy + ch)
+      x, y = max(x, cx), max(y, cy)
+      w, h = x2 - x, y2 - y
+      if w <= 0 or h <= 0 then return end
+    end
+    -- (the records are kept and filled again each frame)
+    nHitRec = nHitRec + 1
+    local rec = hitPool[nHitRec]
+    if not rec then
+      rec = {}
+      hitPool[nHitRec] = rec
+    end
+    rec[1], rec[2], rec[3], rec[4], rec.kind, rec.arg = x, y, w, h, kind, arg
+    hit[#hit + 1] = rec
+  end
+  local function width(s, size) return font(G, size * sc):getWidth(s) / sc end
+  local function text(s, x, y, size, c, align, w, a)
+    local f = font(G, size * sc)
+    G.setFont(f)
+    col(c, a)
+    if align then
+      G.printf(s, X(x), Y(y), w * sc, align)
+    else
+      G.print(s, X(x), Y(y))
+    end
+    return f
+  end
+  -- text that sits on colour: a faint shadow under it
+  local function label(s, x, y, size, c, align, w, a)
+    text(s, x, y + 0.5, size, BLACK, align, w, 0.22 * (a or 1))
+    return text(s, x, y, size, c, align, w, a)
+  end
+  -- the game's Pokédollar sign at x, y (units) for a `size` font -> its width (units)
+  local function sign(x, y, size, c, a, measure)
+    local px = size * sc
+    if deps.currency then
+      local w
+      if measure then
+        local ok, got = pcall(deps.currencyWidth, px)
+        w = ok and tonumber(got)
+      else
+        local ok, got = pcall(deps.currency, G, X(x), Y(y), px, rgba(c or WHITE, (a or 1) * ((c or WHITE)[4] or 1)))
+        w = ok and tonumber(got)
+      end
+      if w then return w / sc end
+    end
+    if not measure then text("$", x, y, size, c, nil, nil, a) end
+    return width("$", size)
+  end
+  -- a font size that fits s in w units (smaller only, never under 3.5)
+  local function fit(s, size, w)
+    local tw = width(s, size)
+    if w and tw > w and tw > 0 then return max(3.5, size * w / tw * 0.97) end
+    return size
+  end
+  -- an amount: `prefix`, the sign, the digits, as one line in w (aligned; smaller when it would
+  -- run past it; shade: on colour)
+  local function cash(prefix, n, x, y, size, c, align, w, a, shade)
+    local digits = amountText(n)
+    local preW, signW, total
+    for pass = 1, 2 do
+      preW = prefix ~= "" and width(prefix, size) or 0
+      signW = sign(0, 0, size, c, a, true)
+      total = preW + signW + width(digits, size)
+      if pass == 2 or not (w and total > w) then break end
+      local was = size
+      size = max(3.5, size * w / total * 0.97)
+      -- (kept on the line's middle)
+      y = y + (was - size) * 0.5
+    end
+    local x0 = x
+    if align == "center" then x0 = x + (w - total) / 2 elseif align == "right" then x0 = x + w - total end
+    local put = shade and label or text
+    if prefix ~= "" then put(prefix, x0, y, size, c, nil, nil, a) end
+    if shade then sign(x0 + preW, y + 0.5, size, BLACK, 0.22 * (a or 1)) end
+    sign(x0 + preW, y, size, c, a)
+    put(digits, x0 + preW + signW, y, size, c, nil, nil, a)
+  end
+  local function scissor(b)
+    if b then G.setScissor(X(b[1]), Y(b[2]), max(0, b[3] * sc), max(0, b[4] * sc)) else G.setScissor() end
+  end
+  local function pulse() return 0.7 + 0.3 * math.sin(t * 6) end
+
+  -- the colours the screen draws in besides the machine's own
+  local INK, SOFT = { 38, 40, 56 }, { 112, 116, 136 }
+  local C = {
+    body = { 150, 150, 170 }, accent = { 240, 160, 60 }, outline = { 82, 82, 106 }, screen = { 225, 235, 240 },
+    plateTop = { 242, 244, 248 }, plateFoot = { 146, 152, 166 }, clear = { 255, 255, 255, 0 },
+    shine = { 255, 255, 255, 0.4 }, screwTop = { 250, 250, 252 }, screwFoot = { 120, 124, 136 },
+    coinTop = { 255, 222, 110 }, coinFoot = { 222, 160, 40 }, coinMark = { 120, 80, 10 },
+    grey = { 168, 170, 182 }, bad = { 196, 56, 70 }, badDot = { 255, 210, 215 }, goodDot = { 120, 230, 160 },
+    mouthTop = { 14, 14, 22 }, mouthFoot = { 44, 44, 58 }, lip = { 0, 0, 0, 0.55 }, none = { 0, 0, 0, 0 },
+    slot = { 18, 18, 26 }, off = { 8, 8, 12 },
+  }
+  local OUTLINE_AT = { { -1, 0 }, { 1, 0 }, { 0, -1 }, { 0, 1 }, { -1, -1 }, { 1, -1 }, { -1, 1 }, { 1, 1 } }
+  local PAGER, STEPPER, ANSWERS = { "prevTab", "nextTab" }, { "minus", "plus" }, { "yes", "no" }
+  local ANSWER_LABEL = { yes = "YES", no = "NO" }
+  local tabX, tabW = {}, {}
+  local layoutKey = {}
+  local typeLabel = {}
+  local bagText = textCache(function(n) return "IN BAG  " .. tostring(n) end)
+  local qtyText = textCache(function(n) return "×" .. tostring(n) end)
+  local titleChars = {}
+  local function charsOf(title)
+    local cs = titleChars[title]
+    if not cs then
+      cs = {}
+      for ch in title:gmatch(".") do cs[#cs + 1] = ch end
+      cs.split = #(title:match("^(%S+)") or title)
+      titleChars[title] = cs
+    end
+    return cs
+  end
+
+  -- the plate's letters, slanted, one by one (a little apart): in one colour, or the first word's
+  -- and the rest's (c2)
+  local function plateLetters(chars, split, size, spacing, x, y, c, c2, alpha)
+    G.push()
+    G.translate(X(x), Y(y))
+    G.shear(-0.2, 0)
+    local cx = 0
+    for i, ch in ipairs(chars) do
+      col(c2 and i > split and c2 or c, alpha)
+      G.print(ch, cx * sc, 0)
+      cx = cx + width(ch, size) + spacing
+    end
+    G.pop()
+  end
+
+  -- the name on a metal plate: brushed silver, a bevel, a screw at each end; the letters
+  -- italic and outlined, the first word in the accent, the rest in the body's colour, a gloss
+  -- over their top half. x, y: its top left, maxW: the room it has (units)
+  local function drawPlate(title, x, y, maxW, accent, body, outline)
+    local chars = charsOf(title)
+    local split = chars.split
+    local SPACING, PAD, SCREW = 0.55, 8.5, 3.6
+    local size = 7.5
+    local tw
+    for pass = 1, 2 do
+      tw = -SPACING
+      for _, ch in ipairs(chars) do tw = tw + width(ch, size) + SPACING end
+      if pass == 2 or tw + PAD * 2 <= maxW then break end
+      size = max(4, size * (maxW - PAD * 2) / tw)
+    end
+    local plate = R(x, y, min(maxW, tw + PAD * 2), 15)
+    local px, py, pw2, ph2 = plate[1], plate[2], plate[3], plate[4]
+    shadow(plate, 3.5, 0.9, 0.35)
+    grad(plate, 3.5, C.plateTop, C.plateFoot)
+    -- the reflection across its lower half, the brushing, the bevel
+    grad(R(px + 2.5, py + ph2 * 0.52, pw2 - 5, ph2 * 0.4), 0, C.clear, C.shine)
+    for i = 1, 4 do
+      col(WHITE, 0.12)
+      box("fill", R(px + 3, py + 2 + i * 2.4, pw2 - 6, 0.35))
+    end
+    col(WHITE, 0.85)
+    box("fill", R(px + 2.5, py + 0.7, pw2 - 5, 0.6), 0.3)
+    ring(R(px + 0.6, py + 0.6, pw2 - 1.2, ph2 - 1.2), 3, WHITE, 0.45, 0.6)
+    ring(plate, 3.5, dark(outline, 0.3), 1, 0.8)
+    -- the screws
+    for k = 0, 1 do
+      local sx, sy = px + SCREW + k * (pw2 - SCREW * 2), py + ph2 / 2
+      gradient(G, X(sx - 1.5), Y(sy - 1.5), 3 * sc, 3 * sc, 1.5 * sc, C.screwTop, C.screwFoot)
+      col(dark(outline, 0.2), 0.8)
+      G.setLineWidth(max(1, 0.45 * sc))
+      G.line(X(sx - 1), Y(sy + 0.7), X(sx + 1), Y(sy - 0.7))
+    end
+    -- the letters, slanted, one by one (a little apart)
+    local f = font(G, size * sc)
+    G.setFont(f)
+    local lineH = f:getHeight() / sc
+    local tx = px + (pw2 - tw) / 2 + 0.6
+    local ty = py + (ph2 - lineH) / 2 - 0.2
+    local firstColor = dark(accent, 0.12)
+    local restColor = dark(body, 0.15)
+    local edge = dark(outline, 0.45)
+    -- the outline (all round), the fill (bolder: twice, a little apart), the gloss
+    for _, d in ipairs(OUTLINE_AT) do
+      plateLetters(chars, split, size, SPACING, tx + d[1] * 0.5, ty + d[2] * 0.5 + 0.2, edge, nil, 1)
+    end
+    plateLetters(chars, split, size, SPACING, tx, ty, firstColor, restColor, 1)
+    plateLetters(chars, split, size, SPACING, tx + 0.3, ty, firstColor, restColor, 1)
+    G.setScissor(X(px), Y(py), pw2 * sc, (ty - py + lineH * 0.48) * sc)
+    plateLetters(chars, split, size, SPACING, tx + 0.15, ty, WHITE, nil, 0.3)
+    G.setScissor()
+    return plate
+  end
+
+  -- a tile's picture and its tag (a TM's number, or the price), `is` units square
+  local function tileFace(b, e, tagColor, is)
+    itemIcon(G, e, X(b[1] + (b[3] - is) / 2), Y(b[2] + 1.5), is * sc)
+    if e.tm then
+      local tag = entryText(e).tag
+      text(tag, b[1], b[2] + b[4] - 7, fit(tag, 5, b[3] - 2), tagColor, "center", b[3])
+    else
+      cash("", e.price or 0, b[1] + 1, b[2] + b[4] - 7, 5, tagColor, "center", b[3] - 2)
+    end
+  end
+
+  -- (the draw's constants and helpers, handed over in one: a function may only reach 60 outside it)
+  local K = { INK = INK, SOFT = SOFT, C = C, OUTLINE_AT = OUTLINE_AT, PAGER = PAGER, STEPPER = STEPPER,
+              ANSWERS = ANSWERS, ANSWER_LABEL = ANSWER_LABEL, tabX = tabX, tabW = tabW, layoutKey = layoutKey,
+              typeLabel = typeLabel, bagText = bagText, qtyText = qtyText, charsOf = charsOf,
+              pulse = pulse, fit = fit, cash = cash, sign = sign, label = label, scissor = scissor,
+              drawPlate = drawPlate, tileFace = tileFace }
+
+  function S.draw(g, vp)
+    if not (r and g and vp) then return end
+    G = g
+    nRect, nHitRec = 0, 0
+    local INK, SOFT, C, OUTLINE_AT, PAGER, STEPPER = K.INK, K.SOFT, K.C, K.OUTLINE_AT, K.PAGER, K.STEPPER
+    local ANSWERS, ANSWER_LABEL, tabX, tabW, layoutKey = K.ANSWERS, K.ANSWER_LABEL, K.tabX, K.tabW, K.layoutKey
+    local typeLabel, bagText, qtyText, charsOf = K.typeLabel, K.bagText, K.qtyText, K.charsOf
+    local pulse, fit, cash, sign, label, scissor = K.pulse, K.fit, K.cash, K.sign, K.label, K.scissor
+    local drawPlate, tileFace = K.drawPlate, K.tileFace
     local ww = tonumber(vp.width) or (tonumber(vp.gameX) or 0) * 2 + (tonumber(vp.gameWidth) or 240)
     local wh = tonumber(vp.height) or (tonumber(vp.gameY) or 0) * 2 + (tonumber(vp.gameHeight) or 160)
     local ax, ay, aw, ah = 0, 0, ww, wh
@@ -626,7 +993,7 @@ return function(deps)
     end
     local P = S.PAGE
     local portrait = aw / ah < P.PORTRAIT_ASPECT
-    local sc, pw, ph
+    local pw, ph
     if portrait then
       sc = min(aw / P.PORTRAIT_WIDTH, ah / P.PORTRAIT_HEIGHT)
       pw, ph = aw / sc, ah / sc
@@ -634,242 +1001,58 @@ return function(deps)
       sc = min(ah / P.HEIGHT, aw / P.MIN_WIDTH)
       pw, ph = min(P.MAX_WIDTH, aw / sc), ah / sc
     end
-    local ox, oy = ax + (aw - pw * sc) / 2, ay
-    local L = S.layout(pw, ph, portrait)
+    ox, oy = ax + (aw - pw * sc) / 2, ay
+    -- (the layout again only when the window changed)
+    local L = layoutKey.L
+    if not (L and layoutKey.pw == pw and layoutKey.ph == ph and layoutKey.portrait == portrait) then
+      L = S.layout(pw, ph, portrait)
+      layoutKey.L, layoutKey.pw, layoutKey.ph, layoutKey.portrait = L, pw, ph, portrait
+    end
     r.sc, r.layout = sc, L
     reshape(L.cols, L.rows)
-    local hit = {}
+    for i = #hit, 1, -1 do hit[i] = nil end
     r.hit = hit
     local bz = r.machine.bezel or {}
     local clock = now()
-    local t = clock - r.t0
+    t = clock - r.t0
     local dt = max(0, min(0.1, clock - (r.lastDraw or clock)))
     r.lastDraw = clock
     -- the grid glides to its scroll
     local d = r.scroll - (r.shown or 0)
     r.shown = abs(d) < 0.01 and r.scroll or (r.shown + d * min(1, dt * 14))
 
-    local function X(v) return ox + v * sc end
-    local function Y(v) return oy + v * sc end
-    local function col(c, a)
-      c = c or WHITE
-      G.setColor(c[1] / 255, c[2] / 255, c[3] / 255, (a or 1) * (c[4] or 1))
-    end
-    local function box(mode, b, rad)
-      G.rectangle(mode, X(b[1]), Y(b[2]), b[3] * sc, b[4] * sc, (rad or 0) * sc, (rad or 0) * sc)
-    end
-    local function grad(b, rad, top, foot)
-      gradient(G, X(b[1]), Y(b[2]), b[3] * sc, b[4] * sc, (rad or 0) * sc, top, foot)
-    end
-    -- a soft shadow under b, `lift` units down
-    local function shadow(b, rad, lift, a)
-      for i = 1, 3 do
-        local s = i * 0.7
-        col(BLACK, (a or 0.18) / 3)
-        box("fill", { b[1] - s * 0.6, b[2] - s * 0.4 + lift, b[3] + s * 1.2, b[4] + s * 1.2 }, (rad or 0) + s)
-      end
-    end
-    local function ring(b, rad, c, a, w)
-      col(c, a)
-      G.setLineWidth(max(1, (w or 1) * sc))
-      box("line", b, rad)
-    end
-    local function addHit(b, kind, arg, clip)
-      local x, y, w, h = X(b[1]), Y(b[2]), b[3] * sc, b[4] * sc
-      if clip then
-        local cx, cy, cw, ch = X(clip[1]), Y(clip[2]), clip[3] * sc, clip[4] * sc
-        local x2, y2 = min(x + w, cx + cw), min(y + h, cy + ch)
-        x, y = max(x, cx), max(y, cy)
-        w, h = x2 - x, y2 - y
-        if w <= 0 or h <= 0 then return end
-      end
-      hit[#hit + 1] = { x, y, w, h, kind = kind, arg = arg }
-    end
-    local function width(s, size) return font(G, size * sc):getWidth(s) / sc end
-    local function text(s, x, y, size, c, align, w, a)
-      local f = font(G, size * sc)
-      G.setFont(f)
-      col(c, a)
-      if align then
-        G.printf(s, X(x), Y(y), w * sc, align)
-      else
-        G.print(s, X(x), Y(y))
-      end
-      return f
-    end
-    -- text that sits on colour: a faint shadow under it
-    local function label(s, x, y, size, c, align, w, a)
-      text(s, x, y + 0.5, size, BLACK, align, w, 0.22 * (a or 1))
-      return text(s, x, y, size, c, align, w, a)
-    end
-    -- the game's Pokédollar sign at x, y (units) for a `size` font -> its width (units)
-    local function sign(x, y, size, c, a, measure)
-      local px = size * sc
-      if deps.currency then
-        local w
-        if measure then
-          local ok, got = pcall(deps.currencyWidth, px)
-          w = ok and tonumber(got)
-        else
-          c = c or WHITE
-          local ok, got = pcall(deps.currency, G, X(x), Y(y), px,
-            { c[1] / 255, c[2] / 255, c[3] / 255, (a or 1) * (c[4] or 1) })
-          w = ok and tonumber(got)
-        end
-        if w then return w / sc end
-      end
-      if not measure then text("$", x, y, size, c, nil, nil, a) end
-      return width("$", size)
-    end
-    -- a font size that fits s in w units (smaller only, never under 3.5)
-    local function fit(s, size, w)
-      local tw = width(s, size)
-      if w and tw > w and tw > 0 then return max(3.5, size * w / tw * 0.97) end
-      return size
-    end
-    -- an amount: `prefix`, the sign, the digits, as one line in w (aligned; smaller when it would
-    -- run past it; shade: on colour)
-    local function cash(prefix, n, x, y, size, c, align, w, a, shade)
-      local digits = amount(n)
-      local preW, signW, total
-      local function measure()
-        preW = prefix ~= "" and width(prefix, size) or 0
-        signW = sign(0, 0, size, c, a, true)
-        total = preW + signW + width(digits, size)
-      end
-      measure()
-      if w and total > w then
-        local was = size
-        size = max(3.5, size * w / total * 0.97)
-        -- (kept on the line's middle)
-        y = y + (was - size) * 0.5
-        measure()
-      end
-      local x0 = x
-      if align == "center" then x0 = x + (w - total) / 2 elseif align == "right" then x0 = x + w - total end
-      local put = shade and label or text
-      if prefix ~= "" then put(prefix, x0, y, size, c, nil, nil, a) end
-      if shade then sign(x0 + preW, y + 0.5, size, BLACK, 0.22 * (a or 1)) end
-      sign(x0 + preW, y, size, c, a)
-      put(digits, x0 + preW + signW, y, size, c, nil, nil, a)
-    end
-    local function scissor(b)
-      if b then G.setScissor(X(b[1]), Y(b[2]), max(0, b[3] * sc), max(0, b[4] * sc)) else G.setScissor() end
-    end
-    local function pulse() return 0.7 + 0.3 * math.sin(t * 6) end
-    local INK, SOFT = { 38, 40, 56 }, { 112, 116, 136 }
-    local body = bz.body or { 150, 150, 170 }
+    local body = bz.body or C.body
     local lower = bz.lower or dark(body, 0.2)
-    local accent = bz.accent or { 240, 160, 60 }
-    local outline = bz.outline or { 82, 82, 106 }
-    local screenC = bz.screen or { 225, 235, 240 }
-
-    -- the name on a metal plate: brushed silver, a bevel, a screw at each end; the letters
-    -- italic and outlined, the first word in the accent, the rest in the body's colour, a gloss
-    -- over their top half. x, y: its top left, maxW: the room it has (units)
-    local function drawPlate(title, x, y, maxW)
-      local first = title:match("^(%S+)") or title
-      local SPACING, PAD, SCREW = 0.55, 8.5, 3.6
-      local size = 7.5
-      local function measure(sz)
-        local w = 0
-        for ch in title:gmatch(".") do w = w + width(ch, sz) + SPACING end
-        return w - SPACING
-      end
-      local tw = measure(size)
-      if tw + PAD * 2 > maxW then
-        size = max(4, size * (maxW - PAD * 2) / tw)
-        tw = measure(size)
-      end
-      local plate = { x, y, min(maxW, tw + PAD * 2), 15 }
-      local px, py, pw2, ph2 = plate[1], plate[2], plate[3], plate[4]
-      shadow(plate, 3.5, 0.9, 0.35)
-      grad(plate, 3.5, { 242, 244, 248 }, { 146, 152, 166 })
-      -- the reflection across its lower half, the brushing, the bevel
-      grad({ px + 2.5, py + ph2 * 0.52, pw2 - 5, ph2 * 0.4 }, 0, { 255, 255, 255, 0 }, { 255, 255, 255, 0.4 })
-      for i = 1, 4 do
-        col(WHITE, 0.12)
-        box("fill", { px + 3, py + 2 + i * 2.4, pw2 - 6, 0.35 })
-      end
-      col(WHITE, 0.85)
-      box("fill", { px + 2.5, py + 0.7, pw2 - 5, 0.6 }, 0.3)
-      ring({ px + 0.6, py + 0.6, pw2 - 1.2, ph2 - 1.2 }, 3, WHITE, 0.45, 0.6)
-      ring(plate, 3.5, dark(outline, 0.3), 1, 0.8)
-      -- the screws
-      for _, sx in ipairs({ px + SCREW, px + pw2 - SCREW }) do
-        local sy = py + ph2 / 2
-        gradient(G, X(sx - 1.5), Y(sy - 1.5), 3 * sc, 3 * sc, 1.5 * sc, { 250, 250, 252 }, { 120, 124, 136 })
-        col(dark(outline, 0.2), 0.8)
-        G.setLineWidth(max(1, 0.45 * sc))
-        G.line(X(sx - 1), Y(sy + 0.7), X(sx + 1), Y(sy - 0.7))
-      end
-      -- the letters, slanted, one by one (a little apart)
-      local f = font(G, size * sc)
-      G.setFont(f)
-      local lineH = f:getHeight() / sc
-      local tx = px + (pw2 - tw) / 2 + 0.6
-      local ty = py + (ph2 - lineH) / 2 - 0.2
-      local firstColor = dark(accent, 0.12)
-      local restColor = dark(body, 0.15)
-      local edge = dark(outline, 0.45)
-      local function letters(colorAt, dx, dy)
-        G.push()
-        G.translate(X(tx + dx), Y(ty + dy))
-        G.shear(-0.2, 0)
-        local cx = 0
-        local i = 0
-        for ch in title:gmatch(".") do
-          i = i + 1
-          local c = colorAt(i)
-          if c then
-            col(c, c[5])
-            G.print(ch, cx * sc, 0)
-          end
-          cx = cx + width(ch, size) + SPACING
-        end
-        G.pop()
-      end
-      local split = #first
-      -- the outline (all round), the fill (bolder: twice, a little apart), the gloss
-      local o = 0.5
-      for _, d in ipairs({ { -o, 0 }, { o, 0 }, { 0, -o }, { 0, o }, { -o, -o }, { o, -o }, { -o, o }, { o, o } }) do
-        letters(function() return edge end, d[1], d[2] + 0.2)
-      end
-      for _, dx in ipairs({ 0, 0.3 }) do
-        letters(function(i) return i <= split and firstColor or restColor end, dx, 0)
-      end
-      G.setScissor(X(px), Y(py), pw2 * sc, (ty - py + lineH * 0.48) * sc)
-      letters(function() return { 255, 255, 255, 1, 0.3 } end, 0.15, 0)
-      G.setScissor()
-      return plate
-    end
+    local accent = bz.accent or C.accent
+    local outline = bz.outline or C.outline
+    local screenC = bz.screen or C.screen
 
     -- the room around the machine; the machine's front (the top body, the foot), its outline
     col(dark(outline, 0.55))
     G.rectangle("fill", 0, 0, ww, wh)
-    local front = { 1.5, 1.5, pw - 3, ph - 3 }
+    local front = R(1.5, 1.5, pw - 3, ph - 3)
     shadow(front, 10, 1.5, 0.35)
     grad(front, 10, dark(lower, 0.05), dark(lower, 0.25))
-    grad({ front[1], front[2], front[3], L.footY - front[2] }, 10, light(body, 0.18), body)
-    grad({ front[1], L.footY - 10, front[3], 10 }, 0, body, dark(body, 0.04))
+    grad(R(front[1], front[2], front[3], L.footY - front[2]), 10, light(body, 0.18), body)
+    grad(R(front[1], L.footY - 10, front[3], 10), 0, body, dark(body, 0.04))
     col(WHITE, 0.3)
-    box("fill", { 12, 2.2, pw - 24, 1 }, 0.5)
+    box("fill", R(12, 2.2, pw - 24, 1), 0.5)
     col(bz.trim or light(body, 0.2))
-    box("fill", { front[1], L.footY - 1.5, front[3], 1.5 })
+    box("fill", R(front[1], L.footY - 1.5, front[3], 1.5))
     col(BLACK, 0.18)
-    box("fill", { front[1], L.footY, front[3], 1.2 })
+    box("fill", R(front[1], L.footY, front[3], 1.2))
     ring(front, 10, outline, 1, 1.5)
 
     -- the header: name, money, close (the name smaller if the money would cover it)
-    local held = amount(money())
+    local held = amountText(money())
     local mw = max(48, min(pw * 0.4, width(held, 6.5) + 20))
-    local mb = { L.close[1] - 4 - mw, 5.5, mw, 14 }
-    drawPlate(r.machine.title or "", 7, 4, mb[1] - 4 - 7)
+    local mb = R(L.close[1] - 4 - mw, 5.5, mw, 14)
+    drawPlate(r.machine.title or "", 7, 4, mb[1] - 4 - 7, accent, body, outline)
     grad(mb, 7, fade(dark(outline, 0.35), 0.8), fade(dark(outline, 0.5), 0.8))
     ring(mb, 7, WHITE, 0.12, 0.6)
-    gradient(G, X(mb[1] + 3), Y(mb[2] + 3), 8 * sc, 8 * sc, 4 * sc, { 255, 222, 110 }, { 222, 160, 40 })
+    gradient(G, X(mb[1] + 3), Y(mb[2] + 3), 8 * sc, 8 * sc, 4 * sc, C.coinTop, C.coinFoot)
     local sw = sign(0, 0, 4.6, nil, nil, true)
-    sign(mb[1] + 7 - sw / 2, mb[2] + 4.1, 4.6, { 120, 80, 10 })
+    sign(mb[1] + 7 - sw / 2, mb[2] + 4.1, 4.6, C.coinMark)
     local hs = fit(held, 6.5, mw - 17)
     text(held, mb[1] + 12, mb[2] + 3 + (6.5 - hs) * 0.5, hs, WHITE, "right", mw - 17)
     local cb = L.close
@@ -885,14 +1068,14 @@ return function(deps)
 
     -- the glass in its recess
     local gl = L.glass
-    grad({ gl[1] - 1.5, gl[2] - 1.5, gl[3] + 3, gl[4] + 3 }, 7, dark(body, 0.45), dark(body, 0.2))
+    grad(R(gl[1] - 1.5, gl[2] - 1.5, gl[3] + 3, gl[4] + 3), 7, dark(body, 0.45), dark(body, 0.2))
     grad(gl, 6, light(screenC, 0.55), screenC)
     col(WHITE, 0.25)
-    box("fill", { gl[1] + 4, gl[2] + 1, gl[3] - 8, 1.2 }, 0.6)
+    box("fill", R(gl[1] + 4, gl[2] + 1, gl[3] - 8, 1.2), 0.6)
 
     -- the tabs: a strip that scrolls to keep the open one in view
     local tabsB = L.tabs
-    local xs, ws, total = {}, {}, 0
+    local xs, ws, total = tabX, tabW, 0
     for i, tab in ipairs(r.tabs) do
       ws[i] = width(tab.label, 5.5) + (tab.type and 15 or 9)
       xs[i] = total
@@ -905,16 +1088,16 @@ return function(deps)
       r.tabScroll = max(0, min(r.tabScroll, max(0, total - 2 - tabsB[3])))
     end
     col(dark(screenC, 0.5), 0.12)
-    box("fill", { tabsB[1] - 1, tabsB[2] - 1, tabsB[3] + 2, tabsB[4] + 2 }, 6.5)
+    box("fill", R(tabsB[1] - 1, tabsB[2] - 1, tabsB[3] + 2, tabsB[4] + 2), 6.5)
     scissor(tabsB)
     for i, tab in ipairs(r.tabs) do
-      local b = { tabsB[1] + xs[i] - r.tabScroll, tabsB[2], ws[i], tabsB[4] }
+      local b = R(tabsB[1] + xs[i] - r.tabScroll, tabsB[2], ws[i], tabsB[4])
       local on = i == r.tab
       local tc = tab.type and S.TYPE_COLORS[tab.type]
       if on then
         local c = tc or body
         grad(b, 5.5, light(c, 0.2), dark(c, 0.08))
-        if r.focus == "tabs" then ring({ b[1] + 0.6, b[2] + 0.6, b[3] - 1.2, b[4] - 1.2 }, 5, accent, pulse(), 1.4) end
+        if r.focus == "tabs" then ring(R(b[1] + 0.6, b[2] + 0.6, b[3] - 1.2, b[4] - 1.2), 5, accent, pulse(), 1.4) end
       end
       local lx = b[1]
       if tc then
@@ -932,7 +1115,7 @@ return function(deps)
     scissor(nil)
     -- L / R at the strip's ends: the tab before / after (taps too)
     if #r.tabs > 1 then
-      for _, which in ipairs({ "prevTab", "nextTab" }) do
+      for _, which in ipairs(PAGER) do
         local b = L[which]
         shadow(b, 5.5, 0.5, 0.15)
         grad(b, 5.5, light(body, 0.25), dark(body, 0.05))
@@ -951,49 +1134,42 @@ return function(deps)
     local gridB = L.grid
     local gap, tw, th = S.TILE.gap, L.tileW, L.tileH
     local rowH = th + gap
-    r.gridRect = { X(gridB[1]), Y(gridB[2]), gridB[3] * sc, gridB[4] * sc }
+    local gr = r.gridRect or {}
+    gr[1], gr[2], gr[3], gr[4] = X(gridB[1]), Y(gridB[2]), gridB[3] * sc, gridB[4] * sc
+    r.gridRect = gr
     r.rowPx = rowH * sc
     local entries = list()
     -- (a little room past the tiles for the chosen one's lift and ring)
-    scissor({ gridB[1] - 1.5, gridB[2] - 1.5, gridB[3] + 3, gridB[4] + 3 })
+    scissor(R(gridB[1] - 1.5, gridB[2] - 1.5, gridB[3] + 3, gridB[4] + 3))
     if #entries == 0 then
       text(S.TEXT.soldOut, gridB[1], gridB[2] + gridB[4] / 2 - 4, 6, SOFT, "center", gridB[3])
     end
     local is = min(20, th - 8)
-    local function tileFace(b, e, tagColor)
-      itemIcon(G, e, X(b[1] + (b[3] - is) / 2), Y(b[2] + 1.5), is * sc)
-      if e.tm then
-        local tag = "TM" .. tostring(e.tm.number)
-        text(tag, b[1], b[2] + b[4] - 7, fit(tag, 5, b[3] - 2), tagColor, "center", b[3])
-      else
-        cash("", e.price or 0, b[1] + 1, b[2] + b[4] - 7, 5, tagColor, "center", b[3] - 2)
-      end
-    end
-    local chosen
+    local chosenB, chosenE
     for i, e in ipairs(entries) do
       local row, c = floor((i - 1) / r.cols), (i - 1) % r.cols
       local ty = gridB[2] + (row - r.shown) * rowH
       if ty + th > gridB[2] - 2 and ty < gridB[2] + gridB[4] + 2 then
-        local b = { gridB[1] + c * (tw + gap), ty, tw, th }
+        local b = R(gridB[1] + c * (tw + gap), ty, tw, th)
         if i == r.cursor then
-          chosen = { b = b, e = e }
+          chosenB, chosenE = b, e
         else
           shadow(b, 4, 0.6, 0.12)
           grad(b, 4, WHITE, light(screenC, 0.45))
-          tileFace(b, e, SOFT)
+          tileFace(b, e, SOFT, is)
         end
         addHit(b, "tile", i, gridB)
       end
     end
     -- the chosen tile, lifted over the rest
-    if chosen then
-      local b0 = chosen.b
+    if chosenB then
+      local b0 = chosenB
       local lift = r.focus == "tabs" and 0.3 or 0.8
-      local b = { b0[1] - lift, b0[2] - lift * 1.5, b0[3] + lift * 2, b0[4] + lift * 2 }
+      local b = R(b0[1] - lift, b0[2] - lift * 1.5, b0[3] + lift * 2, b0[4] + lift * 2)
       shadow(b, 4.5, 1.4, 0.24)
       grad(b, 4.5, WHITE, light(accent, 0.82))
-      tileFace(b, chosen.e, dark(accent, 0.45))
-      ring({ b[1] + 0.5, b[2] + 0.5, b[3] - 1, b[4] - 1 }, 4, accent,
+      tileFace(b, chosenE, dark(accent, 0.45), is)
+      ring(R(b[1] + 0.5, b[2] + 0.5, b[3] - 1, b[4] - 1), 4, accent,
         r.focus == "grid" and pulse() or (r.focus == "tabs" and 0.35 or 0.75), 1.5)
     end
     scissor(nil)
@@ -1004,9 +1180,9 @@ return function(deps)
       local thumbH = max(10, trackH * r.rows / rowsTotal)
       local sy = gridB[2] + (trackH - thumbH) * (r.shown / max(1, rowsTotal - r.rows))
       col(dark(screenC, 0.4), 0.18)
-      box("fill", { gridB[1] + gridB[3] + 1.2, gridB[2], 2, trackH }, 1)
+      box("fill", R(gridB[1] + gridB[3] + 1.2, gridB[2], 2, trackH), 1)
       col(body)
-      box("fill", { gridB[1] + gridB[3] + 1.2, sy, 2, thumbH }, 1)
+      box("fill", R(gridB[1] + gridB[3] + 1.2, sy, 2, thumbH), 1)
     end
 
     -- the card
@@ -1021,11 +1197,11 @@ return function(deps)
       local buyB, stepB
       if cardB[3] >= 140 then
         local fy = cardB[2] + cardB[4] - pad - 14
-        stepB = { x, fy + 1, 64, 12 }
-        buyB = { x + 68, fy, w - 68, 14 }
+        stepB = R(x, fy + 1, 64, 12)
+        buyB = R(x + 68, fy, w - 68, 14)
       else
-        buyB = { x, cardB[2] + cardB[4] - pad - 14, w, 14 }
-        stepB = { x, buyB[2] - 4 - 12, w, 12 }
+        buyB = R(x, cardB[2] + cardB[4] - pad - 14, w, 14)
+        stepB = R(x, buyB[2] - 4 - 12, w, 12)
       end
       local footTop = min(stepB[2], buyB[2])
       -- the picture in a tinted badge; beside it the name (a TM's: its move, the TM's number by the
@@ -1035,39 +1211,50 @@ return function(deps)
       gradient(G, X(x), Y(y), badge * sc, badge * sc, 6 * sc, light(tint, 0.8), light(tint, 0.6))
       itemIcon(G, e, X(x + 1), Y(y + 1), (badge - 2) * sc)
       local nx, nw = x + badge + 4, w - badge - 4
+      local et = entryText(e)
       local title = e.tm and e.tm.move or e.name or ""
-      -- (broken only between words: smaller when one word alone wouldn't fit)
-      local ts = 6.5
-      for word in title:gmatch("%S+") do ts = min(ts, fit(word, 6.5, nw)) end
+      -- (broken only between words: smaller when one word alone wouldn't fit; worked out again
+      -- only when the card's width or the scale changes)
+      if et.wrapW ~= nw or et.wrapSc ~= sc then
+        local ts = 6.5
+        for word in title:gmatch("%S+") do ts = min(ts, fit(word, 6.5, nw)) end
+        local _, wrapped = font(G, ts * sc):getWrap(title, nw * sc)
+        et.wrapW, et.wrapSc, et.titleSize, et.titleLines = nw, sc, ts, #wrapped
+      end
+      local ts = et.titleSize
       local nf = font(G, ts * sc)
-      local _, wrapped = nf:getWrap(title, nw * sc)
       text(title, nx, y + 0.5, ts, INK, "left", nw)
-      local ny = y + 1 + #wrapped * nf:getHeight() / sc
-      cash(e.tm and ("TM" .. tostring(e.tm.number) .. "  ·  ") or "", e.price or 0, nx, ny, 5.5,
-        dark(accent, 0.35), "left", nw)
-      text("IN BAG  " .. tostring(inBag(e.id)), nx, ny + 7, 5, SOFT, "left", nw)
+      local ny = y + 1 + et.titleLines * nf:getHeight() / sc
+      cash(et.pricePrefix or "", e.price or 0, nx, ny, 5.5, dark(accent, 0.35), "left", nw)
+      local held, able = cardFacts(e)
+      text(bagText(held), nx, ny + 7, 5, SOFT, "left", nw)
       y = max(y + badge, ny + 13) + 3
       if e.tm then
         -- the type and the numbers, as chips that flow onto a second row when narrow
-        local function num(v, none) v = tonumber(v) or 0; return v > none and tostring(v) or "---" end
-        local chips = { { typeName(e.tm.type), S.TYPE_COLORS[e.tm.type] or outline },
-                        { "PWR " .. num(e.tm.power, 1) }, { "ACC " .. num(e.tm.accuracy, 0) },
-                        { "PP " .. num(e.tm.pp, 0) } }
+        local tmType = e.tm.type
+        local tName = typeLabel[tmType or -1]
+        if not tName then
+          tName = typeName(tmType)
+          typeLabel[tmType or -1] = tName
+        end
         local cx = x
-        for _, chip in ipairs(chips) do
-          local cw = width(chip[1], 4.6) + 6
+        for k = 0, #et.stats do
+          -- (0: the type, in its colour; then the numbers)
+          local chipText = k == 0 and tName or et.stats[k]
+          local chipColor = k == 0 and (S.TYPE_COLORS[tmType] or outline) or nil
+          local cw = width(chipText, 4.6) + 6
           if cx > x and cx + cw > x + w then
             cx, y = x, y + 9
           end
           if y + 7.5 > footTop - 2 then break end
-          local b = { cx, y, cw, 7.5 }
-          if chip[2] then
-            grad(b, 3.75, light(chip[2], 0.15), dark(chip[2], 0.08))
-            label(chip[1], b[1], b[2] + 1.3, 4.6, WHITE, "center", b[3])
+          local b = R(cx, y, cw, 7.5)
+          if chipColor then
+            grad(b, 3.75, light(chipColor, 0.15), dark(chipColor, 0.08))
+            label(chipText, b[1], b[2] + 1.3, 4.6, WHITE, "center", b[3])
           else
             col(dark(screenC, 0.35), 0.16)
             box("fill", b, 3.75)
-            text(chip[1], b[1], b[2] + 1.3, 4.6, INK, "center", b[3])
+            text(chipText, b[1], b[2] + 1.3, 4.6, INK, "center", b[3])
           end
           cx = cx + cw + 2
         end
@@ -1075,7 +1262,7 @@ return function(deps)
       end
       local df = font(G, 5 * sc)
       local lh = df:getHeight() / sc
-      for _, line in ipairs(lines(e.description)) do
+      for _, line in ipairs(et.lines) do
         if y + lh > footTop - 2 then break end
         text(line, x, y, 5, SOFT, "left", w + 4)
         y = y + lh
@@ -1085,10 +1272,10 @@ return function(deps)
       col(dark(screenC, 0.35), 0.14)
       box("fill", stepB, stepB[4] / 2)
       if r.focus == "card" then ring(stepB, stepB[4] / 2, accent, pulse(), 1.3) end
-      for _, which in ipairs({ "minus", "plus" }) do
+      for _, which in ipairs(STEPPER) do
         local s = stepB[4] - 2
-        local b = which == "minus" and { stepB[1] + 1, stepB[2] + 1, s, s }
-          or { stepB[1] + stepB[3] - 1 - s, stepB[2] + 1, s, s }
+        local b = which == "minus" and R(stepB[1] + 1, stepB[2] + 1, s, s)
+          or R(stepB[1] + stepB[3] - 1 - s, stepB[2] + 1, s, s)
         grad(b, s / 2, light(body, onCard and 0.25 or 0.5), onCard and body or light(body, 0.3))
         col(WHITE)
         G.setLineWidth(max(1, 1.3 * sc))
@@ -1097,14 +1284,13 @@ return function(deps)
         if which == "plus" then G.line(X(mx), Y(my - mk), X(mx), Y(my + mk)) end
         addHit(b, which)
       end
-      text("×" .. tostring(r.qty), stepB[1], stepB[2] + 2.2, 6.5, INK, "center", stepB[3])
+      text(qtyText(r.qty), stepB[1], stepB[2] + 2.2, 6.5, INK, "center", stepB[3])
       -- BUY and the total (grey while it can't be bought)
-      local able = refusal(e, r.qty) == nil
-      local bc = able and accent or { 168, 170, 182 }
+      local bc = able and accent or C.grey
       shadow(buyB, 7, 0.9, able and 0.22 or 0.1)
       grad(buyB, 7, light(bc, 0.22), dark(bc, 0.08))
       col(WHITE, 0.3)
-      box("fill", { buyB[1] + 5, buyB[2] + 1, buyB[3] - 10, 1 }, 0.5)
+      box("fill", R(buyB[1] + 5, buyB[2] + 1, buyB[3] - 10, 1), 0.5)
       cash("BUY  ", (e.price or 0) * r.qty, buyB[1] + 3, buyB[2] + 3, 6.5, WHITE, "center", buyB[3] - 6, nil, true)
       addHit(buyB, "buy")
     end
@@ -1116,14 +1302,14 @@ return function(deps)
       if a <= 0 then
         r.toast = nil
       else
-        local area = portrait and { gl[1], gl[2], gl[3], cardB[2] - gl[2] } or { gl[1], gl[2], cardB[1] - gl[1], gl[4] }
+        local area = portrait and R(gl[1], gl[2], gl[3], cardB[2] - gl[2]) or R(gl[1], gl[2], cardB[1] - gl[1], gl[4])
         local tw2 = min(area[3] - 10, width(r.toast.text, 5.5) + 20)
-        local tb = { area[1] + (area[3] - tw2) / 2, area[2] + area[4] - 17 + (1 - min(1, age / 0.15)) * 4, tw2, 12 }
-        local tc = r.toast.bad and { 196, 56, 70 } or dark(outline, 0.2)
+        local tb = R(area[1] + (area[3] - tw2) / 2, area[2] + area[4] - 17 + (1 - min(1, age / 0.15)) * 4, tw2, 12)
+        local tc = r.toast.bad and C.bad or dark(outline, 0.2)
         shadow(tb, 6, 1, 0.25 * a)
         col(tc, 0.94 * a)
         box("fill", tb, 6)
-        col(r.toast.bad and { 255, 210, 215 } or { 120, 230, 160 }, a)
+        col(r.toast.bad and C.badDot or C.goodDot, a)
         G.circle("fill", X(tb[1] + 6.5), Y(tb[2] + 6), 1.8 * sc)
         local fs = fit(r.toast.text, 5.5, tb[3] - 14)
         text(r.toast.text, tb[1] + 6, tb[2] + 2.6 + (5.5 - fs) * 0.5, fs, WHITE, "center", tb[3] - 8, a)
@@ -1143,7 +1329,7 @@ return function(deps)
       if hx > hb[1] and hx + kw + 2 + lw > hb[1] + hb[3] then hx, hy = hb[1], hy + 10 end
       if hy + 8 <= hb[2] + hb[4] + 0.5 then
         col(WHITE, 0.9)
-        box("fill", { hx, hy, kw, 8 }, 4)
+        box("fill", R(hx, hy, kw, 8), 4)
         text(h[1], hx, hy + 1.4, 4.5, dark(lower, 0.5), "center", kw)
         label(h[2], hx + kw + 2, hy + 1.2, 5, WHITE)
       end
@@ -1152,8 +1338,8 @@ return function(deps)
     local tray = L.tray
     grad(tray, 5, dark(lower, 0.45), dark(lower, 0.3))
     ring(tray, 5, WHITE, 0.12, 0.6)
-    local mouth = { tray[1] + 3, tray[2] + 3, tray[3] - 6, tray[4] - 6 }
-    grad(mouth, 3, { 14, 14, 22 }, { 44, 44, 58 })
+    local mouth = R(tray[1] + 3, tray[2] + 3, tray[3] - 6, tray[4] - 6)
+    grad(mouth, 3, C.mouthTop, C.mouthFoot)
     if r.vend then
       local age = clock - r.vend.t
       if age > 3 then
@@ -1171,22 +1357,22 @@ return function(deps)
       end
     end
     -- the lip's shadow over the mouth, and its clear flap
-    grad({ mouth[1], mouth[2], mouth[3], 5 }, 0, { 0, 0, 0, 0.55 }, { 0, 0, 0, 0 })
+    grad(R(mouth[1], mouth[2], mouth[3], 5), 0, C.lip, C.none)
     col(WHITE, 0.07)
     box("fill", mouth, 3)
     col(WHITE, 0.22)
-    box("fill", { mouth[1] + 2, mouth[2] + 0.6, mouth[3] - 4, 0.7 })
+    box("fill", R(mouth[1] + 2, mouth[2] + 0.6, mouth[3] - 4, 0.7))
     if L.coins then
       local cs = L.coins
       grad(cs, 4, dark(lower, 0.2), dark(lower, 0.32))
       ring(cs, 4, WHITE, 0.1, 0.6)
       -- the coin slot in its plate, the coin return button, the ready light
-      grad({ cs[1] + 4, cs[2] + 3.5, 8, 14 }, 2.5, light(lower, 0.25), lower)
-      col({ 18, 18, 26 })
-      box("fill", { cs[1] + 7.2, cs[2] + 6, 1.6, 9 }, 0.8)
+      grad(R(cs[1] + 4, cs[2] + 3.5, 8, 14), 2.5, light(lower, 0.25), lower)
+      col(C.slot)
+      box("fill", R(cs[1] + 7.2, cs[2] + 6, 1.6, 9), 0.8)
       gradient(G, X(cs[1] + 15), Y(cs[2] + 5), 9 * sc, 9 * sc, 4.5 * sc, light(lower, 0.35), dark(lower, 0.1))
-      ring({ cs[1] + 15, cs[2] + 5, 9, 9 }, 4.5, dark(lower, 0.5), 0.6, 0.6)
-      col({ 120, 230, 160 }, 0.6 + 0.4 * math.sin(t * 2.5))
+      ring(R(cs[1] + 15, cs[2] + 5, 9, 9), 4.5, dark(lower, 0.5), 0.6, 0.6)
+      col(C.goodDot, 0.6 + 0.4 * math.sin(t * 2.5))
       G.circle("fill", X(cs[1] + 19.5), Y(cs[2] + 17), 1.1 * sc)
     end
 
@@ -1206,24 +1392,27 @@ return function(deps)
       gradient(G, X(ab[1] + (ab[3] - qs - 4) / 2), Y(ab[2] + 5), (qs + 4) * sc, (qs + 4) * sc, 6 * sc,
         light(tint, 0.8), light(tint, 0.6))
       itemIcon(G, e, X(ab[1] + (ab[3] - qs) / 2), Y(ab[2] + 7), qs * sc)
-      local what = r.qty > 1 and (e.name .. " ×" .. r.qty) or e.name
-      local q = "Buy " .. what .. "?"
+      if r.askFor ~= e or r.askQty ~= r.qty then
+        r.askFor, r.askQty = e, r.qty
+        r.askText = "Buy " .. (r.qty > 1 and (e.name .. " ×" .. r.qty) or e.name) .. "?"
+      end
+      local q = r.askText
       local qf = fit(q, 6.5, ab[3] - 10)
       text(q, ab[1] + 4, ab[2] + 30 + (6.5 - qf) * 0.5, qf, INK, "center", ab[3] - 8)
       cash("", (e.price or 0) * r.qty, ab[1] + 4, ab[2] + 39, 6, dark(accent, 0.35), "center", ab[3] - 8)
       local bw = (ab[3] - 20) / 2
-      for i, which in ipairs({ "yes", "no" }) do
-        local b = { ab[1] + 8 + (i - 1) * (bw + 4), ab[2] + ab[4] - 20, bw, 14 }
+      for i, which in ipairs(ANSWERS) do
+        local b = R(ab[1] + 8 + (i - 1) * (bw + 4), ab[2] + ab[4] - 20, bw, 14)
         local on = (which == "yes") == r.yes
         if on then
           shadow(b, 7, 0.9, 0.22)
           grad(b, 7, light(accent, 0.22), dark(accent, 0.08))
-          label(which:upper(), b[1], b[2] + 3, 6.5, WHITE, "center", b[3])
-          ring({ b[1] - 1.2, b[2] - 1.2, b[3] + 2.4, b[4] + 2.4 }, 8, accent, pulse(), 1)
+          label(ANSWER_LABEL[which], b[1], b[2] + 3, 6.5, WHITE, "center", b[3])
+          ring(R(b[1] - 1.2, b[2] - 1.2, b[3] + 2.4, b[4] + 2.4), 8, accent, pulse(), 1)
         else
           col(dark(screenC, 0.35), 0.16)
           box("fill", b, 7)
-          text(which:upper(), b[1], b[2] + 3, 6.5, SOFT, "center", b[3])
+          text(ANSWER_LABEL[which], b[1], b[2] + 3, 6.5, SOFT, "center", b[3])
         end
         addHit(b, which)
       end
@@ -1239,31 +1428,38 @@ return function(deps)
       if bt < revealAt then
         -- nothing to tap behind it but the close button; a tap anywhere else skips (the skip
         -- first in the list: taps try the last first)
-        local keep = { false }
-        for _, h in ipairs(hit) do
-          if h.kind == "close" then keep[#keep + 1] = h end
+        local n = 0
+        for i = 1, #hit do
+          if hit[i].kind == "close" then
+            n = n + 1
+            hit[n] = hit[i]
+          end
         end
-        r.hit, hit = keep, keep
-        addHit({ 0, 0, pw, ph }, "skip")
-        keep[1] = table.remove(keep)
+        for i = #hit, n + 1, -1 do hit[i] = nil end
+        addHit(R(0, 0, pw, ph), "skip")
+        table.insert(hit, 1, table.remove(hit))
       end
       if bt < B.BLACK then
-        col({ 8, 8, 12 })
+        col(C.off)
         box("fill", gl, 6)
       elseif bt < logoAt then
         -- the tube opening: a bright line that grows to the glass's height
         local k = (bt - B.BLACK) / B.LINE
-        col({ 8, 8, 12 })
+        col(C.off)
         box("fill", gl, 6)
         local h = max(0.8, gl[4] * k * k)
-        local band = { gl[1], gl[2] + (gl[4] - h) / 2, gl[3], h }
-        grad(band, min(6, h / 2), mix(backdrop, WHITE, 1 - k), mix(backdropFoot, WHITE, 1 - k))
+        local band = R(gl[1], gl[2] + (gl[4] - h) / 2, gl[3], h)
+        -- (flat: it changes size every frame, which a gradient mesh would have to follow)
+        col(backdrop)
+        box("fill", band, min(6, h / 2))
+        col(WHITE, 1 - k)
+        box("fill", band, min(6, h / 2))
       else
         -- the logo, then (the reveal) the logo zooming away as the backdrop fades
         local into = bt - logoAt
         local out = max(0, bt - revealAt) / B.REVEAL
         local fadeA = 1 - out * out
-        grad(gl, 6, fade(backdrop, fadeA), fade(backdropFoot, fadeA))
+        grad(gl, 6, backdrop, backdropFoot, fadeA)
         if not r.chimed then
           r.chimed = true
           se("SE_PC_LOGIN")
@@ -1279,11 +1475,13 @@ return function(deps)
         if out == 0 then
           local fill = min(1, max(0, (into - 0.15) / (B.LOGO - 0.3)))
           local bw = min(60, gl[3] * 0.4)
-          local bar = { cx - bw / 2, cy + size * 0.31 + 9, bw, 2.5 }
+          local bar = R(cx - bw / 2, cy + size * 0.31 + 9, bw, 2.5)
           col(WHITE, 0.15 * la)
           box("fill", bar, 1.25)
           if fill > 0 then
-            grad({ bar[1], bar[2], bar[3] * fill, bar[4] }, 1.25, fade(light(accent, 0.3), la), fade(accent, la))
+            -- (flat: it grows every frame)
+            col(accent, la)
+            box("fill", R(bar[1], bar[2], max(bar[4], bar[3] * fill), bar[4]), 1.25)
           end
         end
         -- a shine sweeping across the glass once
@@ -1303,6 +1501,9 @@ return function(deps)
 
   -- the W: four slanted strokes folded like a ribbon (the outer two in the machine's accent, the
   -- inner two lighter, under them), over a soft glow; centred on cx, cy (window pixels), `size` wide
+  local STROKES = { { 0, 0.25, 0, 1 }, { 0.25, 0.5, 1, 0.3 }, { 0.5, 0.75, 0.3, 1 }, { 0.75, 1, 1, 0 } }
+  local STROKE_ORDER, OUTER = { 2, 3, 1, 4 }, { 1, 4 }
+  local logoQuad = { 0, 0, 0, 0, 0, 0, 0, 0 }
   function S.drawLogo(G, cx, cy, size, accent, a)
     if a <= 0 then return end
     local w, h = size, size * 0.62
@@ -1310,15 +1511,17 @@ return function(deps)
     local th = w * 0.17      -- a stroke's width, across
     local slant = w * 0.07   -- (leaning forward)
     -- each stroke: its top and bottom x (0..1 of the width less a stroke), its ends' heights (0..1)
-    local strokes = { { 0, 0.25, 0, 1 }, { 0.25, 0.5, 1, 0.3 }, { 0.5, 0.75, 0.3, 1 }, { 0.75, 1, 1, 0 } }
-    local function pt(fx, fy) return x0 + fx * (w - th - slant) + (1 - fy) * slant, y0 + fy * h end
+    local strokes = STROKES
+    -- (one polygon buffer, filled again for each stroke)
+    local q = logoQuad
     local function quad(sx)
-      local ax, ay = pt(sx[1], sx[3])
-      local bx, by = pt(sx[2], sx[4])
-      return { ax, ay, ax + th, ay, bx + th, by, bx, by }
+      local span = w - th - slant
+      local ax, ay = x0 + sx[1] * span + (1 - sx[3]) * slant, y0 + sx[3] * h
+      local bx, by = x0 + sx[2] * span + (1 - sx[4]) * slant, y0 + sx[4] * h
+      q[1], q[2], q[3], q[4], q[5], q[6], q[7], q[8] = ax, ay, ax + th, ay, bx + th, by, bx, by
+      return q
     end
-    local soft = { accent[1] + (255 - accent[1]) * 0.45, accent[2] + (255 - accent[2]) * 0.45,
-                   accent[3] + (255 - accent[3]) * 0.45 }
+    local soft = light(accent, 0.45)
     -- the glow
     for i = 3, 1, -1 do
       G.setColor(accent[1] / 255, accent[2] / 255, accent[3] / 255, 0.07 * a)
@@ -1335,7 +1538,7 @@ return function(deps)
     G.translate(size * 0.02, size * 0.03)
     for _, sx in ipairs(strokes) do G.polygon("fill", quad(sx)) end
     G.pop()
-    for _, i in ipairs({ 2, 3, 1, 4 }) do
+    for _, i in ipairs(STROKE_ORDER) do
       local c = (i == 1 or i == 4) and accent or soft
       G.setColor(c[1] / 255, c[2] / 255, c[3] / 255, a)
       G.polygon("fill", quad(strokes[i]))
@@ -1343,7 +1546,7 @@ return function(deps)
     -- a highlight along the outer strokes' leading edges
     G.setColor(1, 1, 1, 0.35 * a)
     G.setLineWidth(math.max(1, size * 0.012))
-    for _, i in ipairs({ 1, 4 }) do
+    for _, i in ipairs(OUTER) do
       local q = quad(strokes[i])
       G.line(q[1], q[2], q[7], q[8])
     end

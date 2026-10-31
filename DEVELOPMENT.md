@@ -50,7 +50,12 @@ and up to 380 wide (more grid columns beside the card), portrait 180 wide (the c
 grid, more rows). Taps and clicks come from `input.pointer`, the wheel from `input.wheel`, and
 the on-screen touch pad is put away while it is up. Up from the grid's top row focuses the tabs.
 Opening plays a boot (`S.BOOT`: black, a tube line, the W logo `S.drawLogo` with a loading bar,
-the reveal); until the reveal only the close button answers, and any button or tap skips to it. The bezel's colours are
+the reveal); until the reveal only the close button answers, and any button or tap skips to it.
+The screen is drawn every frame, so its draw makes next to no garbage: colours are derived once
+(`mix` memoised; gradient meshes kept by those colour tables), rectangles and hit records come from
+pools refilled each frame, per-item text is worked out once, item icons are painted once into 24 x 24
+canvases (the engine's icon draw allocates), and the Bag is asked only when the card's item, amount
+or money changes. `vending_probe.lua` meters the draw in the engine (under 0.5 KB a frame). The bezel's colours are
 in each machine's data, read off its sprite. Stock is by item slug, resolved live through
 `Species.itemIndex` (names, prices and descriptions from the running game's items; a TM's move,
 type, power, accuracy and PP from its battle row). Buying takes the money and fills the Bag
