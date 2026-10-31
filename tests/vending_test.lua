@@ -121,6 +121,11 @@ T.eq(fang.tm and fang.tm.type, 10, "TM51's move is Fire")
 T.eq(fang.tm and fang.tm.power, fangRow and fangRow.power, "with the move's power")
 T.check(fang.tm and type(fang.tm.move) == "string" and fang.tm.move:upper():find("FIRE FANG", 1, true) ~= nil,
   "and its name (" .. tostring(fang.tm and fang.tm.move) .. ")")
+-- the screen writes the newer moves' names in full, not squeezed into the cart's 12 letters
+local byNumber = {}
+for _, e in ipairs(tmTabs[1].entries) do byNumber[e.tm.number] = e end
+T.eq(byNumber[62] and byNumber[62].tm.move, "DRAINING KISS", "TM62: DRAINING KISS, with its space")
+T.eq(byNumber[111] and byNumber[111].tm.move, "MISTY TERRAIN", "TM111: MISTY TERRAIN")
 
 -- ------- the screen, on a session of its own
 
@@ -265,6 +270,9 @@ T.eq(session.money, 100000 - 3 * first.price, "and their price off the money")
 T.eq(sounds[#sounds], "SE_VEND", "the machine's sound")
 T.check(st.vend and st.vend.id == first.id, "the item drops into the tray")
 T.eq(st.qty, 1, "the amount back to one")
+T.eq(st.focus, "grid", "and back to browsing")
+T.eq(st.cursor, 1, "on the same item")
+press("a")
 -- too little money: the amount stops at what it pays for, and a refusal buys nothing
 session.money = first.price * 2 + 1
 press("left")
@@ -359,6 +367,7 @@ T.eq(st.focus, "card", "NO buys nothing")
 tapOn("buy")
 tapOn("yes")
 T.eq(Bag.get(session.bag, tm2.id), 2, "YES: two TMs in the Bag")
+T.eq(st.focus, "grid", "and back to browsing")
 -- a drag scrolls the grid, and is not a tap
 draw()
 local g = st.gridRect

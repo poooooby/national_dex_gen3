@@ -9,7 +9,8 @@
 --   - the on-screen touch pad is put away while a screen is up (it would take the taps first) and
 --     put back as it was (src/core/TouchControls, engine internals)
 --   V = vending(mod, { require, log, screen = vending_screen factory, data = data/vending.lua,
---                      itemIndex = Species.itemIndex(mod), tms = data/tms.lua, game = () -> version })
+--                      itemIndex = Species.itemIndex(mod), tms = data/tms.lua, game = () -> version,
+--                      moves = data/moves.lua (the newer moves' full names, for the screen) })
 --   V.registerSprites() (load) ; V.install() (load: the hooks) ; V.stock(machine) ; V.open(machine)
 
 return function(mod, deps)
@@ -69,13 +70,26 @@ return function(mod, deps)
                 name = call("displayName", id) or slug:upper():gsub("%-", " "),
                 price = floor(tonumber(info and info.price) or 0),
                 description = call("description", id) }
+    -- the newer moves' full names ("DRAINING KISS"): the cart's are squeezed into 12 letters
+    -- ("DRAININGKISS"), which only the screen has room to undo
+    if not V.fullMoveNames then
+      local names = {}
+      for _, m in ipairs(deps.moves or {}) do
+        if m.full then
+          if m.name then names[m.name] = m.full:upper() end
+          if m.index then names[m.index] = m.full:upper() end
+        end
+      end
+      V.fullMoveNames = names
+    end
     local number = tmNumber[slug]
     if number then
       local P = engine("src.core.game3.pokemon")
       local move = P and P.moveFromTmItem and P.moveFromTmItem(id)
       local row = move and P.battleMove and P.battleMove(move)
       local okN, moveName = pcall(function() return P.moveName(move) end)
-      e.tm = { number = number, move = okN and moveName or nil,
+      local full = V.fullMoveNames[move] or (okN and V.fullMoveNames[moveName]) or nil
+      e.tm = { number = number, move = full or (okN and moveName) or nil,
                type = row and tonumber(row.type), power = row and row.power,
                accuracy = row and row.accuracy, pp = row and row.pp }
     end

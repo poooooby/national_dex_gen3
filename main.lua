@@ -549,6 +549,7 @@ return function(mod)
     local okV, vErr = pcall(function()
       local V = makeVending(mod, { require = require, log = mod.log, screen = makeVendingScreen,
         data = read("data/vending.lua") or {}, tms = read("data/tms.lua") or {},
+        moves = read("data/moves.lua") or {},
         itemIndex = Species.itemIndex(mod),
         game = function()
           local okG, GV = pcall(require, "src.core.GameVersion")

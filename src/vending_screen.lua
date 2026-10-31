@@ -6,7 +6,7 @@
 --   grid     D-pad moves (Up from the top row: the tabs), A chooses, L / R change tab, B leaves
 --   tabs     Left / Right change tab, Down / A / B back to the grid
 --   card     Left / Right amount -1 / +1 (wrapping), Up / Down +10 / -10, A buys, B back to the grid
---   confirm  any direction toggles YES / NO, A answers, B is NO
+--   confirm  any direction toggles YES / NO, A answers (a purchase goes back to the grid), B is NO
 --   touch    tap a tab (or the arrows at the strip's ends, which also show where L and R go), a
 --            tile, - / +, BUY, YES / NO or the close button; drag the grid (or the mouse wheel)
 --            to scroll
@@ -294,7 +294,8 @@ return function(deps)
       return false
     end
     s.money = money() - (e.price or 0) * qty
-    r.qty = 1
+    -- (bought: back to browsing, on the same item)
+    r.qty, r.focus = 1, "grid"
     r.vend = { id = e.id, entry = e, t = now() }
     toast((qty > 1 and (e.name .. " x" .. qty) or e.name) .. " dropped down.")
     se("SE_VEND")
@@ -957,9 +958,12 @@ return function(deps)
       itemIcon(G, e, X(x + 1), Y(y + 1), (badge - 2) * sc)
       local nx, nw = x + badge + 4, w - badge - 4
       local title = e.tm and e.tm.move or e.name or ""
-      local nf = font(G, 6.5 * sc)
+      -- (broken only between words: smaller when one word alone wouldn't fit)
+      local ts = 6.5
+      for word in title:gmatch("%S+") do ts = min(ts, fit(word, 6.5, nw)) end
+      local nf = font(G, ts * sc)
       local _, wrapped = nf:getWrap(title, nw * sc)
-      text(title, nx, y + 0.5, 6.5, INK, "left", nw)
+      text(title, nx, y + 0.5, ts, INK, "left", nw)
       local ny = y + 1 + #wrapped * nf:getHeight() / sc
       cash(e.tm and ("TM" .. tostring(e.tm.number) .. "  ·  ") or "", e.price or 0, nx, ny, 5.5,
         dark(accent, 0.35), "left", nw)

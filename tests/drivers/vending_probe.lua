@@ -1,7 +1,7 @@
 -- Driver: the vending machines (src/vending.lua, src/vending_screen.lua) in the engine. A new game,
 -- money, then Lilycove Dept. Store 4F: both machines stand at their tiles; A on the evolution item
 -- machine opens its screen, and the buttons buy three of an item (the Bag and the money checked);
--- B twice leaves and the player walks again; A on the TM machine, then the mouse alone (through
+-- back on the grid after it, B leaves and the player walks again; A on the TM machine, then the mouse alone (through
 -- the engine's pointer path): a tab, a tile, +, BUY, YES, the close button. Shots v*.png.
 --   SHOT_DIR=<dir> POKEPORT_GAME=emerald POKEPORT_VERSION=emerald \
 --   POKEPORT_DRIVER=mods/national_dex_gen3/tests/drivers/vending_probe.lua love .
@@ -90,9 +90,9 @@ local function body(game, log)
   shot("v5b_in_tray")
   check(Bag.get(s0.bag, item.id) == before + 3, "three " .. tostring(item.name) .. " in the Bag")
   check(s0.money == money0 - 3 * item.price, "money " .. money0 .. " -> " .. s0.money)
-  U.tap(game, "b"); U.wait(6)
+  check(st.focus == "grid", "bought: back to browsing")
   U.tap(game, "b"); U.wait(20)
-  check(not S.isOpen() and not Stack.has("national_dex_gen3_vending"), "B twice leaves")
+  check(not S.isOpen() and not Stack.has("national_dex_gen3_vending"), "B leaves")
   -- walk: right a tile, then face the TM machine
   U.hold(game, "right", 16); U.wait(20)
   check(Player.cellX == 8 and Player.cellY == 3, "the player walks again (" .. tostring(Player.cellX) .. ","
@@ -147,6 +147,7 @@ local function body(game, log)
   U.wait(10)
   shot("v9_tm_bought")
   check(Bag.get(s0.bag, tm.id) == tmBefore + 2, "two " .. tostring(tm.name) .. " in the Bag")
+  check(st.focus == "grid", "bought: back to browsing")
   click("close")
   U.wait(20)
   check(not S.isOpen() and not Field.isLocked(), "the close button leaves")
@@ -183,6 +184,15 @@ local function body(game, log)
     shot("v12b_" .. shape[1] .. "_most")
     S.setQty(1)
     s0.money = money0
+    -- a newer move with a two-word name, in full and broken between its words
+    for i, e in ipairs(st.tabs[st.tab].entries) do
+      if e.tm and e.tm.number == 111 then
+        S.choose(i)
+        check(e.tm.move == "MISTY TERRAIN", shape[1] .. ": TM111 reads " .. tostring(e.tm.move))
+      end
+    end
+    U.wait(20)
+    shot("v12c_" .. shape[1] .. "_misty")
     click("buy")
     click("yes")
     U.wait(8)
