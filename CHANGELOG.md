@@ -5,13 +5,15 @@ All notable changes to this mod are documented here, in
 
 ## [Unreleased]
 
+## [1.6.0] - 2026-10-31
+
 ### Added
 
 - **Vending machines.** Two touch-screen machines: EVO EXPRESS sells all 39 evolution items, TM
   EXPRESS all 114 new TMs. In FireRed and LeafGreen they stand in the Celadon Dept. Store (EVO
   EXPRESS on 4F, TM EXPRESS on 2F); in Ruby, Sapphire and Emerald in the Lilycove Dept. Store
-  (EVO EXPRESS on 2F, TM EXPRESS on 4F). Browse by tab (TMs by move type), read each item's description and a TM's type, power,
-  accuracy and PP, choose how many, and buy. Buttons alone work (the D-pad reaches the tabs), and
+  (EVO EXPRESS on 2F, TM EXPRESS on 4F). Browse by tab (TMs by move type), read each item's
+  description and a TM's type, power, accuracy and PP, choose how many, and buy. Buttons alone work (the D-pad reaches the tabs), and
   so do touch and the mouse. The screen fills the window: more columns on a wide screen, the card
   under the items and more rows on a phone held upright. The screen boots up with a W logo first;
   any button or a tap skips it.
