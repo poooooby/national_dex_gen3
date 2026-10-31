@@ -18,7 +18,7 @@ local HOENN = { "ruby", "sapphire", "emerald" }
 return {
   { id = "evo", games = HOENN, map = "LILYCOVE_CITY_DEPARTMENT_STORE_4F", x = 7, y = 2,
     store = "Lilycove Dept. Store 4F (evolution item machine)",
-    title = "EVOLUTION ITEMS",
+    title = "EVO EXPRESS",
     sprite = "assets/shop/EVOvendor2.png",
     bezel = { body = { 193, 99, 221 }, lower = { 114, 88, 191 }, trim = { 160, 99, 221 },
               outline = { 82, 82, 106 }, screen = { 211, 234, 234 }, accent = { 24, 180, 164 } },
@@ -38,7 +38,7 @@ return {
     } },
   { id = "tm", games = HOENN, map = "LILYCOVE_CITY_DEPARTMENT_STORE_4F", x = 8, y = 2,
     store = "Lilycove Dept. Store 4F (TM machine)",
-    title = "TECHNICAL MACHINES",
+    title = "TM EXPRESS",
     sprite = "assets/shop/TMvendor2.png",
     bezel = { body = { 88, 116, 232 }, lower = { 79, 165, 200 }, trim = { 88, 155, 232 },
               outline = { 82, 82, 106 }, screen = { 211, 234, 234 }, accent = { 224, 152, 73 } },

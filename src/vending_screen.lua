@@ -764,6 +764,86 @@ return function(deps)
     local outline = bz.outline or { 82, 82, 106 }
     local screenC = bz.screen or { 225, 235, 240 }
 
+    -- the name on a metal plate: brushed silver, a bevel, a screw at each end; the letters
+    -- italic and outlined, the first word in the accent, the rest in the body's colour, a gloss
+    -- over their top half. x, y: its top left, maxW: the room it has (units)
+    local function drawPlate(title, x, y, maxW)
+      local first = title:match("^(%S+)") or title
+      local SPACING, PAD, SCREW = 0.55, 8.5, 3.6
+      local size = 7.5
+      local function measure(sz)
+        local w = 0
+        for ch in title:gmatch(".") do w = w + width(ch, sz) + SPACING end
+        return w - SPACING
+      end
+      local tw = measure(size)
+      if tw + PAD * 2 > maxW then
+        size = max(4, size * (maxW - PAD * 2) / tw)
+        tw = measure(size)
+      end
+      local plate = { x, y, min(maxW, tw + PAD * 2), 15 }
+      local px, py, pw2, ph2 = plate[1], plate[2], plate[3], plate[4]
+      shadow(plate, 3.5, 0.9, 0.35)
+      grad(plate, 3.5, { 242, 244, 248 }, { 146, 152, 166 })
+      -- the reflection across its lower half, the brushing, the bevel
+      grad({ px + 2.5, py + ph2 * 0.52, pw2 - 5, ph2 * 0.4 }, 0, { 255, 255, 255, 0 }, { 255, 255, 255, 0.4 })
+      for i = 1, 4 do
+        col(WHITE, 0.12)
+        box("fill", { px + 3, py + 2 + i * 2.4, pw2 - 6, 0.35 })
+      end
+      col(WHITE, 0.85)
+      box("fill", { px + 2.5, py + 0.7, pw2 - 5, 0.6 }, 0.3)
+      ring({ px + 0.6, py + 0.6, pw2 - 1.2, ph2 - 1.2 }, 3, WHITE, 0.45, 0.6)
+      ring(plate, 3.5, dark(outline, 0.3), 1, 0.8)
+      -- the screws
+      for _, sx in ipairs({ px + SCREW, px + pw2 - SCREW }) do
+        local sy = py + ph2 / 2
+        gradient(G, X(sx - 1.5), Y(sy - 1.5), 3 * sc, 3 * sc, 1.5 * sc, { 250, 250, 252 }, { 120, 124, 136 })
+        col(dark(outline, 0.2), 0.8)
+        G.setLineWidth(max(1, 0.45 * sc))
+        G.line(X(sx - 1), Y(sy + 0.7), X(sx + 1), Y(sy - 0.7))
+      end
+      -- the letters, slanted, one by one (a little apart)
+      local f = font(G, size * sc)
+      G.setFont(f)
+      local lineH = f:getHeight() / sc
+      local tx = px + (pw2 - tw) / 2 + 0.6
+      local ty = py + (ph2 - lineH) / 2 - 0.2
+      local firstColor = dark(accent, 0.12)
+      local restColor = dark(body, 0.15)
+      local edge = dark(outline, 0.45)
+      local function letters(colorAt, dx, dy)
+        G.push()
+        G.translate(X(tx + dx), Y(ty + dy))
+        G.shear(-0.2, 0)
+        local cx = 0
+        local i = 0
+        for ch in title:gmatch(".") do
+          i = i + 1
+          local c = colorAt(i)
+          if c then
+            col(c, c[5])
+            G.print(ch, cx * sc, 0)
+          end
+          cx = cx + width(ch, size) + SPACING
+        end
+        G.pop()
+      end
+      local split = #first
+      -- the outline (all round), the fill (bolder: twice, a little apart), the gloss
+      local o = 0.5
+      for _, d in ipairs({ { -o, 0 }, { o, 0 }, { 0, -o }, { 0, o }, { -o, -o }, { o, -o }, { -o, o }, { o, o } }) do
+        letters(function() return edge end, d[1], d[2] + 0.2)
+      end
+      for _, dx in ipairs({ 0, 0.3 }) do
+        letters(function(i) return i <= split and firstColor or restColor end, dx, 0)
+      end
+      G.setScissor(X(px), Y(py), pw2 * sc, (ty - py + lineH * 0.48) * sc)
+      letters(function() return { 255, 255, 255, 1, 0.3 } end, 0.15, 0)
+      G.setScissor()
+      return plate
+    end
+
     -- the room around the machine; the machine's front (the top body, the foot), its outline
     col(dark(outline, 0.55))
     G.rectangle("fill", 0, 0, ww, wh)
@@ -784,9 +864,7 @@ return function(deps)
     local held = amount(money())
     local mw = max(48, min(pw * 0.4, width(held, 6.5) + 20))
     local mb = { L.close[1] - 4 - mw, 5.5, mw, 14 }
-    local title = r.machine.title or ""
-    local ts = fit(title, 8, mb[1] - 4 - 11)
-    label(title, 11, 7 + (8 - ts) * 0.5, ts, WHITE)
+    drawPlate(r.machine.title or "", 7, 4, mb[1] - 4 - 7)
     grad(mb, 7, fade(dark(outline, 0.35), 0.8), fade(dark(outline, 0.5), 0.8))
     ring(mb, 7, WHITE, 0.12, 0.6)
     gradient(G, X(mb[1] + 3), Y(mb[2] + 3), 8 * sc, 8 * sc, 4 * sc, { 255, 222, 110 }, { 222, 160, 40 })

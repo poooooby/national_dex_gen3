@@ -23,7 +23,7 @@ Paldea Pokémon can live in Kanto and Hoenn.
   sold in department stores and late-game marts in FireRed / LeafGreen, and by a vending machine
   in Ruby / Sapphire / Emerald.
 - 🏪 **Vending machines:** two touch-screen machines in Lilycove Dept. Store 4F (Ruby / Sapphire /
-  Emerald), one for the evolution items and one for the new TMs. Browse by tab (stones, trade
+  Emerald): EVO EXPRESS for the evolution items and TM EXPRESS for the new TMs. Browse by tab (stones, trade
   items, held items...; TMs by move type), see each item's description and a TM's type, power,
   accuracy and PP before you buy, pick how many, and watch it drop into the tray. Works with the
   buttons alone (the D-pad reaches the tabs too) or with touch and the mouse, and the screen fills
