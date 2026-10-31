@@ -32,6 +32,13 @@ local function body(game, log)
   local Profile = require("src.core.game3.profile")
   local s0 = Runtime.getSession()
   s0.money = 50000
+  -- (all 8 Gym Badges, so everything sells; the badge locks are looked at last, with 3)
+  local Flags = require("src.core.game3.scripting.flags")
+  local Space = require("src.core.game3.scripting.space")
+  local function setBadges(n)
+    for i = 1, 8 do Flags.setBadge(Space.store or s0, i, i <= n) end
+  end
+  setBadges(8)
   local nd = game.mods.exports.national_dex_gen3
   local V = nd and nd._vending
   if not V then log("FAIL national_dex_gen3 has no _vending"); return end
@@ -289,6 +296,33 @@ local function body(game, log)
   love.window.setMode(W0, H0, flags)
   if love.resize then pcall(love.resize, W0, H0) end
   U.wait(10)
+
+  -- 3 Gym Badges: what needs more stays on the machine, faded, and isn't sold
+  setBadges(3)
+  goTo("evo")
+  U.tap(game, "a")
+  check(waitFor(function() return S.isOpen() end, 120), "A opens the evolution item machine again")
+  waitFor(function() return not S.booting() end, 240)
+  U.wait(30)
+  st = S.state()
+  check(st.badges == 3, "the screen counts 3 badges (" .. tostring(st.badges) .. ")")
+  shot("v14_badges_3")
+  local claw
+  for i, e in ipairs(st.tabs[st.tab].entries) do
+    if e.slug == "razor-claw" then claw = e; S.choose(i) end
+  end
+  U.wait(10)
+  shot("v14b_locked_card")
+  local clawBefore, money2 = claw and Bag.get(s0.bag, claw.id) or 0, s0.money
+  check(claw ~= nil and S.locked(claw) == 4, "Razor Claw needs 4")
+  check(not S.buy(), "and isn't sold with 3")
+  U.wait(4)
+  shot("v14c_locked_toast")
+  check(claw and Bag.get(s0.bag, claw.id) == clawBefore and s0.money == money2, "nothing bought, no money off")
+  check(st.toast and st.toast.text == "You need 4 Gym Badges for this.", "the screen says why")
+  U.tap(game, "b"); U.wait(10)
+  U.tap(game, "b"); U.wait(20)
+  check(not S.isOpen(), "B leaves")
   log(("%d failures"):format(fails))
 end
 

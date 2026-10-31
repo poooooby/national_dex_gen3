@@ -53,7 +53,13 @@ Most of the newer evolutions need an item that none of the five games has. The m
 | FireRed / LeafGreen | Celadon Dept. Store 4F (the TM EXPRESS machine is on 2F) |
 | Ruby / Sapphire / Emerald | Lilycove Dept. Store 2F (the TM EXPRESS machine is on 4F) |
 
-[Added items](items.md) lists every item with its exact price and shop.
+Each item unlocks with the Gym Badges it matches in the modern games: the Sachet, Whipped
+Dream and Cracked Pot after the first, Dusk Stone and the Sweets after 2, the stones, apples and
+trade items (Protector, Electirizer...) after 3, Ice Stone and Razor Claw after 4, Leader's Crest
+and the Galarica items after 5, Masterpiece Teacup after 7 and Metal Alloy after 8. One you can't
+buy yet stays on the machine, faded, with the badges it needs.
+
+[Added items](items.md) lists every item with its exact price, badges and shop.
 
 ## Rockruff → Lycanroc
 

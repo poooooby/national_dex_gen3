@@ -11,57 +11,61 @@ Further down: [other items](#other-items), the Exp. Candies and the Dynamax item
 
 ## Summary
 
-| Item | Price | FireRed / LeafGreen | Ruby / Sapphire / Emerald |
-|---|---|---|---|
-| DAWN STONE | ₽2100 | Celadon Dept. Store 4F (evolution item machine) | Lilycove Dept. Store 2F (evolution item machine) |
-| DUBIOUS DISC | ₽2100 | Celadon Dept. Store 4F (evolution item machine) | Lilycove Dept. Store 2F (evolution item machine) |
-| DUSK STONE | ₽2100 | Celadon Dept. Store 4F (evolution item machine) | Lilycove Dept. Store 2F (evolution item machine) |
-| ELECTIRIZER | ₽2100 | Celadon Dept. Store 4F (evolution item machine) | Lilycove Dept. Store 2F (evolution item machine) |
-| ICE STONE | ₽3000 | Celadon Dept. Store 4F (evolution item machine) | Lilycove Dept. Store 2F (evolution item machine) |
-| MAGMARIZER | ₽2100 | Celadon Dept. Store 4F (evolution item machine) | Lilycove Dept. Store 2F (evolution item machine) |
-| PROTECTOR | ₽2100 | Celadon Dept. Store 4F (evolution item machine) | Lilycove Dept. Store 2F (evolution item machine) |
-| REAPER CLOTH | ₽2100 | Celadon Dept. Store 4F (evolution item machine) | Lilycove Dept. Store 2F (evolution item machine) |
-| SACHET | ₽2100 | Celadon Dept. Store 4F (evolution item machine) | Lilycove Dept. Store 2F (evolution item machine) |
-| SHINY STONE | ₽2100 | Celadon Dept. Store 4F (evolution item machine) | Lilycove Dept. Store 2F (evolution item machine) |
-| SWEET APPLE | ₽2100 | Celadon Dept. Store 4F (evolution item machine) | Lilycove Dept. Store 2F (evolution item machine) |
-| TART APPLE | ₽2100 | Celadon Dept. Store 4F (evolution item machine) | Lilycove Dept. Store 2F (evolution item machine) |
-| WHIPPED DREAM | ₽2100 | Celadon Dept. Store 4F (evolution item machine) | Lilycove Dept. Store 2F (evolution item machine) |
-| AUSPIC. ARMOR | ₽2100 | Celadon Dept. Store 4F (evolution item machine) | Lilycove Dept. Store 2F (evolution item machine) |
-| BLACK AUGURITE | ₽1000 | Celadon Dept. Store 4F (evolution item machine) | Lilycove Dept. Store 2F (evolution item machine) |
-| MALIC. ARMOR | ₽2100 | Celadon Dept. Store 4F (evolution item machine) | Lilycove Dept. Store 2F (evolution item machine) |
-| METAL ALLOY | ₽3000 | Celadon Dept. Store 4F (evolution item machine) | Lilycove Dept. Store 2F (evolution item machine) |
-| PEAT BLOCK | ₽1000 | Celadon Dept. Store 4F (evolution item machine) | Lilycove Dept. Store 2F (evolution item machine) |
-| SYRUPY APPLE | ₽2100 | Celadon Dept. Store 4F (evolution item machine) | Lilycove Dept. Store 2F (evolution item machine) |
-| CRACKED POT | ₽3000 | Celadon Dept. Store 4F (evolution item machine) | Lilycove Dept. Store 2F (evolution item machine) |
-| CHIPPED POT | ₽3000 | Celadon Dept. Store 4F (evolution item machine) | Lilycove Dept. Store 2F (evolution item machine) |
-| UNREMARK. CUP | ₽2100 | Celadon Dept. Store 4F (evolution item machine) | Lilycove Dept. Store 2F (evolution item machine) |
-| MASTERPC. CUP | ₽2100 | Celadon Dept. Store 4F (evolution item machine) | Lilycove Dept. Store 2F (evolution item machine) |
-| STRAWBRY SWEET | ₽2100 | Celadon Dept. Store 4F (evolution item machine) | Lilycove Dept. Store 2F (evolution item machine) |
-| BERRY SWEET | ₽2100 | Celadon Dept. Store 4F (evolution item machine) | Lilycove Dept. Store 2F (evolution item machine) |
-| LOVE SWEET | ₽2100 | Celadon Dept. Store 4F (evolution item machine) | Lilycove Dept. Store 2F (evolution item machine) |
-| STAR SWEET | ₽2100 | Celadon Dept. Store 4F (evolution item machine) | Lilycove Dept. Store 2F (evolution item machine) |
-| CLOVER SWEET | ₽2100 | Celadon Dept. Store 4F (evolution item machine) | Lilycove Dept. Store 2F (evolution item machine) |
-| FLOWER SWEET | ₽2100 | Celadon Dept. Store 4F (evolution item machine) | Lilycove Dept. Store 2F (evolution item machine) |
-| RIBBON SWEET | ₽2100 | Celadon Dept. Store 4F (evolution item machine) | Lilycove Dept. Store 2F (evolution item machine) |
-| RAZOR CLAW | ₽2100 | Celadon Dept. Store 4F (evolution item machine) | Lilycove Dept. Store 2F (evolution item machine) |
-| RAZOR FANG | ₽2100 | Celadon Dept. Store 4F (evolution item machine) | Lilycove Dept. Store 2F (evolution item machine) |
-| OVAL STONE | ₽2100 | Celadon Dept. Store 4F (evolution item machine) | Lilycove Dept. Store 2F (evolution item machine) |
-| LEADER'S CREST | ₽2100 | Celadon Dept. Store 4F (evolution item machine) | Lilycove Dept. Store 2F (evolution item machine) |
-| DARK SCROLL | ₽2100 | Celadon Dept. Store 4F (evolution item machine) | Lilycove Dept. Store 2F (evolution item machine) |
-| WATER SCROLL | ₽2100 | Celadon Dept. Store 4F (evolution item machine) | Lilycove Dept. Store 2F (evolution item machine) |
-| GALARICA CUFF | ₽2100 | Celadon Dept. Store 4F (evolution item machine) | Lilycove Dept. Store 2F (evolution item machine) |
-| GALAR. WREATH | ₽2100 | Celadon Dept. Store 4F (evolution item machine) | Lilycove Dept. Store 2F (evolution item machine) |
-| LINKING CORD | ₽2100 | Celadon Dept. Store 4F (evolution item machine) | Lilycove Dept. Store 2F (evolution item machine) |
+| Item | Price | Badges | FireRed / LeafGreen | Ruby / Sapphire / Emerald |
+|---|---|---|---|---|
+| DAWN STONE | ₽2100 | 3 | Celadon Dept. Store 4F (evolution item machine) | Lilycove Dept. Store 2F (evolution item machine) |
+| DUBIOUS DISC | ₽2100 | 3 | Celadon Dept. Store 4F (evolution item machine) | Lilycove Dept. Store 2F (evolution item machine) |
+| DUSK STONE | ₽2100 | 2 | Celadon Dept. Store 4F (evolution item machine) | Lilycove Dept. Store 2F (evolution item machine) |
+| ELECTIRIZER | ₽2100 | 3 | Celadon Dept. Store 4F (evolution item machine) | Lilycove Dept. Store 2F (evolution item machine) |
+| ICE STONE | ₽3000 | 4 | Celadon Dept. Store 4F (evolution item machine) | Lilycove Dept. Store 2F (evolution item machine) |
+| MAGMARIZER | ₽2100 | 3 | Celadon Dept. Store 4F (evolution item machine) | Lilycove Dept. Store 2F (evolution item machine) |
+| PROTECTOR | ₽2100 | 3 | Celadon Dept. Store 4F (evolution item machine) | Lilycove Dept. Store 2F (evolution item machine) |
+| REAPER CLOTH | ₽2100 | 3 | Celadon Dept. Store 4F (evolution item machine) | Lilycove Dept. Store 2F (evolution item machine) |
+| SACHET | ₽2100 | 1 | Celadon Dept. Store 4F (evolution item machine) | Lilycove Dept. Store 2F (evolution item machine) |
+| SHINY STONE | ₽2100 | 3 | Celadon Dept. Store 4F (evolution item machine) | Lilycove Dept. Store 2F (evolution item machine) |
+| SWEET APPLE | ₽2100 | 3 | Celadon Dept. Store 4F (evolution item machine) | Lilycove Dept. Store 2F (evolution item machine) |
+| TART APPLE | ₽2100 | 3 | Celadon Dept. Store 4F (evolution item machine) | Lilycove Dept. Store 2F (evolution item machine) |
+| WHIPPED DREAM | ₽2100 | 1 | Celadon Dept. Store 4F (evolution item machine) | Lilycove Dept. Store 2F (evolution item machine) |
+| AUSPIC. ARMOR | ₽2100 | 4 | Celadon Dept. Store 4F (evolution item machine) | Lilycove Dept. Store 2F (evolution item machine) |
+| BLACK AUGURITE | ₽1000 | 3 | Celadon Dept. Store 4F (evolution item machine) | Lilycove Dept. Store 2F (evolution item machine) |
+| MALIC. ARMOR | ₽2100 | 4 | Celadon Dept. Store 4F (evolution item machine) | Lilycove Dept. Store 2F (evolution item machine) |
+| METAL ALLOY | ₽3000 | 8 | Celadon Dept. Store 4F (evolution item machine) | Lilycove Dept. Store 2F (evolution item machine) |
+| PEAT BLOCK | ₽1000 | 3 | Celadon Dept. Store 4F (evolution item machine) | Lilycove Dept. Store 2F (evolution item machine) |
+| SYRUPY APPLE | ₽2100 | 5 | Celadon Dept. Store 4F (evolution item machine) | Lilycove Dept. Store 2F (evolution item machine) |
+| CRACKED POT | ₽3000 | 1 | Celadon Dept. Store 4F (evolution item machine) | Lilycove Dept. Store 2F (evolution item machine) |
+| CHIPPED POT | ₽3000 | 3 | Celadon Dept. Store 4F (evolution item machine) | Lilycove Dept. Store 2F (evolution item machine) |
+| UNREMARK. CUP | ₽2100 | 5 | Celadon Dept. Store 4F (evolution item machine) | Lilycove Dept. Store 2F (evolution item machine) |
+| MASTERPC. CUP | ₽2100 | 7 | Celadon Dept. Store 4F (evolution item machine) | Lilycove Dept. Store 2F (evolution item machine) |
+| STRAWBRY SWEET | ₽2100 | 2 | Celadon Dept. Store 4F (evolution item machine) | Lilycove Dept. Store 2F (evolution item machine) |
+| BERRY SWEET | ₽2100 | 2 | Celadon Dept. Store 4F (evolution item machine) | Lilycove Dept. Store 2F (evolution item machine) |
+| LOVE SWEET | ₽2100 | 2 | Celadon Dept. Store 4F (evolution item machine) | Lilycove Dept. Store 2F (evolution item machine) |
+| STAR SWEET | ₽2100 | 2 | Celadon Dept. Store 4F (evolution item machine) | Lilycove Dept. Store 2F (evolution item machine) |
+| CLOVER SWEET | ₽2100 | 2 | Celadon Dept. Store 4F (evolution item machine) | Lilycove Dept. Store 2F (evolution item machine) |
+| FLOWER SWEET | ₽2100 | 2 | Celadon Dept. Store 4F (evolution item machine) | Lilycove Dept. Store 2F (evolution item machine) |
+| RIBBON SWEET | ₽2100 | 2 | Celadon Dept. Store 4F (evolution item machine) | Lilycove Dept. Store 2F (evolution item machine) |
+| RAZOR CLAW | ₽2100 | 4 | Celadon Dept. Store 4F (evolution item machine) | Lilycove Dept. Store 2F (evolution item machine) |
+| RAZOR FANG | ₽2100 | 2 | Celadon Dept. Store 4F (evolution item machine) | Lilycove Dept. Store 2F (evolution item machine) |
+| OVAL STONE | ₽2100 | 3 | Celadon Dept. Store 4F (evolution item machine) | Lilycove Dept. Store 2F (evolution item machine) |
+| LEADER'S CREST | ₽2100 | 5 | Celadon Dept. Store 4F (evolution item machine) | Lilycove Dept. Store 2F (evolution item machine) |
+| DARK SCROLL | ₽2100 | 3 | Celadon Dept. Store 4F (evolution item machine) | Lilycove Dept. Store 2F (evolution item machine) |
+| WATER SCROLL | ₽2100 | 3 | Celadon Dept. Store 4F (evolution item machine) | Lilycove Dept. Store 2F (evolution item machine) |
+| GALARICA CUFF | ₽2100 | 5 | Celadon Dept. Store 4F (evolution item machine) | Lilycove Dept. Store 2F (evolution item machine) |
+| GALAR. WREATH | ₽2100 | 5 | Celadon Dept. Store 4F (evolution item machine) | Lilycove Dept. Store 2F (evolution item machine) |
+| LINKING CORD | ₽2100 | 2 | Celadon Dept. Store 4F (evolution item machine) | Lilycove Dept. Store 2F (evolution item machine) |
 
 Prices are what a store charges; it buys the item back at half. They come from Bulbapedia
 (twice the sell price listed for the earliest game that has one), or ₽2100, the Gen 3
 evolution stone price, where there is none. See [CREDITS](../CREDITS.md).
+
+Badges is how many Gym Badges the machine wants before it sells the item, after where the
+item turns up in the newest game that has Gym Badges; post-game finds need all 8.
 
 ## What each item is for
 
 ### DAWN STONE
 
 - Price: ₽2100
+- Needs 3 Gym Badges
 - FireRed / LeafGreen: Celadon Dept. Store 4F (evolution item machine)
 - Ruby / Sapphire / Emerald: Lilycove Dept. Store 2F (evolution item machine)
 - Evolves: Kirlia → Gallade (use it on, male only); Snorunt → Froslass (use it on, female only)
@@ -69,6 +73,7 @@ evolution stone price, where there is none. See [CREDITS](../CREDITS.md).
 ### DUBIOUS DISC
 
 - Price: ₽2100
+- Needs 3 Gym Badges
 - FireRed / LeafGreen: Celadon Dept. Store 4F (evolution item machine)
 - Ruby / Sapphire / Emerald: Lilycove Dept. Store 2F (evolution item machine)
 - Evolves: Porygon2 → Porygon-Z (trade holding it)
@@ -76,6 +81,7 @@ evolution stone price, where there is none. See [CREDITS](../CREDITS.md).
 ### DUSK STONE
 
 - Price: ₽2100
+- Needs 2 Gym Badges
 - FireRed / LeafGreen: Celadon Dept. Store 4F (evolution item machine)
 - Ruby / Sapphire / Emerald: Lilycove Dept. Store 2F (evolution item machine)
 - Evolves: Doublade → Aegislash (use it on); Lampent → Chandelure (use it on); Misdreavus → Mismagius (use it on); Murkrow → Honchkrow (use it on)
@@ -83,6 +89,7 @@ evolution stone price, where there is none. See [CREDITS](../CREDITS.md).
 ### ELECTIRIZER
 
 - Price: ₽2100
+- Needs 3 Gym Badges
 - FireRed / LeafGreen: Celadon Dept. Store 4F (evolution item machine)
 - Ruby / Sapphire / Emerald: Lilycove Dept. Store 2F (evolution item machine)
 - Evolves: Electabuzz → Electivire (trade holding it)
@@ -90,6 +97,7 @@ evolution stone price, where there is none. See [CREDITS](../CREDITS.md).
 ### ICE STONE
 
 - Price: ₽3000
+- Needs 4 Gym Badges
 - FireRed / LeafGreen: Celadon Dept. Store 4F (evolution item machine)
 - Ruby / Sapphire / Emerald: Lilycove Dept. Store 2F (evolution item machine)
 - Evolves: Cetoddle → Cetitan (use it on); Crabrawler → Crabominable (use it on); Darumaka (Galar) → Darmanitan (Galar Standard) (use it on); Eevee → Glaceon (use it on); Sandshrew (Alola) → Sandslash (Alola) (use it on); Vulpix (Alola) → Ninetales (Alola) (use it on)
@@ -97,6 +105,7 @@ evolution stone price, where there is none. See [CREDITS](../CREDITS.md).
 ### MAGMARIZER
 
 - Price: ₽2100
+- Needs 3 Gym Badges
 - FireRed / LeafGreen: Celadon Dept. Store 4F (evolution item machine)
 - Ruby / Sapphire / Emerald: Lilycove Dept. Store 2F (evolution item machine)
 - Evolves: Magmar → Magmortar (trade holding it)
@@ -104,6 +113,7 @@ evolution stone price, where there is none. See [CREDITS](../CREDITS.md).
 ### PROTECTOR
 
 - Price: ₽2100
+- Needs 3 Gym Badges
 - FireRed / LeafGreen: Celadon Dept. Store 4F (evolution item machine)
 - Ruby / Sapphire / Emerald: Lilycove Dept. Store 2F (evolution item machine)
 - Evolves: Rhydon → Rhyperior (trade holding it)
@@ -111,6 +121,7 @@ evolution stone price, where there is none. See [CREDITS](../CREDITS.md).
 ### REAPER CLOTH
 
 - Price: ₽2100
+- Needs 3 Gym Badges
 - FireRed / LeafGreen: Celadon Dept. Store 4F (evolution item machine)
 - Ruby / Sapphire / Emerald: Lilycove Dept. Store 2F (evolution item machine)
 - Evolves: Dusclops → Dusknoir (trade holding it)
@@ -118,6 +129,7 @@ evolution stone price, where there is none. See [CREDITS](../CREDITS.md).
 ### SACHET
 
 - Price: ₽2100
+- Needs 1 Gym Badge
 - FireRed / LeafGreen: Celadon Dept. Store 4F (evolution item machine)
 - Ruby / Sapphire / Emerald: Lilycove Dept. Store 2F (evolution item machine)
 - Evolves: Spritzee → Aromatisse (trade holding it)
@@ -125,6 +137,7 @@ evolution stone price, where there is none. See [CREDITS](../CREDITS.md).
 ### SHINY STONE
 
 - Price: ₽2100
+- Needs 3 Gym Badges
 - FireRed / LeafGreen: Celadon Dept. Store 4F (evolution item machine)
 - Ruby / Sapphire / Emerald: Lilycove Dept. Store 2F (evolution item machine)
 - Evolves: Floette (Blue) → Florges (Blue) (use it on); Floette (Orange) → Florges (Orange) (use it on); Floette (White) → Florges (White) (use it on); Floette (Yellow) → Florges (Yellow) (use it on); Floette → Florges (use it on); Minccino → Cinccino (use it on); Roselia → Roserade (use it on); Togetic → Togekiss (use it on)
@@ -132,6 +145,7 @@ evolution stone price, where there is none. See [CREDITS](../CREDITS.md).
 ### SWEET APPLE
 
 - Price: ₽2100
+- Needs 3 Gym Badges
 - FireRed / LeafGreen: Celadon Dept. Store 4F (evolution item machine)
 - Ruby / Sapphire / Emerald: Lilycove Dept. Store 2F (evolution item machine)
 - Evolves: Applin → Appletun (use it on)
@@ -139,6 +153,7 @@ evolution stone price, where there is none. See [CREDITS](../CREDITS.md).
 ### TART APPLE
 
 - Price: ₽2100
+- Needs 3 Gym Badges
 - FireRed / LeafGreen: Celadon Dept. Store 4F (evolution item machine)
 - Ruby / Sapphire / Emerald: Lilycove Dept. Store 2F (evolution item machine)
 - Evolves: Applin → Flapple (use it on)
@@ -146,6 +161,7 @@ evolution stone price, where there is none. See [CREDITS](../CREDITS.md).
 ### WHIPPED DREAM
 
 - Price: ₽2100
+- Needs 1 Gym Badge
 - FireRed / LeafGreen: Celadon Dept. Store 4F (evolution item machine)
 - Ruby / Sapphire / Emerald: Lilycove Dept. Store 2F (evolution item machine)
 - Evolves: Swirlix → Slurpuff (trade holding it)
@@ -153,6 +169,7 @@ evolution stone price, where there is none. See [CREDITS](../CREDITS.md).
 ### AUSPIC. ARMOR
 
 - Price: ₽2100
+- Needs 4 Gym Badges
 - FireRed / LeafGreen: Celadon Dept. Store 4F (evolution item machine)
 - Ruby / Sapphire / Emerald: Lilycove Dept. Store 2F (evolution item machine)
 - Evolves: Charcadet → Armarouge (use it on)
@@ -160,6 +177,7 @@ evolution stone price, where there is none. See [CREDITS](../CREDITS.md).
 ### BLACK AUGURITE
 
 - Price: ₽1000
+- Needs 3 Gym Badges
 - FireRed / LeafGreen: Celadon Dept. Store 4F (evolution item machine)
 - Ruby / Sapphire / Emerald: Lilycove Dept. Store 2F (evolution item machine)
 - Evolves: Scyther → Kleavor (use it on)
@@ -167,6 +185,7 @@ evolution stone price, where there is none. See [CREDITS](../CREDITS.md).
 ### MALIC. ARMOR
 
 - Price: ₽2100
+- Needs 4 Gym Badges
 - FireRed / LeafGreen: Celadon Dept. Store 4F (evolution item machine)
 - Ruby / Sapphire / Emerald: Lilycove Dept. Store 2F (evolution item machine)
 - Evolves: Charcadet → Ceruledge (use it on)
@@ -174,6 +193,7 @@ evolution stone price, where there is none. See [CREDITS](../CREDITS.md).
 ### METAL ALLOY
 
 - Price: ₽3000
+- Needs 8 Gym Badges
 - FireRed / LeafGreen: Celadon Dept. Store 4F (evolution item machine)
 - Ruby / Sapphire / Emerald: Lilycove Dept. Store 2F (evolution item machine)
 - Evolves: Duraludon → Archaludon (use it on)
@@ -181,6 +201,7 @@ evolution stone price, where there is none. See [CREDITS](../CREDITS.md).
 ### PEAT BLOCK
 
 - Price: ₽1000
+- Needs 3 Gym Badges
 - FireRed / LeafGreen: Celadon Dept. Store 4F (evolution item machine)
 - Ruby / Sapphire / Emerald: Lilycove Dept. Store 2F (evolution item machine)
 - Evolves: Ursaring → Ursaluna (use it on)
@@ -188,6 +209,7 @@ evolution stone price, where there is none. See [CREDITS](../CREDITS.md).
 ### SYRUPY APPLE
 
 - Price: ₽2100
+- Needs 5 Gym Badges
 - FireRed / LeafGreen: Celadon Dept. Store 4F (evolution item machine)
 - Ruby / Sapphire / Emerald: Lilycove Dept. Store 2F (evolution item machine)
 - Evolves: Applin → Dipplin (use it on)
@@ -195,6 +217,7 @@ evolution stone price, where there is none. See [CREDITS](../CREDITS.md).
 ### CRACKED POT
 
 - Price: ₽3000
+- Needs 1 Gym Badge
 - FireRed / LeafGreen: Celadon Dept. Store 4F (evolution item machine)
 - Ruby / Sapphire / Emerald: Lilycove Dept. Store 2F (evolution item machine)
 - Evolves: Sinistea → Polteageist (use it on)
@@ -202,6 +225,7 @@ evolution stone price, where there is none. See [CREDITS](../CREDITS.md).
 ### CHIPPED POT
 
 - Price: ₽3000
+- Needs 3 Gym Badges
 - FireRed / LeafGreen: Celadon Dept. Store 4F (evolution item machine)
 - Ruby / Sapphire / Emerald: Lilycove Dept. Store 2F (evolution item machine)
 - Evolves: Sinistea (Antique) → Polteageist (Antique) (use it on)
@@ -209,6 +233,7 @@ evolution stone price, where there is none. See [CREDITS](../CREDITS.md).
 ### UNREMARK. CUP
 
 - Price: ₽2100
+- Needs 5 Gym Badges
 - FireRed / LeafGreen: Celadon Dept. Store 4F (evolution item machine)
 - Ruby / Sapphire / Emerald: Lilycove Dept. Store 2F (evolution item machine)
 - Evolves: Poltchageist → Sinistcha (use it on)
@@ -216,6 +241,7 @@ evolution stone price, where there is none. See [CREDITS](../CREDITS.md).
 ### MASTERPC. CUP
 
 - Price: ₽2100
+- Needs 7 Gym Badges
 - FireRed / LeafGreen: Celadon Dept. Store 4F (evolution item machine)
 - Ruby / Sapphire / Emerald: Lilycove Dept. Store 2F (evolution item machine)
 - Evolves: Poltchageist (Artisan) → Sinistcha (Masterpiece) (use it on)
@@ -223,6 +249,7 @@ evolution stone price, where there is none. See [CREDITS](../CREDITS.md).
 ### STRAWBRY SWEET
 
 - Price: ₽2100
+- Needs 2 Gym Badges
 - FireRed / LeafGreen: Celadon Dept. Store 4F (evolution item machine)
 - Ruby / Sapphire / Emerald: Lilycove Dept. Store 2F (evolution item machine)
 - Evolves: Milcery → Alcremie (hold it while it levels up, at night); Milcery → Alcremie (hold it while it levels up, by day)
@@ -230,6 +257,7 @@ evolution stone price, where there is none. See [CREDITS](../CREDITS.md).
 ### BERRY SWEET
 
 - Price: ₽2100
+- Needs 2 Gym Badges
 - FireRed / LeafGreen: Celadon Dept. Store 4F (evolution item machine)
 - Ruby / Sapphire / Emerald: Lilycove Dept. Store 2F (evolution item machine)
 - Evolves: Milcery → Alcremie (hold it while it levels up, at night); Milcery → Alcremie (hold it while it levels up, by day)
@@ -237,6 +265,7 @@ evolution stone price, where there is none. See [CREDITS](../CREDITS.md).
 ### LOVE SWEET
 
 - Price: ₽2100
+- Needs 2 Gym Badges
 - FireRed / LeafGreen: Celadon Dept. Store 4F (evolution item machine)
 - Ruby / Sapphire / Emerald: Lilycove Dept. Store 2F (evolution item machine)
 - Evolves: Milcery → Alcremie (hold it while it levels up, at night); Milcery → Alcremie (hold it while it levels up, by day)
@@ -244,6 +273,7 @@ evolution stone price, where there is none. See [CREDITS](../CREDITS.md).
 ### STAR SWEET
 
 - Price: ₽2100
+- Needs 2 Gym Badges
 - FireRed / LeafGreen: Celadon Dept. Store 4F (evolution item machine)
 - Ruby / Sapphire / Emerald: Lilycove Dept. Store 2F (evolution item machine)
 - Evolves: Milcery → Alcremie (hold it while it levels up, at night); Milcery → Alcremie (hold it while it levels up, by day)
@@ -251,6 +281,7 @@ evolution stone price, where there is none. See [CREDITS](../CREDITS.md).
 ### CLOVER SWEET
 
 - Price: ₽2100
+- Needs 2 Gym Badges
 - FireRed / LeafGreen: Celadon Dept. Store 4F (evolution item machine)
 - Ruby / Sapphire / Emerald: Lilycove Dept. Store 2F (evolution item machine)
 - Evolves: Milcery → Alcremie (hold it while it levels up, at night); Milcery → Alcremie (hold it while it levels up, by day)
@@ -258,6 +289,7 @@ evolution stone price, where there is none. See [CREDITS](../CREDITS.md).
 ### FLOWER SWEET
 
 - Price: ₽2100
+- Needs 2 Gym Badges
 - FireRed / LeafGreen: Celadon Dept. Store 4F (evolution item machine)
 - Ruby / Sapphire / Emerald: Lilycove Dept. Store 2F (evolution item machine)
 - Evolves: Milcery → Alcremie (hold it while it levels up, at night); Milcery → Alcremie (hold it while it levels up, by day)
@@ -265,6 +297,7 @@ evolution stone price, where there is none. See [CREDITS](../CREDITS.md).
 ### RIBBON SWEET
 
 - Price: ₽2100
+- Needs 2 Gym Badges
 - FireRed / LeafGreen: Celadon Dept. Store 4F (evolution item machine)
 - Ruby / Sapphire / Emerald: Lilycove Dept. Store 2F (evolution item machine)
 - Evolves: Milcery → Alcremie (hold it while it levels up, at night); Milcery → Alcremie (hold it while it levels up, by day)
@@ -272,6 +305,7 @@ evolution stone price, where there is none. See [CREDITS](../CREDITS.md).
 ### RAZOR CLAW
 
 - Price: ₽2100
+- Needs 4 Gym Badges
 - FireRed / LeafGreen: Celadon Dept. Store 4F (evolution item machine)
 - Ruby / Sapphire / Emerald: Lilycove Dept. Store 2F (evolution item machine)
 - Evolves: Sneasel (Hisui) → Sneasler (hold it while it levels up, by day); Sneasel → Weavile (hold it while it levels up, at night)
@@ -279,6 +313,7 @@ evolution stone price, where there is none. See [CREDITS](../CREDITS.md).
 ### RAZOR FANG
 
 - Price: ₽2100
+- Needs 2 Gym Badges
 - FireRed / LeafGreen: Celadon Dept. Store 4F (evolution item machine)
 - Ruby / Sapphire / Emerald: Lilycove Dept. Store 2F (evolution item machine)
 - Evolves: Gligar → Gliscor (hold it while it levels up, at night)
@@ -286,6 +321,7 @@ evolution stone price, where there is none. See [CREDITS](../CREDITS.md).
 ### OVAL STONE
 
 - Price: ₽2100
+- Needs 3 Gym Badges
 - FireRed / LeafGreen: Celadon Dept. Store 4F (evolution item machine)
 - Ruby / Sapphire / Emerald: Lilycove Dept. Store 2F (evolution item machine)
 - Evolves: Happiny → Chansey (hold it while it levels up, by day)
@@ -293,6 +329,7 @@ evolution stone price, where there is none. See [CREDITS](../CREDITS.md).
 ### LEADER'S CREST
 
 - Price: ₽2100
+- Needs 5 Gym Badges
 - FireRed / LeafGreen: Celadon Dept. Store 4F (evolution item machine)
 - Ruby / Sapphire / Emerald: Lilycove Dept. Store 2F (evolution item machine)
 - Evolves: Bisharp → Kingambit (hold it while it levels up)
@@ -300,6 +337,7 @@ evolution stone price, where there is none. See [CREDITS](../CREDITS.md).
 ### DARK SCROLL
 
 - Price: ₽2100
+- Needs 3 Gym Badges
 - FireRed / LeafGreen: Celadon Dept. Store 4F (evolution item machine)
 - Ruby / Sapphire / Emerald: Lilycove Dept. Store 2F (evolution item machine)
 - Evolves: Kubfu → Urshifu (use it on)
@@ -307,6 +345,7 @@ evolution stone price, where there is none. See [CREDITS](../CREDITS.md).
 ### WATER SCROLL
 
 - Price: ₽2100
+- Needs 3 Gym Badges
 - FireRed / LeafGreen: Celadon Dept. Store 4F (evolution item machine)
 - Ruby / Sapphire / Emerald: Lilycove Dept. Store 2F (evolution item machine)
 - Evolves: Kubfu → Urshifu (Rapid Strike) (use it on)
@@ -314,6 +353,7 @@ evolution stone price, where there is none. See [CREDITS](../CREDITS.md).
 ### GALARICA CUFF
 
 - Price: ₽2100
+- Needs 5 Gym Badges
 - FireRed / LeafGreen: Celadon Dept. Store 4F (evolution item machine)
 - Ruby / Sapphire / Emerald: Lilycove Dept. Store 2F (evolution item machine)
 - Evolves: Slowpoke (Galar) → Slowbro (Galar) (use it on)
@@ -321,6 +361,7 @@ evolution stone price, where there is none. See [CREDITS](../CREDITS.md).
 ### GALAR. WREATH
 
 - Price: ₽2100
+- Needs 5 Gym Badges
 - FireRed / LeafGreen: Celadon Dept. Store 4F (evolution item machine)
 - Ruby / Sapphire / Emerald: Lilycove Dept. Store 2F (evolution item machine)
 - Evolves: Slowpoke (Galar) → Slowking (Galar) (use it on)
@@ -328,6 +369,7 @@ evolution stone price, where there is none. See [CREDITS](../CREDITS.md).
 ### LINKING CORD
 
 - Price: ₽2100
+- Needs 2 Gym Badges
 - FireRed / LeafGreen: Celadon Dept. Store 4F (evolution item machine)
 - Ruby / Sapphire / Emerald: Lilycove Dept. Store 2F (evolution item machine)
 - Evolves: Boldore → Gigalith (use it on, in place of a trade); Clamperl → Gorebyss (use it on, in place of a trade, while it holds Deep Sea Scale); Clamperl → Huntail (use it on, in place of a trade, while it holds Deep Sea Tooth); Dusclops → Dusknoir (use it on, in place of a trade, while it holds Reaper Cloth); Electabuzz → Electivire (use it on, in place of a trade, while it holds Electirizer); Graveler (Alola) → Golem (Alola) (use it on, in place of a trade); Graveler → Golem (use it on, in place of a trade); Gurdurr → Conkeldurr (use it on, in place of a trade); Haunter → Gengar (use it on, in place of a trade); Kadabra → Alakazam (use it on, in place of a trade); Machoke → Machamp (use it on, in place of a trade); Magmar → Magmortar (use it on, in place of a trade, while it holds Magmarizer); Onix → Steelix (use it on, in place of a trade, while it holds Metal Coat); Phantump → Trevenant (use it on, in place of a trade); Poliwhirl → Politoed (use it on, in place of a trade, while it holds King's Rock); Porygon → Porygon2 (use it on, in place of a trade, while it holds Up-Grade); Porygon2 → Porygon-Z (use it on, in place of a trade, while it holds Dubious Disc); Pumpkaboo (Large) → Gourgeist (Large) (use it on, in place of a trade); Pumpkaboo (Small) → Gourgeist (Small) (use it on, in place of a trade); Pumpkaboo (Super) → Gourgeist (Super) (use it on, in place of a trade); Pumpkaboo → Gourgeist (use it on, in place of a trade); Rhydon → Rhyperior (use it on, in place of a trade, while it holds Protector); Scyther → Scizor (use it on, in place of a trade, while it holds Metal Coat); Seadra → Kingdra (use it on, in place of a trade, while it holds Dragon Scale); Slowpoke → Slowking (use it on, in place of a trade, while it holds King's Rock); Spritzee → Aromatisse (use it on, in place of a trade, while it holds Sachet); Swirlix → Slurpuff (use it on, in place of a trade, while it holds Whipped Dream)

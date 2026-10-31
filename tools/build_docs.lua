@@ -37,8 +37,11 @@ end
 local items = load("data/items.lua")
 local shops = load("data/shops.lua")
 -- the vending machines (data/vending.lua) are stores too: each one's tabs as one list
--- (one per place it stands)
+-- (one per place it stands); `gates` the Gym Badges a machine wants for an item (by slug, or a
+-- TM's move)
+local gates = {}
 for _, m in ipairs(load("data/vending.lua")) do
+  for key, n in pairs(m.badges or {}) do gates[key] = n end
   local add = {}
   for _, tab in ipairs(m.tabs) do
     for _, slug in ipairs(tab.add) do add[#add + 1] = slug end
@@ -263,12 +266,12 @@ local L = {
   "",
   "## Summary",
   "",
-  "| Item | Price | FireRed / LeafGreen | Ruby / Sapphire / Emerald |",
-  "|---|---|---|---|",
+  "| Item | Price | Badges | FireRed / LeafGreen | Ruby / Sapphire / Emerald |",
+  "|---|---|---|---|---|",
 }
 for _, it in ipairs(items) do
   local s = sold[it.slug] or { frlg = {}, rse = {} }
-  L[#L + 1] = string.format("| %s | ₽%d | %s | %s |", it.name, it.price,
+  L[#L + 1] = string.format("| %s | ₽%d | %d | %s | %s |", it.name, it.price, gates[it.slug] or 0,
     #s.frlg > 0 and join(s.frlg, "; ") or "not sold",
     #s.rse > 0 and join(s.rse, "; ") or "not sold")
 end
@@ -278,12 +281,16 @@ L[#L + 1] = "Prices are what a store charges; it buys the item back at half. The
 L[#L + 1] = "(twice the sell price listed for the earliest game that has one), or ₽2100, the Gen 3"
 L[#L + 1] = "evolution stone price, where there is none. See [CREDITS](../CREDITS.md)."
 L[#L + 1] = ""
+L[#L + 1] = "Badges is how many Gym Badges the machine wants before it sells the item, after where the"
+L[#L + 1] = "item turns up in the newest game that has Gym Badges; post-game finds need all 8."
+L[#L + 1] = ""
 L[#L + 1] = "## What each item is for"
 L[#L + 1] = ""
 for _, it in ipairs(items) do
   L[#L + 1] = "### " .. it.name
   L[#L + 1] = ""
   L[#L + 1] = "- Price: ₽" .. it.price
+  if (gates[it.slug] or 0) > 0 then L[#L + 1] = "- Needs " .. gates[it.slug] .. " Gym Badge" .. (gates[it.slug] == 1 and "" or "s") end
   local s = sold[it.slug] or { frlg = {}, rse = {} }
   L[#L + 1] = "- FireRed / LeafGreen: " .. (#s.frlg > 0 and join(s.frlg, "; ") or "not sold")
   L[#L + 1] = "- Ruby / Sapphire / Emerald: " .. (#s.rse > 0 and join(s.rse, "; ") or "not sold")
@@ -664,18 +671,19 @@ local TM = {
   "TMs for the newer moves, numbered after Gen 3's 50: every move that is a TM in Scarlet / Violet",
   "or Sword / Shield and works in battle here. They go in the TM Case (made bigger to hold them",
   "all), are used up when taught like Gen 3's TMs, and a Pokémon can learn one if it learns that",
-  "move by TM in any of the main games.",
+  "move by TM in any of the main games. Badges is how many Gym Badges the TM machine wants before",
+  "it sells one, after where the TM turns up in its newest game; post-game finds need all 8.",
   "",
   "*Generated from `data/tms.lua`, `data/shops.lua` and `data/vending.lua` by `tools/build_docs.lua`.*",
   "",
-  "| TM | Move | Type | Price | FireRed / LeafGreen | Ruby / Sapphire / Emerald | Pokémon |",
-  "|---|---|---|---|---|---|---|",
+  "| TM | Move | Type | Price | Badges | FireRed / LeafGreen | Ruby / Sapphire / Emerald | Pokémon |",
+  "|---|---|---|---|---|---|---|---|",
 }
 for _, t in ipairs(tms) do
   local m = moveById[t.move] or {}
   local s = sold[t.id:lower()] or { frlg = {}, rse = {} }
-  TM[#TM + 1] = string.format("| TM%d | %s | %s | ₽%d | %s | %s | %d |", t.number, m.full or title(t.move:gsub("_", " ")),
-    title(m.type or "?"), t.price, #s.frlg > 0 and join(s.frlg, "; ") or "not sold",
+  TM[#TM + 1] = string.format("| TM%d | %s | %s | ₽%d | %d | %s | %s | %d |", t.number, m.full or title(t.move:gsub("_", " ")),
+    title(m.type or "?"), t.price, gates[t.move] or 0, #s.frlg > 0 and join(s.frlg, "; ") or "not sold",
     #s.rse > 0 and join(s.rse, "; ") or "not sold", #t.dex + #t.forms)
 end
 out("docs/tms.md", TM)

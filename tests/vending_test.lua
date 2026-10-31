@@ -130,6 +130,27 @@ for _, e in ipairs(tmTabs[1].entries) do byNumber[e.tm.number] = e end
 T.eq(byNumber[62] and byNumber[62].tm.move, "DRAINING KISS", "TM62: DRAINING KISS, with its space")
 T.eq(byNumber[111] and byNumber[111].tm.move, "MISTY TERRAIN", "TM111: MISTY TERRAIN")
 
+-- the Gym Badges each item needs: 0-8, and every gate names an item (or a TM's move) on sale
+local tmByMove = {}
+for _, t in ipairs(tms) do tmByMove[t.move] = t.id:lower() end
+for _, m in ipairs(machines) do
+  local stocked = {}
+  for _, tab in ipairs(m.tabs) do for _, slug in ipairs(tab.add) do stocked[slug] = true end end
+  for key, need in pairs(m.badges or {}) do
+    T.check(stocked[key] or stocked[tmByMove[key] or ""], m.id .. ": the badge gate " .. key .. " is on sale")
+    T.check(need >= 1 and need <= 8 and need % 1 == 0, m.id .. ": " .. key .. " needs 1-8 badges")
+  end
+end
+local gateOf = {}
+for _, tab in ipairs(evoTabs) do for _, e in ipairs(tab.entries) do gateOf[e.slug] = e.badges end end
+for _, e in ipairs(tmTabs[1].entries) do gateOf[e.slug] = e.badges end
+T.eq(gateOf["dusk-stone"], 2, "Dusk Stone needs 2 badges")
+T.eq(gateOf["metal-alloy"], 8, "Metal Alloy needs 8")
+T.eq(gateOf["protector"], 3, "Protector needs 3")
+T.eq(gateOf[tmByMove.ICE_FANG], 0, "Ice Fang's TM needs none")
+T.eq(gateOf[tmByMove.VOLT_SWITCH], 3, "Volt Switch's TM needs 3 (Iono's)")
+T.eq(gateOf[tmByMove.SCALD], 8, "Scald's TM needs 8")
+
 -- ------- the screen, on a session of its own
 
 local Bag = require("src.core.game3.bag")
@@ -431,5 +452,37 @@ T.check(layouts["portrait 9:19.5"].portrait and layouts["portrait 3:4"].portrait
 T.check(layouts["16:9"].cols > layouts["3:2"].cols, "16:9 has more columns than 3:2")
 T.check(layouts["portrait 9:19.5"].rows > layouts["3:2"].rows, "a phone held upright has more rows")
 T.check(layouts["21:9"].pw <= S.PAGE.MAX_WIDTH, "a very wide window keeps the page to its widest")
+
+-- ------- Gym Badges: an item the player hasn't the badges for is shown, but not sold
+do
+  local held = 2
+  local wallet = { money = 100000, bag = Bag.new() }
+  local t2 = 0
+  local S2 = makeScreen({ session = function() return wallet end, Bag = Bag, now = function() return t2 end,
+                          badges = function() return held end })
+  local function at(slug)
+    S2.open(byId.evo, evoTabs)
+    t2 = t2 + BOOT + 0.01
+    local st2 = S2.state()
+    S2.input(input({}, {}))
+    for i, e in ipairs(st2.tabs[st2.tab].entries) do if e.slug == slug then st2.cursor = i; return st2, e end end
+  end
+  local st2, claw = at("razor-claw")
+  T.check(claw ~= nil, "Razor Claw is on the machine")
+  T.eq(S2.locked(claw), 4, "with 2 badges, Razor Claw still needs its 4")
+  T.check(not S2.buy(), "and it isn't sold")
+  T.eq(Bag.get(wallet.bag, claw.id), 0, "nothing went into the Bag")
+  T.eq(wallet.money, 100000, "nor any money off")
+  T.eq(st2.toast and st2.toast.text, "You need 4 Gym Badges for this.", "the screen says how many")
+  S2.close()
+  local _, dusk2 = at("dusk-stone")
+  T.check(not S2.locked(dusk2), "Dusk Stone (2 badges) is open with 2")
+  T.check(S2.buy(), "and sells")
+  S2.close()
+  held = 4
+  local _, claw2 = at("razor-claw")
+  T.check(not S2.locked(claw2) and S2.buy(), "with 4 badges, Razor Claw sells")
+  S2.close()
+end
 
 T.finish()

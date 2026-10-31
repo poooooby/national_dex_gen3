@@ -5,6 +5,16 @@ All notable changes to this mod are documented here, in
 
 ## [Unreleased]
 
+## [1.6.1] - 2026-10-31
+
+### Added
+
+- **The vending machines sell by Gym Badges.** Each evolution item and TM unlocks with the badges
+  it matches in the newest game that has them (Scarlet / Violet, else Sword / Shield or Legends:
+  Arceus): Ice Fang, Stealth Rock and Tailwind from the start, Dusk Stone at 2, Protector and Volt
+  Switch at 3, Razor Claw at 4, post-game finds like Scald, Close Combat and Metal Alloy at 8.
+  Items the player can't buy yet stay on the machine, faded, with the badges they need.
+
 ## [1.6.0] - 2026-10-31
 
 ### Added

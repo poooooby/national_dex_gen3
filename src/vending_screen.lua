@@ -59,6 +59,9 @@ return function(deps)
   S.TEXT = {
     noMoney = "You don't have enough money.",
     noRoom = "There's no more room in the BAG.",
+    -- (an item the player hasn't the Gym Badges for: the tile's tag, the card's line, the toast)
+    badgeTag = function(n) return n == 1 and "1 BADGE" or (n .. " BADGES") end,
+    needBadges = function(n) return "You need " .. (n == 1 and "1 Gym Badge" or (n .. " Gym Badges")) .. " for this." end,
     soldOut = "Nothing for sale here.",
     hints = {
       grid = { { "A", "Choose" }, { "B", "Exit" }, { "L R", "Tab" } },
@@ -70,6 +73,7 @@ return function(deps)
   }
 
   local r = nil   -- the open machine
+  local entryText
 
   local function now() return deps.now and deps.now() or 0 end
   local function se(name) if deps.se then pcall(deps.se, name) end end
@@ -168,8 +172,14 @@ return function(deps)
     r = { machine = machine, tabs = tabsFor(machine, tabs or {}), tab = 1, cursor = 1, scroll = 0,
           focus = "grid", qty = 1, yes = true, t0 = now(), held = {}, hit = {}, tabScroll = 0,
           cols = S.COLS, rows = S.ROWS, shown = 0,
+          -- (the Gym Badges, counted once: none are won while the screen is up)
+          badges = 8,
           -- (the A that opened it is still down: nothing until it is let go)
           waitRelease = true }
+    if deps.badges then
+      local ok, n = pcall(deps.badges)
+      r.badges = ok and tonumber(n) or r.badges
+    end
     se("SE_PC_ON")
     return true
   end
@@ -252,8 +262,16 @@ return function(deps)
     r.qty = q
   end
 
+  -- the Gym Badges it still needs, or nil
+  local function locked(e)
+    local need = tonumber(e and e.badges) or 0
+    return need > (r and r.badges or 8) and need or nil
+  end
+  S.locked = locked
+
   -- why the chosen amount can't be bought, or nil
   local function refusal(e, qty)
+    if locked(e) then return entryText(e).lockText end
     if (e.price or 0) * qty > money() then return S.TEXT.noMoney end
     local s = session()
     local Bag = deps.Bag
@@ -640,10 +658,12 @@ return function(deps)
 
   -- what an entry shows, worked out once (weak: entries come and go with the machine)
   local shown = setmetatable({}, { __mode = "k" })
-  local function entryText(e)
+  function entryText(e)
     local c = shown[e]
     if c then return c end
     c = { lines = {} }
+    local need = tonumber(e.badges) or 0
+    if need > 0 then c.lockTag, c.lockText = S.TEXT.badgeTag(need), S.TEXT.needBadges(need) end
     for line in tostring(e.description or ""):gmatch("[^\n]+") do c.lines[#c.lines + 1] = line end
     if e.tm then
       c.tag = "TM" .. tostring(e.tm.number)
@@ -959,7 +979,13 @@ return function(deps)
   -- a tile's picture and its tag (a TM's number, or the price), `is` units square
   local function tileFace(b, e, tagColor, is)
     itemIcon(G, e, X(b[1] + (b[3] - is) / 2), Y(b[2] + 1.5), is * sc)
-    if e.tm then
+    if locked(e) then
+      -- (not yet: the picture faded, the badges it needs for the tag)
+      col(WHITE, 0.62)
+      box("fill", R(b[1] + 1, b[2] + 1, b[3] - 2, is + 1.5), 3)
+      local tag = entryText(e).lockTag
+      text(tag, b[1], b[2] + b[4] - 7, fit(tag, 5, b[3] - 2), C.bad, "center", b[3])
+    elseif e.tm then
       local tag = entryText(e).tag
       text(tag, b[1], b[2] + b[4] - 7, fit(tag, 5, b[3] - 2), tagColor, "center", b[3])
     else
@@ -1248,6 +1274,11 @@ return function(deps)
       cash(et.pricePrefix or "", e.price or 0, nx, ny, 5.5, dark(accent, 0.35), "left", nw)
       local held, able = cardFacts(e)
       text(bagText(held), nx, ny + 7, 5, SOFT, "left", nw)
+      if locked(e) then
+        local tag = et.lockTag
+        text(tag, nx, ny + 13, fit(tag, 5, nw), C.bad, "left", nw)
+        ny = ny + 6
+      end
       y = max(y + badge, ny + 13) + 3
       if e.tm then
         -- the type and the numbers, as chips that flow onto a second row when narrow

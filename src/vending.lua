@@ -70,8 +70,10 @@ return function(mod, deps)
 
   -- ------- the stock: data/vending.lua's slugs, resolved now (another mod's item of a slug sells)
 
-  local tmNumber = {}
-  for _, t in ipairs(deps.tms or {}) do tmNumber[t.id:lower()] = t.number end
+  local tmNumber, tmMove = {}, {}
+  for _, t in ipairs(deps.tms or {}) do
+    tmNumber[t.id:lower()], tmMove[t.id:lower()] = t.number, t.move
+  end
 
   function V.entry(slug)
     local id = deps.itemIndex and deps.itemIndex(slug)
@@ -119,7 +121,12 @@ return function(mod, deps)
       local entries = {}
       for _, slug in ipairs(tab.add or {}) do
         local e = V.entry(slug)
-        if e and e.price > 0 then entries[#entries + 1] = e end
+        if e and e.price > 0 then
+          -- (the Gym Badges it needs: by slug, or a TM by its move)
+          local gates = machine.badges or {}
+          e.badges = gates[slug] or gates[tmMove[slug] or ""] or 0
+          entries[#entries + 1] = e
+        end
       end
       tabs[#tabs + 1] = { label = tab.label, entries = entries }
     end
@@ -203,6 +210,17 @@ return function(mod, deps)
       return Runtime and Runtime.getSession and Runtime.getSession() or nil
     end,
     Bag = engine("src.core.game3.bag"),
+    -- the Gym Badges the player has (0-8), by the running game's own badge flags
+    badges = function()
+      local Flags, Space = engine("src.core.game3.scripting.flags"), engine("src.core.game3.scripting.space")
+      if not (Flags and Flags.countBadges) then return 8 end
+      local store = Space and Space.store
+      if not store then
+        local Runtime = engine("src.core.game3.runtime")
+        store = Runtime and Runtime.getSession and Runtime.getSession()
+      end
+      return tonumber(Flags.countBadges(store)) or 0
+    end,
     se = function(name)
       local Ids, Audio = engine("src.core.game3.se_ids"), engine("src.core.game3.audio")
       local id = Ids and Ids[name]

@@ -20,7 +20,9 @@ Paldea Pokémon can live in Kanto and Hoenn.
 - 🔄 **New evolutions for old favourites:** Rhydon into Rhyperior, Magneton into Magnezone,
   Nosepass into Probopass, Scyther into Kleavor, Togetic into Togekiss and more.
 - 💎 **The items to do it:** Dusk Stone, Protector, Dubious Disc and 36 more evolution items,
-  all sold by a vending machine in the department store.
+  all sold by a vending machine in the department store. Each unlocks with the Gym Badges it
+  matches in the modern games: Dusk Stone and Linking Cord early, Ice Stone and Razor Claw at 4,
+  Metal Alloy at 8.
 - 🏪 **Vending machines:** two touch-screen machines, EVO EXPRESS for the evolution items and TM
   EXPRESS for the new TMs: in the Celadon Dept. Store (EVO EXPRESS on 4F, TM EXPRESS on 2F) in
   FireRed / LeafGreen, and the Lilycove Dept. Store (EVO EXPRESS on 2F, TM EXPRESS on 4F) in Ruby /
@@ -65,7 +67,8 @@ Paldea Pokémon can live in Kanto and Hoenn.
 - 💿 **114 new TMs (TM51–TM164):** every newer move that's a TM in today's games, from Dazzling
   Gleam and Earth Power to Scald, Stealth Rock and U-turn. Buy them from the TM vending machine:
   Celadon Dept. Store 2F (FireRed / LeafGreen) or Lilycove Dept. Store 4F (Ruby / Sapphire /
-  Emerald); the TM Case
+  Emerald). Each unlocks with the Gym Badges it matches in the modern games (Stealth Rock and
+  Tailwind from the start, Volt Switch at 3, Scald and Close Combat at 8); the TM Case
   holds them all, and a Pokémon can learn one if it learns that move by TM in the modern games.
   They follow Scarlet / Violet's TM order after Gen 3's own 50 (Fire Fang is TM51), with the
   Sword / Shield-only ones at the end.
