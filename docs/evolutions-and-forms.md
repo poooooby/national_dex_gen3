@@ -46,15 +46,16 @@ hour of the day, so anything that asks for "day" also works at dusk.
 ## Getting the evolution items
 
 Most of the newer evolutions need an item that none of the five games has. The mod adds
-39 of them and puts them on sale, by kind and by how far into the game the store is:
+39 of them and puts them on sale. In Ruby, Sapphire and Emerald all 39 are sold by the
+evolution item vending machine in Lilycove Dept. Store 1F, left of the counter (its neighbour
+sells the new TMs). In FireRed and LeafGreen they're in the stores, by kind and by how far into
+the game the store is:
 
-| Kind of item | FireRed / LeafGreen | Ruby / Sapphire / Emerald |
-|---|---|---|
-| Stones, Linking Cord, Sachet, Whipped Dream | Celadon Dept. Store 4F | Lilycove Dept. Store (supplements) |
-| Trade and held items (Protector, Electirizer, Magmarizer, Dubious Disc, Reaper Cloth, Razor Claw, Razor Fang, Oval Stone, Leader's Crest) | Celadon Dept. Store 5F | Lilycove Dept. Store (battle items) |
-| Apples, pots, sweets, scrolls, Galarica Cuff and Wreath | Six Island Mart | Mossdeep City Mart |
-| Armors, Metal Alloy, teacups | Six Island Mart | Sootopolis City Mart |
-| Black Augurite, Peat Block | Six Island Mart | Ever Grande City Pokémon League mart |
+| Kind of item | FireRed / LeafGreen |
+|---|---|
+| Stones, Linking Cord, Sachet, Whipped Dream | Celadon Dept. Store 4F |
+| Trade and held items (Protector, Electirizer, Magmarizer, Dubious Disc, Reaper Cloth, Razor Claw, Razor Fang, Oval Stone, Leader's Crest) | Celadon Dept. Store 5F |
+| Apples, pots, sweets, scrolls, Galarica Cuff and Wreath, armors, Metal Alloy, teacups, Black Augurite, Peat Block | Six Island Mart |
 
 [Added items](items.md) lists every item with its exact price and shop.
 

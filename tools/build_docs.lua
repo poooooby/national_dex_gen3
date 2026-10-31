@@ -36,6 +36,14 @@ end
 
 local items = load("data/items.lua")
 local shops = load("data/shops.lua")
+-- the vending machines (data/vending.lua) are stores too: each one's tabs as one list
+for _, m in ipairs(load("data/vending.lua")) do
+  local add = {}
+  for _, tab in ipairs(m.tabs) do
+    for _, slug in ipairs(tab.add) do add[#add + 1] = slug end
+  end
+  shops[#shops + 1] = { games = m.games, store = m.store, add = add }
+end
 local crossgen = load("data/species/crossgen.lua")
 local forms = load("data/species/forms.lua")
 -- the Fairy type (src/types.lua): species by National number and forms by id, modern typing
@@ -243,11 +251,12 @@ local L = {
   "",
   "WoobleDex adds " .. #items .. " evolution items that no Gen 3 game has, so the Pokémon that",
   "need them can evolve. The real games sell almost none of these, so where each one is sold is a",
-  "design choice: by item type, and by how far into the game the store is.",
+  "design choice: by item type, and by how far into the game the store is. In Ruby, Sapphire and",
+  "Emerald they are all sold by a vending machine in Lilycove Dept. Store 1F.",
   "",
   "Further down: [other items](#other-items), the Exp. Candies and the Dynamax items.",
   "",
-  "*Generated from `data/items.lua`, `data/shops.lua`, the Exp. Candy and Dynamax item lists by",
+  "*Generated from `data/items.lua`, `data/shops.lua`, `data/vending.lua`, the Exp. Candy and Dynamax item lists by",
   "`tools/build_docs.lua`.*",
   "",
   "## Summary",
@@ -655,7 +664,7 @@ local TM = {
   "all), are used up when taught like Gen 3's TMs, and a Pokémon can learn one if it learns that",
   "move by TM in any of the main games.",
   "",
-  "*Generated from `data/tms.lua` and `data/shops.lua` by `tools/build_docs.lua`.*",
+  "*Generated from `data/tms.lua`, `data/shops.lua` and `data/vending.lua` by `tools/build_docs.lua`.*",
   "",
   "| TM | Move | Type | Price | FireRed / LeafGreen | Ruby / Sapphire / Emerald | Pokémon |",
   "|---|---|---|---|---|---|---|",

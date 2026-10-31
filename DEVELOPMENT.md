@@ -31,13 +31,33 @@ move. Forms are registered as species of their own, each reporting its base spec
 | Abilities | Gen 3 abilities only: the cart's own are kept, and each newer ability is mapped to the closest Gen 3 one (`tools/ability_map.py`), e.g. Simple → Own Tempo, Moxie → Guts. The Gen 3 battle engine cannot take new abilities from a mod |
 | Evolutions | Level, item, friendship and trade steps between species 1–1025, plus steps from the cart's own species into new ones (Magneton → Magnezone, Nosepass → Probopass ...) |
 
-**Shops** (`data/shops.lua`), by item type and how far into the game a store is:
+**Shops** (`data/shops.lua`), by item type and how far into the game a store is (FireRed /
+LeafGreen; Ruby / Sapphire / Emerald sell them from vending machines, below):
 
-| | FireRed / LeafGreen | Ruby / Sapphire / Emerald |
-|---|---|---|
-| Dusk, Dawn, Shiny and Ice Stone, Sachet, Whipped Dream | Celadon Dept. Store 4F | Lilycove Dept. Store, supplements floor |
-| Protector, Electirizer, Magmarizer, Dubious Disc, Reaper Cloth | Celadon Dept. Store 5F | Lilycove Dept. Store, battle-item floor |
-| Gen 8-9 items | Six Island Mart (after the Elite Four) | Apples at Mossdeep, Armors and Metal Alloy at Sootopolis, Black Augurite and Peat Block at the Ever Grande League mart |
+| | FireRed / LeafGreen |
+|---|---|
+| Dusk, Dawn, Shiny and Ice Stone, Sachet, Whipped Dream | Celadon Dept. Store 4F |
+| Protector, Electirizer, Magmarizer, Dubious Disc, Reaper Cloth | Celadon Dept. Store 5F |
+| Gen 8-9 items | Six Island Mart (after the Elite Four) |
+
+**Vending machines** (`data/vending.lua`, `src/vending.lua`, `src/vending_screen.lua`): stationary
+NPCs placed with `mod.world:spawnNpc` on entering their map (runtime objects: never saved), with
+16 x 32 sprites registered in `content.sprites` (anchor row 28: the bottom half stands on the
+tile). A on one (the `world.talk` hook) pushes a layer on the Gen 3 UI stack (it takes the
+buttons and holds the field) and opens a touch screen drawn from `render.hud` over the whole
+window (its safe area), laid out for its shape by `S.layout`: landscape is a page 160 units tall
+and up to 380 wide (more grid columns beside the card), portrait 180 wide (the card under the
+grid, more rows). Taps and clicks come from `input.pointer`, the wheel from `input.wheel`, and
+the on-screen touch pad is put away while it is up. Up from the grid's top row focuses the tabs. The bezel's colours are
+in each machine's data, read off its sprite. Stock is by item slug, resolved live through
+`Species.itemIndex` (names, prices and descriptions from the running game's items; a TM's move,
+type, power, accuracy and PP from its battle row). Buying takes the money and fills the Bag
+through `src.core.game3.bag`, as the Mart does. In Ruby / Sapphire / Emerald the two machines in
+Lilycove Dept. Store 1F (tiles 4,2 and 5,2) sell every evolution item and every new TM; those
+games' Marts keep only the Dynamax items. Tests: `tests/vending_test.lua [game]` (headless: the
+data, the stock, a purchase by buttons and one by taps, the tabs by D-pad, seven window shapes),
+`tests/drivers/vending_probe.lua` (in the engine: both machines, buttons, then the mouse, then
+16:9, portrait and 21:9 windows).
 
 Prices are twice the sell price Bulbapedia lists for the earliest game that has one (2,100 for
 most; Ice Stone and Metal Alloy 3,000; Black Augurite and Peat Block 1,000). A store is found by

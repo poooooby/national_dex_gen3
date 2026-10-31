@@ -83,3 +83,5 @@ tests/dynamax_test.lua
 docs/plans/
 tests/linking_cord_test.lua
 tests/cart_untouched_test.lua
+tests/vending_test.lua
+tests/drivers/vending_probe.lua

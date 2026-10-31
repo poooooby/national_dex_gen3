@@ -5,7 +5,21 @@ All notable changes to this mod are documented here, in
 
 ## [Unreleased]
 
+### Added
+
+- **Vending machines in Ruby, Sapphire and Emerald.** Two touch-screen machines stand in Lilycove
+  Dept. Store 1F, left of the counter: one sells all 39 evolution items, the other all 114 new
+  TMs. Browse by tab (TMs by move type), read each item's description and a TM's type, power,
+  accuracy and PP, choose how many, and buy. Buttons alone work (the D-pad reaches the tabs), and
+  so do touch and the mouse. The screen fills the window: more columns on a wide screen, the card
+  under the items and more rows on a phone held upright.
+
 ### Changed
+
+- **Ruby, Sapphire and Emerald sell the evolution items and the new TMs from the vending machines
+  only.** They're no longer in the Lilycove, Mossdeep, Sootopolis and Ever Grande Marts; Lilycove's
+  vitamin counter keeps Dynamax Candy, Max Mushrooms and Max Honey. FireRed and LeafGreen are
+  unchanged.
 
 - **The mod is called WoobleDex** (it was National Dex Gen 3): its name in the mods list, the
   README and the player guides. Its id stays `national_dex_gen3`, so it updates in place and saves,

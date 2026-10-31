@@ -1,0 +1,1126 @@
+-- A vending machine's screen (src/vending.lua opens it on the A press): a touch screen in a bezel
+-- coloured like the machine's sprite (data/vending.lua `bezel`). Tabs along the top, a grid of the
+-- stock (icon, and the price or the TM number), the chosen item's card on the right (name, TM move
+-- and its type / power / accuracy / PP, description, how many are in the Bag, the amount and BUY),
+-- the tray below where a bought item drops. Buttons and touch both drive all of it:
+--   grid     D-pad moves (Up from the top row: the tabs), A chooses, L / R change tab, B leaves
+--   tabs     Left / Right change tab, Down / A / B back to the grid
+--   card     Left / Right amount -1 / +1 (wrapping), Up / Down +10 / -10, A buys, B back to the grid
+--   confirm  any direction toggles YES / NO, A answers, B is NO
+--   touch    tap a tab (or the arrows at the strip's ends, which also show where L and R go), a
+--            tile, - / +, BUY, YES / NO or the close button; drag the grid (or the mouse wheel)
+--            to scroll
+-- Drawn over the whole window (its safe area) from render.hud, laid out for its shape: landscape
+-- (a page 160 units tall, as wide as the window allows up to MAX_WIDTH: the card beside the grid,
+-- more columns when wider) or portrait (180 units wide: the card under the grid, more rows when
+-- taller). Taps are hit-tested against the rectangles the last draw recorded (window units).
+--   S = vending_screen(deps)
+--   deps: session() -> the game session (money, bag); Bag (src.core.game3.bag); se(name) plays a
+--         sound effect; icon(G, id, x, y, size) draws an item's Bag icon; now() -> seconds;
+--         typeName(id); onClose(); safeArea() -> x, y, w, h (window units) or nil;
+--         currency(G, x, y, px, rgba) draws the game font's Pokédollar sign as tall as a px font
+--         and returns its width (px), currencyWidth(px) -> that width (without them: "$")
+--   S.open(machine, tabs) ; S.close() ; S.isOpen() ; S.input(input) ; S.pointer(ev) -> true
+--   S.wheel(dy) ; S.draw(G, viewport) ; S.state() (tests)
+--   tabs: { { label, entries = { { id, name, price, description, tm = { number, move, type, power,
+--         accuracy, pp } | nil } } } }
+
+return function(deps)
+  local floor, max, min, abs, ceil = math.floor, math.max, math.min, math.abs, math.ceil
+  -- (COLS / ROWS: the grid before the first draw lays it out for the window)
+  local S = { COLS = 4, ROWS = 3, MAX_QTY = 99 }
+  -- held D-pad: first repeat after REPEAT_START steps, then every REPEAT_EVERY (the game's menus)
+  S.REPEAT_START, S.REPEAT_EVERY = 20, 4
+  -- the page, in units: a landscape window is 160 tall and MIN_WIDTH .. MAX_WIDTH wide (centred
+  -- past it), a portrait one (narrower than PORTRAIT_ASPECT) 180 wide and at least 260 tall
+  S.PAGE = { HEIGHT = 160, MIN_WIDTH = 200, MAX_WIDTH = 380, PORTRAIT_WIDTH = 180, PORTRAIT_HEIGHT = 260,
+             PORTRAIT_ASPECT = 1.15 }
+  -- a tile's size the grid aims for (columns and rows are as many as fit), the gap between tiles
+  S.TILE = { w = 34, h = 26, maxH = 40, gap = 2 }
+
+  -- move types' colours (the modern games'), by Gen 3 type id; 18 is this mod's Fairy
+  S.TYPE_COLORS = {
+    [0] = { 168, 167, 122 }, [1] = { 194, 46, 40 }, [2] = { 169, 143, 243 }, [3] = { 163, 62, 161 },
+    [4] = { 226, 191, 101 }, [5] = { 182, 161, 54 }, [6] = { 166, 185, 26 }, [7] = { 115, 87, 151 },
+    [8] = { 183, 183, 206 }, [9] = { 104, 160, 144 }, [10] = { 238, 129, 48 }, [11] = { 99, 144, 240 },
+    [12] = { 122, 199, 76 }, [13] = { 247, 208, 44 }, [14] = { 249, 85, 135 }, [15] = { 150, 217, 214 },
+    [16] = { 111, 53, 252 }, [17] = { 112, 87, 70 }, [18] = { 214, 133, 173 },
+  }
+  local TYPE_NAMES = { [0] = "NORMAL", "FIGHTING", "FLYING", "POISON", "GROUND", "ROCK", "BUG", "GHOST",
+    "STEEL", "???", "FIRE", "WATER", "GRASS", "ELECTRIC", "PSYCHIC", "ICE", "DRAGON", "DARK", "FAIRY" }
+
+  S.TEXT = {
+    noMoney = "You don't have enough money.",
+    noRoom = "There's no more room in the BAG.",
+    soldOut = "Nothing for sale here.",
+    hints = {
+      grid = { { "A", "Choose" }, { "B", "Exit" }, { "L R", "Tab" } },
+      tabs = { { "< >", "Tab" }, { "A", "Items" }, { "B", "Back" } },
+      card = { { "< >", "Amount" }, { "A", "Buy" }, { "B", "Back" } },
+      confirm = { { "A", "OK" }, { "B", "Cancel" } },
+    },
+  }
+
+  local r = nil   -- the open machine
+
+  local function now() return deps.now and deps.now() or 0 end
+  local function se(name) if deps.se then pcall(deps.se, name) end end
+  local function session() return deps.session and deps.session() or nil end
+  local function money()
+    local s = session()
+    return max(0, floor(tonumber(s and s.money) or 0))
+  end
+  local function inBag(id)
+    local s = session()
+    if not (s and s.bag and deps.Bag and deps.Bag.get) then return 0 end
+    local ok, n = pcall(deps.Bag.get, s.bag, id)
+    return ok and tonumber(n) or 0
+  end
+  local function typeName(t)
+    if deps.typeName then
+      local ok, n = pcall(deps.typeName, t)
+      if ok and type(n) == "string" and n ~= "" then return n:upper() end
+    end
+    return TYPE_NAMES[t] or "???"
+  end
+  -- an amount's digits, in thousands ("2,100"); the Pokédollar sign is drawn before it (sign())
+  local function amount(n)
+    local s = tostring(floor(n))
+    repeat
+      local k
+      s, k = s:gsub("^(%d+)(%d%d%d)", "%1,%2")
+    until k == 0
+    return s
+  end
+  S.amount = amount
+
+  -- ------- the stock
+
+  local function tabsFor(machine, given)
+    local tabs = {}
+    if #given > 1 then
+      local all, seen = {}, {}
+      for _, t in ipairs(given) do
+        for _, e in ipairs(t.entries) do
+          if not seen[e.id] then
+            seen[e.id] = true
+            all[#all + 1] = e
+          end
+        end
+      end
+      tabs[1] = { label = "ALL", entries = all }
+    end
+    for _, t in ipairs(given) do tabs[#tabs + 1] = { label = t.label, entries = t.entries } end
+    if machine.typeTabs then
+      local byType, order = {}, {}
+      for _, e in ipairs(tabs[1] and tabs[1].entries or {}) do
+        local t = e.tm and tonumber(e.tm.type)
+        if t then
+          if not byType[t] then
+            byType[t] = {}
+            order[#order + 1] = t
+          end
+          table.insert(byType[t], e)
+        end
+      end
+      table.sort(order)
+      for _, t in ipairs(order) do
+        tabs[#tabs + 1] = { label = typeName(t), entries = byType[t], type = t }
+      end
+    end
+    return tabs
+  end
+
+  local function list() return r and r.tabs[r.tab] and r.tabs[r.tab].entries or {} end
+  local function selected() return list()[r and r.cursor or 0] end
+  local function rowsOf(n) return ceil(n / r.cols) end
+  local function maxScroll() return max(0, rowsOf(#list()) - r.rows) end
+  local function clampScroll(v) return max(0, min(maxScroll(), v)) end
+  local function ensureVisible()
+    local row = floor((r.cursor - 1) / r.cols)
+    local scroll = floor(r.scroll + 0.5)
+    if row < scroll then scroll = row end
+    if row > scroll + r.rows - 1 then scroll = row - r.rows + 1 end
+    r.scroll = clampScroll(scroll)
+  end
+  local function maxQty(e)
+    if not e or (e.price or 0) <= 0 then return S.MAX_QTY end
+    return max(1, min(S.MAX_QTY, floor(money() / e.price)))
+  end
+
+  local function toast(text, bad)
+    r.toast = { text = text, bad = bad, t = now() }
+  end
+
+  -- ------- the actions (buttons and taps both end here)
+
+  function S.open(machine, tabs)
+    r = { machine = machine, tabs = tabsFor(machine, tabs or {}), tab = 1, cursor = 1, scroll = 0,
+          focus = "grid", qty = 1, yes = true, t0 = now(), held = {}, hit = {}, tabScroll = 0,
+          cols = S.COLS, rows = S.ROWS, shown = 0,
+          -- (the A that opened it is still down: nothing until it is let go)
+          waitRelease = true }
+    se("SE_PC_ON")
+    return true
+  end
+
+  function S.close()
+    if not r then return end
+    r = nil
+    se("SE_PC_OFF")
+    if deps.onClose then pcall(deps.onClose) end
+  end
+
+  function S.isOpen() return r ~= nil end
+  function S.state() return r end
+
+  -- (keepFocus: the D-pad on the tabs stays there)
+  function S.setTab(i, keepFocus)
+    if not r or #r.tabs == 0 then return end
+    i = ((i - 1) % #r.tabs) + 1
+    if i ~= r.tab then se("SE_SELECT") end
+    r.tab, r.cursor, r.scroll, r.shown, r.qty = i, 1, 0, 0, 1
+    if not (keepFocus and r.focus == "tabs") then r.focus = "grid" end
+  end
+
+  function S.moveCursor(d)
+    local n = #list()
+    if n == 0 then return end
+    local c = r.cursor
+    if d == 1 or d == -1 then
+      c = ((c - 1 + d) % n) + 1
+    else
+      c = c + d
+      if c > n then
+        -- down from a row above the last: onto the last item
+        if floor((r.cursor - 1) / r.cols) < rowsOf(n) - 1 then c = n else return end
+      elseif c < 1 then
+        return
+      end
+    end
+    if c ~= r.cursor then
+      r.cursor = c
+      se("SE_SELECT")
+    end
+    ensureVisible()
+  end
+
+  function S.choose(i)
+    if not list()[i] then return end
+    r.cursor, r.focus, r.qty = i, "card", 1
+    ensureVisible()
+    se("SE_SELECT")
+  end
+
+  function S.setQty(q, wrap)
+    local top = maxQty(selected())
+    if wrap then
+      if q < 1 then q = top elseif q > top then q = 1 end
+    end
+    q = max(1, min(top, q))
+    if q ~= r.qty then se("SE_SELECT") end
+    r.qty = q
+  end
+
+  -- why the chosen amount can't be bought, or nil
+  local function refusal(e, qty)
+    if (e.price or 0) * qty > money() then return S.TEXT.noMoney end
+    local s = session()
+    local Bag = deps.Bag
+    if not (s and Bag and Bag.canAdd) then return S.TEXT.noRoom end
+    if not s.bag and Bag.new then s.bag = Bag.new() end
+    local ok, can = pcall(Bag.canAdd, s.bag, e.id, qty)
+    if not (ok and can) then return S.TEXT.noRoom end
+    return nil
+  end
+
+  function S.askBuy()
+    local e = selected()
+    if not e then return end
+    r.focus = "card"
+    local why = refusal(e, r.qty)
+    if why then
+      toast(why, true)
+      se("SE_FAILURE")
+      return
+    end
+    r.focus, r.yes = "confirm", true
+    se("SE_SELECT")
+  end
+
+  -- the purchase: true when the item went into the Bag and the money came off
+  function S.buy()
+    local e = selected()
+    if not e then return false end
+    r.focus = "card"
+    local qty = r.qty
+    local why = refusal(e, qty)
+    if why then
+      toast(why, true)
+      se("SE_FAILURE")
+      return false
+    end
+    local s = session()
+    local ok, added = pcall(deps.Bag.add, s.bag, e.id, qty)
+    if not (ok and added) then
+      toast(S.TEXT.noRoom, true)
+      se("SE_FAILURE")
+      return false
+    end
+    s.money = money() - (e.price or 0) * qty
+    r.qty = 1
+    r.vend = { id = e.id, entry = e, t = now() }
+    toast((qty > 1 and (e.name .. " x" .. qty) or e.name) .. " dropped down.")
+    se("SE_VEND")
+    if deps.onBuy then pcall(deps.onBuy, e, qty) end
+    return true
+  end
+
+  -- ------- buttons
+
+  local DIRS = { "up", "down", "left", "right" }
+  local function repeated(input, key)
+    local held = r.held
+    if input:wasPressed(key) then
+      held[key] = 0
+      return true
+    end
+    local okD, down = pcall(input.isDown, input, key)
+    if not (okD and down) then
+      held[key] = nil
+      return false
+    end
+    held[key] = (held[key] or 0) + 1
+    local n = held[key] - S.REPEAT_START
+    return n >= 0 and n % S.REPEAT_EVERY == 0
+  end
+
+  function S.input(input)
+    if not (r and input) then return end
+    if r.waitRelease then
+      local okD, down = pcall(input.isDown, input, "a")
+      if input:wasPressed("a") or (okD and down) then return end
+      r.waitRelease = false
+    end
+    local p = {}
+    for _, k in ipairs(DIRS) do p[k] = input.isDown and repeated(input, k) or input:wasPressed(k) end
+    local function pressed(k) return input:wasPressed(k) end
+    if r.focus == "confirm" then
+      if p.up or p.down or p.left or p.right then
+        r.yes = not r.yes
+        se("SE_SELECT")
+      elseif pressed("a") then
+        if r.yes then S.buy() else r.focus = "card"; se("SE_SELECT") end
+      elseif pressed("b") then
+        r.focus = "card"
+        se("SE_SELECT")
+      end
+      return
+    end
+    if pressed("l") then return S.setTab(r.tab - 1, true) end
+    if pressed("r") then return S.setTab(r.tab + 1, true) end
+    if r.focus == "tabs" then
+      if p.left then S.setTab(r.tab - 1, true)
+      elseif p.right then S.setTab(r.tab + 1, true)
+      elseif pressed("a") or pressed("b") or p.down then
+        r.focus = "grid"
+        se("SE_SELECT")
+      end
+      return
+    end
+    if r.focus == "card" then
+      if pressed("b") then
+        r.focus = "grid"
+        se("SE_SELECT")
+      elseif pressed("a") then S.askBuy()
+      elseif p.left then S.setQty(r.qty - 1, true)
+      elseif p.right then S.setQty(r.qty + 1, true)
+      elseif p.up then S.setQty(r.qty + 10)
+      elseif p.down then S.setQty(r.qty - 10)
+      end
+      return
+    end
+    if pressed("b") then return S.close() end
+    if pressed("a") then return S.choose(r.cursor) end
+    if p.left then S.moveCursor(-1)
+    elseif p.right then S.moveCursor(1)
+    elseif p.up then
+      -- Up from the top row (a fresh press, not a held one running on): the tabs
+      if r.cursor <= r.cols or #list() == 0 then
+        if pressed("up") and #r.tabs > 1 then
+          r.focus = "tabs"
+          se("SE_SELECT")
+        end
+      else
+        S.moveCursor(-r.cols)
+      end
+    elseif p.down then S.moveCursor(r.cols)
+    end
+  end
+
+  function S.wheel(dy)
+    if not r then return false end
+    r.scroll = clampScroll(floor(r.scroll + 0.5) - (dy > 0 and 1 or (dy < 0 and -1 or 0)))
+    return true
+  end
+
+  -- a window resized: the grid's shape from the draw that saw it
+  local function reshape(cols, rows)
+    if cols == r.cols and rows == r.rows then return end
+    r.cols, r.rows = cols, rows
+    r.scroll = clampScroll(r.scroll)
+    if r.focus ~= "tabs" then ensureVisible() end
+  end
+
+  -- ------- touch and mouse (window units, against the last draw's rectangles)
+
+  local function inside(t, x, y) return x >= t[1] and y >= t[2] and x < t[1] + t[3] and y < t[2] + t[4] end
+
+  local function tap(x, y)
+    for i = #r.hit, 1, -1 do
+      local h = r.hit[i]
+      if inside(h, x, y) then
+        local kind, arg = h.kind, h.arg
+        if kind == "close" then S.close()
+        elseif kind == "dim" or kind == "no" then r.focus = "card"; se("SE_SELECT")
+        elseif kind == "yes" then S.buy()
+        elseif kind == "tab" then S.setTab(arg)
+        elseif kind == "prevTab" then S.setTab(r.tab - 1)
+        elseif kind == "nextTab" then S.setTab(r.tab + 1)
+        elseif kind == "tile" then
+          if not (arg == r.cursor and r.focus == "card") then S.choose(arg) end
+        elseif kind == "minus" then r.focus = "card"; S.setQty(r.qty - 1, true)
+        elseif kind == "plus" then r.focus = "card"; S.setQty(r.qty + 1, true)
+        elseif kind == "buy" then S.askBuy()
+        end
+        return true
+      end
+    end
+    return false
+  end
+  S.tap = function(x, y) return r ~= nil and tap(x, y) end
+
+  function S.pointer(ev)
+    if not (r and type(ev) == "table") then return false end
+    local x, y = tonumber(ev.x) or 0, tonumber(ev.y) or 0
+    local press = r.press
+    if ev.phase == "pressed" then
+      local grid = r.gridRect
+      r.press = { id = ev.id, x = x, y = y, scroll = r.scroll, drag = false,
+                  grid = grid ~= nil and r.focus ~= "confirm" and inside(grid, x, y) }
+    elseif ev.phase == "moved" then
+      if press and press.id == ev.id and press.grid then
+        local rowPx = r.rowPx or (S.TILE.h + S.TILE.gap) * (r.sc or 1)
+        local dy = y - press.y
+        if press.drag or abs(dy) > 3 * (r.sc or 1) then
+          press.drag = true
+          r.scroll = clampScroll(press.scroll - dy / rowPx)
+          r.shown = r.scroll
+        end
+      end
+    elseif ev.phase == "released" then
+      if press and press.id == ev.id then
+        r.press = nil
+        if press.drag then
+          r.scroll = clampScroll(floor(r.scroll + 0.5))
+        else
+          tap(x, y)
+        end
+      end
+    elseif ev.phase == "cancelled" then
+      if press and press.id == ev.id then r.press = nil end
+    end
+    return true
+  end
+
+  -- ------- drawing
+
+  local fonts = {}
+  local function font(G, px)
+    px = max(6, floor(px + 0.5))
+    local f = fonts[px]
+    if not f then
+      local ok, made = pcall(G.newFont, px)
+      f = ok and made or G.getFont()
+      fonts[px] = f
+    end
+    return f
+  end
+
+  -- colours are { r, g, b [, a] }: r, g, b 0..255, a 0..1
+  local WHITE, BLACK = { 255, 255, 255 }, { 0, 0, 0 }
+  local function mix(a, b, t)
+    return { a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t, a[3] + (b[3] - a[3]) * t,
+             (a[4] or 1) + ((b[4] or 1) - (a[4] or 1)) * t }
+  end
+  local function light(c, t) return mix(c, WHITE, t) end
+  local function dark(c, t) return mix(c, BLACK, t) end
+  local function fade(c, a) return { c[1], c[2], c[3], a } end
+
+  -- a rounded rectangle's outline, as points (rad 0: its corners)
+  local function roundPoints(x, y, w, h, rad)
+    rad = max(0, min(rad, w / 2, h / 2))
+    local seg = rad > 0 and max(2, min(10, ceil(rad / 1.5))) or 0
+    local pts, hp = {}, math.pi / 2
+    for k, c in ipairs({ { x + w - rad, y + rad }, { x + w - rad, y + h - rad }, { x + rad, y + h - rad },
+                          { x + rad, y + rad } }) do
+      local a0 = -hp + (k - 1) * hp
+      for i = 0, seg do
+        local a = a0 + (seg == 0 and 0 or hp * i / seg)
+        pts[#pts + 1] = { c[1] + math.cos(a) * rad, c[2] + math.sin(a) * rad }
+      end
+    end
+    return pts
+  end
+
+  -- a rounded rectangle shaded from `top` to `foot` (window pixels): a fan mesh, kept by its size
+  -- and colours (the layout is steady, so the same few are drawn every frame); flat without meshes
+  local meshes, meshCount = {}, 0
+  local function gradient(G, x, y, w, h, rad, top, foot)
+    if w <= 0 or h <= 0 then return end
+    local key = string.format("%d,%d,%d|%d,%d,%d,%d|%d,%d,%d,%d", floor(w * 2), floor(h * 2), floor(rad * 2),
+      floor(top[1]), floor(top[2]), floor(top[3]), floor((top[4] or 1) * 100),
+      floor(foot[1]), floor(foot[2]), floor(foot[3]), floor((foot[4] or 1) * 100))
+    local m = meshes[key]
+    if m == nil then
+      local function vertex(px, py)
+        local c = mix(top, foot, py / h)
+        return { px, py, 0, 0, c[1] / 255, c[2] / 255, c[3] / 255, c[4] }
+      end
+      local verts = { vertex(w / 2, h / 2) }
+      for _, p in ipairs(roundPoints(0, 0, w, h, rad)) do verts[#verts + 1] = vertex(p[1], p[2]) end
+      verts[#verts + 1] = verts[2]
+      local ok, made = pcall(G.newMesh, verts, "fan", "static")
+      m = ok and made or false
+      if meshCount > 300 then meshes, meshCount = {}, 0 end
+      meshes[key], meshCount = m, meshCount + 1
+    end
+    if m then
+      G.setColor(1, 1, 1, 1)
+      G.draw(m, x, y)
+    else
+      local c = mix(top, foot, 0.5)
+      G.setColor(c[1] / 255, c[2] / 255, c[3] / 255, c[4])
+      G.rectangle("fill", x, y, w, h, rad, rad)
+    end
+  end
+
+  -- a TM: a disc in its move type's colour (the same in every game; Ruby and Sapphire have no TM
+  -- icon art), at window pixels
+  local function disc(G, x, y, size, c)
+    local rad = size / 2
+    local cx, cy = x + rad, y + rad
+    c = c or { 160, 160, 170 }
+    gradient(G, x + rad * 0.08, y + rad * 0.08, rad * 1.84, rad * 1.84, rad * 0.92, light(c, 0.25), dark(c, 0.15))
+    G.setColor(1, 1, 1, 0.4)
+    G.arc("fill", cx, cy, rad * 0.8, -math.pi * 0.95, -math.pi * 0.55)
+    G.arc("fill", cx, cy, rad * 0.8, math.pi * 0.05, math.pi * 0.45)
+    G.setColor(c[1] / 400, c[2] / 400, c[3] / 400, 1)
+    G.setLineWidth(max(1, size / 18))
+    G.circle("line", cx, cy, rad * 0.92)
+    G.setColor(0.95, 0.95, 0.97, 1)
+    G.circle("fill", cx, cy, rad * 0.3)
+    G.setColor(c[1] / 400, c[2] / 400, c[3] / 400, 1)
+    G.circle("fill", cx, cy, rad * 0.11)
+  end
+  local function itemIcon(G, e, x, y, size)
+    if e.tm then
+      disc(G, x + size * 0.08, y + size * 0.08, size * 0.84, S.TYPE_COLORS[e.tm.type])
+    elseif deps.icon then
+      pcall(deps.icon, G, e.id, x, y, size)
+    end
+  end
+
+  local function lines(text)
+    local out = {}
+    for line in tostring(text or ""):gmatch("[^\n]+") do out[#out + 1] = line end
+    return out
+  end
+
+  -- the page's rectangles (units) for a pw x ph page
+  function S.layout(pw, ph, portrait)
+    local L = { pw = pw, ph = ph, portrait = portrait }
+    L.close = { pw - 21, 4.5, 15, 15 }
+    L.footY = portrait and ph - 42 or ph - 30
+    L.glass = { 6, 22, pw - 12, L.footY - 26 }
+    local g = L.glass
+    local gx2, gy2 = g[1] + g[3], g[2] + g[4]
+    local stripX1
+    if portrait then
+      local ch = max(84, min(112, floor(g[4] * 0.36)))
+      L.card = { g[1] + 4, gy2 - 4 - ch, g[3] - 8, ch }
+      stripX1 = gx2 - 4
+    else
+      local cw = max(70, min(104, floor(g[3] * 0.31)))
+      L.card = { gx2 - 4 - cw, g[2] + 3, cw, g[4] - 6 }
+      stripX1 = L.card[1] - 4
+    end
+    local x0, ty = g[1] + 4, g[2] + 3
+    L.prevTab = { x0, ty, 11, 11 }
+    L.nextTab = { stripX1 - 11, ty, 11, 11 }
+    L.tabs = { x0 + 13, ty, stripX1 - 13 - x0 - 13, 11 }
+    local gridBottom = portrait and (L.card[2] - 4) or (gy2 - 3)
+    -- (4 to the right: the scroll bar)
+    L.grid = { x0, ty + 14, stripX1 - 4 - x0, gridBottom - ty - 14 }
+    local T = S.TILE
+    L.cols = max(2, floor((L.grid[3] + T.gap) / (T.w + T.gap) + 0.5))
+    L.rows = max(1, floor((L.grid[4] + T.gap) / (T.h + T.gap)))
+    L.tileW = (L.grid[3] - (L.cols - 1) * T.gap) / L.cols
+    L.tileH = min(T.maxH, (L.grid[4] - (L.rows - 1) * T.gap) / L.rows)
+    L.tray = { pw / 2 - 32, portrait and L.footY + 15 or L.footY + 4, 64, 22 }
+    L.hints = portrait and { 10, L.footY + 3, pw - 20, 9 } or { 12, L.footY + 4, L.tray[1] - 18, 23 }
+    L.coins = (not portrait) and { pw - 40, L.footY + 5, 28, 21 } or nil
+    local aw = min(156, g[3] - 20)
+    L.ask = { g[1] + (g[3] - aw) / 2, g[2] + (g[4] - 70) / 2, aw, 70 }
+    return L
+  end
+
+  function S.draw(G, vp)
+    if not (r and G and vp) then return end
+    local ww = tonumber(vp.width) or (tonumber(vp.gameX) or 0) * 2 + (tonumber(vp.gameWidth) or 240)
+    local wh = tonumber(vp.height) or (tonumber(vp.gameY) or 0) * 2 + (tonumber(vp.gameHeight) or 160)
+    local ax, ay, aw, ah = 0, 0, ww, wh
+    if deps.safeArea then
+      local ok, sx, sy, sw, sh = pcall(deps.safeArea)
+      if ok and tonumber(sx) and tonumber(sy) and tonumber(sw) and tonumber(sh) then
+        -- (inside the window the hud was handed)
+        local x2, y2 = min(ww, sx + sw), min(wh, sy + sh)
+        sx, sy = max(0, sx), max(0, sy)
+        if x2 - sx > ww * 0.5 and y2 - sy > wh * 0.5 then ax, ay, aw, ah = sx, sy, x2 - sx, y2 - sy end
+      end
+    end
+    local P = S.PAGE
+    local portrait = aw / ah < P.PORTRAIT_ASPECT
+    local sc, pw, ph
+    if portrait then
+      sc = min(aw / P.PORTRAIT_WIDTH, ah / P.PORTRAIT_HEIGHT)
+      pw, ph = aw / sc, ah / sc
+    else
+      sc = min(ah / P.HEIGHT, aw / P.MIN_WIDTH)
+      pw, ph = min(P.MAX_WIDTH, aw / sc), ah / sc
+    end
+    local ox, oy = ax + (aw - pw * sc) / 2, ay
+    local L = S.layout(pw, ph, portrait)
+    r.sc, r.layout = sc, L
+    reshape(L.cols, L.rows)
+    local hit = {}
+    r.hit = hit
+    local bz = r.machine.bezel or {}
+    local clock = now()
+    local t = clock - r.t0
+    local dt = max(0, min(0.1, clock - (r.lastDraw or clock)))
+    r.lastDraw = clock
+    -- the grid glides to its scroll
+    local d = r.scroll - (r.shown or 0)
+    r.shown = abs(d) < 0.01 and r.scroll or (r.shown + d * min(1, dt * 14))
+
+    local function X(v) return ox + v * sc end
+    local function Y(v) return oy + v * sc end
+    local function col(c, a)
+      c = c or WHITE
+      G.setColor(c[1] / 255, c[2] / 255, c[3] / 255, (a or 1) * (c[4] or 1))
+    end
+    local function box(mode, b, rad)
+      G.rectangle(mode, X(b[1]), Y(b[2]), b[3] * sc, b[4] * sc, (rad or 0) * sc, (rad or 0) * sc)
+    end
+    local function grad(b, rad, top, foot)
+      gradient(G, X(b[1]), Y(b[2]), b[3] * sc, b[4] * sc, (rad or 0) * sc, top, foot)
+    end
+    -- a soft shadow under b, `lift` units down
+    local function shadow(b, rad, lift, a)
+      for i = 1, 3 do
+        local s = i * 0.7
+        col(BLACK, (a or 0.18) / 3)
+        box("fill", { b[1] - s * 0.6, b[2] - s * 0.4 + lift, b[3] + s * 1.2, b[4] + s * 1.2 }, (rad or 0) + s)
+      end
+    end
+    local function ring(b, rad, c, a, w)
+      col(c, a)
+      G.setLineWidth(max(1, (w or 1) * sc))
+      box("line", b, rad)
+    end
+    local function addHit(b, kind, arg, clip)
+      local x, y, w, h = X(b[1]), Y(b[2]), b[3] * sc, b[4] * sc
+      if clip then
+        local cx, cy, cw, ch = X(clip[1]), Y(clip[2]), clip[3] * sc, clip[4] * sc
+        local x2, y2 = min(x + w, cx + cw), min(y + h, cy + ch)
+        x, y = max(x, cx), max(y, cy)
+        w, h = x2 - x, y2 - y
+        if w <= 0 or h <= 0 then return end
+      end
+      hit[#hit + 1] = { x, y, w, h, kind = kind, arg = arg }
+    end
+    local function width(s, size) return font(G, size * sc):getWidth(s) / sc end
+    local function text(s, x, y, size, c, align, w, a)
+      local f = font(G, size * sc)
+      G.setFont(f)
+      col(c, a)
+      if align then
+        G.printf(s, X(x), Y(y), w * sc, align)
+      else
+        G.print(s, X(x), Y(y))
+      end
+      return f
+    end
+    -- text that sits on colour: a faint shadow under it
+    local function label(s, x, y, size, c, align, w, a)
+      text(s, x, y + 0.5, size, BLACK, align, w, 0.22 * (a or 1))
+      return text(s, x, y, size, c, align, w, a)
+    end
+    -- the game's Pokédollar sign at x, y (units) for a `size` font -> its width (units)
+    local function sign(x, y, size, c, a, measure)
+      local px = size * sc
+      if deps.currency then
+        local w
+        if measure then
+          local ok, got = pcall(deps.currencyWidth, px)
+          w = ok and tonumber(got)
+        else
+          c = c or WHITE
+          local ok, got = pcall(deps.currency, G, X(x), Y(y), px,
+            { c[1] / 255, c[2] / 255, c[3] / 255, (a or 1) * (c[4] or 1) })
+          w = ok and tonumber(got)
+        end
+        if w then return w / sc end
+      end
+      if not measure then text("$", x, y, size, c, nil, nil, a) end
+      return width("$", size)
+    end
+    -- a font size that fits s in w units (smaller only, never under 3.5)
+    local function fit(s, size, w)
+      local tw = width(s, size)
+      if w and tw > w and tw > 0 then return max(3.5, size * w / tw * 0.97) end
+      return size
+    end
+    -- an amount: `prefix`, the sign, the digits, as one line in w (aligned; smaller when it would
+    -- run past it; shade: on colour)
+    local function cash(prefix, n, x, y, size, c, align, w, a, shade)
+      local digits = amount(n)
+      local preW, signW, total
+      local function measure()
+        preW = prefix ~= "" and width(prefix, size) or 0
+        signW = sign(0, 0, size, c, a, true)
+        total = preW + signW + width(digits, size)
+      end
+      measure()
+      if w and total > w then
+        local was = size
+        size = max(3.5, size * w / total * 0.97)
+        -- (kept on the line's middle)
+        y = y + (was - size) * 0.5
+        measure()
+      end
+      local x0 = x
+      if align == "center" then x0 = x + (w - total) / 2 elseif align == "right" then x0 = x + w - total end
+      local put = shade and label or text
+      if prefix ~= "" then put(prefix, x0, y, size, c, nil, nil, a) end
+      if shade then sign(x0 + preW, y + 0.5, size, BLACK, 0.22 * (a or 1)) end
+      sign(x0 + preW, y, size, c, a)
+      put(digits, x0 + preW + signW, y, size, c, nil, nil, a)
+    end
+    local function scissor(b)
+      if b then G.setScissor(X(b[1]), Y(b[2]), max(0, b[3] * sc), max(0, b[4] * sc)) else G.setScissor() end
+    end
+    local function pulse() return 0.7 + 0.3 * math.sin(t * 6) end
+    local INK, SOFT = { 38, 40, 56 }, { 112, 116, 136 }
+    local body = bz.body or { 150, 150, 170 }
+    local lower = bz.lower or dark(body, 0.2)
+    local accent = bz.accent or { 240, 160, 60 }
+    local outline = bz.outline or { 82, 82, 106 }
+    local screenC = bz.screen or { 225, 235, 240 }
+
+    -- the room around the machine; the machine's front (the top body, the foot), its outline
+    col(dark(outline, 0.55))
+    G.rectangle("fill", 0, 0, ww, wh)
+    local front = { 1.5, 1.5, pw - 3, ph - 3 }
+    shadow(front, 10, 1.5, 0.35)
+    grad(front, 10, dark(lower, 0.05), dark(lower, 0.25))
+    grad({ front[1], front[2], front[3], L.footY - front[2] }, 10, light(body, 0.18), body)
+    grad({ front[1], L.footY - 10, front[3], 10 }, 0, body, dark(body, 0.04))
+    col(WHITE, 0.3)
+    box("fill", { 12, 2.2, pw - 24, 1 }, 0.5)
+    col(bz.trim or light(body, 0.2))
+    box("fill", { front[1], L.footY - 1.5, front[3], 1.5 })
+    col(BLACK, 0.18)
+    box("fill", { front[1], L.footY, front[3], 1.2 })
+    ring(front, 10, outline, 1, 1.5)
+
+    -- the header: name, money, close (the name smaller if the money would cover it)
+    local held = amount(money())
+    local mw = max(48, min(pw * 0.4, width(held, 6.5) + 20))
+    local mb = { L.close[1] - 4 - mw, 5.5, mw, 14 }
+    local title = r.machine.title or ""
+    local ts = fit(title, 8, mb[1] - 4 - 11)
+    label(title, 11, 7 + (8 - ts) * 0.5, ts, WHITE)
+    grad(mb, 7, fade(dark(outline, 0.35), 0.8), fade(dark(outline, 0.5), 0.8))
+    ring(mb, 7, WHITE, 0.12, 0.6)
+    gradient(G, X(mb[1] + 3), Y(mb[2] + 3), 8 * sc, 8 * sc, 4 * sc, { 255, 222, 110 }, { 222, 160, 40 })
+    local sw = sign(0, 0, 4.6, nil, nil, true)
+    sign(mb[1] + 7 - sw / 2, mb[2] + 4.1, 4.6, { 120, 80, 10 })
+    local hs = fit(held, 6.5, mw - 17)
+    text(held, mb[1] + 12, mb[2] + 3 + (6.5 - hs) * 0.5, hs, WHITE, "right", mw - 17)
+    local cb = L.close
+    shadow(cb, 7.5, 0.8, 0.2)
+    grad(cb, 7.5, light(body, 0.35), dark(body, 0.1))
+    ring(cb, 7.5, WHITE, 0.5, 0.8)
+    col(WHITE)
+    G.setLineWidth(max(1, 1.6 * sc))
+    local ccx, ccy, k = cb[1] + cb[3] / 2, cb[2] + cb[4] / 2, 3
+    G.line(X(ccx - k), Y(ccy - k), X(ccx + k), Y(ccy + k))
+    G.line(X(ccx - k), Y(ccy + k), X(ccx + k), Y(ccy - k))
+    addHit(cb, "close")
+
+    -- the glass in its recess
+    local gl = L.glass
+    grad({ gl[1] - 1.5, gl[2] - 1.5, gl[3] + 3, gl[4] + 3 }, 7, dark(body, 0.45), dark(body, 0.2))
+    grad(gl, 6, light(screenC, 0.55), screenC)
+    col(WHITE, 0.25)
+    box("fill", { gl[1] + 4, gl[2] + 1, gl[3] - 8, 1.2 }, 0.6)
+
+    -- the tabs: a strip that scrolls to keep the open one in view
+    local tabsB = L.tabs
+    local xs, ws, total = {}, {}, 0
+    for i, tab in ipairs(r.tabs) do
+      ws[i] = width(tab.label, 5.5) + (tab.type and 15 or 9)
+      xs[i] = total
+      total = total + ws[i] + 2
+    end
+    if r.tabs[r.tab] then
+      local a, b = xs[r.tab], xs[r.tab] + ws[r.tab]
+      if a < r.tabScroll then r.tabScroll = a end
+      if b > r.tabScroll + tabsB[3] then r.tabScroll = b - tabsB[3] end
+      r.tabScroll = max(0, min(r.tabScroll, max(0, total - 2 - tabsB[3])))
+    end
+    col(dark(screenC, 0.5), 0.12)
+    box("fill", { tabsB[1] - 1, tabsB[2] - 1, tabsB[3] + 2, tabsB[4] + 2 }, 6.5)
+    scissor(tabsB)
+    for i, tab in ipairs(r.tabs) do
+      local b = { tabsB[1] + xs[i] - r.tabScroll, tabsB[2], ws[i], tabsB[4] }
+      local on = i == r.tab
+      local tc = tab.type and S.TYPE_COLORS[tab.type]
+      if on then
+        local c = tc or body
+        grad(b, 5.5, light(c, 0.2), dark(c, 0.08))
+        if r.focus == "tabs" then ring({ b[1] + 0.6, b[2] + 0.6, b[3] - 1.2, b[4] - 1.2 }, 5, accent, pulse(), 1.4) end
+      end
+      local lx = b[1]
+      if tc then
+        col(on and WHITE or tc)
+        G.circle("fill", X(b[1] + 5.5), Y(b[2] + b[4] / 2), 2 * sc)
+        lx = b[1] + 6
+      end
+      if on then
+        label(tab.label, lx, b[2] + 2, 5.5, WHITE, "center", b[3] - (lx - b[1]))
+      else
+        text(tab.label, lx, b[2] + 2, 5.5, SOFT, "center", b[3] - (lx - b[1]))
+      end
+      addHit(b, "tab", i, tabsB)
+    end
+    scissor(nil)
+    -- L / R at the strip's ends: the tab before / after (taps too)
+    if #r.tabs > 1 then
+      for _, which in ipairs({ "prevTab", "nextTab" }) do
+        local b = L[which]
+        shadow(b, 5.5, 0.5, 0.15)
+        grad(b, 5.5, light(body, 0.25), dark(body, 0.05))
+        col(WHITE)
+        local acx, acy, ak = b[1] + b[3] / 2, b[2] + b[4] / 2, 2.2
+        if which == "prevTab" then
+          G.polygon("fill", X(acx - ak), Y(acy), X(acx + ak * 0.8), Y(acy - ak), X(acx + ak * 0.8), Y(acy + ak))
+        else
+          G.polygon("fill", X(acx + ak), Y(acy), X(acx - ak * 0.8), Y(acy - ak), X(acx - ak * 0.8), Y(acy + ak))
+        end
+        addHit(b, which)
+      end
+    end
+
+    -- the grid
+    local gridB = L.grid
+    local gap, tw, th = S.TILE.gap, L.tileW, L.tileH
+    local rowH = th + gap
+    r.gridRect = { X(gridB[1]), Y(gridB[2]), gridB[3] * sc, gridB[4] * sc }
+    r.rowPx = rowH * sc
+    local entries = list()
+    -- (a little room past the tiles for the chosen one's lift and ring)
+    scissor({ gridB[1] - 1.5, gridB[2] - 1.5, gridB[3] + 3, gridB[4] + 3 })
+    if #entries == 0 then
+      text(S.TEXT.soldOut, gridB[1], gridB[2] + gridB[4] / 2 - 4, 6, SOFT, "center", gridB[3])
+    end
+    local is = min(20, th - 8)
+    local function tileFace(b, e, tagColor)
+      itemIcon(G, e, X(b[1] + (b[3] - is) / 2), Y(b[2] + 1.5), is * sc)
+      if e.tm then
+        local tag = "TM" .. tostring(e.tm.number)
+        text(tag, b[1], b[2] + b[4] - 7, fit(tag, 5, b[3] - 2), tagColor, "center", b[3])
+      else
+        cash("", e.price or 0, b[1] + 1, b[2] + b[4] - 7, 5, tagColor, "center", b[3] - 2)
+      end
+    end
+    local chosen
+    for i, e in ipairs(entries) do
+      local row, c = floor((i - 1) / r.cols), (i - 1) % r.cols
+      local ty = gridB[2] + (row - r.shown) * rowH
+      if ty + th > gridB[2] - 2 and ty < gridB[2] + gridB[4] + 2 then
+        local b = { gridB[1] + c * (tw + gap), ty, tw, th }
+        if i == r.cursor then
+          chosen = { b = b, e = e }
+        else
+          shadow(b, 4, 0.6, 0.12)
+          grad(b, 4, WHITE, light(screenC, 0.45))
+          tileFace(b, e, SOFT)
+        end
+        addHit(b, "tile", i, gridB)
+      end
+    end
+    -- the chosen tile, lifted over the rest
+    if chosen then
+      local b0 = chosen.b
+      local lift = r.focus == "tabs" and 0.3 or 0.8
+      local b = { b0[1] - lift, b0[2] - lift * 1.5, b0[3] + lift * 2, b0[4] + lift * 2 }
+      shadow(b, 4.5, 1.4, 0.24)
+      grad(b, 4.5, WHITE, light(accent, 0.82))
+      tileFace(b, chosen.e, dark(accent, 0.45))
+      ring({ b[1] + 0.5, b[2] + 0.5, b[3] - 1, b[4] - 1 }, 4, accent,
+        r.focus == "grid" and pulse() or (r.focus == "tabs" and 0.35 or 0.75), 1.5)
+    end
+    scissor(nil)
+    -- the scroll bar
+    local rowsTotal = ceil(#entries / r.cols)
+    if rowsTotal > r.rows then
+      local trackH = gridB[4]
+      local thumbH = max(10, trackH * r.rows / rowsTotal)
+      local sy = gridB[2] + (trackH - thumbH) * (r.shown / max(1, rowsTotal - r.rows))
+      col(dark(screenC, 0.4), 0.18)
+      box("fill", { gridB[1] + gridB[3] + 1.2, gridB[2], 2, trackH }, 1)
+      col(body)
+      box("fill", { gridB[1] + gridB[3] + 1.2, sy, 2, thumbH }, 1)
+    end
+
+    -- the card
+    local e = selected()
+    local cardB = L.card
+    shadow(cardB, 6, 1, 0.16)
+    grad(cardB, 6, WHITE, light(screenC, 0.6))
+    if e then
+      local pad = 4
+      local x, y, w = cardB[1] + pad, cardB[2] + pad, cardB[3] - pad * 2
+      -- the foot first (the amount and BUY), from the card's bottom: one row on a wide card
+      local buyB, stepB
+      if cardB[3] >= 140 then
+        local fy = cardB[2] + cardB[4] - pad - 14
+        stepB = { x, fy + 1, 64, 12 }
+        buyB = { x + 68, fy, w - 68, 14 }
+      else
+        buyB = { x, cardB[2] + cardB[4] - pad - 14, w, 14 }
+        stepB = { x, buyB[2] - 4 - 12, w, 12 }
+      end
+      local footTop = min(stepB[2], buyB[2])
+      -- the picture in a tinted badge; beside it the name (a TM's: its move, the TM's number by the
+      -- price), the price and how many are in the Bag
+      local badge = 22
+      local tint = e.tm and S.TYPE_COLORS[e.tm.type] or accent
+      gradient(G, X(x), Y(y), badge * sc, badge * sc, 6 * sc, light(tint, 0.8), light(tint, 0.6))
+      itemIcon(G, e, X(x + 1), Y(y + 1), (badge - 2) * sc)
+      local nx, nw = x + badge + 4, w - badge - 4
+      local title = e.tm and e.tm.move or e.name or ""
+      local nf = font(G, 6.5 * sc)
+      local _, wrapped = nf:getWrap(title, nw * sc)
+      text(title, nx, y + 0.5, 6.5, INK, "left", nw)
+      local ny = y + 1 + #wrapped * nf:getHeight() / sc
+      cash(e.tm and ("TM" .. tostring(e.tm.number) .. "  ·  ") or "", e.price or 0, nx, ny, 5.5,
+        dark(accent, 0.35), "left", nw)
+      text("IN BAG  " .. tostring(inBag(e.id)), nx, ny + 7, 5, SOFT, "left", nw)
+      y = max(y + badge, ny + 13) + 3
+      if e.tm then
+        -- the type and the numbers, as chips that flow onto a second row when narrow
+        local function num(v, none) v = tonumber(v) or 0; return v > none and tostring(v) or "---" end
+        local chips = { { typeName(e.tm.type), S.TYPE_COLORS[e.tm.type] or outline },
+                        { "PWR " .. num(e.tm.power, 1) }, { "ACC " .. num(e.tm.accuracy, 0) },
+                        { "PP " .. num(e.tm.pp, 0) } }
+        local cx = x
+        for _, chip in ipairs(chips) do
+          local cw = width(chip[1], 4.6) + 6
+          if cx > x and cx + cw > x + w then
+            cx, y = x, y + 9
+          end
+          if y + 7.5 > footTop - 2 then break end
+          local b = { cx, y, cw, 7.5 }
+          if chip[2] then
+            grad(b, 3.75, light(chip[2], 0.15), dark(chip[2], 0.08))
+            label(chip[1], b[1], b[2] + 1.3, 4.6, WHITE, "center", b[3])
+          else
+            col(dark(screenC, 0.35), 0.16)
+            box("fill", b, 3.75)
+            text(chip[1], b[1], b[2] + 1.3, 4.6, INK, "center", b[3])
+          end
+          cx = cx + cw + 2
+        end
+        y = y + 10
+      end
+      local df = font(G, 5 * sc)
+      local lh = df:getHeight() / sc
+      for _, line in ipairs(lines(e.description)) do
+        if y + lh > footTop - 2 then break end
+        text(line, x, y, 5, SOFT, "left", w + 4)
+        y = y + lh
+      end
+      -- the amount: - ×N + in a capsule
+      local onCard = r.focus == "card" or r.focus == "confirm"
+      col(dark(screenC, 0.35), 0.14)
+      box("fill", stepB, stepB[4] / 2)
+      if r.focus == "card" then ring(stepB, stepB[4] / 2, accent, pulse(), 1.3) end
+      for _, which in ipairs({ "minus", "plus" }) do
+        local s = stepB[4] - 2
+        local b = which == "minus" and { stepB[1] + 1, stepB[2] + 1, s, s }
+          or { stepB[1] + stepB[3] - 1 - s, stepB[2] + 1, s, s }
+        grad(b, s / 2, light(body, onCard and 0.25 or 0.5), onCard and body or light(body, 0.3))
+        col(WHITE)
+        G.setLineWidth(max(1, 1.3 * sc))
+        local mx, my, mk = b[1] + s / 2, b[2] + s / 2, 2.2
+        G.line(X(mx - mk), Y(my), X(mx + mk), Y(my))
+        if which == "plus" then G.line(X(mx), Y(my - mk), X(mx), Y(my + mk)) end
+        addHit(b, which)
+      end
+      text("×" .. tostring(r.qty), stepB[1], stepB[2] + 2.2, 6.5, INK, "center", stepB[3])
+      -- BUY and the total (grey while it can't be bought)
+      local able = refusal(e, r.qty) == nil
+      local bc = able and accent or { 168, 170, 182 }
+      shadow(buyB, 7, 0.9, able and 0.22 or 0.1)
+      grad(buyB, 7, light(bc, 0.22), dark(bc, 0.08))
+      col(WHITE, 0.3)
+      box("fill", { buyB[1] + 5, buyB[2] + 1, buyB[3] - 10, 1 }, 0.5)
+      cash("BUY  ", (e.price or 0) * r.qty, buyB[1] + 3, buyB[2] + 3, 6.5, WHITE, "center", buyB[3] - 6, nil, true)
+      addHit(buyB, "buy")
+    end
+
+    -- the toast: a pill rising from the foot of the grid's side of the glass
+    if r.toast then
+      local age = clock - r.toast.t
+      local a = age < 2.2 and min(1, age / 0.15 + 0.01) or max(0, 1 - (age - 2.2) / 0.4)
+      if a <= 0 then
+        r.toast = nil
+      else
+        local area = portrait and { gl[1], gl[2], gl[3], cardB[2] - gl[2] } or { gl[1], gl[2], cardB[1] - gl[1], gl[4] }
+        local tw2 = min(area[3] - 10, width(r.toast.text, 5.5) + 20)
+        local tb = { area[1] + (area[3] - tw2) / 2, area[2] + area[4] - 17 + (1 - min(1, age / 0.15)) * 4, tw2, 12 }
+        local tc = r.toast.bad and { 196, 56, 70 } or dark(outline, 0.2)
+        shadow(tb, 6, 1, 0.25 * a)
+        col(tc, 0.94 * a)
+        box("fill", tb, 6)
+        col(r.toast.bad and { 255, 210, 215 } or { 120, 230, 160 }, a)
+        G.circle("fill", X(tb[1] + 6.5), Y(tb[2] + 6), 1.8 * sc)
+        local fs = fit(r.toast.text, 5.5, tb[3] - 14)
+        text(r.toast.text, tb[1] + 6, tb[2] + 2.6 + (5.5 - fs) * 0.5, fs, WHITE, "center", tb[3] - 8, a)
+      end
+    end
+
+    -- the foot: the hints, the tray, the coin slots
+    local hb = L.hints
+    local hx, hy = hb[1], hb[2]
+    local hints = S.TEXT.hints[r.focus] or {}
+    local hintW = 0
+    for _, h in ipairs(hints) do hintW = hintW + max(8, width(h[1], 4.5) + 4) + 2 + width(h[2], 5) + 6 end
+    if portrait then hx = hb[1] + max(0, (hb[3] - hintW + 6) / 2) end
+    for _, h in ipairs(hints) do
+      local kw = max(8, width(h[1], 4.5) + 4)
+      local lw = width(h[2], 5)
+      if hx > hb[1] and hx + kw + 2 + lw > hb[1] + hb[3] then hx, hy = hb[1], hy + 10 end
+      if hy + 8 <= hb[2] + hb[4] + 0.5 then
+        col(WHITE, 0.9)
+        box("fill", { hx, hy, kw, 8 }, 4)
+        text(h[1], hx, hy + 1.4, 4.5, dark(lower, 0.5), "center", kw)
+        label(h[2], hx + kw + 2, hy + 1.2, 5, WHITE)
+      end
+      hx = hx + kw + 2 + lw + 6
+    end
+    local tray = L.tray
+    grad(tray, 5, dark(lower, 0.45), dark(lower, 0.3))
+    ring(tray, 5, WHITE, 0.12, 0.6)
+    local mouth = { tray[1] + 3, tray[2] + 3, tray[3] - 6, tray[4] - 6 }
+    grad(mouth, 3, { 14, 14, 22 }, { 44, 44, 58 })
+    if r.vend then
+      local age = clock - r.vend.t
+      if age > 3 then
+        r.vend = nil
+      else
+        -- slides down from under the tray's lip, lands on its floor, bounces once
+        local vs = 15
+        local rest = mouth[2] + mouth[4] - vs - 0.5
+        local fall = min(1, age / 0.3)
+        local dy = (1 - fall * fall) * -(vs + 3)
+        if age > 0.3 and age < 0.45 then dy = -1.8 * math.sin((age - 0.3) / 0.15 * math.pi) end
+        scissor(mouth)
+        itemIcon(G, r.vend.entry, X(mouth[1] + (mouth[3] - vs) / 2), Y(rest + dy), vs * sc)
+        scissor(nil)
+      end
+    end
+    -- the lip's shadow over the mouth, and its clear flap
+    grad({ mouth[1], mouth[2], mouth[3], 5 }, 0, { 0, 0, 0, 0.55 }, { 0, 0, 0, 0 })
+    col(WHITE, 0.07)
+    box("fill", mouth, 3)
+    col(WHITE, 0.22)
+    box("fill", { mouth[1] + 2, mouth[2] + 0.6, mouth[3] - 4, 0.7 })
+    if L.coins then
+      local cs = L.coins
+      grad(cs, 4, dark(lower, 0.2), dark(lower, 0.32))
+      ring(cs, 4, WHITE, 0.1, 0.6)
+      -- the coin slot in its plate, the coin return button, the ready light
+      grad({ cs[1] + 4, cs[2] + 3.5, 8, 14 }, 2.5, light(lower, 0.25), lower)
+      col({ 18, 18, 26 })
+      box("fill", { cs[1] + 7.2, cs[2] + 6, 1.6, 9 }, 0.8)
+      gradient(G, X(cs[1] + 15), Y(cs[2] + 5), 9 * sc, 9 * sc, 4.5 * sc, light(lower, 0.35), dark(lower, 0.1))
+      ring({ cs[1] + 15, cs[2] + 5, 9, 9 }, 4.5, dark(lower, 0.5), 0.6, 0.6)
+      col({ 120, 230, 160 }, 0.6 + 0.4 * math.sin(t * 2.5))
+      G.circle("fill", X(cs[1] + 19.5), Y(cs[2] + 17), 1.1 * sc)
+    end
+
+    -- YES / NO over everything
+    if r.focus == "confirm" and e then
+      for i = #hit, 1, -1 do
+        if hit[i].kind ~= "close" then table.remove(hit, i) end
+      end
+      col(BLACK, 0.4)
+      G.rectangle("fill", 0, 0, ww, wh)
+      addHit(gl, "dim")
+      local ab = L.ask
+      shadow(ab, 8, 2, 0.35)
+      grad(ab, 8, WHITE, light(screenC, 0.5))
+      local qs = 18
+      local tint = e.tm and S.TYPE_COLORS[e.tm.type] or accent
+      gradient(G, X(ab[1] + (ab[3] - qs - 4) / 2), Y(ab[2] + 5), (qs + 4) * sc, (qs + 4) * sc, 6 * sc,
+        light(tint, 0.8), light(tint, 0.6))
+      itemIcon(G, e, X(ab[1] + (ab[3] - qs) / 2), Y(ab[2] + 7), qs * sc)
+      local what = r.qty > 1 and (e.name .. " ×" .. r.qty) or e.name
+      local q = "Buy " .. what .. "?"
+      local qf = fit(q, 6.5, ab[3] - 10)
+      text(q, ab[1] + 4, ab[2] + 30 + (6.5 - qf) * 0.5, qf, INK, "center", ab[3] - 8)
+      cash("", (e.price or 0) * r.qty, ab[1] + 4, ab[2] + 39, 6, dark(accent, 0.35), "center", ab[3] - 8)
+      local bw = (ab[3] - 20) / 2
+      for i, which in ipairs({ "yes", "no" }) do
+        local b = { ab[1] + 8 + (i - 1) * (bw + 4), ab[2] + ab[4] - 20, bw, 14 }
+        local on = (which == "yes") == r.yes
+        if on then
+          shadow(b, 7, 0.9, 0.22)
+          grad(b, 7, light(accent, 0.22), dark(accent, 0.08))
+          label(which:upper(), b[1], b[2] + 3, 6.5, WHITE, "center", b[3])
+          ring({ b[1] - 1.2, b[2] - 1.2, b[3] + 2.4, b[4] + 2.4 }, 8, accent, pulse(), 1)
+        else
+          col(dark(screenC, 0.35), 0.16)
+          box("fill", b, 7)
+          text(which:upper(), b[1], b[2] + 3, 6.5, SOFT, "center", b[3])
+        end
+        addHit(b, which)
+      end
+    end
+
+    -- the screen switching on
+    local lit = min(1, t / 0.25)
+    if lit < 1 then
+      col(BLACK, 1 - lit)
+      box("fill", gl, 6)
+    end
+    G.setColor(1, 1, 1, 1)
+  end
+
+  return S
+end

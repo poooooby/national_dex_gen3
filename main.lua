@@ -116,6 +116,9 @@ return function(mod)
   local DayNight = loadSibling(mod, "src/day_night.lua")
   -- optional: without it the PC keeps the game's 14 boxes
   local BigPc = loadSibling(mod, "src/big_pc.lua")
+  -- optional: without them the vending machines (data/vending.lua) are not placed
+  local makeVending = loadSibling(mod, "src/vending.lua")
+  local makeVendingScreen = loadSibling(mod, "src/vending_screen.lua")
   local Api = loadSibling(mod, "src/api.lua")
   if not (Species and Fixups and Items and ItemArt and CryArt and Shops and Art and ConditionalEvos and Clock and Counters and Breeding and DexPatch and NationalUnlock and DexSync and DexRepeat and Editor and MonAnim and Api) then return end
 
@@ -539,6 +542,23 @@ return function(mod)
   if BigPc and not inEditor then
     local okPc, pcErr = pcall(BigPc.installGame, { mod = mod, require = require, log = mod.log, enabled = bigPcOn })
     if not okPc then mod.log:warn("bigger PC is off: %s", tostring(pcErr)) end
+  end
+  -- the vending machines (src/vending.lua): their sprites now, while mods load; placed on entering
+  -- their map; not in the save editor
+  if makeVending and makeVendingScreen and not inEditor then
+    local okV, vErr = pcall(function()
+      local V = makeVending(mod, { require = require, log = mod.log, screen = makeVendingScreen,
+        data = read("data/vending.lua") or {}, tms = read("data/tms.lua") or {},
+        itemIndex = Species.itemIndex(mod),
+        game = function()
+          local okG, GV = pcall(require, "src.core.GameVersion")
+          return okG and GV and GV.current or nil
+        end })
+      V.registerSprites()
+      V.install()
+      mod.exports._vending = V
+    end)
+    if not okV then mod.log:warn("the vending machines are off: %s", tostring(vErr)) end
   end
 
   if DayNight and not inEditor then

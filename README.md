@@ -20,7 +20,14 @@ Paldea Pokémon can live in Kanto and Hoenn.
 - 🔄 **New evolutions for old favourites:** Rhydon into Rhyperior, Magneton into Magnezone,
   Nosepass into Probopass, Scyther into Kleavor, Togetic into Togekiss and more.
 - 💎 **The items to do it:** Dusk Stone, Protector, Dubious Disc and 36 more evolution items,
-  sold in department stores and late-game marts.
+  sold in department stores and late-game marts in FireRed / LeafGreen, and by a vending machine
+  in Ruby / Sapphire / Emerald.
+- 🏪 **Vending machines:** two touch-screen machines in Lilycove Dept. Store 1F (Ruby / Sapphire /
+  Emerald), one for the evolution items and one for the new TMs. Browse by tab (stones, trade
+  items, held items...; TMs by move type), see each item's description and a TM's type, power,
+  accuracy and PP before you buy, pick how many, and watch it drop into the tray. Works with the
+  buttons alone (the D-pad reaches the tabs too) or with touch and the mouse, and the screen fills
+  your window, wide or held upright.
 - 🔗 **Linking Cord:** use it on a Pokémon that evolves by trading and it evolves on the spot, no
   trade partner needed: Kadabra, Machoke, Boldore and the rest, and the ones that trade holding an
   item too (Porygon2 holding a Dubious Disc, Onix holding a Metal Coat), which use the item up just
@@ -55,7 +62,8 @@ Paldea Pokémon can live in Kanto and Hoenn.
   the rest borrow the closest Gen 3 animation (Bulldoze shakes the ground like Earthquake).
 - 💿 **114 new TMs (TM51–TM164):** every newer move that's a TM in today's games, from Dazzling
   Gleam and Earth Power to Scald, Stealth Rock and U-turn. Buy them at the Celadon Dept. Store
-  (FireRed / LeafGreen) or the Lilycove Dept. Store (Ruby / Sapphire / Emerald); the TM Case
+  (FireRed / LeafGreen) or the TM vending machine in Lilycove Dept. Store 1F (Ruby / Sapphire /
+  Emerald); the TM Case
   holds them all, and a Pokémon can learn one if it learns that move by TM in the modern games.
   They follow Scarlet / Violet's TM order after Gen 3's own 50 (Fire Fang is TM51), with the
   Sword / Shield-only ones at the end.
