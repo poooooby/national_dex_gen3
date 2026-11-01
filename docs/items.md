@@ -381,57 +381,57 @@ Gigantamax Factor (shown on its summary and in the PC).
 
 | Item | Price | FireRed / LeafGreen | Ruby / Sapphire / Emerald |
 |---|---|---|---|
-| Exp. Candy XS | ₽20 | not sold | not sold |
-| Exp. Candy S | ₽240 | not sold | not sold |
-| Exp. Candy M | ₽1000 | not sold | not sold |
-| Exp. Candy L | ₽3000 | not sold | not sold |
-| Exp. Candy XL | ₽10000 | not sold | not sold |
-| Dynamax Candy | ₽3000 | Celadon Dept. Store 5F (battle items) | Lilycove Dept. Store (battle items) |
-| Max Mushrooms | ₽1500 | Celadon Dept. Store 5F (battle items) | Lilycove Dept. Store (battle items) |
-| Max Honey | ₽3000 | Celadon Dept. Store 5F (battle items) | Lilycove Dept. Store (battle items) |
-| Dynamax Crystal | ₽10000 | not sold | not sold |
+| EXP. CANDY XS | ₽20 | not sold | not sold |
+| EXP. CANDY S | ₽240 | not sold | not sold |
+| EXP. CANDY M | ₽1000 | not sold | not sold |
+| EXP. CANDY L | ₽3000 | not sold | not sold |
+| EXP. CANDY XL | ₽10000 | not sold | not sold |
+| DYNAMAX CANDY | ₽3000 | Celadon Dept. Store 5F (battle items) | Lilycove Dept. Store (battle items) |
+| MAX MUSHROOMS | ₽1500 | Celadon Dept. Store 5F (battle items) | Lilycove Dept. Store (battle items) |
+| MAX HONEY | ₽3000 | Celadon Dept. Store 5F (battle items) | Lilycove Dept. Store (battle items) |
+| DYNAMAX CRYSTL | ₽10000 | not sold | not sold |
 
-### Exp. Candy XS
+### EXP. CANDY XS
 
 - Price: ₽20
 - Use it on a Pokémon from the Bag: 100 Exp. Points, with any level-ups, new moves and evolution a Rare Candy would give. Not sold: Dynamax Raids gives them as rewards.
 
-### Exp. Candy S
+### EXP. CANDY S
 
 - Price: ₽240
 - Use it on a Pokémon from the Bag: 800 Exp. Points, with any level-ups, new moves and evolution a Rare Candy would give. Not sold: Dynamax Raids gives them as rewards.
 
-### Exp. Candy M
+### EXP. CANDY M
 
 - Price: ₽1000
 - Use it on a Pokémon from the Bag: 3,000 Exp. Points, with any level-ups, new moves and evolution a Rare Candy would give. Not sold: Dynamax Raids gives them as rewards.
 
-### Exp. Candy L
+### EXP. CANDY L
 
 - Price: ₽3000
 - Use it on a Pokémon from the Bag: 10,000 Exp. Points, with any level-ups, new moves and evolution a Rare Candy would give. Not sold: Dynamax Raids gives them as rewards.
 
-### Exp. Candy XL
+### EXP. CANDY XL
 
 - Price: ₽10000
 - Use it on a Pokémon from the Bag: 30,000 Exp. Points, with any level-ups, new moves and evolution a Rare Candy would give. Not sold: Dynamax Raids gives them as rewards.
 
-### Dynamax Candy
+### DYNAMAX CANDY
 
 - Price: ₽3000
 - Use it on a Pokémon from the Bag: its Dynamax Level rises by 1, up to 10 (not Zacian, Zamazenta or Eternatus).
 
-### Max Mushrooms
+### MAX MUSHROOMS
 
 - Price: ₽1500
 - Use it on a Pokémon that has a Gigantamax form, with 3 in the Bag: they make a Max Soup that gives it the Gigantamax Factor, or takes the factor away if it has it (never Melmetal).
 
-### Max Honey
+### MAX HONEY
 
 - Price: ₽3000
 - Not used on its own: Urshifu's Max Soup takes 1 Max Honey along with the 3 Max Mushrooms.
 
-### Dynamax Crystal
+### DYNAMAX CRYSTL
 
 - Price: ₽10000
 - No use from the Bag: Dynamax Raids spends one at a den for a legendary or mythical Pokémon's raid.
@@ -440,11 +440,11 @@ Gigantamax Factor (shown on its summary and in the PC).
 
 ### FireRed / LeafGreen
 
-- **Celadon Dept. Store 5F (battle items)**: Dynamax Candy (₽3000), Max Mushrooms (₽1500), Max Honey (₽3000)
+- **Celadon Dept. Store 5F (battle items)**: DYNAMAX CANDY (₽3000), MAX MUSHROOMS (₽1500), MAX HONEY (₽3000)
 - **Celadon Dept. Store 4F (evolution item machine)**: DAWN STONE (₽2100), DUSK STONE (₽2100), SHINY STONE (₽2100), ICE STONE (₽3000), BLACK AUGURITE (₽1000), PEAT BLOCK (₽1000), LINKING CORD (₽2100), PROTECTOR (₽2100), ELECTIRIZER (₽2100), MAGMARIZER (₽2100), DUBIOUS DISC (₽2100), REAPER CLOTH (₽2100), SACHET (₽2100), WHIPPED DREAM (₽2100), RAZOR CLAW (₽2100), RAZOR FANG (₽2100), OVAL STONE (₽2100), LEADER'S CREST (₽2100), STRAWBRY SWEET (₽2100), BERRY SWEET (₽2100), LOVE SWEET (₽2100), STAR SWEET (₽2100), CLOVER SWEET (₽2100), FLOWER SWEET (₽2100), RIBBON SWEET (₽2100), TART APPLE (₽2100), SWEET APPLE (₽2100), SYRUPY APPLE (₽2100), CRACKED POT (₽3000), CHIPPED POT (₽3000), UNREMARK. CUP (₽2100), MASTERPC. CUP (₽2100), AUSPIC. ARMOR (₽2100), MALIC. ARMOR (₽2100), METAL ALLOY (₽3000), DARK SCROLL (₽2100), WATER SCROLL (₽2100), GALARICA CUFF (₽2100), GALAR. WREATH (₽2100)
 
 ### Ruby / Sapphire / Emerald
 
-- **Lilycove Dept. Store (battle items)**: Dynamax Candy (₽3000), Max Mushrooms (₽1500), Max Honey (₽3000)
+- **Lilycove Dept. Store (battle items)**: DYNAMAX CANDY (₽3000), MAX MUSHROOMS (₽1500), MAX HONEY (₽3000)
 - **Lilycove Dept. Store 2F (evolution item machine)**: DAWN STONE (₽2100), DUSK STONE (₽2100), SHINY STONE (₽2100), ICE STONE (₽3000), BLACK AUGURITE (₽1000), PEAT BLOCK (₽1000), LINKING CORD (₽2100), PROTECTOR (₽2100), ELECTIRIZER (₽2100), MAGMARIZER (₽2100), DUBIOUS DISC (₽2100), REAPER CLOTH (₽2100), SACHET (₽2100), WHIPPED DREAM (₽2100), RAZOR CLAW (₽2100), RAZOR FANG (₽2100), OVAL STONE (₽2100), LEADER'S CREST (₽2100), STRAWBRY SWEET (₽2100), BERRY SWEET (₽2100), LOVE SWEET (₽2100), STAR SWEET (₽2100), CLOVER SWEET (₽2100), FLOWER SWEET (₽2100), RIBBON SWEET (₽2100), TART APPLE (₽2100), SWEET APPLE (₽2100), SYRUPY APPLE (₽2100), CRACKED POT (₽3000), CHIPPED POT (₽3000), UNREMARK. CUP (₽2100), MASTERPC. CUP (₽2100), AUSPIC. ARMOR (₽2100), MALIC. ARMOR (₽2100), METAL ALLOY (₽3000), DARK SCROLL (₽2100), WATER SCROLL (₽2100), GALARICA CUFF (₽2100), GALAR. WREATH (₽2100)
 

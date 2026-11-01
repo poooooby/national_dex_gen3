@@ -16,15 +16,15 @@
 
 local C = {}
 C.LIST = {
-  { id = "EXP_CANDY_XS", name = "Exp. Candy XS", index = 950, exp = 100, price = 20, shape = "pyramid",
+  { id = "EXP_CANDY_XS", name = "EXP. CANDY XS", index = 950, exp = 100, price = 20, shape = "pyramid",
     rgb = { 0.62, 0.88, 1.0 }, amount = "100" },
-  { id = "EXP_CANDY_S", name = "Exp. Candy S", index = 951, exp = 800, price = 240, shape = "cube",
+  { id = "EXP_CANDY_S", name = "EXP. CANDY S", index = 951, exp = 800, price = 240, shape = "cube",
     rgb = { 0.42, 0.76, 1.0 }, amount = "800" },
-  { id = "EXP_CANDY_M", name = "Exp. Candy M", index = 952, exp = 3000, price = 1000, shape = "diamond",
+  { id = "EXP_CANDY_M", name = "EXP. CANDY M", index = 952, exp = 3000, price = 1000, shape = "diamond",
     rgb = { 0.32, 0.62, 0.98 }, amount = "3,000" },
-  { id = "EXP_CANDY_L", name = "Exp. Candy L", index = 953, exp = 10000, price = 3000, shape = "gem",
+  { id = "EXP_CANDY_L", name = "EXP. CANDY L", index = 953, exp = 10000, price = 3000, shape = "gem",
     rgb = { 0.3, 0.46, 0.98 }, amount = "10,000" },
-  { id = "EXP_CANDY_XL", name = "Exp. Candy XL", index = 954, exp = 30000, price = 10000, shape = "bigGem",
+  { id = "EXP_CANDY_XL", name = "EXP. CANDY XL", index = 954, exp = 30000, price = 10000, shape = "bigGem",
     rgb = { 0.52, 0.4, 1.0 }, amount = "30,000" },
 }
 C.ids = {}

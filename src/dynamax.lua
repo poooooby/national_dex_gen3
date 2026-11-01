@@ -20,14 +20,14 @@ return function(mod, deps)
   local D = deps.data or {}
   local Dx = { data = D }
   Dx.ITEMS = {
-    { id = "DYNAMAX_CANDY", name = "Dynamax Candy", index = 955, price = 3000,
+    { id = "DYNAMAX_CANDY", name = "DYNAMAX CANDY", index = 955, price = 3000,
       description = "A candy that raises\na Pokémon's\nDynamax Level." },
-    { id = "MAX_MUSHROOMS", name = "Max Mushrooms", index = 956, price = 1500,
+    { id = "MAX_MUSHROOMS", name = "MAX MUSHROOMS", index = 956, price = 1500,
       description = "Three make a Max\nSoup: it gives or\ntakes G-Max Factor." },
-    { id = "MAX_HONEY", name = "Max Honey", index = 957, price = 3000,
+    { id = "MAX_HONEY", name = "MAX HONEY", index = 957, price = 3000,
       description = "Sweet honey. With\nMax Mushrooms, a\nsoup for Urshifu." },
     -- (no use from the Bag: Dynamax Raids takes one at a den for a legendary Pokemon's raid)
-    { id = "DYNAMAX_CRYSTAL", name = "Dynamax Crystal", index = 958, price = 10000,
+    { id = "DYNAMAX_CRYSTAL", name = "DYNAMAX CRYSTL", index = 958, price = 10000,
       description = "Dynamax energy in a\ncrystal. At a den,\na legendary awaits." },
   }
   Dx.ids = {}

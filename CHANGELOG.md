@@ -5,6 +5,14 @@ All notable changes to this mod are documented here, in
 
 ## [Unreleased]
 
+## [1.6.2] - 2026-10-31
+
+### Fixed
+
+- **The Exp. Candies and the Dynamax items are named in capitals**, like every other item in the
+  Bag (EXP. CANDY XS, DYNAMAX CANDY, MAX MUSHROOMS, MAX HONEY; the Dynamax Crystal is DYNAMAX
+  CRYSTL, to fit the games' 14-letter item names).
+
 ## [1.6.1] - 2026-10-31
 
 ### Added
