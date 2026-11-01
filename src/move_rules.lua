@@ -240,8 +240,8 @@ local function prepare(rule, A, D, move, o, set, num)
     if n and GIFT_POWER[n] then o.power, o.moveType = GIFT_POWER[n], GIFT_TYPE[n] end
   end
   -- what the field did to the move's type: Electrify, Ion Deluge (Normal moves)
-  if A.__ndxElectrified == turn then o.moveType = 13
-  elseif st and st.__ndxIonDeluge == turn and (tonumber(o.moveType) or tonumber(move.type) or 0) == 0 then o.moveType = 13 end
+  if turn ~= nil and A.__ndxElectrified == turn then o.moveType = 13
+  elseif turn ~= nil and st and st.__ndxIonDeluge == turn and (tonumber(o.moveType) or tonumber(move.type) or 0) == 0 then o.moveType = 13 end
 
   -- whose stats: Gen 3 splits physical and special by type, so the real move's stat goes into
   -- whichever one the move's type reads (Foul Play is Dark, so the foe's ATTACK stands in
@@ -892,7 +892,7 @@ function MoveRules.install(opts)
         and (attacker.__ndxLaserFocus or defender.__ndxGlaiveRush or attacker.__ndxStat or defender.__ndxStat
              or defender.__ndxType3 or defender.__ndxTarShot or defender.__ndxMiracleEye
              or (attacker.__ndxElectrified and st and attacker.__ndxElectrified == st.turn)
-             or (st and st.__ndxIonDeluge == st.turn))
+             or (st and st.turn ~= nil and st.__ndxIonDeluge == st.turn))
       if not ((rule or general) and type(attacker) == "table" and type(defender) == "table") then
         return calc(attacker, defender, moveId, o, ...)
       end

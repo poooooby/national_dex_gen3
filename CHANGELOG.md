@@ -5,6 +5,20 @@ All notable changes to this mod are documented here, in
 
 ## [Unreleased]
 
+## [1.6.3] - 2026-11-01
+
+### Added
+
+- **`exports.moveRule(idOrNum)`**: the rule a newer move runs by ("HEX", "STEALTH_ROCK",
+  "TRICK_ROOM" ...) and its hit count, for a mod that runs moves outside the engine's battle
+  (Galar Rising's raids).
+
+### Fixed
+
+- **A battle with no turn number turned every move Electric.** The Electrify and Ion Deluge check
+  matched an unset mark against an unset turn; it now needs both. The engine's own battles always
+  have a turn number, so only another mod's battle (Galar Rising's raids) was affected.
+
 ## [1.6.2] - 2026-10-31
 
 ### Fixed

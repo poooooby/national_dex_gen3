@@ -177,6 +177,24 @@ return function(mod, state)
     return e and copy(e) or nil
   end
 
+  -- The rule a newer move runs by (src/move_rules.lua, src/move_field.lua: "HEX", "STEALTH_ROCK",
+  -- "TRICK_ROOM" ...) and its hit count (a number, or true for 2-5), by id or move number:
+  -- rule, hits (nil, nil for a Gen 3 move or one with neither). For a mod that runs moves outside
+  -- the engine's battle (max_raids). Added in 1.6.3; test for it by presence.
+  local ruleById, ruleByNum = {}, {}
+  for _, r in ipairs(state.moves or {}) do
+    if r.rule or r.hits then
+      local v = { rule = r.rule, hits = r.hits }
+      ruleById[r.id] = v
+      if r.index then ruleByNum[r.index] = v end
+    end
+  end
+  exports.moveRule = function(idOrNum)
+    local v = ruleById[idOrNum] or ruleByNum[tonumber(idOrNum) or -1]
+    if not v then return nil, nil end
+    return v.rule, v.hits
+  end
+
   -- Dynamax (src/dynamax.lua): a Pokemon's Dynamax Level (0-10) and Gigantamax Factor, kept on
   -- the Pokemon (saved with it), and the items that change them. For a mod that Dynamaxes in its
   -- own battles (max_raids). Added in 1.4.0; test for it by presence.
