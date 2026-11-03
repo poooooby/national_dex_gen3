@@ -12,6 +12,7 @@
 --     scripts that use it), and the script starts by loading those graphics, as the cart's do
 --   * a sound effect is the cart's number for its name ("SE_M_BARRIER"; "SE:" in task arguments)
 --   * a graphics tag in a task argument is the cart's tag id ("TAG:MOON")
+--   * a pixelfx sheet ("FX:BEAM_DRAGON") stays a name, for src/fx_anims.lua's NdxFx task
 --   * a task must be one the engine implements; a call/goto target is stored in the pack's labels
 --     under "national_dex_gen3:" + its name
 -- If any piece is missing on this cart, that move keeps its `look` animation. A move without a
@@ -93,6 +94,7 @@ function MoveAnims.install(opts)
       local kind, name = v:match("^(%u+):(.+)$")
       if kind == "SE" and idx.songs[name] then return idx.songs[name] end
       if kind == "TAG" and idx.tagIdx[name] then return SPRITES_START + idx.tagIdx[name] end
+      if kind == "FX" then return v end   -- a pixelfx sheet, for src/fx_anims.lua's task
       error(v, 0)
     end
     for _, r in ipairs(rows) do

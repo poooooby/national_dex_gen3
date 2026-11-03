@@ -45,6 +45,11 @@ ships are fan-made, and the credits below belong to their authors.
   contributors: <https://github.com/rh-hideout/pokeemerald-expansion/blob/master/CREDITS.md>)
   for their battle animations of the newer moves. The ones this mod borrows are based off
   pokeemerald-expansion 1.17.2, played with the graphics the Gen 3 games already have.
+- The effects in 20 of them (`assets/fx/`, Dragon Pulse's beam, Aura Sphere's orb, Stone Edge's
+  spike ...) are rendered from **pixelfx** by **Patch** and **Hugo Duprez**
+  (<https://github.com/patch-gg/pixelfx>, MIT License; it adapts Sprite Fusion's open-source pixel
+  art VFX, <https://www.spritefusion.com/pixel-art-vfx>), recoloured for each move's type. The
+  licence text is in [LICENSE](LICENSE).
 
 ## Shop prices
 

@@ -5,6 +5,17 @@ All notable changes to this mod are documented here, in
 
 ## [Unreleased]
 
+## [1.7.0] - 2026-11-02
+
+### Added
+
+- **20 newer moves get animations drawn for them** with pixelfx's effects
+  (https://github.com/patch-gg/pixelfx, MIT), recoloured for their type, where expansion's own
+  needs graphics no Gen 3 game has: Dragon Pulse, Flash Cannon and Charge Beam fire a beam; Aura
+  Sphere, Focus Blast and Energy Ball an orb that bursts; Dark Pulse, Hex, Stone Edge, Bulldoze,
+  Hurricane, Bolt Strike, Icicle Crash, Ice Shard, Night Slash, Shadow Claw, Gunk Shot, Lava
+  Plume, Mystical Fire and Giga Impact their own effect. Before, each borrowed a Gen 3 move's.
+
 ## [1.6.3] - 2026-11-01
 
 ### Added

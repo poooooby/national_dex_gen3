@@ -180,6 +180,40 @@ root; `tools/anim_known.lua` lists what the engine and carts offer). The report
 sprite templates (215), then tasks (32) and its newer backgrounds (24). Test:
 `tests/anims_test.lua [game]` resolves and plays every script headlessly on that cart.
 
+### pixelfx effects
+
+For moves whose expansion script needs graphics no cart has, `tools/build_fx.mjs` renders effects
+from [pixelfx](https://github.com/patch-gg/pixelfx) (MIT; cloned at a pinned commit into
+`tools/.cache/pixelfx_src`) in grays, `tools/fx_atlas.py` packs every frame into one gray + alpha
+atlas (`assets/fx/atlas.png`), and `data/fx.lua` gets the layout, the ramps and the scripts:
+
+- `SHEETS`: the effect, the seconds kept, a speed-up, a scale (down for the ones made too big for
+  the battle screen, up pixel for pixel), and the pin (the point placed on the battler). The
+  effect's palette is rendered as an even gray ramp, its other colours as their brightness.
+  Pixels fainter than alpha 72 (or a sheet's `cut`) and see-through dark ones are dropped (a soft
+  glow over nothing is a grey box on a bright background); the packer trims each frame to what it
+  draws, keeps 16 grays and alphas and shelf-packs them (`rects`: x, y, w, h, ox, oy a frame).
+- `PAL`: the ramps (8 steps) a move colours with; each sheet also gets its effect's own palette as a
+  ramp of its name, used when a row names none. One effect serves several moves (the orb is Aura
+  Sphere's blue, Focus Blast's orange, Energy Ball's green).
+- `MOVES`: each move's script, as rows for the animation VM: the cart's own sounds, lunge and
+  shake, plus `NdxFx` rows, `{ "FX:" .. sheet, mode, dx, dy, frames, flags, "FX:" .. ramp }`
+  (mode 0 attacker, 1 target, 2 travel, 3 beam; flags 1 feet, 2 aim, 4 behind).
+
+`src/fx_anims.lua` registers the `NdxFx` visual task in `AnimTasks.REGISTRY` (once per process,
+`AnimTasks.__ndxFx`) and `FxAnims.merge` adds `data/fx.lua`'s moves and labels to
+`data/anims.lua`'s, so `src/anims.lua` resolves them like its own (`"FX:"` arguments pass through).
+The task draws its frame through `task.draw` (no sprite slot) with a gradient-map shader (the
+gray, bent by a gamma of 1.5 so the glow keeps its colour, looks up an 8 x 1 ramp picture; without
+shaders, a tint), loads the atlas the first time a move plays, and ends after its frames, so a
+missing picture costs nothing but the drawing. A move with
+an expansion script of its own keeps that one.
+
+Rebuild with `node tools/build_fx.mjs` (Node 18+, Python with Pillow; `--preview` writes contact
+sheets to `tools/.cache/fx_preview`). Tests: `tests/anims_test.lua [game]` plays each from both
+sides headlessly and checks the atlas (its size, every rect inside it, every ramp named); `tests/drivers/fx_anims_probe.lua` plays them in a
+real battle (shots `FX_SHOTS`, `FX_SHOTS=0` measures garbage instead).
+
 ## Art
 
 Pictures (battle, summary and Pokédex) come from a sprite mod:

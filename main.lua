@@ -99,6 +99,8 @@ return function(mod)
   local TypeIcons = loadSibling(mod, "src/type_icons.lua")
   -- optional: without it every new move plays the cart animation named in data/moves.lua
   local MoveAnims = loadSibling(mod, "src/anims.lua")
+  -- optional: without it the moves data/fx.lua draws with pixelfx keep their cart look
+  local FxAnims = loadSibling(mod, "src/fx_anims.lua")
   -- the Modern Moves option: the original 386 also learn their newer moves
   local ModernLearnsets = loadSibling(mod, "src/modern_learnsets.lua")
   -- optional: without it the newer moves have no TMs
@@ -317,7 +319,18 @@ return function(mod)
     end
     -- their battle animations from pokeemerald-expansion (src/anims.lua), outside src/moves.lua's
     if NewMoves and MoveAnims then
-      local okAn, anErr = pcall(MoveAnims.install, { data = read("data/anims.lua") or {}, moves = registeredMoves,
+      local animData = read("data/anims.lua") or {}
+      -- and, for some of the rest, pixelfx's (src/fx_anims.lua)
+      if FxAnims then
+        local fxData = read("data/fx.lua")
+        local okFxA, fxOn = pcall(FxAnims.install, { mod = mod, data = fxData, require = require, log = mod.log })
+        if okFxA and fxOn then
+          FxAnims.merge(animData, fxData)
+        elseif not okFxA then
+          mod.log:warn("pixelfx move animations are off: %s", tostring(fxOn))
+        end
+      end
+      local okAn, anErr = pcall(MoveAnims.install, { data = animData, moves = registeredMoves,
         require = require, log = mod.log })
       if not okAn then mod.log:warn("new move animations are off: %s", tostring(anErr)) end
     end

@@ -62,8 +62,11 @@ Paldea Pokémon can live in Kanto and Hoenn.
   Psyshock, Sucker Punch, First Impression, Final Gambit, Wicked Blow, Fell Stinger, Mind Blown
   and more.
 - 🎬 **Animations to match:** 134 newer moves play their modern-style animation (Moonblast calls
-  down the moon, Psychic Fangs bites through a psychic haze), built from Gen 3's own graphics;
-  the rest borrow the closest Gen 3 animation (Bulldoze shakes the ground like Earthquake).
+  down the moon, Psychic Fangs bites through a psychic haze), built from Gen 3's own graphics.
+  20 more get effects drawn just for them: Dragon Pulse and Flash Cannon fire a beam, Aura
+  Sphere and Focus Blast hurl a glowing orb that bursts, Stone Edge drives a spike up from the
+  ground, Hurricane whips up a twister, Bolt Strike calls down lightning. The rest borrow the
+  closest Gen 3 animation (Force Palm strikes like Karate Chop).
 - 💿 **114 new TMs (TM51–TM164):** every newer move that's a TM in today's games, from Dazzling
   Gleam and Earth Power to Scald, Stealth Rock and U-turn. Buy them from the TM vending machine:
   Celadon Dept. Store 2F (FireRed / LeafGreen) or Lilycove Dept. Store 4F (Ruby / Sapphire /
@@ -195,11 +198,13 @@ the game's own Pokémon keep their original data, so its event gifts arrive as u
 Species data from [PokéAPI](https://pokeapi.co/). Cries and item sprites are fan-made: see
 [CREDITS.md](CREDITS.md). Big thanks to the RHH team for the
 battle animations of the newer moves, borrowed from their
-[pokeemerald-expansion](https://github.com/rh-hideout/pokeemerald-expansion/) 1.17.2.
+[pokeemerald-expansion](https://github.com/rh-hideout/pokeemerald-expansion/) 1.17.2, and
+to Patch and Hugo Duprez for [pixelfx](https://github.com/patch-gg/pixelfx), whose effects
+draw 20 of them.
 
 The mod's code, tools, documentation and Wooble's item sprites are MIT licensed: see
 [LICENSE](LICENSE), which also lists what it does not cover (the other item sprites, the
-cries, and the games' own text and data).
+cries, the pixelfx effects, and the games' own text and data).
 
 ---
 
