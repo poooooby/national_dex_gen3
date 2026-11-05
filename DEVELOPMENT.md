@@ -214,6 +214,33 @@ sheets to `tools/.cache/fx_preview`). Tests: `tests/anims_test.lua [game]` plays
 sides headlessly and checks the atlas (its size, every rect inside it, every ramp named); `tests/drivers/fx_anims_probe.lua` plays them in a
 real battle (shots `FX_SHOTS`, `FX_SHOTS=0` measures garbage instead).
 
+## Type badges (option)
+
+`src/type_badges.lua` draws a 12 x 12 badge per type beside each battle HP box: right of a foe's,
+left of the player's, the second and third types 8 px down and out (corners touching). Every box
+goes through the engine's `Healthbox.draw` (looked up on the module at call time), which skips a
+hidden box, applies the slide-in and bounce, and hands the top left to `BattleChrome.drawEnemyBox`
+/ `drawPlayerBox` / `drawDoublesBox`. Those are wrapped to note the box (only inside
+`Healthbox.draw`; the Safari box is not noted), and `Healthbox.draw` to draw the badges after it.
+
+- Placement uses `TypeBadges.EDGES`, where the box frames are in their top 8 rows (the shadow tail
+  runs on below them, right of a foe's box and left of the player's): a foe's ends at x 92, the
+  player's starts at x 9, both at row 2; the badges keep 2 px clear on either side. Measured
+  from every cart's `pokemon/battle/healthbox_*.rgba`, singles and doubles: the same on all five,
+  within a pixel. (Mod code may not read the ROM-derived cache, so it is not measured at run time.)
+- Types: the battler's `type1`, `type2` and `__ndxType3` (Forest's Curse), as numbers or names;
+  a repeat is dropped, and `???` (9) only shows alone.
+- The badges are on the battle's own UI canvas in their box's rows, so WoobleView's Fill Screen
+  (which moves the UI's rows above y 66 up and docks the rest) carries them with their box.
+  FRLG_VOXEL keeps its own reference to `Healthbox.draw`, so its battles show none.
+- The wraps are process-wide (`Healthbox.__ndxBadges`); the option is read once and on
+  `mod.options_changed`, never per frame. The badges' own code makes no garbage; LOVE's four draw
+  calls make about 35 bytes a frame.
+
+Tests: `tests/type_badges_test.lua [game]` (a stand-in `Healthbox.draw`: placement, slide-in,
+hidden box, doubles, types, option), driver `tests/drivers/type_badges_probe.lua` (a real battle:
+the badges' positions from the cart's box pictures, shots, garbage).
+
 ## Art
 
 Pictures (battle, summary and Pokédex) come from a sprite mod:

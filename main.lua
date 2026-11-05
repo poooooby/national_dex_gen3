@@ -97,6 +97,8 @@ return function(mod)
   -- one of them are left out
   local NewMoves = loadSibling(mod, "src/moves.lua")
   local TypeIcons = loadSibling(mod, "src/type_icons.lua")
+  -- optional: the type badges beside the battle's HP boxes
+  local TypeBadges = loadSibling(mod, "src/type_badges.lua")
   -- optional: without it every new move plays the cart animation named in data/moves.lua
   local MoveAnims = loadSibling(mod, "src/anims.lua")
   -- optional: without it the moves data/fx.lua draws with pixelfx keep their cart look
@@ -499,6 +501,20 @@ return function(mod)
       end)
       local okS, done, why = pcall(DynamaxSummary.install, { which = which, dynamax = Dynamax, require = require, icon = icon })
       if not (okS and done) then mod.log:warn("the summary's Dynamax marks are off: %s", tostring(okS and why or done)) end
+    end
+    -- the type badges beside the battle's HP boxes (src/type_badges.lua), option type_badges
+    -- (read once and on a change: the boxes ask every frame)
+    if TypeBadges then
+      local badgesOn = true
+      local function readBadges()
+        local okGet, value = pcall(function() return mod.options:get("type_badges") end)
+        badgesOn = not (okGet and value == false)
+      end
+      readBadges()
+      mod.events:on("mod.options_changed", function(ev)
+        if type(ev) == "table" and ev.mod == mod.id and ev.key == "type_badges" then readBadges() end
+      end)
+      pcall(TypeBadges.install, { require = require, log = mod.log, enabled = function() return badgesOn end })
     end
   end, 1)
 

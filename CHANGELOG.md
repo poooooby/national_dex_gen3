@@ -5,6 +5,13 @@ All notable changes to this mod are documented here, in
 
 ## [Unreleased]
 
+### Added
+
+- **Type badges beside the battle HP boxes** (option Type Badges, on by default): a small
+  badge for each of a Pokémon's types, to the right of the foe's box and to the left of yours.
+  They show the battler's current types (Soak, Roost, Transform, Forest's Curse), ride along as
+  the boxes slide in and bounce, work in doubles, and move with WoobleView's Fill Screen.
+
 ## [1.7.0] - 2026-11-02
 
 ### Added

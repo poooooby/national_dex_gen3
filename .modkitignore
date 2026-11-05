@@ -86,5 +86,7 @@ docs/plans/
 tests/linking_cord_test.lua
 tests/cart_untouched_test.lua
 tests/vending_test.lua
+tests/type_badges_test.lua
 tests/drivers/vending_probe.lua
 tests/drivers/fx_anims_probe.lua
+tests/drivers/type_badges_probe.lua

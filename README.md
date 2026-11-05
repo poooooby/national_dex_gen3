@@ -93,6 +93,10 @@ Paldea Pokémon can live in Kanto and Hoenn.
   Pokémon has its modern typing, the originals too: Clefairy, Jigglypuff, Togepi, Snubbull,
   Marill, Mr. Mime, Ralts and Mawile are part Fairy, and Charm, Sweet Kiss and Moonlight are
   Fairy moves. Steel no longer resists Ghost and Dark, as in today's games.
+- 🏷️ **Type badges in battle:** small type badges sit beside each HP box, to the right of the
+  foe's and to the left of yours, so you can read a matchup at a glance. They follow the battle:
+  a Pokémon hit by Soak, or using Roost or Transform, shows its new types. They stay beside their
+  box in singles and doubles, and with WoobleView's Fill Screen.
 - 📦 **A bigger PC:** 40 boxes, room for 1,200 Pokémon, so every species and form fits with
   space to spare. The extra boxes use the game's own wallpapers and work everywhere the first
   14 do: switching boxes, depositing, catching straight into the PC and the save editor.
@@ -117,6 +121,7 @@ Open **OPTIONS → MODS → WoobleDex**.
 | **Modern Moves** | On / Off | On | The original 386 Pokémon also learn the newer moves they learn today, at the same levels (Clefairy learns Moonblast at 44), plus newer egg moves. Their Gen 3 moves stay, and moves they already know are kept if you turn it off. The save editor follows this setting. |
 | **Bigger PC** | On / Off | On | 40 PC boxes (1,200 Pokémon) instead of 14. Turning it off hides boxes 15–40; the Pokémon in them stay in your save and come back when you turn it on again. |
 | **Register Owned** | On / Off | On | Opening the Pokédex counts every Pokémon in your party and PC as seen and caught, handy for Pokémon added with a save editor. |
+| **Type Badges** | On / Off | On | Shows each Pokémon's types as small badges beside its HP box in battle. |
 
 ## 💾 Installation
 

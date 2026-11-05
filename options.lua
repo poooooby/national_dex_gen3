@@ -48,4 +48,11 @@ return {
     default = true,
     description = "When you open the Pokedex, count every Pokemon in your party and PC as seen and caught. Pokemon added with a save editor never went through a catch, so the game never registered them. Eggs are skipped.",
   },
+  {
+    key = "type_badges",
+    label = "Type Badges",
+    type = "toggle",
+    default = true,
+    description = "Show each Pokemon's types as small badges beside its HP box in battle, to the right of a foe's and to the left of yours. They follow the battle: a Pokemon soaked to Water or using Roost shows its new type.",
+  },
 }
