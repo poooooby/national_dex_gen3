@@ -541,7 +541,11 @@ REJECT = {"LAVA_PLUME", "SMART_STRIKE", "PUNISHMENT", "DRAGON_DARTS", "BELCH", "
 HAND = {"PSYCHIC_TERRAIN": "CONFUSION", "GRAVITY": "CONFUSION", "TAKE_HEART": "CALM_MIND",
         "LUNAR_BLESSING": "MOONLIGHT", "POWER_SPLIT": "SKILL_SWAP", "GUARD_SPLIT": "SKILL_SWAP",
         "POWER_SWAP": "SKILL_SWAP", "GUARD_SWAP": "SKILL_SWAP", "SPEED_SWAP": "SKILL_SWAP",
-        "HEART_SWAP": "SKILL_SWAP", "POWER_TRICK": "SKILL_SWAP"}
+        "HEART_SWAP": "SKILL_SWAP", "POWER_TRICK": "SKILL_SWAP",
+        # a lobbed blob that coats the foe (the type/power pick, Giga Drain, drains from it)
+        "SYRUP_BOMB": "SLUDGE",
+        # a swarm that traps the foe (the type/power pick, Leech Life, drains HP it doesn't)
+        "INFESTATION": "SAND_TOMB"}
 
 
 def closest_looks(conv: Converter, exp: Path, entries: dict[str, str], moves: list[str],

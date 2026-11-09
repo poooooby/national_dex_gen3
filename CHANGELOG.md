@@ -3,6 +3,15 @@
 All notable changes to this mod are documented here, in
 [keep a changelog](https://keepachangelog.com/en/1.1.0/) format.
 
+## [Unreleased]
+
+### Changed
+
+- **Syrup Bomb looks like a bomb**: it lobs a blob that splats over the foe (Sludge's animation)
+  instead of Giga Drain's, which drew energy out of the foe rather than hitting it.
+- **Infestation swarms the foe** (Sand Tomb's animation) instead of biting and draining it with
+  Leech Life's: it traps, it doesn't drain.
+
 ## [1.8.0] - 2026-11-05
 
 ### Added
