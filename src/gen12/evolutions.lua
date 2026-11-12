@@ -189,7 +189,8 @@ function Evolutions.install(opts)
   local Conditional, Clock = opts.conditional, opts.clock
   local pokemon = mod.content.pokemon
   local maxDex = gen == 1 and 151 or 251
-  local state = { generation = gen, conds = {}, byPair = {}, rows = {}, added = 0, dropped = 0,
+  local state = { generation = gen, conds = {}, byPair = {}, rows = {}, bridges = {}, added = 0,
+    dropped = 0,
     watch = { steps = {}, uses = {}, crits = {} }, baseFriendship = {}, genderRatio = {} }
 
   local byDex, byId = opts.species.byDex, opts.species.byId
@@ -260,7 +261,12 @@ function Evolutions.install(opts)
         for k, v in pairs(row) do copy[k] = v end
         rows[#rows + 1] = copy
       end
-      for _, row in ipairs(build(id, steps)) do rows[#rows + 1] = row end
+      for _, row in ipairs(build(id, steps)) do
+        rows[#rows + 1] = row
+        -- the API's bridges: a cart species' step into a newer one (src/api.lua)
+        state.bridges[#state.bridges + 1] = { sourceId = id, sourceDex = dex,
+          species = row.species or row.into, level = row.level, method = row.method }
+      end
       patch(id, rows)
     end
   end

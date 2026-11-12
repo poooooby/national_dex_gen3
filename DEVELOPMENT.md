@@ -383,7 +383,7 @@ test passes `generation = 3`.
 - **Tests:** `tests/_gen12.lua` builds a Red/Yellow (Gen 1: every generated module plus
   `Data.seedDefaults`) or Gold/Crystal (Gen 2: the keys `Game2` builds) dataset from the imported
   cart. The `tests/gen12_*_test.lua` suites (load, data, types, moves, battle, species,
-  evolutions, art) run on red, yellow, gold and crystal (name others on the command line).
+  evolutions, art, api) run on red, yellow, gold and crystal (name others on the command line).
 
 ### The Gen 1/2 data (`tools/build_gen12.py` -> `data/gen12/`)
 
@@ -632,6 +632,31 @@ Registered at load, first, so every record after can name them.
   the cart's species untouched); Red's list (#1-1025 once each, no form); Gold's after
   `game.ready`; and the form-to-base marking. Audio cannot be decoded headless, so the pak's
   cries are heard only in game (stage 9).
+
+### Exports and modern_spawns (`src/gen12/api.lua`)
+
+- **Exports:** the same `src/api.lua` as Gen 3, loaded as it is and handed this path's lists in
+  its shape:
+  - `species` (`byDex`, sorted) and `forms` (`baseSpecies` is the running game's own id), each
+    with `evolutions` as `{ species, method, level }` from the rows `evolutions.lua` wrote;
+  - `bridges`: the steps added to cart species, recorded by `Evolutions.install`, so
+    `evolutionsOf("GOLBAT")` finds Crobat on Red.
+- **What is published:** `apiVersion` 2, `isActive`, `provider`, `listSpecies`, `slotOf`,
+  `listForms`, `formsOf`, `baseDexOf`, `idOfSlot`, `evolutionsOf`, `setArtProvider`, and
+  `clockSource` (Red `"device"`, Gold `"game"`: the clocks the time-of-day evolutions read), plus
+  `generation`.
+  - The slot is the Gen 3 slot (dex + 64, forms 1090+), the key shared by every game.
+  - Method names are the running game's own (Red `LEVEL`/`ITEM`/`TRADE`/`FRIENDSHIP`, Gold
+    `EVOLVE_*`); modern_spawns reads `LEVEL` and `EVOLVE_LEVEL` as levels.
+  - `src/api.lua` also defines `setDexPeek`, `moveExtra` and `moveRule`, which answer nothing
+    here, so they are removed again; callers test for them by presence.
+- **modern_spawns** (`runtime.lua` looks for `national_dex` and then `national_dex_gen3`) reads
+  the live records plus `evolutionsOf`. 785 of Red's 874 new species and 691 of Gold's 774 are
+  spawn candidates (the rest are legendary or mythical, kept out unless asked for).
+- **Test:** `tests/gen12_api_test.lua` covers the exports (lists, slots, forms, evolutions both
+  ways, a cart species' bridge, the clock, no Gen 3 extras). It then loads `mods/modern_spawns`
+  beside the mod and checks the candidate count, Turtwig's family and stages, a bridge in one
+  family, and Red's Route 1 rolling only species the game has.
 
 Engine facts the design rests on (checked against the source, 2026-11-11):
 

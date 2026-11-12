@@ -114,13 +114,19 @@ return function(mod, loadSibling)
     Dex.install(mod, generation, speciesState.forms)
   end
 
-  local exports = mod.exports
-  exports.apiVersion = 2
-  exports.isActive = function() return true end
-  exports.provider = function() return "national_dex_gen3" end
-  exports.generation = function() return generation end
-  exports.setArtProvider = function(fn)
-    return pictures ~= nil and pictures.add(fn) or false
+  -- mod.exports: src/api.lua (the Gen 3 path's, as it is) over this path's species
+  local Api = loadSibling(mod, "src/api.lua")
+  local GenApi = loadSibling(mod, "src/gen12/api.lua")
+  if Api and GenApi and speciesState then
+    GenApi(mod, { api = Api, species = speciesState, evolutions = evoState, generation = generation,
+      art = pictures })
+  else
+    -- the bare minimum, so a caller can still tell the mod is here
+    local exports = mod.exports
+    exports.apiVersion = 2
+    exports.isActive = function() return true end
+    exports.provider = function() return "national_dex_gen3" end
+    exports.generation = function() return generation end
   end
 
   mod.log:info("Gen %d path loaded", generation)
