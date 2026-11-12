@@ -30,13 +30,13 @@ return function(mod, loadSibling)
   -- `resolveMove(n, taken)` turns any National move number into a move this game has
   local Moves = loadSibling(mod, "src/gen12/moves.lua")
   local moveRows = loadSibling(mod, "data/gen12/moves.lua")
-  local moveState, resolveMove
+  local moveState, resolveMove, directMove
   if Types and Moves and moveRows then
     moveState = Moves.register({ mod = mod, rows = moveRows, generation = generation, types = Types,
       log = mod.log })
     local cartMoves = {}
     for id, rec in mod.content.moves:each() do cartMoves[id] = rec end
-    resolveMove = Moves.resolver(moveState, cartMoves)
+    resolveMove, directMove = Moves.resolver(moveState, cartMoves)
     mod.log:info("moves: %d newer moves registered, %d already there", moveState.registered,
       moveState.borrowed)
     if #moveState.highCrit > 0 then
@@ -45,6 +45,28 @@ return function(mod, loadSibling)
         Moves.installHighCrit(moveState, game and game.data)
       end, 1)
     end
+  end
+
+  -- species #152+ (Red) / #252+ (Gold) and the 128 forms, with the placeholder pictures
+  local Project = loadSibling(mod, "src/gen12/project.lua")
+  local Species = loadSibling(mod, "src/gen12/species.lua")
+  local index = loadSibling(mod, "data/gen12/species/index.lua")
+  local forms = loadSibling(mod, "data/gen12/forms.lua")
+  local speciesState
+  if Project and Species and index and forms and resolveMove then
+    local records = {}
+    for _, shard in ipairs(index.shards) do
+      for _, r in ipairs(loadSibling(mod, "data/gen12/species/" .. shard) or {}) do
+        records[#records + 1] = r
+      end
+    end
+    local assets = mod.path .. "/assets/gen12/"
+    speciesState = Species.register({ mod = mod, generation = generation, project = Project,
+      types = Types, resolve = resolveMove, direct = directMove, species = records, forms = forms,
+      pictures = { front = assets .. "front.png", back = assets .. "back_gen" .. generation .. ".png" },
+      log = mod.log })
+    mod.log:info("species: %d registered (%d forms), %d left to another mod",
+      speciesState.registered, #speciesState.forms, speciesState.kept)
   end
 
   local exports = mod.exports

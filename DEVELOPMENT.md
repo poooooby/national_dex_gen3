@@ -382,7 +382,7 @@ test passes `generation = 3`.
   with `mod.options:define`, which the Mod Manager reads first.
 - **Tests:** `tests/_gen12.lua` builds a Red/Yellow (Gen 1: every generated module plus
   `Data.seedDefaults`) or Gold/Crystal (Gen 2: the keys `Game2` builds) dataset from the imported
-  cart. The `tests/gen12_*_test.lua` suites (load, data, types, moves, battle) run on red,
+  cart. The `tests/gen12_*_test.lua` suites (load, data, types, moves, battle, species) run on red,
   yellow, gold and crystal (name others on the command line).
 
 ### The Gen 1/2 data (`tools/build_gen12.py` -> `data/gen12/`)
@@ -492,6 +492,53 @@ Registered at load, first, so every record after can name them.
     `BattleState` (`performMove`) and Gold's `Battle` (`useMove`), both directions, and checks
     that type matchups reach the damage (Night Slash on Abra).
 
+### Species and forms (`src/gen12/species.lua`, `src/gen12/project.lua`)
+
+- **What is registered:** every data species past the cart's own (Red 874, Gold 774) and all
+  128 forms. An id the registry already has (another mod's) is left alone (`kept`).
+- **`project.lua`** is pure: data record + what the game supplies -> the engine's own record.
+  - **Both games:**
+    - types through `Types.forCart`, growth through `Types.growthId`;
+    - evolutions left empty (stage 6 fills them);
+    - extra top-level fields: `slot` (the Gen 3 slot, the stable key), `legendary`/`mythical`,
+      and `spAttack`/`spDefense` (modern_spawns reads them on Gen 1);
+    - forms carry `baseSpecies` (the running game's own id for that dex: Gold spells
+      Farfetch'd `FARFETCH_D`), `form` and `baseDex`.
+  - **Moves:** the level-up list goes through the resolver.
+    - A stand-in is never a move the species learns for real anywhere in its list.
+    - Each move appears once.
+    - The first move is always at level 1 (Crabrawler's comes at 5, and a Pokémon with no move
+      cannot battle).
+    - Machine and egg moves are never substituted (as on Gen 3): only moves the game has, and
+      machines only from the game's own TM/HM set. That set is the union of the cart species'
+      `tmhm` lists, since Gold keeps its machine list outside any registry; on Crystal it takes
+      in the three tutor moves.
+  - **Gen 1:**
+    - `special` = Special Attack;
+    - `level1Moves` = the last four level-1 moves, `learnset` = the rest;
+    - height in ft/in and weight in tenths of a pound (plus `heightM`/`weightKg`);
+    - the entry `text` is a label: Red's Pokédex reads `data.text[label]`, pages split by ``.
+      `species.lua` registers one `text` record per species (`_national_dex_gen3_<ID>`), ending
+      in `{DONE}` so the Pokédex adds no period of its own.
+  - **Gen 2:**
+    - split specials, `levelMoves`;
+    - a single type and a single egg group written twice;
+    - `eggSteps` = egg cycles;
+    - the entry inline (`<NEXT>` between lines, `text2` the second page), which Gold's
+      `PokedexText.apply` merges into its Pokédex;
+    - `index` = 1000 + dex for species and 1000 + slot for forms: past every cart index, never
+      255, never shared. On a collision the engine picks one.
+  - **Forms** get dex `20000 + n` (n = place in `forms.lua`): Red's Pokédex lists species with
+    `pairs`, so a form sharing its base's number would randomly stand in for it.
+- **Placeholder pictures** (`assets/gen12/`, drawn by `tools/build_placeholder.py`, our own art):
+  a grey ball with a "?" (front 56x56, `frontSize`/`picSize` 7) and the ball from behind (32x32
+  on Red, 48x48 on Gold). They use the carts' four shades on transparent white, so each game
+  tints them as it tints its own. Stage 7 lets sprite mods draw over them.
+- **Test:** `tests/gen12_species_test.lua`. It checks every record's shape, that every move
+  exists, the pictures, Red's entry labels (lines of 18) and Gold's Pokédex merge, and Gold's
+  indices. Then each game's own code builds every species and form at Lv 5 and 50, and a wild
+  Garchomp uses its moves in each battle.
+
 Engine facts the design rests on (checked against the source, 2026-11-11):
 
 - **Pictures:** `spriteFront`/`spriteBack` are required on Gen 1/2 records (`Schemas.lua`), and a
@@ -521,6 +568,7 @@ Engine facts the design rests on (checked against the source, 2026-11-11):
 python -m pip install requests
 python tools/build_species.py            # PokéAPI responses cached in tools/.cache
 python tools/build_gen12.py              # data/gen12 (needs red, gold and firered imported, luajit)
+python tools/build_placeholder.py        # assets/gen12 (the Gen 1/2 placeholder pictures)
 ```
 
 `build_species.py` empties `data/species/` before it writes, which takes `modern.lua` with it

@@ -111,10 +111,11 @@ function Moves.installHighCrit(state, data)
   return #state.highCrit
 end
 
--- A function (n, taken) -> move id: the cart's move for #1-165 (Red) / #1-251 (Gold), the
--- registered move where one runs here, else the first stand-in (`subs`) the Pokemon does not
--- already know (`taken`: id -> true; the stand-in is not marked, the caller does that). nil only
--- when nothing fits (every stand-in taken), in which case the move is left out.
+-- Two functions. resolve(n, taken) -> move id: the cart's move for #1-165 (Red) / #1-251
+-- (Gold), the registered move where one runs here, else the first stand-in (`subs`) the Pokemon
+-- does not already know (`taken`: id -> true; the stand-in is not marked, the caller does that).
+-- nil only when nothing fits (every stand-in taken), in which case the move is left out.
+-- direct(n) -> the move only when the game has it outright (no stand-in), else nil.
 function Moves.resolver(state, cartMoves)
   local key = "gen" .. state.generation
   local maxMove = state.generation == 1 and 165 or 251
@@ -132,7 +133,7 @@ function Moves.resolver(state, cartMoves)
     if n <= maxMove then return byIndex[n] end
     return state.byNumber[n]
   end
-  return function(n, taken)
+  local function resolve(n, taken)
     local id = direct(n)
     if id then return id end
     local row = rows[n]
@@ -142,6 +143,7 @@ function Moves.resolver(state, cartMoves)
     end
     return nil
   end
+  return resolve, direct
 end
 
 return Moves
