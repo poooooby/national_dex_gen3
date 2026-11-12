@@ -16,6 +16,16 @@ return function(mod, loadSibling)
   -- Declaring this path's own list (none yet) keeps them out of the Mod Manager on these games.
   pcall(function() mod.options:define({}) end)
 
+  -- Dark / Steel / Fairy, the modern typing of the cart's species and moves, and the two
+  -- newer growth curves; first, so every record registered after can name them
+  local Types = loadSibling(mod, "src/gen12/types.lua")
+  local cart = loadSibling(mod, "data/gen12/cart.lua")
+  if Types and cart then
+    local c = Types.register({ mod = mod, cart = cart, generation = generation, log = mod.log })
+    mod.log:info("types: %d new, %d matchup rows, %d removed; retyped %d species, %d moves; "
+      .. "%d growth rates", c.types, c.rows, c.removed, c.species, c.moves, c.growth)
+  end
+
   local exports = mod.exports
   exports.apiVersion = 2
   exports.isActive = function() return true end

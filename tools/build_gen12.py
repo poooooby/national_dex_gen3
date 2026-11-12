@@ -160,6 +160,7 @@ def load_carts(engine: Path) -> dict[int, dict[str, Any]]:
             "moves": {m["n"]: m for m in raw["moves"]},
             "species": {s["dex"]: s for s in raw["species"]},
             "icons": {int(k): v for k, v in raw["icons"].items()},
+            "matchups": [tuple(row) for row in raw["matchups"]],
         }
     return carts
 
@@ -611,8 +612,53 @@ def cart_retypes(api: bs.API, carts: dict[int, dict[str, Any]],
                 continue
             if modern != type_name(m["type"]):
                 moves[m["id"]] = modern
-        out[f"gen{gen}"] = {"species": species, "moves": moves}
+        out[f"gen{gen}"] = {"species": species, "moves": moves, **chart_changes(api, carts, gen)}
     return out
+
+
+# Types each game lacks: Red has neither Dark nor Steel, and no cart has Fairy.
+NEW_TYPES = {1: ["DARK", "STEEL", "FAIRY"], 2: ["FAIRY"]}
+MODERN_TYPES = ("dark", "steel", "fairy")      # every row that touches one is today's chart
+RELATIONS = (("double_damage_to", 20, False), ("half_damage_to", 5, False), ("no_damage_to", 0, False),
+             ("double_damage_from", 20, True), ("half_damage_from", 5, True), ("no_damage_from", 0, True))
+
+
+def modern_rows(api: bs.API) -> dict[tuple[str, str], int]:
+    """(attacker, defender) -> tenths for every non-neutral pair that involves Dark, Steel
+    or Fairy, from PokéAPI's current damage relations."""
+    rows: dict[tuple[str, str], int] = {}
+    for t in MODERN_TYPES:
+        rel = api.get(f"/type/{t}")["damage_relations"]
+        for key, mult, incoming in RELATIONS:
+            for other in rel[key]:
+                pair = (other["name"].upper(), t.upper()) if incoming else (t.upper(), other["name"].upper())
+                rows[pair] = mult
+    return rows
+
+
+def chart_changes(api: bs.API, carts: dict[int, dict[str, Any]], gen: int) -> dict[str, Any]:
+    """The types the game gains and the matchup rows to add or take out so every pair
+    involving Dark, Steel or Fairy reads as today's chart. Type names are the modern
+    spellings (PSYCHIC); the mod turns them into the cart's ids. The cart's other rows
+    (Gen 1's Ghost vs Psychic, Bug vs Poison...) stay as the game has them."""
+    modern = modern_rows(api)
+    cart_rows = {(type_name(a), type_name(d)): m for a, d, m in carts[gen]["matchups"]}
+    cart_types = {t for pair in cart_rows for t in pair}
+    new = NEW_TYPES[gen]
+    present = cart_types | set(new)
+    add = sorted([a, d, m] for (a, d), m in modern.items()
+                 if (a in new or d in new) and a in present and d in present)
+    remove, change = [], []
+    for (a, d), m in sorted(cart_rows.items()):
+        if a.lower() in MODERN_TYPES or d.lower() in MODERN_TYPES:
+            if (a, d) not in modern:
+                remove.append(f"{a}>{d}")
+            elif modern[(a, d)] != m:
+                change.append([a, d, modern[(a, d)]])
+    for (a, d), m in sorted(modern.items()):
+        if a in cart_types and d in cart_types and (a, d) not in cart_rows:
+            add.append([a, d, m])
+    return {"types": new, "add": sorted(add), "change": change, "remove": remove}
 
 
 # ---------------------------------------------------------------- writing
@@ -649,7 +695,9 @@ def write(result: dict[str, Any], out: Path) -> None:
     listing("moves.lua", "-- Moves past #165 the species name, by National move number (n).\n",
             result["moves"])
     (out / "cart.lua").write_text(
-        HEADER + "-- The carts' own species and moves whose modern typing differs, by generation.\n"
+        HEADER + "-- Per generation: the cart's own species and moves whose modern typing differs, the\n"
+        "-- types the game gains, and the matchup rows to add ({ attacker, defender, tenths }) or\n"
+        "-- remove (\"ATTACKER>DEFENDER\") so every pair with Dark, Steel or Fairy is today's chart.\n"
         + "return " + lua(result["cart"]) + "\n", encoding="utf-8")
 
 

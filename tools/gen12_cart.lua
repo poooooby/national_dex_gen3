@@ -1,7 +1,8 @@
 -- Prints, as JSON, what tools/build_gen12.py needs from an imported Gen 1 or Gen 2 cart:
 -- its moves (number, id, name, type, power, accuracy, pp, effect and, on Gen 2, the effect id
--- and chance), its species (dex, id, types), each species' party icon, and the cart's
--- high-critical move list (Gen 2 keeps it in the type chart's battle rules).
+-- and chance), its species (dex, id, types), each species' party icon, its type matchup rows
+-- ({ attacker, defender, multiplier }) and the cart's high-critical move list (Gen 2 keeps it
+-- in the type chart's battle rules).
 --
 --   luajit tools/gen12_cart.lua <gen1recomp>/<version>/data/generated
 --   luajit tools/gen12_cart.lua --lua <file.lua>     (any data file that returns a table, as JSON)
@@ -91,6 +92,10 @@ elseif icons.species then                 -- Gen 2: an ICON_ sheet per species i
 end
 
 local chart = load("type_chart") or {}
+result.matchups = {}
+for _, row in ipairs(chart.matchups or {}) do
+  result.matchups[#result.matchups + 1] = { row.attacker, row.defender, row.multiplier }
+end
 local rules = chart.battleRules or {}
 for id in pairs(rules.highCriticalMoves or {}) do result.highCrit[#result.highCrit + 1] = id end
 table.sort(result.highCrit)

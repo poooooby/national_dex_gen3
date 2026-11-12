@@ -382,8 +382,8 @@ test passes `generation = 3`.
   with `mod.options:define`, which the Mod Manager reads first.
 - **Tests:** `tests/_gen12.lua` builds a Red/Yellow (Gen 1: every generated module plus
   `Data.seedDefaults`) or Gold/Crystal (Gen 2: the keys `Game2` builds) dataset from the imported
-  cart. `tests/gen12_load_test.lua` and `tests/gen12_data_test.lua` run on red, yellow, gold and
-  crystal (name others on the command line).
+  cart. `tests/gen12_load_test.lua`, `tests/gen12_data_test.lua` and `tests/gen12_types_test.lua`
+  run on red, yellow, gold and crystal (name others on the command line).
 
 ### The Gen 1/2 data (`tools/build_gen12.py` -> `data/gen12/`)
 
@@ -422,10 +422,39 @@ moves #1-165, Gold #1-251 of each; the data covers everything past that.
 - **`crossgen.lua`:** evolutions from species #1-251 into newer ones. The mod keeps the steps whose
   source the running cart has and whose target it lacks. A `knows` condition names the real move;
   Gen 3's stand-ins are replaced through `REAL_KNOWS`.
-- **`cart.lua`:** the cart species and moves whose modern typing differs. Red: 7 species and 4
-  moves (Bite, Gust, Karate Chop, Sand-Attack). Gold: 13 species and 3 moves.
+- **`cart.lua`:** per generation:
+  - the cart species and moves whose modern typing differs. Red: 7 species and 4 moves (Bite,
+    Gust, Karate Chop, Sand-Attack). Gold: 13 species and 3 moves;
+  - the types the game gains (`types`) and the matchup rows that make every pair with Dark, Steel
+    or Fairy read as today's chart. These are computed from PokéAPI's damage relations against the
+    cart's own rows: `add` (Red 38, Gold 12), `change` (none today) and `remove` (Gold's Ghost and
+    Dark rows against Steel). The cart's other rows stay as the game has them, so Red keeps Ghost
+    doing nothing to Psychic.
+  - Type names are the modern spellings (`PSYCHIC`); the mod turns them into cart ids.
 - `tools/gen12_cart.lua` is the build tool's only window into the carts (it prints them as JSON);
   the mod never reads cart files.
+
+### Types and growth rates (`src/gen12/types.lua`)
+
+Registered at load, first, so every record after can name them.
+
+- **Types:** the `type_chart` registry owns the whole chart on these games (the engine registers
+  the cart's records and rows first; the merge rebuilds `types` and `matchups`), so the new types
+  are plain registrations: Red gets DARK, STEEL and FAIRY, Gold FAIRY. Categories are Steel
+  physical and Dark special (as Gold), Fairy special (as the Gen 3 path). Gen 2 types also need an
+  `index` (Present and Conversion2 read it), so FAIRY takes 28, after Gold's 0-9 and 19-27.
+- **Rows:** `cart.lua`'s `add`/`change`/`remove`, turned into cart ids (`PSYCHIC_TYPE`).
+- **Typing:** the cart's species and moves are patched (a patch replaces a list whole).
+  `Types.forCart` writes a single type twice on Gen 2, as Gold does.
+- **Growth rates:** ERRATIC and FLUCTUATING (`GROWTH_` prefix on Gen 2), pret's formulas with level
+  1 = 1 Exp. Gen 1 reads them through `Growth.expForLevel(..., data.growth_rates)`, Gen 2 through
+  `Mon.growthFor`. A few engine paths call Growth without the registry (link trade's level check,
+  box migration) and fall back to Medium Fast for these two.
+- **Known limit:** exporting a `.sav` writes a fresh Gen 1 Pokémon's type bytes from the species'
+  types, and Red has no byte for Steel or Fairy (0 = Normal). Only cart species retyped by this
+  mod are affected (new species are refused by the export anyway).
+- **Test:** `tests/gen12_types_test.lua`: the chart, categories, typing and curves through the
+  engine's own Gen 1 and Gen 2 code, and both curves equal to the Gen 3 tables at every level.
 
 Engine facts the design rests on (checked against the source, 2026-11-11):
 
