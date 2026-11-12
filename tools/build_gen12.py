@@ -473,6 +473,19 @@ def gen3_effects(engine: Path) -> tuple[dict[int, dict[str, Any]], dict[int, dic
     return fr, real
 
 
+def gen3_looks(engine: Path) -> dict[int, int]:
+    """National move number -> the cart move whose animation the Gen 3 path borrows for it
+    (data/anims.lua `looks` first, then data/moves.lua `look`, as src/anims.lua resolves them)."""
+    rows = lua_json(engine, "--lua", str(ROOT / "data" / "moves.lua"))
+    looks = lua_json(engine, "--lua", str(ROOT / "data" / "anims.lua")).get("looks", {})
+    out = {}
+    for row in rows:
+        look = looks.get(row["id"], row.get("look"))
+        if look:
+            out[row["api"]] = look
+    return out
+
+
 def cart_effect(gen: int, e3: int, chance: int, fr: dict[int, dict[str, Any]],
                 cart_moves: dict[int, dict[str, Any]]) -> str | None:
     """The effect, on that generation's cart, of its moves that run on Gen 3 effect e3: the most
@@ -572,6 +585,23 @@ def build_moves(api: bs.API, workers: int, carts: dict[int, dict[str, Any]],
         for r in out:
             if r["n"] > g["moves"] and f"gen{gen}" not in r:
                 r.setdefault("subs", {})[f"gen{gen}"] = mapper.ranked(r["n"])[:SUBS]
+
+    # the look: the cart move whose battle animation (and, on Red, sound) a real move borrows.
+    # The Gen 3 path's pick where that cart has it (cart moves chosen by animation-script
+    # similarity), else the closest cart move by type, class and power.
+    looks3 = gen3_looks(engine)
+    for gen, g in GENS.items():
+        cart = carts[gen]["moves"]
+        pool = {n: {"name": m["name"], "power": m["power"], "accuracy": m["accuracy"], "pp": m["pp"],
+                    "priority": api_moves[n].get("priority") or 0,
+                    "type": move_map._api_type(api_moves[n], fairy=True)} for n, m in cart.items()}
+        mapper = move_map.MoveMapper(pool, api_moves, max(pool), fairy=True)
+        for r in out:
+            if f"gen{gen}" in r:
+                look = looks3.get(r["n"])
+                if look not in cart:
+                    look = mapper.ranked(r["n"])[0]
+                r.setdefault("look", {})[f"gen{gen}"] = cart[look]["id"]
 
     # the report: what each generation runs as a real move, and what stands in for the rest
     lines = []

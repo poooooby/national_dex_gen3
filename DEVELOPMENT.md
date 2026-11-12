@@ -382,8 +382,8 @@ test passes `generation = 3`.
   with `mod.options:define`, which the Mod Manager reads first.
 - **Tests:** `tests/_gen12.lua` builds a Red/Yellow (Gen 1: every generated module plus
   `Data.seedDefaults`) or Gold/Crystal (Gen 2: the keys `Game2` builds) dataset from the imported
-  cart. `tests/gen12_load_test.lua`, `tests/gen12_data_test.lua` and `tests/gen12_types_test.lua`
-  run on red, yellow, gold and crystal (name others on the command line).
+  cart. The `tests/gen12_*_test.lua` suites (load, data, types, moves, battle) run on red,
+  yellow, gold and crystal (name others on the command line).
 
 ### The Gen 1/2 data (`tools/build_gen12.py` -> `data/gen12/`)
 
@@ -418,6 +418,9 @@ moves #1-165, Gold #1-251 of each; the data covers everything past that.
     with Fairy kept). The candidates are the cart's moves plus the newer moves that run natively
     there, minus `STAND_IN_EXCLUDED`. The mod takes the first stand-in the species does not
     already learn.
+  - **`look`:** per generation, for each real move, the cart move whose battle animation it
+    borrows: the Gen 3 path's pick (`data/anims.lua` `looks`, then `data/moves.lua` `look`) when
+    that cart has the move, else the closest cart move by type, class and power.
   - **Report:** `tools/.cache/gen12_moves.txt`.
 - **`crossgen.lua`:** evolutions from species #1-251 into newer ones. The mod keeps the steps whose
   source the running cart has and whose target it lacks. A `knows` condition names the real move;
@@ -455,6 +458,39 @@ Registered at load, first, so every record after can name them.
   mod are affected (new species are refused by the export anyway).
 - **Test:** `tests/gen12_types_test.lua`: the chart, categories, typing and curves through the
   engine's own Gen 1 and Gen 2 code, and both curves equal to the Gen 3 tables at every level.
+
+### Moves (`src/gen12/moves.lua`)
+
+- **Real moves:** every `moves.lua` row with `gen1`/`gen2` is registered on that game (Red 182,
+  Gold 172):
+  - the cart's effect; Gold also gets `effectChance`, which the registry write turns into the
+    `effectChanceRaw` byte the battle rolls against;
+  - an accuracy of 0 (PokéAPI's "never misses" for status moves) becomes 100, as the carts store
+    them;
+  - Red reads `priority` and `highCrit` off the move. Gold orders moves by effect (Aqua Jet runs
+    on `EFFECT_PRIORITY_HIT`) and keeps its high-critical list in
+    `type_chart.battleRules.highCriticalMoves`, outside any registry, so `Moves.installHighCrit`
+    adds ours to the live table on `game.ready`;
+  - Gold's moves keep their National number as `index`. If that number is taken, the engine picks
+    one.
+  - An id another mod already registered is used as it is (`borrowed`).
+- **Animations:**
+  - Red: `battle_anims:register(id, <look's moveAnims record>)`, plus the look's `anim` (the
+    move's sound) on the record.
+  - Gold: one `battle_anims:patch("moves", { [id] = <look's script pointer> })`.
+- **The resolver:** `Moves.resolver(state, cartMoves)` returns `resolve(n, taken)`. It gives the
+  cart's move for #1-165 (Red) or #1-251 (Gold), else the registered move, else the first
+  stand-in the game has that is not in `taken`. Every learnset goes through it (stage 5).
+- **No index on Red:** Red's battle, Metronome and saves work by move id, so a registered move
+  needs no `index` there. A `.sav` export writes a move it has no number for as 0, an empty slot
+  (`GenSave.lua`, `movesIndex[id] or 0`). Gold's #252+ do not fit the cart's move byte either.
+  Stage 9 documents both.
+- **Tests:**
+  - `tests/gen12_moves_test.lua`: every row registered as the data says, animations, Gold's
+    index and high-crit list, and the resolver over every number.
+  - `tests/gen12_battle_test.lua`: fires every registered move in a fresh wild battle in Red's
+    `BattleState` (`performMove`) and Gold's `Battle` (`useMove`), both directions, and checks
+    that type matchups reach the damage (Night Slash on Abra).
 
 Engine facts the design rests on (checked against the source, 2026-11-11):
 

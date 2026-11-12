@@ -101,3 +101,5 @@ tools/build_gen12.py
 tools/gen12_cart.lua
 tests/gen12_data_test.lua
 tests/gen12_types_test.lua
+tests/gen12_moves_test.lua
+tests/gen12_battle_test.lua

@@ -172,6 +172,10 @@ for _, version in ipairs(H.versions()) do
       local real, subs = m[key], m.subs and m.subs[key]
       if real then
         if not effects[real.effect] then miss("a real move's effect is one the cart's moves use", m.n) end
+        local look = m.look and m.look[key]
+        if not (look and d.moves[look] and d.moves[look].index) then
+          miss("a real move borrows a cart move's animation", m.n)
+        end
       elseif not (subs and #subs > 0) then
         miss("every other newer move has stand-ins", m.n)
       else

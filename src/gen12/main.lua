@@ -26,6 +26,27 @@ return function(mod, loadSibling)
       .. "%d growth rates", c.types, c.rows, c.removed, c.species, c.moves, c.growth)
   end
 
+  -- the newer moves that run on an effect this game has, each with a cart move's animation;
+  -- `resolveMove(n, taken)` turns any National move number into a move this game has
+  local Moves = loadSibling(mod, "src/gen12/moves.lua")
+  local moveRows = loadSibling(mod, "data/gen12/moves.lua")
+  local moveState, resolveMove
+  if Types and Moves and moveRows then
+    moveState = Moves.register({ mod = mod, rows = moveRows, generation = generation, types = Types,
+      log = mod.log })
+    local cartMoves = {}
+    for id, rec in mod.content.moves:each() do cartMoves[id] = rec end
+    resolveMove = Moves.resolver(moveState, cartMoves)
+    mod.log:info("moves: %d newer moves registered, %d already there", moveState.registered,
+      moveState.borrowed)
+    if #moveState.highCrit > 0 then
+      mod.events:on("game.ready", function(ev)
+        local game = ev and ev.game or mod.game
+        Moves.installHighCrit(moveState, game and game.data)
+      end, 1)
+    end
+  end
+
   local exports = mod.exports
   exports.apiVersion = 2
   exports.isActive = function() return true end
