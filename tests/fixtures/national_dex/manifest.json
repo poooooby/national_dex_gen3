@@ -1,0 +1,14 @@
+{
+  "id": "national_dex",
+  "name": "National Dex (test stub)",
+  "version": "0.0.1",
+  "api": 2,
+  "entry": "main.lua",
+  "profile": "content",
+  "games": ["gen1", "gen2"],
+  "priority": 90,
+  "dependencies": [],
+  "optional_dependencies": [],
+  "conflicts": [],
+  "description": "A stand-in with the original National Dex's id, so tests can check the two never load together. Not the original mod: no code or data from it."
+}

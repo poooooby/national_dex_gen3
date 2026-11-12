@@ -363,6 +363,50 @@ no way to make a battler act out of turn or repeat a move mid-turn, and nothing 
 two battlers' positions or hand an item over with the Bag's bookkeeping: After You, Quash,
 Instruct, Me First, Ally Switch, Bestow, Teatime.
 
+## Gen 1 and Gen 2 (work in progress, branch `gen12`)
+
+Red/Blue/Yellow and Gold/Silver/Crystal get their own path. `main.lua` hands over to
+`src/gen12/main.lua` when `mod.generation` is 1 or 2, before any Gen 3 module loads. A host that
+names no generation stays on the Gen 3 path; the SDK's `loadMods` defaults to 1, so every Gen 3
+test passes `generation = 3`.
+
+- **Where things live:** Gen 1/2 code is in `src/gen12/` and data in `data/gen12/`. The existing
+  `src/*.lua` and `data/**` files are not edited for this path.
+- **Proof Gen 3 is untouched:** `tests/gen3_fork_test.lua [firered|emerald]` compares a fingerprint
+  of everything a Gen 3 game gets from the mod with the one recorded before the fork
+  (`tests/fixtures/gen3_fork_<game>.lua`).
+- **Conflicts:** `manifest.json` lists `national_dex` in `conflicts`. The loader skips mods made for
+  other games before it weighs conflicts (`Loader:_gateGeneration`, then `_enforceConflicts`), so the
+  conflict only matters on Gen 1/2. There, WoobleDex is the one that steps aside.
+- **Options:** the manifest's `options_schema` is Gen 3's. The Gen 1/2 path declares its own list
+  with `mod.options:define`, which the Mod Manager reads first.
+- **Tests:** `tests/_gen12.lua` builds a Red/Yellow (Gen 1: every generated module plus
+  `Data.seedDefaults`) or Gold/Crystal (Gen 2: the keys `Game2` builds) dataset from the imported
+  cart. `tests/gen12_load_test.lua` runs on red, yellow, gold and crystal.
+
+Engine facts the design rests on (checked against the source, 2026-11-11):
+
+- **Pictures:** `spriteFront`/`spriteBack` are required on Gen 1/2 records (`Schemas.lua`), and a
+  missing file crashes the image load. New species point at our own placeholder pictures through
+  `mod.path .. "/assets/..."`, as the engine's `example_mini_conversion` does.
+- **New types in Gen 1 battle:** Gen 1 splits physical/special by type through
+  `TypeChart.category`, which reads the merged `type_chart` records (`Damage.isSpecial`). A
+  registered DARK/STEEL/FAIRY with a category works.
+- **Extra fields on a Pokémon:** a Gen 1 save deep-copies the save tree whole (`SaveSerializer`),
+  `scrubKnownMon` keeps unknown fields, and link trades carry `mon.extra` (`Protocol.lua`). So
+  `mon.extra.national_dex_gen3` survives, which is where the Gen 1 friendship counter lives.
+- **Evolution items, Gen 1:** a registered `item_effects` record's `use` runs before the cart's own
+  item code (`ItemEffects.use`). Returning `"consumed", nil, { evolveTo = species }` makes the Bag
+  play the evolution (`BagMenu`). The cart's stones are a fixed table (`STONES`), so new stones need
+  this.
+- **Evolution items, Gen 2:** `gen2ItemEffects[itemId]` with `action = "stone"` (top-level records
+  keep unknown fields) and a `use` that calls `Evolution.checkMon(data, mon, { force = true, item })`.
+  `Game2` then plays the evolution exactly as for a cart stone.
+- **Gen 2 indices:** automatic species indices can hand out 255, the `.sav` list terminator, so the
+  Gen 2 records set their own.
+- **Gen 2 saves:** they have no orphan quarantine (`Gen2Compat.lua`), so removing the mod strands its
+  species in a Gen 2 save. The README says to keep it installed.
+
 ## Regenerating the data
 
 ```bash

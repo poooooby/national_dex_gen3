@@ -58,6 +58,15 @@ local function loadSibling(mod, name)
 end
 
 return function(mod)
+  -- Red/Blue/Yellow and Gold/Silver/Crystal take their own path (src/gen12/main.lua) before anything
+  -- below loads: none of it runs on those games. Only an explicit 1 or 2 forks; a host that names no
+  -- generation stays on the Gen 3 path, as it always has.
+  if mod.generation == 1 or mod.generation == 2 then
+    local Gen12 = loadSibling(mod, "src/gen12/main.lua")
+    if Gen12 then return Gen12(mod, loadSibling) end
+    return
+  end
+
   -- the engine's Gen 3 registry write, adjusted so an alternate form never takes over its base's
   -- name or National number (src/schema_patch.lua); before anything registers
   local SchemaPatch = loadSibling(mod, "src/schema_patch.lua")

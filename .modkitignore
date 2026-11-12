@@ -90,3 +90,10 @@ tests/type_badges_test.lua
 tests/drivers/vending_probe.lua
 tests/drivers/fx_anims_probe.lua
 tests/drivers/type_badges_probe.lua
+tests/_gen12.lua
+tests/gen12_load_test.lua
+tests/gen3_fork_test.lua
+tests/fixtures/gen3_fork_firered.lua
+tests/fixtures/gen3_fork_emerald.lua
+tests/fixtures/national_dex/main.lua
+tests/fixtures/national_dex/manifest.json
