@@ -383,7 +383,7 @@ test passes `generation = 3`.
 - **Tests:** `tests/_gen12.lua` builds a Red/Yellow (Gen 1: every generated module plus
   `Data.seedDefaults`) or Gold/Crystal (Gen 2: the keys `Game2` builds) dataset from the imported
   cart. The `tests/gen12_*_test.lua` suites (load, data, types, moves, battle, species,
-  evolutions) run on red, yellow, gold and crystal (name others on the command line).
+  evolutions, art) run on red, yellow, gold and crystal (name others on the command line).
 
 ### The Gen 1/2 data (`tools/build_gen12.py` -> `data/gen12/`)
 
@@ -593,6 +593,45 @@ Registered at load, first, so every record after can name them.
   `Evolution.pendingFor` and `ItemEffects.use`; Gold `Evolution.checkMon`, its item records and
   `Evolution.apply`). It covers level, friendship, stat, 1-in-2, gender, a known move, the party,
   steps and coins, new and cart items, trade and held items, a held item used up, and both shops.
+
+### Pictures, icons, cries and the Pokédex (`src/gen12/art.lua`, `src/gen12/dex.lua`)
+
+- **Pictures:** a species no sprite mod draws keeps the placeholder. `exports.setArtProvider(fn)`
+  is the Gen 3 contract, `fn(speciesId, side, slot, shiny, kind) -> PNG path or nil`, asked
+  from a `pokemon.sprite` wrap. Both games resolve every Pokémon picture through that hook
+  (Red `Sprites.path`/`Sprites.pic`, Gold `BattleState` via `Sprites.pic`), and `ctx.species`
+  is the id. An answer sets `ctx.trueColor`, so it is drawn in its own colours, not the game's
+  four shades. Only this mod's species are asked about.
+- **Icons:** each species borrows its proxy's party icon (the builder writes `icon = { gen1 =
+  <Red icon kind>, gen2 = <Gold ICON_ sheet> }`), registered through `icons` (Red
+  `icons.bySpecies`, Gold `gen2Icons.species`).
+- **Palettes:** Gold has none for the new species, so the placeholder draws in plain greys
+  (`Palettes.monColors` -> nil). That is deliberate.
+- **Cries:**
+  - Each species registers `{ base = <proxy> }` in `cries`, which `Sound` resolves to the
+    proxy's chip program (`resolveCry`). Gold's screens play a cry only when
+    `audio.cries[species]` exists.
+  - Species #387-1025 and their forms also have their own cry in `assets/cries/cries.pak` (the
+    Gen 3 path's, indexed by slot in `data/cries.lua`, read here, never edited).
+  - A wrap of `Sound.playCry` plays that one. The wrap is process-wide on
+    `Sound.__ndxGen12Cry` (Sound is never reloaded, and the player may switch games in one run)
+    and asks the current load's handler, which only answers for this mod's species.
+  - It also wraps `Sound.setVolumeLevel` to follow the player's volume. Its scale is private to
+    Sound.
+- **Red's Pokédex:** the list runs to `constants.dexSize` (151, derived before mods load) in
+  `dexDigits`; both are overridden to 1025 and 4. Forms (dex 20000+) stay off.
+- **Gold's Pokédex:** `PokedexText.apply` adds every registered species with a dex number,
+  forms included, once at boot. On `game.ready` (priority 1) the forms come out of `entries`,
+  `newOrder` and `alphabeticalOrder`. Catching a form then skips the new-entry page
+  (`openDexEntry` needs an entry).
+- **Seen and caught:** a form marks its base (Red `seen`/`owned`, Gold `seen`/`caught`). This is
+  synced on `pokemon.caught`, `pokemon.evolved`, `pokemon.received`, `battle.ended` and
+  `save.loaded`.
+- **Test:** `tests/gen12_art_test.lua`. It checks the pak's rows; that every new species has a
+  cart icon and a cry that resolves; the provider through the engine's own `Sprites.pic` (and
+  the cart's species untouched); Red's list (#1-1025 once each, no form); Gold's after
+  `game.ready`; and the form-to-base marking. Audio cannot be decoded headless, so the pak's
+  cries are heard only in game (stage 9).
 
 Engine facts the design rests on (checked against the source, 2026-11-11):
 

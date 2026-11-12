@@ -464,6 +464,14 @@ def build(api: bs.API, workers: int, engine: Path) -> dict[str, Any]:
     moves, report = build_moves(api, workers, carts, records + forms, engine)
     cart = cart_retypes(api, carts, by_dex)
     items = build_items(api, carts, records + forms, crossgen)
+    # each species' party icon on each game: its proxy's (Red an icon kind, Gold an ICON_ sheet)
+    for g in GENS:
+        dex_of = {s["id"]: dex for dex, s in carts[g]["species"].items()}
+        for r in records + forms:
+            proxy = r["proxy"].get(f"gen{g}")
+            kind = proxy and carts[g]["icons"].get(dex_of.get(proxy))
+            if kind:
+                r.setdefault("icon", {})[f"gen{g}"] = kind
     return {"records": records, "forms": forms, "crossgen": crossgen, "moves": moves,
             "cart": cart, "items": items, "report": report}
 

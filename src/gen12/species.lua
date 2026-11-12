@@ -67,7 +67,7 @@ function Species.register(opts)
       return false
     end
     state.registered = state.registered + 1
-    local entry = { data = r, id = r.id, dex = rec.dex }
+    local entry = { data = r, id = r.id, dex = rec.dex, base = rec.baseSpecies }
     state.byId[r.id], state.bySlot[r.slot] = entry, entry
     return entry
   end

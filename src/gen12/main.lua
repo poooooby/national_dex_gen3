@@ -94,11 +94,34 @@ return function(mod, loadSibling)
       evoState.added, evoState.dropped, #itemState.registered, tostring(shop))
   end
 
+  -- party icons and cries (borrowed from each species' proxy; #387+ play their own), sprite
+  -- mods' pictures over the placeholder, and the Pokedex
+  local Art = loadSibling(mod, "src/gen12/art.lua")
+  local Dex = loadSibling(mod, "src/gen12/dex.lua")
+  local pictures
+  if speciesState and Art then
+    local c = Art.register({ mod = mod, generation = generation, species = speciesState, log = mod.log })
+    pictures = Art.installPictures(mod, speciesState)
+    local cries = Art.installCries({ mod = mod, require = require, species = speciesState,
+      index = loadSibling(mod, "data/cries.lua"), log = mod.log })
+    mod.log:info("art: %d icons, %d borrowed cries%s", c.icons, c.cries,
+      cries and ", own cries for #387+" or "")
+  end
+  if speciesState and Dex then
+    if not Dex.register(mod, generation) then
+      mod.log:warn("the Pokedex stays at the cart's size")
+    end
+    Dex.install(mod, generation, speciesState.forms)
+  end
+
   local exports = mod.exports
   exports.apiVersion = 2
   exports.isActive = function() return true end
   exports.provider = function() return "national_dex_gen3" end
   exports.generation = function() return generation end
+  exports.setArtProvider = function(fn)
+    return pictures ~= nil and pictures.add(fn) or false
+  end
 
   mod.log:info("Gen %d path loaded", generation)
 end
