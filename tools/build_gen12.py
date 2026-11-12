@@ -142,6 +142,12 @@ def sign(x: int) -> int:
 
 # ---------------------------------------------------------------- carts
 
+def lua_json_file(path: Path) -> Any:
+    out = subprocess.run(["luajit", str(ROOT / "tools" / "gen12_cart.lua"), "--lua", str(path)],
+                         capture_output=True, text=True, encoding="utf-8", check=True)
+    return json.loads(out.stdout)
+
+
 def lua_json(engine: Path, *args: str) -> Any:
     out = subprocess.run(["luajit", str(ROOT / "tools" / "gen12_cart.lua"), *args],
                          cwd=engine, capture_output=True, text=True, encoding="utf-8", check=True)
@@ -161,6 +167,7 @@ def load_carts(engine: Path) -> dict[int, dict[str, Any]]:
             "species": {s["dex"]: s for s in raw["species"]},
             "icons": {int(k): v for k, v in raw["icons"].items()},
             "matchups": [tuple(row) for row in raw["matchups"]],
+            "items": raw["items"],
         }
     return carts
 
@@ -456,8 +463,66 @@ def build(api: bs.API, workers: int, engine: Path) -> dict[str, Any]:
 
     moves, report = build_moves(api, workers, carts, records + forms, engine)
     cart = cart_retypes(api, carts, by_dex)
+    items = build_items(api, carts, records + forms, crossgen)
     return {"records": records, "forms": forms, "crossgen": crossgen, "moves": moves,
-            "cart": cart, "report": report}
+            "cart": cart, "items": items, "report": report}
+
+
+# ---------------------------------------------------------------- evolution items
+
+# Names past the carts' 12 columns
+ITEM_NAMES = {
+    "auspicious-armor": "AUSPCS ARMOR", "malicious-armor": "MALCS ARMOR",
+    "masterpiece-teacup": "MASTER CUP", "unremarkable-teacup": "PLAIN CUP",
+    "scroll-of-darkness": "DARK SCROLL", "scroll-of-waters": "WATER SCROLL",
+    "strawberry-sweet": "STRAWBRY SWT", "galarica-cuff": "GALARICACUFF",
+    "galarica-wreath": "GALARICA WRT", "black-augurite": "BLK AUGURITE",
+    "deep-sea-scale": "DEEPSEASCALE", "deep-sea-tooth": "DEEPSEATOOTH",
+    "up-grade": "UP-GRADE", "leaders-crest": "LEADERS CRST", "thunder-stone": "THUNDERSTONE", "whipped-dream": "WHIPPEDDREAM",
+}
+ITEM_NAME_MAX = 12
+DEFAULT_PRICE = 2100            # what the Gen 3 path charges for a stone
+
+
+def normalize(s: str) -> str:
+    return re.sub(r"[^A-Z0-9]", "", s.upper().replace("É", "E"))
+
+
+def build_items(api: bs.API, carts: dict[int, dict[str, Any]], records: list[dict[str, Any]],
+                crossgen: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Every item an evolution names (`item`: a stone, or a trade item) or wants held
+    (`when.hold`): its engine id, a name that fits, a price, how it is used (stone: used on
+    the Pokemon; trade: held through a trade; hold: held while it levels up) and, per
+    generation, the cart's own id when that cart already has it."""
+    kinds: dict[str, str] = {}
+    steps = [s for r in records for s in r["evolutions"]] + crossgen
+    for step in steps:
+        if step.get("item"):
+            kinds.setdefault(step["item"], "trade" if step["method"] == "EVO_TRADE_ITEM" else "stone")
+        hold = (step.get("when") or {}).get("hold")
+        for slug in ([hold] if isinstance(hold, str) else hold or []):
+            kinds.setdefault(slug, "hold")
+    gen3 = {row["slug"]: row for row in lua_json_file(ROOT / "data" / "items.lua")}
+    out, too_long = [], []
+    for slug in sorted(kinds):
+        a = api.get(f"/item/{slug}")
+        mine = gen3.get(slug)
+        name = ITEM_NAMES.get(slug) or (mine and mine["name"]) or (bs.english(a.get("names", []), "name") or slug).upper()
+        name = name.replace("’", "'")
+        if len(name) > ITEM_NAME_MAX:
+            too_long.append(f"{slug}: {name}")
+        price = (mine and mine.get("price")) or a.get("cost") or DEFAULT_PRICE
+        row = {"slug": slug, "id": bs.engine_id(slug), "name": name, "price": price,
+               "kind": kinds[slug], "carts": {}}
+        for gen in GENS:
+            for it in carts[gen]["items"]:
+                if normalize(it["id"]) == normalize(slug) or normalize(it["name"]) == normalize(slug):
+                    row["carts"][f"gen{gen}"] = it["id"]
+                    break
+        out.append(row)
+    if too_long:
+        raise SystemExit("item names past 12 columns (add them to ITEM_NAMES): " + ", ".join(too_long))
+    return out
 
 
 # ---------------------------------------------------------------- moves
@@ -724,6 +789,9 @@ def write(result: dict[str, Any], out: Path) -> None:
             result["crossgen"])
     listing("moves.lua", "-- Moves past #165 the species name, by National move number (n).\n",
             result["moves"])
+    listing("items.lua", "-- The items evolutions use (stone: used on the Pokemon; trade: held through a trade;\n"
+            "-- hold: held while it levels up), and per generation the cart's own id where it has one.\n",
+            result["items"])
     (out / "cart.lua").write_text(
         HEADER + "-- Per generation: the cart's own species and moves whose modern typing differs, the\n"
         "-- types the game gains, and the matchup rows to add ({ attacker, defender, tenths }) or\n"

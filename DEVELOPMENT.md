@@ -382,8 +382,8 @@ test passes `generation = 3`.
   with `mod.options:define`, which the Mod Manager reads first.
 - **Tests:** `tests/_gen12.lua` builds a Red/Yellow (Gen 1: every generated module plus
   `Data.seedDefaults`) or Gold/Crystal (Gen 2: the keys `Game2` builds) dataset from the imported
-  cart. The `tests/gen12_*_test.lua` suites (load, data, types, moves, battle, species) run on red,
-  yellow, gold and crystal (name others on the command line).
+  cart. The `tests/gen12_*_test.lua` suites (load, data, types, moves, battle, species,
+  evolutions) run on red, yellow, gold and crystal (name others on the command line).
 
 ### The Gen 1/2 data (`tools/build_gen12.py` -> `data/gen12/`)
 
@@ -538,6 +538,61 @@ Registered at load, first, so every record after can name them.
   exists, the pictures, Red's entry labels (lines of 18) and Gold's Pokédex merge, and Gold's
   indices. Then each game's own code builds every species and form at Lv 5 and 50, and a wild
   Garchomp uses its moves in each battle.
+
+### Evolutions and items (`src/gen12/evolutions.lua`, `src/gen12/items.lua`)
+
+- **Rows:** every registered species and form gets its evolutions. Each cart species gets the
+  newer ones it lacks from `crossgen.lua` (source on the cart, target not), added after its own
+  rows. Data steps become the game's own rows:
+  - **Gold:** `EVOLVE_LEVEL`, `_ITEM`, `_TRADE` (+ held item), `_HAPPINESS` (+ `MORNDAY`/`NITE`)
+    and `_STAT` (+ `comparison`).
+  - **Red:** `LEVEL`, `ITEM`, `TRADE`, plus `FRIENDSHIP`, which this mod registers in
+    `evolution_methods` (Red's registry takes mod methods; `describe` says "Friendship"). Red has
+    no held items, so trade and held items become `ITEM` rows: the item is used on the Pokémon.
+- **Conditions:** rows are strict records, so a step's `when` (the keys of
+  `src/conditional_evos.lua`, whose pure `qualifies` decides them) lives in a side table keyed by
+  `source>target#method`.
+  - A wrap of `evolution.check` lets a row through only when its conditions hold. Both games run
+    every row through it (Red: `game, mon, row, trigger`; Gold: `data, mon, row, ctx`) and take
+    the first row that passes.
+  - A species' rows with conditions come first, highest `priority` first, so a plain row at the
+    same level (Midday Lycanroc) fires only when none of them does.
+  - **Facts:** time (Red: the device clock through `src/clock.lua`; Gold: its own `timeOfDay`
+    when the check has one); friendship (Red: the counter below; Gold: `happiness`); the held
+    item (Gold) or the item being used (Red); gender, by Gold's own rule from the Attack and Speed
+    DVs on both games (`Evolutions.gender`, inlined because Red's sandbox cannot require Gold
+    modules); a stable 1-in-n pick from the DVs; the moves known; the party (`mod.game.save`);
+    and coins (Red `save.coins`, Gold `save.player.coins`).
+  - **Counters** on the Pokémon (`mon.extra.national_dex_gen3`): `stepsAsLead`
+    (`world.stepped`), `moveUses` (`battle.move_used`) and `crits` (`battle.damage_dealt`, reset
+    by `battle.started`). They are kept only for species with such a condition.
+  - **What these games cannot know:** rain and the battle's terrain are left out (Burmy's female
+    cloak is Plant; the Sandy and Trash steps are dropped). Recoil taken is replaced by level 36
+    (White-Striped Basculin). A `knows` move the game lacks makes the step a plain level-up.
+  - **On `pokemon.evolved`:** a held item that a level-up step asked for is used up (Gold), and
+    Gimmighoul's 999 coins are spent.
+- **Red's friendship:** a hidden counter, `mon.extra.national_dex_gen3.friendship` (Red saves and
+  trades keep `mon.extra`). It starts at the species' base friendship (data, 70 for the cart's).
+  It rises by 5/3/2 per level-up below 100/200/after (`pokemon.level_up`, battle levels only:
+  the Rare Candy emits none) and by 1 per 256 steps for the whole party, Gold's own rates.
+  Evolution needs 220. Vitamins and fainting do not change it (no event for either).
+- **Items** (`data/gen12/items.lua`, from `tools/build_gen12.py`): every item a step names or
+  wants held, with a 12-column name, a price and its kind (stone, trade or hold). The cart's own
+  id is used where the cart has the item; otherwise it is registered.
+  - **Red:** every new item carries one `item_effects` record (`Items.GEN1_EFFECT`), which picks
+    the first `ITEM` row naming it (or listing it as the held item) whose conditions hold, and
+    returns `"consumed", nil, { evolveTo }` so the Bag plays the evolution. The cart's own stones
+    keep the cart's code, which evolves any `ITEM` row naming them.
+  - **Gold:** an item to hold (pocket `ITEM`). A stone also gets an `item_effects` record of its
+    own id with `action = "stone"`, whose `use` runs `Evolution.checkMon(..., { force = true,
+    item })` as Gold's stones do.
+- **Shops:** Red's Celadon Dept. Store 4F clerk (`text_pointers` `mart`, a deep registry, so the
+  patch appends) and Gold's Goldenrod Dept. Store 4F, found by its own stock (the vitamins), so
+  the list number never matters.
+- **Test:** `tests/gen12_evolutions_test.lua` drives each game's own code (Red
+  `Evolution.pendingFor` and `ItemEffects.use`; Gold `Evolution.checkMon`, its item records and
+  `Evolution.apply`). It covers level, friendship, stat, 1-in-2, gender, a known move, the party,
+  steps and coins, new and cart items, trade and held items, a held item used up, and both shops.
 
 Engine facts the design rests on (checked against the source, 2026-11-11):
 

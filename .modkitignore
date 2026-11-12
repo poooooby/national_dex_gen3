@@ -104,4 +104,5 @@ tests/gen12_types_test.lua
 tests/gen12_moves_test.lua
 tests/gen12_battle_test.lua
 tests/gen12_species_test.lua
+tests/gen12_evolutions_test.lua
 tools/build_placeholder.py

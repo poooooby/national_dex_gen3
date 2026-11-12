@@ -91,6 +91,12 @@ elseif icons.species then                 -- Gen 2: an ICON_ sheet per species i
   end
 end
 
+result.items = {}
+for id, it in pairs(load("items") or {}) do
+  if type(it) == "table" and it.name then result.items[#result.items + 1] = { id = id, name = it.name } end
+end
+table.sort(result.items, function(a, b) return a.id < b.id end)
+
 local chart = load("type_chart") or {}
 result.matchups = {}
 for _, row in ipairs(chart.matchups or {}) do

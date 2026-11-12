@@ -147,6 +147,25 @@ local none = next(bad) == nil
 for what, who in pairs(bad) do print("FAIL " .. what .. " (" .. tostring(who) .. ")") end
 T.check(none, "every species, form and cross-generation step is well formed")
 
+-- the evolution items: one row per item any step names or wants held, names within 12 columns
+local itemRows, itemBySlug, itemsOk = data("items.lua"), {}, true
+for _, it in ipairs(itemRows) do
+  if chars(it.name) > 12 or itemBySlug[it.slug] or not (it.kind == "stone" or it.kind == "trade"
+      or it.kind == "hold") then itemsOk = false end
+  itemBySlug[it.slug] = it
+end
+local function wantItems(step)
+  if step.item and not itemBySlug[step.item] then itemsOk = false end
+  local hold = step.when and step.when.hold
+  for _, slug in ipairs(type(hold) == "table" and hold or { hold }) do
+    if not itemBySlug[slug] then itemsOk = false end
+  end
+end
+for _, r in ipairs(species) do for _, e in ipairs(r.evolutions) do wantItems(e) end end
+for _, f in ipairs(forms) do for _, e in ipairs(f.evolutions) do wantItems(e) end end
+for _, step in ipairs(crossgen) do wantItems(step) end
+T.check(itemsOk, "every evolution item has a row, its name within 12 columns")
+
 -- Sneasel is a Gold species: on Red it is a new one, and its night evolution is its own there
 local weavile = false
 for _, e in ipairs(byDex[215].evolutions) do if e.target == 461 then weavile = true end end

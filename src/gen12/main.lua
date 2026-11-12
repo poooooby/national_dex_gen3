@@ -69,6 +69,31 @@ return function(mod, loadSibling)
       speciesState.registered, #speciesState.forms, speciesState.kept)
   end
 
+  -- the evolution items the cart lacks (sold in one shop), then every evolution: this mod's
+  -- species and forms, and the newer ones of the cart's own species
+  local Items = loadSibling(mod, "src/gen12/items.lua")
+  local Evolutions = loadSibling(mod, "src/gen12/evolutions.lua")
+  local itemRows = loadSibling(mod, "data/gen12/items.lua")
+  local crossgen = loadSibling(mod, "data/gen12/crossgen.lua")
+  local Conditional = loadSibling(mod, "src/conditional_evos.lua")
+  local Clock = loadSibling(mod, "src/clock.lua")
+  local evoState
+  if speciesState and Items and Evolutions and itemRows and crossgen and Conditional and Clock then
+    local itemState = Items.register({ mod = mod, generation = generation, rows = itemRows,
+      log = mod.log, use = function(c)
+        if not evoState then return nil end
+        if generation == 1 then return evoState.useGen1(c) end
+        return evoState.useGen2(c)
+      end })
+    evoState = Evolutions.install({ mod = mod, generation = generation, require = require,
+      conditional = Conditional, clock = Clock, species = speciesState, crossgen = crossgen,
+      cartIdOf = speciesState.cartIdOf, itemId = itemState.id, direct = directMove,
+      log = mod.log })
+    local shop = Items.stock(mod, generation, itemState, mod.log)
+    mod.log:info("evolutions: %d rows (%d steps not possible here); %d items, sold at %s",
+      evoState.added, evoState.dropped, #itemState.registered, tostring(shop))
+  end
+
   local exports = mod.exports
   exports.apiVersion = 2
   exports.isActive = function() return true end

@@ -39,6 +39,7 @@ function Species.register(opts)
       cartIdOf[rec.dex] = id
     end
   end
+  state.cartIdOf = cartIdOf
   local ctx = {
     generation = gen, types = opts.types, resolve = opts.resolve, direct = opts.direct,
     machines = machineMoves(pokemon), pictures = opts.pictures, cartIdOf = cartIdOf,
