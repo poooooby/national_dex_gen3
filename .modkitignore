@@ -97,3 +97,6 @@ tests/fixtures/gen3_fork_firered.lua
 tests/fixtures/gen3_fork_emerald.lua
 tests/fixtures/national_dex/main.lua
 tests/fixtures/national_dex/manifest.json
+tools/build_gen12.py
+tools/gen12_cart.lua
+tests/gen12_data_test.lua

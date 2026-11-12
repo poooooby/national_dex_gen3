@@ -31,6 +31,8 @@ CART_TYPE = {
     "dark": 17,
 }
 TYPE_NAME = {v: k for k, v in CART_TYPE.items()}
+FAIRY = 18                # no Gen 3 cart has it; Gen 1/2 register it (tools/build_gen12.py)
+TYPE_NAME[FAIRY] = "fairy"
 
 # Moves that make poor substitutes: one-hit KOs, moves with no battle use or
 # a field-only use, and moves that copy or break the battle.
@@ -62,9 +64,11 @@ def parse_cart(pokemon_dir: Path) -> dict[int, dict[str, Any]]:
     return moves
 
 
-def _api_type(move: dict[str, Any]) -> int:
+def _api_type(move: dict[str, Any], fairy: bool = False) -> int:
     name = move["type"]["name"]
-    return CART_TYPE.get(name, CART_TYPE["normal"])   # fairy -> normal
+    if fairy and name == "fairy":
+        return FAIRY
+    return CART_TYPE.get(name, CART_TYPE["normal"])   # fairy -> normal (Gen 3)
 
 
 def _meta(move: dict[str, Any]) -> tuple[str, str]:
@@ -79,11 +83,13 @@ def _power(value: int | None) -> int:
 
 class MoveMapper:
     """cart: parse_cart(); api_moves: id -> PokeAPI move JSON for every id used
-    (the 1-354 candidates and each newer move to be replaced)."""
+    (the 1-354 candidates and each newer move to be replaced). fairy: the game has the
+    Fairy type (Gen 1/2 through this mod), so a Fairy move is matched as Fairy."""
 
     def __init__(self, cart: dict[int, dict[str, Any]], api_moves: dict[int, dict[str, Any]],
-                 max_cart_id: int = 354):
+                 max_cart_id: int = 354, fairy: bool = False):
         self.max = max_cart_id
+        self.fairy = fairy
         self.cart = cart
         self.api = api_moves
         self.pool = [mid for mid in sorted(cart)
@@ -103,7 +109,7 @@ class MoveMapper:
             s += 400
         # type: decides everything for an attack; barely matters for a status
         # move, whose effect does not depend on its type
-        if TYPE_NAME.get(c["type"]) != TYPE_NAME.get(_api_type(new)):
+        if TYPE_NAME.get(c["type"]) != TYPE_NAME.get(_api_type(new, self.fairy)):
             s += 150 if new_damaging else 45
         n_cat, n_ail = _meta(new)
         c_cat, c_ail = _meta(cand)
@@ -145,7 +151,7 @@ class MoveMapper:
 
     # -- reporting
     def _same_type(self, new_id: int, cand: int) -> bool:
-        return TYPE_NAME.get(self.cart[cand]["type"]) == TYPE_NAME.get(_api_type(self.api[new_id]))
+        return TYPE_NAME.get(self.cart[cand]["type"]) == TYPE_NAME.get(_api_type(self.api[new_id], self.fairy))
 
     def report(self) -> str:
         by_new: dict[int, dict[int, int]] = {}

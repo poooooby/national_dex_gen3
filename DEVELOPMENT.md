@@ -382,7 +382,50 @@ test passes `generation = 3`.
   with `mod.options:define`, which the Mod Manager reads first.
 - **Tests:** `tests/_gen12.lua` builds a Red/Yellow (Gen 1: every generated module plus
   `Data.seedDefaults`) or Gold/Crystal (Gen 2: the keys `Game2` builds) dataset from the imported
-  cart. `tests/gen12_load_test.lua` runs on red, yellow, gold and crystal.
+  cart. `tests/gen12_load_test.lua` and `tests/gen12_data_test.lua` run on red, yellow, gold and
+  crystal (name others on the command line).
+
+### The Gen 1/2 data (`tools/build_gen12.py` -> `data/gen12/`)
+
+Generation-neutral: `src/gen12/` shapes it for the running game. Red has species #1-151 and
+moves #1-165, Gold #1-251 of each; the data covers everything past that.
+
+- **`species/NNN.lua`** (#152-1025, 80 per shard) and **`forms.lua`** (the 128 of
+  `tools/form_list.py`):
+  - **Typing and stats:** modern typing, with Fairy, and Dark/Steel on Red.
+  - **Names and Pokédex text:** names and kinds fit in 10 characters. The 33 longer names and 52
+    longer kinds are shortened by hand (`NAMES`, `KINDS`); any other two-word kind just drops its
+    space. Pokédex text is reflowed to 2 pages of 3 lines of 18 characters, with over-long words
+    broken at a hyphen.
+  - **Moves:** listed by National move number: the newest full level-up list, moves #1-251 any
+    game teaches by machine or tutor, and egg moves.
+  - **Evolutions:** tools/build_species.py's steps, plus `EXTRA_EVOLUTIONS` (Tyrogue by stats,
+    Wurmple by a 1-in-2 pick). A Gold species' conditional steps are its own record's too, so they
+    work on Red, where it is new.
+  - **`proxy`:** per generation, the cart's own species id (Gold spells some its way: `MR__MIME`)
+    whose party icon and cry the species borrows. That is the nearest relative in its evolution
+    family, else the same body shape and type at the closest stat total.
+  - **Keys:** ids and slots equal the Gen 3 path's (the test checks this).
+- **`moves.lua`:** every move past #165 that some list names.
+  - **A real move or a stand-in:** a move runs natively on a game (`gen1`/`gen2` =
+    `{ effect, chance }`) when its Gen 3 effect (FireRed's table, or `data/moves.lua` for #355+,
+    with rules and extras excluded) is also the effect of a cart move on that game. The cart's
+    effect for that move is then used: the family most such moves share, then the Red variant
+    closest in chance. Dizzy Punch confuses only from Gen 3, so it must not outvote Psybeam.
+  - **Gen 2 priority:** Gold orders moves by effect, so a plain hit with priority becomes
+    `EFFECT_PRIORITY_HIT`, and an effect whose priority sign differs is refused.
+  - **Stand-ins:** every other move gets `subs[genN]`, the 8 closest moves (tools/move_map.py,
+    with Fairy kept). The candidates are the cart's moves plus the newer moves that run natively
+    there, minus `STAND_IN_EXCLUDED`. The mod takes the first stand-in the species does not
+    already learn.
+  - **Report:** `tools/.cache/gen12_moves.txt`.
+- **`crossgen.lua`:** evolutions from species #1-251 into newer ones. The mod keeps the steps whose
+  source the running cart has and whose target it lacks. A `knows` condition names the real move;
+  Gen 3's stand-ins are replaced through `REAL_KNOWS`.
+- **`cart.lua`:** the cart species and moves whose modern typing differs. Red: 7 species and 4
+  moves (Bite, Gust, Karate Chop, Sand-Attack). Gold: 13 species and 3 moves.
+- `tools/gen12_cart.lua` is the build tool's only window into the carts (it prints them as JSON);
+  the mod never reads cart files.
 
 Engine facts the design rests on (checked against the source, 2026-11-11):
 
@@ -412,4 +455,8 @@ Engine facts the design rests on (checked against the source, 2026-11-11):
 ```bash
 python -m pip install requests
 python tools/build_species.py            # PokéAPI responses cached in tools/.cache
+python tools/build_gen12.py              # data/gen12 (needs red, gold and firered imported, luajit)
 ```
+
+`build_species.py` empties `data/species/` before it writes, which takes `modern.lua` with it
+(`tools/build_modern_learnsets.py` writes that one): rerun that tool afterwards, or restore the file.
