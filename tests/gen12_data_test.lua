@@ -151,7 +151,7 @@ T.check(none, "every species, form and cross-generation step is well formed")
 local itemRows, itemBySlug, itemsOk = data("items.lua"), {}, true
 for _, it in ipairs(itemRows) do
   if chars(it.name) > 12 or itemBySlug[it.slug] or not (it.kind == "stone" or it.kind == "trade"
-      or it.kind == "hold") then itemsOk = false end
+      or it.kind == "hold" or it.kind == "cord") then itemsOk = false end
   itemBySlug[it.slug] = it
 end
 local function wantItems(step)

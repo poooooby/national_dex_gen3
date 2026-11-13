@@ -136,17 +136,28 @@ Crystal have their own section after them.
 - 🔊 **Cries:** #387–1025 and their forms have their own cry; the rest borrow a similar
   Pokémon's.
 - 📖 **The Pokédex** runs to #1025, with four-digit numbers.
+- 🔗 **Linking Cord:** use it on a Pokémon that evolves by trading and it evolves on the spot
+  (Kadabra, Machoke, Boldore...). In Gold, Silver and Crystal, one that trades holding an item
+  must hold it, and uses it up, just as in a trade. Sold with the evolution items.
+- 🆙 **Modern Moves:** the game's own Pokémon also learn the newer moves they learn today, at the
+  same levels, plus newer egg moves in Gold, Silver and Crystal (only moves the game can do).
+- 🌅 **Day and night in Red, Blue and Yellow:** the outdoors follows your device's clock, the same
+  morning, evening and night looks as in the Generation 3 games. Gold, Silver and Crystal keep
+  their own day and night.
+- 📋 **Register Owned:** opening the Pokédex counts every Pokémon in your party and PC.
 
 ## ⚙️ Options
 
-Open **OPTIONS → MODS → WoobleDex**.
+Open **OPTIONS → MODS → WoobleDex**. Each option is one setting for every game it appears in.
+Red to Crystal show Modern Moves and Register Owned, and Red, Blue and Yellow also Day & Night;
+the rest are for FireRed to Emerald.
 
 | Option | Choices | Default | What it does |
 |---|---|---|---|
 | **Clock Source** | In-game / Device | In-game | Which clock Day & Night and the time-of-day evolutions read (Midnight Lycanroc, Alcremie's night and day creams, Budew, Riolu, Chingling, Snom). FireRed and LeafGreen have no clock, so they always use the device's. |
 | **National Dex** | On / Off | Off | Turns the National Pokédex on from the start, instead of earning it in the story. Nothing is written to your save. |
-| **Day & Night** | On / Off | On | Tints the outdoors for morning, evening and night; the afternoon is the game's own look. Changes when you enter an area. Indoors, caves, battles and menus are never tinted. |
-| **Modern Moves** | On / Off | On | The original 386 Pokémon also learn the newer moves they learn today, at the same levels (Clefairy learns Moonblast at 44), plus newer egg moves. Their Gen 3 moves stay, and moves they already know are kept if you turn it off. The save editor follows this setting. |
+| **Day & Night** | On / Off | On | Tints the outdoors for morning, evening and night; the afternoon is the game's own look. Changes when you enter an area. Indoors, caves, battles and menus are never tinted. Red, Blue and Yellow use the device's clock; Gold, Silver and Crystal have their own day and night instead. |
+| **Modern Moves** | On / Off | On | The game's own Pokémon also learn the newer moves they learn today, at the same levels (Clefairy learns Moonblast at 44), plus newer egg moves. Their own moves stay, and moves they already know are kept if you turn it off. On Red to Crystal only moves the game can do are added. The save editor follows this setting. |
 | **Bigger PC** | On / Off | On | 40 PC boxes (1,200 Pokémon) instead of 14. Turning it off hides boxes 15–40; the Pokémon in them stay in your save and come back when you turn it on again. |
 | **Register Owned** | On / Off | On | Opening the Pokédex counts every Pokémon in your party and PC as seen and caught, handy for Pokémon added with a save editor. |
 | **Type Badges** | On / Off | On | Shows each Pokémon's types as small badges beside its HP box in battle. |
@@ -220,7 +231,8 @@ the game's own Pokémon keep their original data, so its event gifts arrive as u
 
 - **It takes the place of the original National Dex mod** there: the two can't be on together.
   With both on, WoobleDex steps aside, so turn National Dex off for those games.
-- **The options above are for FireRed to Emerald;** Red to Crystal have none to set.
+- **Red to Crystal's options** are Modern Moves, Register Owned and (Red, Blue, Yellow) Day &
+  Night, shared with the Generation 3 games: turning one off turns it off everywhere.
 - **Keep the mod installed on a Gold, Silver or Crystal save** that holds its Pokémon: those
   games have nowhere to set aside a Pokémon they don't know.
 - **Exporting to a cartridge .sav** can't store the new Pokémon, and a newer move comes out as an

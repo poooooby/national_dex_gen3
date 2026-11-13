@@ -1,7 +1,7 @@
 -- Standalone: luajit mods/national_dex_gen3/tests/gen12_load_test.lua [red|blue|yellow|gold|silver|crystal ...]
 -- (from the gen1recomp root; runs on red, yellow, gold and crystal when none is named).
 -- The mod runs on Gen 1 and Gen 2 through its own path (src/gen12/main.lua), forked off main.lua
--- before anything Gen 3 loads; the Gen 3 options stay out of those games' Mod Manager; and the
+-- before anything Gen 3 loads; those games' Mod Manager shows this path's own options; and the
 -- original national_dex and this mod never run together there.
 package.path = "./?.lua;./?/init.lua;" .. package.path
 
@@ -26,8 +26,12 @@ for _, version in ipairs(H.versions()) do
   T.check(type(schema) == "table", version .. ": declares its own options")
   local keys = {}
   for _, row in ipairs(schema or {}) do keys[row.key] = true end
-  T.check(not (keys.day_night or keys.big_pc or keys.type_badges or keys.unlock_national),
-    version .. ": no Gen 3 option rows")
+  -- Modern Moves and Register Owned everywhere, Day & Night on Red / Blue / Yellow only (Gold has
+  -- its own); none of the Gen 3-only rows
+  T.check(keys.modern_moves and keys.register_owned and (keys.day_night == (gen == 1 or nil)),
+    version .. ": its own rows (Day & Night on Gen 1 only)")
+  T.check(not (keys.big_pc or keys.type_badges or keys.unlock_national or keys.clock_source),
+    version .. ": none of the Gen 3-only rows")
   run.release()
 
   -- the original national_dex (same species ids) and this mod never load together: the manifest

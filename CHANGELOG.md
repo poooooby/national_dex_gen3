@@ -27,6 +27,18 @@ All notable changes to this mod are documented here, in
     WoobleSpawns spawns them there.
   The original National Dex mod and WoobleDex can't run together on these games; with both on,
   WoobleDex steps aside.
+- **Gen 3 extras on Red to Crystal:** the Linking Cord (a trade evolution on the spot; in Gold,
+  Silver and Crystal a held trade item is needed and used up), Modern Moves (the game's own
+  Pokémon learn their newer moves, while the option is on), Register Owned, and Day & Night on
+  Red / Blue / Yellow by the device's clock (Gold / Silver / Crystal keep their own). Each is an
+  option shared with the Gen 3 games.
+
+### Fixed
+
+- **Day & Night no longer tints another game** after a Gen 3 game in the same run: its renderer
+  wraps are installed once and grade only the games the running copy was installed for.
+- **The clock and Lycanroc tests** set the clock option they test instead of reading the
+  player's own setting.
 
 ## [1.8.1] - 2026-11-09
 

@@ -383,7 +383,8 @@ test passes `generation = 3`.
 - **Tests:** `tests/_gen12.lua` builds a Red/Yellow (Gen 1: every generated module plus
   `Data.seedDefaults`) or Gold/Crystal (Gen 2: the keys `Game2` builds) dataset from the imported
   cart. The `tests/gen12_*_test.lua` suites (load, data, types, moves, battle, species,
-  evolutions, art, api) run on red, yellow, gold and crystal (name others on the command line).
+  evolutions, art, api, extras) run on red, yellow, gold and crystal (name others on the command
+  line).
 
 ### The Gen 1/2 data (`tools/build_gen12.py` -> `data/gen12/`)
 
@@ -657,6 +658,48 @@ Registered at load, first, so every record after can name them.
   ways, a cart species' bridge, the clock, no Gen 3 extras). It then loads `mods/modern_spawns`
   beside the mod and checks the candidate count, Turtwig's family and stages, a bridge in one
   family, and Red's Route 1 rolling only species the game has.
+
+### Gen 3 extras on Gen 1/2 (Phase A: `options.lua`, `dex_sync.lua`, `modern_moves.lua`, Day & Night)
+
+The owner asked for the Gen 3 extras on Gen 1/2 (2026-11-12). Phase A is the four small ones.
+
+- **Options** (`src/gen12/options.lua`): this path declares Modern Moves, Register Owned and, on
+  Gen 1 only, Day & Night, with the Gen 3 keys. A mod's option values are one bucket per mod
+  (`options.lua` `modOptions.national_dex_gen3`), so a setting holds on every game it shows on.
+- **Linking Cord** (`data/gen12/items.lua` kind `cord`, `items.lua`, `evolutions.lua`):
+  - Red: the Bag effect returns `evolveTo` for the first `TRADE` row whose conditions hold. Red's
+    trade-item steps are `ITEM` rows (the item is used), so the cord never stands in for them.
+  - Gold: an `item_effects` record with `action = "stone"` whose use runs
+    `Evolution.checkMon(data, mon, { link = true })`. Gold's own TRADE check then asks for the
+    held item, and Gold's `Evolution.apply` drops it (`heldItem = nil` for a TRADE row with an
+    item).
+- **Register Owned** (`src/gen12/dex_sync.lua`): a wrap of `PokedexMenu.new` (Red
+  `src.ui.PokedexMenu`, Gold `src.ui.gen2.PokedexMenu`), installed once per run on the module
+  (`__ndxGen12Sync`), asking the current load's handler. It marks party, `save.box` (Red) and
+  every `save.boxes` list; eggs (`isEgg`) are skipped; forms mark their base (`Dex.sync`).
+- **Modern Moves** (`src/gen12/modern_moves.lua`, `data/gen12/modern.lua`):
+  - The cart species' newest lists (#1-251) are added to `used` in the builder, so their moves
+    get rows too.
+  - At runtime only moves the game has outright (`direct`) are added, at their level; each move
+    appears once and the cart's own rows come first at a level.
+  - Records are frozen, so `apply(data, on)` swaps the live `learnset`/`levelMoves` (and Gold's
+    `eggMoves`) on `game.ready` and `mod.options_changed`, keeping the originals.
+  - It applies to the game `game.ready` handed over: in a headless run `mod.game` on Gen 1 is
+    the engine's `Game` singleton with another dataset.
+- **Day & Night** (`src/day_night.lua`, shared with Gen 3):
+  - The renderer wraps are installed once per run (`Renderer.__ndxDayNightHub`) and ask the copy
+    that installed last (`hub.impl`).
+  - A copy grades only its `opts.generations` (Gen 3 by default, `{ [1] = true }` here) and
+    decides outdoors with `opts.outdoor(ev)`: Red's map `tileset` OVERWORLD, PLATEAU or FOREST.
+  - The phase is the device's (`Clock.phase(nil, "device")`). `POKEPORT_RTC` does not reach
+    Red's sandbox, so it is the real time.
+  - `mod.exports._dayNight` is for the probe.
+- **Tests:** `tests/gen12_extras_test.lua` (all four through each game's own code) and
+  `tests/day_night_test.lua` (the hub: a second copy for Red takes over, grades Red, never
+  Emerald or Gold, with one end-of-frame wrap).
+- **In game** (2026-11-12, probe 0 failures on Red and Gold): Route 1 in the evening is tinted
+  and Red's house is not. Gold loads no Day & Night. A saved `day_night = false` turns it off on
+  Red too (the shared bucket), so the probe's options switch it on for the run.
 
 ### In the real engine (`tests/drivers/gen12_probe.lua`)
 

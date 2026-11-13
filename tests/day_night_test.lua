@@ -198,4 +198,30 @@ f = frame()
 T.check(f:find("blend multiply", 1, true) and f:find("blend add", 1, true), "tilt: the world gets the overlay before the UI")
 Renderer.tilted = nil
 
+-- ------- another load in the same run: Red / Blue / Yellow's copy (src/gen12/main.lua)
+-- The renderer keeps one set of wraps; the copy installed last answers, for its own games only.
+local endFrameBefore = Renderer.endFrame
+local outdoorRed = true
+local DayNightRed = dofile("mods/national_dex_gen3/src/day_night.lua")
+T.check(DayNightRed.install({ require = function(n) return stubs[n] or require(n) end,
+  generations = { [1] = true }, outdoor = function() return outdoorRed end,
+  enabled = function() return true end, phase = function() return "evening" end }), "a Red copy installs")
+T.eq(Renderer.endFrame, endFrameBefore, "no second end-of-frame wrap: the hub's one stays")
+GameVersion.set("red")
+DayNightRed.refresh(nil)
+T.eq(DayNightRed.current, "evening", "Red outdoors in the evening: the evening grade")
+f = frame()
+T.check(f:find("draw scratch shaded screen", 1, true), "Red's overworld is graded by its own copy")
+outdoorRed = false
+DayNightRed.refresh(nil)
+T.eq(DayNightRed.current, "afternoon", "indoors (Red's own outdoor test says no): the game's look")
+outdoorRed = true
+DayNightRed.refresh(nil)
+GameVersion.set("emerald")
+f = frame()
+T.check(not f:find("shaded", 1, true), "Emerald is not graded by Red's copy")
+GameVersion.set("gold")
+f = frame()
+T.check(not f:find("shaded", 1, true), "nor Gold")
+
 T.finish("national_dex_gen3 day & night")

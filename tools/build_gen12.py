@@ -461,7 +461,17 @@ def build(api: bs.API, workers: int, engine: Path) -> dict[str, Any]:
         del rec["dexEntry"]
         forms.append(rec)
 
-    moves, report = build_moves(api, workers, carts, records + forms, engine)
+    # Modern Moves: the carts' own species' newest level-up and egg lists (#1-251, National move
+    # numbers); they join the move rows so a move only they learn still gets its real move or
+    # stand-ins
+    modern = []
+    for dex in range(1, GENS[2]["dex"] + 1):
+        pokemon = by_dex[dex]["pokemon"]
+        modern.append({"dex": dex, "learnset": [list(r) for r in bs.modern_learnset(pokemon)],
+                       "eggMoves": egg(pokemon)})
+    as_records = [{"learnset": m["learnset"], "eggMoves": m["eggMoves"], "teach": [], "evolutions": []}
+                  for m in modern]
+    moves, report = build_moves(api, workers, carts, records + forms + as_records, engine)
     cart = cart_retypes(api, carts, by_dex)
     items = build_items(api, carts, records + forms, crossgen)
     # each species' party icon on each game: its proxy's (Red an icon kind, Gold an ICON_ sheet)
@@ -473,7 +483,7 @@ def build(api: bs.API, workers: int, engine: Path) -> dict[str, Any]:
             if kind:
                 r.setdefault("icon", {})[f"gen{g}"] = kind
     return {"records": records, "forms": forms, "crossgen": crossgen, "moves": moves,
-            "cart": cart, "items": items, "report": report}
+            "cart": cart, "items": items, "modern": modern, "report": report}
 
 
 # ---------------------------------------------------------------- evolution items
@@ -510,6 +520,7 @@ def build_items(api: bs.API, carts: dict[int, dict[str, Any]], records: list[dic
         hold = (step.get("when") or {}).get("hold")
         for slug in ([hold] if isinstance(hold, str) else hold or []):
             kinds.setdefault(slug, "hold")
+    kinds["linking-cord"] = "cord"      # evolves a trade-evolution Pokemon on the spot
     gen3 = {row["slug"]: row for row in lua_json_file(ROOT / "data" / "items.lua")}
     out, too_long = [], []
     for slug in sorted(kinds):
@@ -798,8 +809,12 @@ def write(result: dict[str, Any], out: Path) -> None:
     listing("moves.lua", "-- Moves past #165 the species name, by National move number (n).\n",
             result["moves"])
     listing("items.lua", "-- The items evolutions use (stone: used on the Pokemon; trade: held through a trade;\n"
-            "-- hold: held while it levels up), and per generation the cart's own id where it has one.\n",
+            "-- hold: held while it levels up; cord: the Linking Cord), and per generation the cart's\n"
+            "-- own id where it has one.\n",
             result["items"])
+    listing("modern.lua", "-- Modern Moves: the carts' own species' newest level-up list ({ level, move }) and egg\n"
+            "-- moves, by dex number, as National move numbers.\n",
+            result["modern"])
     (out / "cart.lua").write_text(
         HEADER + "-- Per generation: the cart's own species and moves whose modern typing differs, the\n"
         "-- types the game gains, and the matchup rows to add ({ attacker, defender, tenths }) or\n"

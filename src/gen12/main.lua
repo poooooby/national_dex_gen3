@@ -12,9 +12,14 @@
 return function(mod, loadSibling)
   local generation = mod.generation
 
-  -- The manifest's options_schema is Gen 3's: none of those options does anything here.
-  -- Declaring this path's own list (none yet) keeps them out of the Mod Manager on these games.
-  pcall(function() mod.options:define({}) end)
+  -- The manifest's options_schema is Gen 3's. This path declares its own list (src/gen12/options.lua:
+  -- Modern Moves, Register Owned, and Day & Night on Red / Blue / Yellow), same keys.
+  local Options = loadSibling(mod, "src/gen12/options.lua")
+  pcall(function() mod.options:define(Options and Options.forGeneration(generation) or {}) end)
+  local function option(key)
+    local ok, value = pcall(function() return mod.options:get(key) end)
+    return not ok or value ~= false
+  end
 
   -- Dark / Steel / Fairy, the modern typing of the cart's species and moves, and the two
   -- newer growth curves; first, so every record registered after can name them
@@ -112,6 +117,71 @@ return function(mod, loadSibling)
       mod.log:warn("the Pokedex stays at the cart's size")
     end
     Dex.install(mod, generation, speciesState.forms)
+  end
+
+  -- Register Owned: opening the Pokedex counts the party and the PC (src/gen12/dex_sync.lua)
+  local DexSync = loadSibling(mod, "src/gen12/dex_sync.lua")
+  if DexSync and Dex and speciesState then
+    DexSync.install({ require = require, generation = generation, forms = speciesState.forms,
+      syncForms = Dex.sync, enabled = function() return option("register_owned") end, log = mod.log })
+  end
+
+  -- Modern Moves: the cart's own species' newer moves, swapped in while the option is on
+  local Modern = loadSibling(mod, "src/gen12/modern_moves.lua")
+  local modernRows = loadSibling(mod, "data/gen12/modern.lua")
+  if Modern and modernRows and speciesState and directMove then
+    local modern = Modern.install({ generation = generation, rows = modernRows, direct = directMove,
+      cartIdOf = speciesState.cartIdOf })
+    local readyGame                      -- the game game.ready handed over: the live one
+    local function applyModern(game)
+      local g = game or readyGame or mod.game
+      local okA, changed, added = pcall(modern.apply, g and g.data, option("modern_moves"))
+      if okA and changed > 0 then
+        mod.log:info("modern moves: on (%d species, %d moves)", changed, added)
+      end
+    end
+    mod.events:on("game.ready", function(ev)
+      readyGame = ev and ev.game or mod.game
+      applyModern(readyGame)
+    end, 1)
+    mod.events:on("mod.options_changed", function(ev)
+      if type(ev) == "table" and ev.mod == mod.id and ev.key == "modern_moves" then applyModern(nil) end
+    end)
+  end
+
+  -- Day & Night on Red / Blue / Yellow (src/day_night.lua, as on Gen 3): the outdoors (Red's
+  -- OVERWORLD, PLATEAU and FOREST tilesets) by the device's clock. Gold has its own day and night.
+  local DayNight = generation == 1 and loadSibling(mod, "src/day_night.lua") or nil
+  if DayNight and Clock then
+    local OUTDOOR = { OVERWORLD = true, PLATEAU = true, FOREST = true }
+    local function outdoor(ev)
+      local g = mod.game
+      local maps = g and g.data and g.data.maps
+      local id = ev and ev.mapId
+      if not id then
+        local ow = g and g.overworld
+        id = ow and ow.map and (ow.map.id or ow.map.mapId)
+      end
+      local def = maps and id and maps[id]
+      return type(def) == "table" and OUTDOOR[def.tileset] == true
+    end
+    local installed = false
+    mod.events:on("game.ready", function()
+      local okD, errD = pcall(function()
+        installed = DayNight.install({ require = require, log = mod.log, generations = { [1] = true },
+          enabled = function() return option("day_night") end, outdoor = outdoor,
+          phase = function() return Clock.phase(nil, "device") end })
+      end)
+      if not okD then mod.log:warn("day & night is off: %s", tostring(errD)) end
+    end, -100)
+    local function refresh(ev) if installed then pcall(DayNight.refresh, ev) end end
+    mod.exports._dayNight = { module = DayNight, outdoor = outdoor, refresh = refresh,
+      phase = function() return Clock.phase(nil, "device") end }
+    mod.events:on("map.entered", refresh)
+    mod.events:on("save.loaded", function() refresh(nil) end)
+    mod.events:on("mod.options_changed", function(ev)
+      if type(ev) == "table" and ev.mod == mod.id and ev.key == "day_night" then refresh(nil) end
+    end)
   end
 
   -- mod.exports: src/api.lua (the Gen 3 path's, as it is) over this path's species

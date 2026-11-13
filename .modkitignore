@@ -108,4 +108,5 @@ tests/gen12_species_test.lua
 tests/gen12_evolutions_test.lua
 tests/gen12_art_test.lua
 tests/gen12_api_test.lua
+tests/gen12_extras_test.lua
 tools/build_placeholder.py

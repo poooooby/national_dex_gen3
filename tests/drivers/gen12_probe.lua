@@ -37,6 +37,30 @@ local function body(game, log, dir)
   end
   local base = depth()
 
+  section("day and night", function()
+    if gen ~= 1 then return end
+    local Renderer = require("src.render.Renderer")
+    local hub = Renderer.__ndxDayNightHub
+    check(hub ~= nil and hub.impl ~= nil, "Day & Night is installed on Red")
+    local dn = game.mods and game.mods.exports and game.mods.exports.national_dex_gen3
+      and game.mods.exports.national_dex_gen3._dayNight
+    if dn then
+      local ow = game.overworld
+      log(("day & night: current %s, outdoor %s, phase %s, map %s"):format(tostring(dn.module.current),
+        tostring(dn.outdoor(nil)), tostring(dn.phase()), tostring(ow and ow.map and (ow.map.id or ow.map.mapId))))
+      dn.refresh(nil)
+      log("after refresh: " .. tostring(dn.module.current))
+    else
+      log("no _dayNight export (" .. tostring(game.mods) .. ")")
+    end
+    U.wait(30); shot("dn_route")
+    U.teleport(game, "REDS_HOUSE_1F", 3, 5, "down")
+    U.wait(60); shot("dn_house")
+    U.teleport(game, "ROUTE_1", 5, 5, "down")
+    U.wait(60)
+    base = depth()
+  end)
+
   local Mon = gen == 1 and require("src.pokemon.Pokemon") or require("src.battle.gen2.Mon")
   local function make(id, lv) return Mon.new(data, id, lv) end
   local party = { make("LUCARIO", 30), make("CORVIKNIGHT", 40), make("EEVEE", 25),

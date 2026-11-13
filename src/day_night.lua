@@ -17,8 +17,13 @@
 -- Tilt mode draws the world without blitCanvas: there (and if the shader cannot compile) the
 -- grade is a multiply + add overlay on the view, painted just before the UI blit.
 -- The wraps live on the Renderer for the whole run (it is never reloaded, and the player can
--- switch games without restarting), so they grade only while a Gen 3 game is running: Red's
--- overworld draws through the same world blit, and it must keep its own look.
+-- switch games without restarting), so they are installed once (Renderer.__ndxDayNightHub) and
+-- ask the copy of this module that installed last; that copy grades only while one of its
+-- games is running (opts.generations: Gen 3 by default; the Gen 1/2 path passes Red / Blue /
+-- Yellow's, which draw their overworld through the same world blit, and a Gen 3 tint must never
+-- reach a game that did not ask for one).
+-- Outdoors: Gen 3's map types by default; opts.outdoor(ev) -> boolean replaces that (Red's
+-- tilesets, src/gen12/main.lua).
 local DayNight = {}
 
 -- gain: per channel; sat: 1 = unchanged; lift: the shadow floor (black becomes this colour)
@@ -62,15 +67,15 @@ local scratch, scratchW, scratchH, scratchDpi = nil, 0, 0, 0
 local disabled = false
 local graded = false                         -- the world blit was graded this frame
 local GameVersion                            -- src.core.GameVersion, found at install
+local generations = { [3] = true }           -- the games this copy grades
 
--- a Gen 3 game is running (nothing else is ever graded)
-local function onGen3()
+-- one of this copy's games is running (nothing else is ever graded)
+local function allowed()
   if not GameVersion then return false end
   local ok, gen = pcall(GameVersion.generation)
-  return ok and gen == 3
+  return ok and generations[gen] == true
 end
 local busy = false                           -- inside our own grade (an inner copy of the wrap passes through)
-local ourBlit, ourEndFrame
 
 local function now()
   local t = love and love.timer and love.timer.getTime
@@ -100,14 +105,24 @@ local function currentMapType()
   return type(def) == "table" and def.mapType or nil
 end
 
--- re-decide the grade. ev: a map.entered payload ({ map = def, via }) or nil (the current map,
--- switched at once)
-function DayNight.refresh(ev)
+-- is the map outdoors? opts.outdoor(ev) when given, else Gen 3's map types
+local function outdoors(ev)
+  if opts.outdoor then
+    local ok, out = pcall(opts.outdoor, ev)
+    return ok and out == true
+  end
   local mapType = ev and type(ev.map) == "table" and ev.map.mapType
   if mapType == nil then mapType = currentMapType() end
+  return DayNight.OUTDOOR[tonumber(mapType) or -1] == true
+end
+
+-- re-decide the grade. ev: a map.entered payload ({ map = def, mapId, via }) or nil (the current
+-- map, switched at once)
+function DayNight.refresh(ev)
   local okE, on = pcall(opts.enabled or function() return false end)
   local okP, phase = pcall(opts.phase or function() return "afternoon" end)
-  local name = DayNight.phaseFor(mapType, okE and on, okP and phase)
+  local name = "afternoon"
+  if okE and on and outdoors(ev) and okP and DayNight.PHASES[phase] then name = phase end
   DayNight.current = name
   local target = DayNight.PHASES[name]
   if target == to and not easing then return name end
@@ -230,38 +245,53 @@ local function fail(err)
   if opts.log then opts.log:warn("day & night is off for this session: %s", tostring(err)) end
 end
 
-local function makeBlit(Renderer, orig)
-  return function(self, canvas, ...)
-    if busy or disabled or identity(cur) or not (love and love.graphics) or not onGen3() then
-      return orig(self, canvas, ...)
-    end
-    if canvas == self.worldCanvas and self.worldActive and not self.worldOverride then
-      local ok, done = pcall(gradeBlit, orig, self, canvas, ...)
-      if ok and done then graded = true return end
-      if not ok then fail(done) end
-      return orig(self, canvas, ...)
-    end
-    if canvas == self.canvas and self.worldActive and not self.worldOverride and not graded then
-      local ok, err = pcall(overlay, self)
-      if not ok then fail(err) end
-      graded = true
-    end
+-- this copy's part of the world blit (the process-wide wrap below hands it the call)
+local function blit(orig, self, canvas, ...)
+  if busy or disabled or identity(cur) or not (love and love.graphics) or not allowed() then
     return orig(self, canvas, ...)
   end
+  if canvas == self.worldCanvas and self.worldActive and not self.worldOverride then
+    local ok, done = pcall(gradeBlit, orig, self, canvas, ...)
+    if ok and done then graded = true return end
+    if not ok then fail(done) end
+    return orig(self, canvas, ...)
+  end
+  if canvas == self.canvas and self.worldActive and not self.worldOverride and not graded then
+    local ok, err = pcall(overlay, self)
+    if not ok then fail(err) end
+    graded = true
+  end
+  return orig(self, canvas, ...)
 end
 
--- keep our blitCanvas wrap outermost (a mod wrapping it later would draw outside the grade)
-local wraps = 0
+-- keep the blitCanvas wrap outermost (a mod wrapping it later would draw outside the grade)
 local function ensureOutermost(Renderer)
-  if Renderer.blitCanvas == ourBlit or wraps >= 8 then return end
-  wraps = wraps + 1
-  ourBlit = makeBlit(Renderer, Renderer.blitCanvas)
-  Renderer.blitCanvas = ourBlit
+  local hub = Renderer.__ndxDayNightHub
+  if Renderer.blitCanvas == hub.blit or hub.wraps >= 8 then return end
+  hub.wraps = hub.wraps + 1
+  local orig = Renderer.blitCanvas
+  local wrap = function(self, canvas, ...)
+    local impl = hub.impl
+    if not impl then return orig(self, canvas, ...) end
+    return impl.blit(orig, self, canvas, ...)
+  end
+  hub.blit = wrap
+  Renderer.blitCanvas = wrap
+end
+
+-- this copy's end of frame: a new frame is ungraded; ease toward the target
+local function endFrame(Renderer)
+  graded = false
+  if not disabled and allowed() then
+    ensureOutermost(Renderer)
+    DayNight.step()
+  end
 end
 
 -- opts: { require, log, enabled = fn() -> bool, phase = fn() -> phase name }
 function DayNight.install(o)
   opts = o or {}
+  generations = opts.generations or { [3] = true }
   local okV, GV = pcall(opts.require or require, "src.core.GameVersion")
   GameVersion = okV and type(GV) == "table" and type(GV.generation) == "function" and GV or nil
   local okR, Renderer = pcall(opts.require or require, "src.render.Renderer")
@@ -270,20 +300,19 @@ function DayNight.install(o)
     if opts.log then opts.log:warn("day & night is off: the renderer was not found") end
     return false
   end
-  ensureOutermost(Renderer)
-  if Renderer.endFrame ~= ourEndFrame and not Renderer.__nationalDexDayNight then
-    Renderer.__nationalDexDayNight = true
-    local endFrame = Renderer.endFrame
-    ourEndFrame = function(self, ...)
-      graded = false
-      if not disabled and onGen3() then
-        ensureOutermost(Renderer)
-        DayNight.step()
-      end
-      return endFrame(self, ...)
+  local hub = Renderer.__ndxDayNightHub
+  if not hub then
+    hub = { wraps = 0 }
+    Renderer.__ndxDayNightHub = hub
+    local origEnd = Renderer.endFrame
+    Renderer.endFrame = function(self, ...)
+      local impl = hub.impl
+      if impl then pcall(impl.endFrame, Renderer) end
+      return origEnd(self, ...)
     end
-    Renderer.endFrame = ourEndFrame
   end
+  hub.impl = { blit = blit, endFrame = endFrame }
+  ensureOutermost(Renderer)
   DayNight.refresh(nil)
   if opts.log then opts.log:info("day & night: %s", tostring(DayNight.current)) end
   return true

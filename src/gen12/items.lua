@@ -9,6 +9,9 @@
 -- stone gets an `item_effects` record of its own with `action = "stone"`, whose use runs Gold's
 -- own Evolution.checkMon with the stone forced, exactly as Gold's stones do (so the
 -- evolution.check conditions apply there too).
+-- The Linking Cord (kind "cord") is used the same way on both games: it runs the game's own trade
+-- evolution on the spot (Red: a TRADE row; Gold: EVOLVE_TRADE as if linked, so a row that wants
+-- a held item takes it, and Gold's own Evolution.apply uses that item up).
 --
 -- Shops: Red's Celadon Dept. Store 4F clerk (its `mart` list, where the cart sells its stones),
 -- Gold's Goldenrod Dept. Store 4F (found by its own stock, the vitamins, so the Crystal list
@@ -23,6 +26,7 @@ Items.GEN1_EFFECT = "NATIONAL_DEX_GEN3_EVOLUTION_ITEM"
 
 Items.GEN2_DESCRIPTION = {
   stone = "Evolves certain<NEXT>kinds of POKéMON.",
+  cord = "Evolves POKéMON<NEXT>that evolve by trade.",
   trade = "Some POKéMON<NEXT>evolve holding it.",
   hold = "Some POKéMON<NEXT>evolve holding it.",
 }
@@ -65,12 +69,13 @@ function Items.register(opts)
       else
         rec.pocket, rec.canToss, rec.canSelect = "ITEM", true, false
         rec.battleMenu = "ITEMMENU_NOUSE"
-        rec.fieldMenu = row.kind == "stone" and "ITEMMENU_PARTY" or "ITEMMENU_NOUSE"
+        local usable = row.kind == "stone" or row.kind == "cord"
+        rec.fieldMenu = usable and "ITEMMENU_PARTY" or "ITEMMENU_NOUSE"
         rec.heldEffect, rec.heldParameter = "HELD_NONE", 0
         rec.description = Items.GEN2_DESCRIPTION[row.kind]
       end
       local ok, err = pcall(items.register, items, row.id, rec)
-      if ok and gen == 2 and row.kind == "stone" then
+      if ok and gen == 2 and (row.kind == "stone" or row.kind == "cord") then
         ok, err = pcall(effects.register, effects, row.id, { action = "stone", use = opts.use })
       end
       if ok then

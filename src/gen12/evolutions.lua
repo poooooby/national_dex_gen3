@@ -462,8 +462,16 @@ function Evolutions.install(opts)
     end
     if not target then return noEffect() end
     local def = d and d.pokemon and d.pokemon[target.species]
+    local cord = opts.itemId("linking-cord")
     for _, row in ipairs(def and def.evolutions or {}) do
-      if row.method == "ITEM" then
+      -- the Linking Cord: a trade evolution on the spot
+      if cord and c.itemId == cord and row.method == "TRADE" then
+        local cond = state.conds[Evolutions.key(target.species, row)]
+        if not cond or holdsFor(cond, target, { data = d, party = c.save and c.save.party }) then
+          pcall(function() req("src.core.Sound").play(d, "Heal_Ailment") end)
+          return "consumed", nil, { evolveTo = row.species }
+        end
+      elseif row.method == "ITEM" then
         local cond = state.conds[Evolutions.key(target.species, row)]
         local named = row.item == c.itemId
         if not named and cond and cond.hold then
@@ -490,7 +498,10 @@ function Evolutions.install(opts)
     end
     if not c.mon or c.mon.item == "EVERSTONE" then return noEffect() end
     local Evolution = req("src.core.gen2.Evolution")
-    local entry = Evolution.checkMon(c.data, c.mon, { force = true, item = c.item })
+    local cord = opts.itemId("linking-cord")
+    -- the Linking Cord runs the trade check as if the Pokemon were being traded
+    local ctx = (cord and c.item == cord) and { link = true } or { force = true, item = c.item }
+    local entry = Evolution.checkMon(c.data, c.mon, ctx)
     if not entry then return noEffect() end
     return { used = true, evolution = entry }
   end
