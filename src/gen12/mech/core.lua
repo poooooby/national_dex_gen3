@@ -50,6 +50,7 @@ Core.FAMILIES = {
   "src/gen12/mech/volatile.lua",
   "src/gen12/mech/switching.lua",
   "src/gen12/mech/traits.lua",
+  "src/gen12/mech/held.lua",
 }
 
 function Core.new(opts)
@@ -137,6 +138,7 @@ Core.EVENTS = {
   ["battle.move_used"] = "moveUsed", ["battle.damage_dealt"] = "damageDealt",
   ["battle.fainted"] = "fainted", ["battle.battler_switched"] = "switchedIn",
   ["battle.turn_ended"] = "turnEnded", ["battle.status_inflicted"] = "statusInflicted",
+  ["battle.ended"] = "battleEnded",
 }
 
 function Core:listen(mod, Adapter, deps)

@@ -52,7 +52,8 @@ return function(mod, loadSibling)
       for _, path in ipairs(Core.FAMILIES or {}) do
         local family = loadSibling(mod, path)
         if type(family) == "function" then
-          local okF, errF = pcall(family, core, { generation = generation, require = require, mod = mod })
+          local okF, errF = pcall(family, core, { generation = generation, require = require, mod = mod,
+            load = function(p) return loadSibling(mod, p) end })
           if not okF then mod.log:warn("move mechanics %s failed to load: %s", path, tostring(errF)) end
         end
       end
@@ -100,6 +101,21 @@ return function(mod, loadSibling)
         local game = ev and ev.game or mod.game
         Moves.installHighCrit(moveState, game and game.data)
       end, 1)
+    end
+  end
+
+  -- Red: Gold's held items (src/gen12/held_red.lua): registered, sold, given from the party menu
+  if generation == 1 then
+    local HeldRed = loadSibling(mod, "src/gen12/held_red.lua")
+    local heldRows = HeldRed and loadSibling(mod, "data/gen12/held.lua")
+    if HeldRed and heldRows then
+      local okH, heldState = pcall(HeldRed.install, { mod = mod, rows = heldRows, require = require, log = mod.log })
+      if okH then
+        mod.log:info("held items: %d on Red", #heldState.registered)
+        mod.exports._held = heldState
+      else
+        mod.log:warn("held items are off: %s", tostring(heldState))
+      end
     end
   end
 

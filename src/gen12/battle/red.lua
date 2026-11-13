@@ -135,6 +135,18 @@ function RedA:item(b)
   local bag = b.mon.extra and b.mon.extra.national_dex_gen3
   return bag and bag.item or nil
 end
+-- Red's held item: kept in the mon's mod bag (src/gen12/held_red.lua gives and takes it)
+function RedA:setItem(b, id)
+  local mon = b.mon or b
+  mon.extra = mon.extra or {}
+  local bag = mon.extra.national_dex_gen3
+  if not bag then bag = {}; mon.extra.national_dex_gen3 = bag end
+  bag.item = id
+end
+function RedA:itemName(id)
+  local d = id and self.battle.data.items[id]
+  return (d and d.name) or (id and tostring(id):gsub("_", " ")) or ""
+end
 function RedA:dvs(b) return b.mon.dvs or {} end
 -- the battler's moves: { id, pp }
 function RedA:moves(b) return b.curMoves or b.mon.moves or {} end

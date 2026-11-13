@@ -127,6 +127,11 @@ function GoldA:dex(b) local r = self:record(b); return r and (r.baseDex or r.dex
 function GoldA:weight(b) return self.core:weight(self:record(b), b.species) end
 function GoldA:friendship(b) return b.happiness or 70 end
 function GoldA:item(b) return b.item end
+function GoldA:setItem(b, id) b.item = id end
+function GoldA:itemName(id)
+  local d = id and self.battle:itemDef(id)
+  return (d and d.name) or (id and tostring(id):gsub("_", " ")) or ""
+end
 function GoldA:dvs(b) return b.dvs or {} end
 function GoldA:moves(b) return b.moves or {} end
 -- the weather: Gold's own rain / sun / sandstorm (battle.weather: its damage, its turns, its
