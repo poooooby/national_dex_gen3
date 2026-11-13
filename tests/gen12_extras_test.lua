@@ -217,7 +217,7 @@ for _, version in ipairs(H.versions()) do
     T.check(tm.pocket == "TM_HM" and tm.tmNumber > 50 and tm.tmNumber < 51,
       version .. ": in the TM pocket, sorted between TM50 and HM01")
     local Bag = require("src.inventory.Bag")
-    T.eq(Bag.capacity(data, "TM_HM"), 57 + 43, version .. ": the TM pocket holds the new TMs too")
+    T.eq(Bag.capacity(data, "TM_HM"), 57 + 114, version .. ": the TM pocket holds the 114 new TMs too")
     T.eq(Bag.capacity(data, "ITEM"), 20, version .. ": the item pocket as it was")
     T.check(machineSells(run, data, "tm", "TM74"), version .. ": sold by the TM EXPRESS machine")
   end

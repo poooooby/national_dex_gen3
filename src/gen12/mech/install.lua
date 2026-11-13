@@ -72,6 +72,7 @@ function Install.register(opts)
             if like and like.anim then rec.anim = copy(like.anim) end
           else
             rec.index, rec.effectChance = row.n, 0
+            if row.desc then rec.description = row.desc end
             -- past Gold's own Protect and Fly / Dig checks: what only touches the user, and what
             -- breaks through (Feint)
             if ((spec.kind == "status" and spec.selfOnly) or spec.ignoresProtect) and okE

@@ -46,7 +46,7 @@ for _, version in ipairs(H.versions()) do
         if not (e.tm and e.tm.number and e.tm.type and e.tm.move) then typed = false end
       end
     end
-    T.eq(tms, 43, version .. ": TM EXPRESS sells the 43 new TMs")
+    T.eq(tms, 114, version .. ": TM EXPRESS sells the 114 new TMs")
     T.check(typed, version .. ": each with its number, move and type")
 
     -- a purchase

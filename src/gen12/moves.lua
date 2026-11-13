@@ -65,6 +65,7 @@ function Moves.register(opts)
         else
           rec.effectChance = real.chance or 0
           rec.index = row.n
+          if row.desc then rec.description = row.desc end
         end
         local ok, err = pcall(moves.register, moves, id, rec)
         if not ok and gen == 2 then

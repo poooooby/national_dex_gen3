@@ -1,6 +1,6 @@
 -- New TMs on Gen 1 / Gen 2: the Gen 3 path's TM list (data/tms.lua, TM51 on) for the moves that
--- run on this game (a newer move registered here with an effect of the cart's own; on Red and
--- Gold the same 43). Each keeps its Gen 3 id and number, so TM74 is Zen Headbutt on every game.
+-- run on this game (every newer move does, on a cart effect or on src/gen12/mech/). Each keeps its
+-- Gen 3 id and number, so TM74 is Zen Headbutt on every game.
 --
 -- Both games already teach any item that names its move, through their own Bag and party menu
 -- (the "Booted up a TM!" prompt, ABLE / NOT ABLE, the forget-a-move prompt) and decide who can
@@ -28,13 +28,12 @@ Tms.TM_POCKET = 57
 
 -- The TMs whose move runs on this game: { t (data/tms.lua row), move (this game's id) }
 function Tms.select(list, moveRows, generation, direct)
-  local key = "gen" .. generation
   local byId = {}
   for _, m in ipairs(moveRows or {}) do byId[m.id] = m end
   local out = {}
   for _, t in ipairs(list or {}) do
     local row = byId[t.move]
-    local move = row and row[key] and direct(row.n)
+    local move = row and direct(row.n)
     if move then out[#out + 1] = { t = t, move = move } end
   end
   return out

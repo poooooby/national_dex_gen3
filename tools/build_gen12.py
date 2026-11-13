@@ -733,6 +733,9 @@ def build_moves(api: bs.API, workers: int, carts: dict[int, dict[str, Any]],
         else:
             # no Gen 3 effect to lend it: a stand-in everywhere, so the name is never shown
             rec = {"n": n, "id": bs.engine_id(a["name"]), "name": a_name(a).upper()[:12]}
+        desc = move_description(a)
+        if desc:
+            rec["desc"] = desc
         rec.update({"type": a["type"]["name"].upper(), "power": a.get("power") or 0,
                     "accuracy": a.get("accuracy") or (100 if damaging else 0), "pp": a.get("pp") or 10,
                     "priority": a.get("priority") or 0})
@@ -834,6 +837,22 @@ def build_moves(api: bs.API, workers: int, carts: dict[int, dict[str, Any]],
                   + ", ".join(name(c) for c in r["subs"][f"gen{gen}"][:3])
                   for r in out if f"gen{gen}" in r.get("subs", {})]
     return out, "\n".join(lines) + "\n"
+
+
+def move_description(a: dict[str, Any]) -> str | None:
+    """Gold's summary text for a move: two 18-column lines (`<NEXT>` between them), from the
+    newest English flavor text that fits."""
+    texts = [e["flavor_text"] for e in a.get("flavor_text_entries", [])
+             if e.get("language", {}).get("name") == "en"]
+    for text in reversed(texts):
+        clean = " ".join(bs._flavor_clean(text).split())
+        clean = clean.replace("’", "'").replace("é", "e").replace("É", "E")
+        lines = wrap(clean)
+        if len(lines) <= 2 and all(len(x) <= COLUMNS for x in lines):
+            return "<NEXT>".join(lines)
+    # no text short enough: the move's type and kind
+    kind = "move." if a["damage_class"]["name"] == "status" else "attack."
+    return "A " + a["type"]["name"].capitalize() + "-type<NEXT>" + kind
 
 
 def a_name(move: dict[str, Any]) -> str:
