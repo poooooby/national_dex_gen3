@@ -21,14 +21,34 @@ All notable changes to this mod are documented here, in
   - **The summary** shows nature, ability and (Red, Blue, Yellow) held item.
 - **Move Split** option for Red to Crystal (off by default): physical or special by the move, as
   in today's games.
+- **Today's held items on every game:** 138 newer ones on FireRed to Emerald (Choice Scarf and
+  Specs, Life Orb, Focus Sash, Assault Vest, Eviolite, Rocky Helmet, Air Balloon, Weakness
+  Policy, Heavy-Duty Boots, the Plates and Gems, the type-resist berries, Booster Energy...), and
+  every held item from Gold's to today's on Red to Crystal, with Exp. Share, Lucky Egg, Macho
+  Brace, the Power items, Soothe Bell and the incenses outside battle. A third vending machine,
+  **HELD EXPRESS**, sells them beside EVO EXPRESS on every game.
+- **Red, Blue and Yellow:**
+  - the **Modern Rules** option (on by default): no 1-in-256 misses, a working Focus Energy, a
+    Hyper Beam that always rests, foes that use up PP, and today's critical hits (1 in 24, 1.5x);
+  - a **Sp. Def** for every Pokémon, worked out from its species: the SPECIAL is its Sp. Atk;
+  - **shiny Pokémon** (Gold's rule) sparkle as they come out and wear a star on the summary;
+  - today's whole type chart: Ghost hits Psychic, Bug and Poison no longer beat each other.
 
 ### Changed
 
 - Red to Crystal have all 114 new TMs (TM51-TM164), the same as the Generation 3 games.
 - **Only Rage Fist evolves Primeape** into Annihilape, on every game: uses of Rage no longer
   count towards the 20 (Red to Crystal have Rage Fist too now).
-- Gold, Silver and Crystal's summary has a line for every newer move: a short description
-  where one fits, else its type.
+- Gold, Silver and Crystal's summary and Pack describe every newer move and held item in the
+  games' own style.
+
+### Fixed
+
+- Gold, Silver and Crystal: the new Pokémon keep their colours (two taken from their picture)
+  while a move animation plays, instead of turning grey.
+- Red to Crystal: Leaf Guard works only in the sun, Surge Surfer and Grass Pelt only on their
+  terrain (they were always on); Compound Eyes, Victory Star and Hustle change accuracy, and
+  Regenerator heals as its Pokémon switches out.
 
 ## [1.10.1] - 2026-11-13
 

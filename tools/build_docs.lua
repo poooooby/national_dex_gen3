@@ -259,7 +259,8 @@ local L = {
   "need them can evolve. They are all sold by the EVO EXPRESS vending machine: Celadon Dept. Store",
   "4F in FireRed / LeafGreen, Lilycove Dept. Store 2F in Ruby / Sapphire / Emerald.",
   "",
-  "Further down: [other items](#other-items), the Exp. Candies and the Dynamax items.",
+  "Further down: [other items](#other-items), the Exp. Candies and the Dynamax items, and the",
+  "[held items](#held-items).",
   "",
   "*Generated from `data/items.lua`, `data/shops.lua`, `data/vending.lua`, the Exp. Candy and Dynamax item lists by",
   "`tools/build_docs.lua`.*",
@@ -323,6 +324,29 @@ if #others > 0 then
     if it.use then L[#L + 1] = "- " .. it.use end
     L[#L + 1] = ""
   end
+end
+
+-- the held items (data/held_items.lua): the first 36 are Generation 3's, which FireRed to
+-- Emerald have of their own; the rest are new on every game
+do
+  local held = load("data/held_items.lua")
+  local heldGates = {}
+  for _, m in ipairs(load("data/vending.lua")) do if m.id == "held" then heldGates = m.badges or {} end end
+  L[#L + 1] = "## Held items"
+  L[#L + 1] = ""
+  L[#L + 1] = "Items a Pokémon holds in battle, sold by the HELD EXPRESS vending machine (beside EVO EXPRESS:"
+  L[#L + 1] = "Celadon Dept. Store 4F in FireRed / LeafGreen and Red / Blue / Yellow, Lilycove Dept. Store 2F"
+  L[#L + 1] = "in Ruby / Sapphire / Emerald, Goldenrod Dept. Store 4F in Gold / Silver / Crystal). The ones"
+  L[#L + 1] = "marked *Gen 3* are FireRed to Emerald's own and new only on Red to Crystal; the machine sells"
+  L[#L + 1] = "a game's own held items too."
+  L[#L + 1] = ""
+  L[#L + 1] = "| Item | Price | Badges | What it does |"
+  L[#L + 1] = "|---|---|---|---|"
+  for i, r in ipairs(held) do
+    L[#L + 1] = string.format("| %s%s | ₽%d | %d | %s |", title(r.name), i <= 36 and " *(Gen 3)*" or "",
+      r.price, heldGates[r.slug] or 0, (r.desc:gsub("\n", " ")))
+  end
+  L[#L + 1] = ""
 end
 
 -- stores

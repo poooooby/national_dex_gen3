@@ -934,15 +934,38 @@ Instruct, Decorate), which keep stand-ins. Neither the engine nor any Gen 3 file
   `battlerTypes`, `betweenTurnEffects`, `useMove`, `applyStatus` / `applyConfusion`,
   `switchLocked`.
 - **Natures and abilities** come from the DVs (`traits.natureIndex`, the ability slot), so
-  nothing is saved; natures apply in Red `Stats.calc` and Gold `Mon.stats` (Red's SPECIAL takes
-  Sp. Atk x Sp. Def). Abilities run `data/gen12/abilities.lua`'s `b` behaviour
+  nothing is saved; natures apply in Red `Stats.calc` and Gold `Mon.stats` (Red's SPECIAL is the
+  Sp. Atk and takes Sp. Atk's factor). Abilities run `data/gen12/abilities.lua`'s `b` behaviour
   (`tools/ability_behaviour.py`), plus hand code for the rest.
 - **Red systems:** `src/gen12/held_red.lua` (`data/gen12/held.lua`, hand-written and kept by the
   build: Gold's held set as Red items, `mon.extra.national_dex_gen3.item`, the party ITEM submenu,
   Everstone through `evolution.check`, Smoke Ball through `battle.run`, sold at Celadon 4F);
   `src/gen12/breeding_red.lua` (the Day Care Lady at DAYCARE, `save.modData.national_dex_gen3
   .breeding`, eggs carried and hatched on `world.stepped`, babies from `battle.lua` `baby`);
-  gender by Gold's rule. Shininess is not drawn (no shiny palettes ship).
+  gender by Gold's rule; Destiny Knot passes three of the four DVs to an Egg.
+- **Red's Sp. Def** (`mech/traits.lua` `Traits.spDef`, `core.spDefOf`): base Sp. Def from
+  `battle.lua` `spDef` / `formSpDef` by dex / form id, the Special DV and stat experience in
+  Gen 1's formula, Sp. Def's nature factor; never saved. Its stage is `A:vol(b).spDefStage`
+  (`RedA:stage/setStage/stages`, `RedA:spDefStage` texts; Haze clears it on `moveUsed`). Red's
+  battle.damage wrap swaps the target's `curStats.special` / `stages.special` for a special move
+  (before `statOver` and `ndxStats`, which may override it). The summary relabels SPECIAL as
+  SP.ATK (`hub.relabel`) and prints SP.DEF on the third page.
+- **Modern Rules** (`src/gen12/modern_rules.lua`, option `modern_rules`, Red only, default on): a
+  hidden `rulesets` record `national_dex_gen3_modern` (modern_clean's switches plus stages kept on
+  a crit, badge boosts once, end-of-round residuals) put on the battle at `battle.started`; a
+  battle.damage wrap rolls today's crits (1/24, 1/8, 1/2, always by stage: highCrit +1, Focus
+  Energy +2; core noCrit / forceCrit first), runs the formula with `forceCrit = false`
+  (`screens = false` on a crit) and scales by 1.5. An always-crit move (`forceCrit = true`) takes
+  the same path.
+- **Shiny on Red** (`src/gen12/shiny_red.lua`): the engine's `Stats.isShiny` (Gold's rule);
+  battle.overlay sparkle while `drawPicsLayer`'s pictures show (classic layout only, `seen` per
+  battler table), the summary star in `hub.relabel`. The engine already passes `shiny` to
+  pokemon.sprite.
+- **Gold's colours for newer species** (`src/gen12/art.lua` `installPalettes`): a process-wide
+  wrap of `src.world.gen2.Palettes.monColors` (`__ndxColors`) answers a species of ours with no
+  pair from its picture (the pokemon.sprite chain's answer, `love.image.newImageData`): opaque
+  pixels between near-white and near-black sorted by luminance, the lighter half's and the darker
+  half's averages. Once per species and shininess.
 - **Summary** (`src/gen12/summary.lua`): Red's third page (`SummaryMenu.update` / `draw`,
   `__ndxInfo`), Red's HUD gender sign (`BattleState.drawHUDs`, `__ndxGender`); Gold's page 3 via
   `drawPanel`.
@@ -950,10 +973,56 @@ Instruct, Decorate), which keep stand-ins. Neither the engine nor any Gen 3 file
   move id; Red's damage reads the move's `category`, Gold picks by type, so the stats are
   swapped for the call.
 - **TMs:** all 114 (`tms.lua` keeps every `direct(row.n)`).
+- **Type chart:** `tools/build_gen12.py` `chart_changes` compares every cart row with today's
+  chart (`modern_rows` over all 18 types): Red's Ghost > Psychic, Bug > Poison, Poison > Bug, and
+  Gold's Steel resisting Ghost and Dark.
+- **Gold's texts:** `tools/gold_text.json` (moves, items) is read by `build_gen12.py` and
+  `build_held.py` before any official text; every line at most 18 characters.
 - **Tests:** `tests/gen12_mech_test.lua` (a battle sim per family on red / yellow / gold /
   crystal, `H.sim` in `tests/_gen12.lua`), plus the existing gen12 suites. In game:
   `tests/drivers/gen12_modern_probe.lua` (summary pages, five turns of new moves, the Day Care
   Lady) ran with 0 failures on Red and Gold 2026-11-13.
+
+### Held items on every game (`src/held/`, `data/held_items.lua`)
+
+- **Data:** `tools/build_held.py` -> `data/held_items.lua` (176 rows: slug, id, `index` 1300+
+  append-only, name of at most 12, price, Gen 3 Bag text `desc`, Gold's `desc2`, `effect` written
+  by hand in the tool's HELD table, `icon` cell) and `assets/items/held_icons.png` (pokesprite, or
+  the Gen 9 Pack's Graphics/Items for the newest; 16 cells a row). Also `data/move_flags.lua`
+  (contact, punch, sound, powder ... from `data/gen12/api/moves.lua`).
+- **Registration:** a game registers the rows it has no item for (by id or normalized name), so
+  Emerald keeps its own Choice Band and Gold its Exp. Share. Gen 1/2: `src/held/gen12.lua` (Gold:
+  ITEM pocket, HELD_NONE, `desc2`, the row's index). Gen 3: `src/held/gen3.lua` `register` at load
+  (ITEMS pocket, `desc`; Choice Scarf / Specs carry hold effect 29 for the cart's lock; Luck
+  Incense 32, Pure Incense 33, the Power items 24 (the Macho Brace's): the cart's own effects).
+  Razor Claw / Fang are the evolution items: Gen 1/2 adds the effect to them, Gen 3 patches them
+  to Scope Lens's / King's Rock's hold effect.
+- **Effects:** `src/held/effects.lua`, a mechanics family on the core hook bus, the same file on
+  every game. Red and Gold load it with the families (`src/gen12/main.lua`). Gen 3:
+  `src/held/gen3.lua` builds a core of its own (`src/gen12/mech/core.lua`) and an adapter over the
+  Gen 3 battle adapter (`GA`: the adapter calls the family uses), and fires the hooks from
+  battle.damage / battle.accuracy / battle.crit / battle.charge_required (`Held.hooks`, at load),
+  and from process-wide wraps of `Hit.run`, `Effects.run`, `HeldItems.of`,
+  `Engine.switchInEffects`, `Engine.canSwitch`, a Residuals field phase `ndx_held` and
+  `RealAbilities.speedModifiers.heldModern` (a hub on `HeldItems.__ndxHeldHub`, so a reload's
+  state is the one asked). Red gained an `afterMove` hook (its performMove wrap) and both adapters
+  a `missed` hook; field.lua / abilities.lua fold `weatherTurns`, `screenTurns`,
+  `terrainTurns` and ask `hazardImmune`, `weatherImmune`, `ignoresWeather`, `noContact`,
+  `abilityLocked`; the adapters' drain folds `drainHeal`. Gen 3's Protosynthesis / Quark Drive
+  read `b.__ndxBooster` (Booster Energy) through `boosterOn(ad, ab, b)` in `src/abilities.lua`.
+- **Outside battle:** `src/held/outside.lua` (Red / Gold): exp.gain (Red's Lucky Egg, Macho Brace
+  and Power items' stat experience), battle.exp_award (Red's Exp. Share), happiness.changed
+  (Gold's Soothe Bell; Red's is in `Evolutions.addFriendship`), encounter.roll (Pure Incense).
+- **Not modelled:** Binding Band; Grip Claw on Red; Booster Energy on Red / Gold; Amulet Coin and
+  Luck Incense on Red; Mental Herb against the games' own Disable / Encore; Loaded Dice on the
+  carts' own multi-strike moves; Power items as anything but the Macho Brace on Gen 3.
+- **Selling:** the HELD EXPRESS machine (`data/vending.lua` `held`; `assets/shop/HELDvendor2.png`
+  is EVOvendor2 recoloured): Celadon 4F (8,5) / Lilycove 2F (6,2), Red Celadon 4F (18,2), Gold
+  Goldenrod 4F (11,1). Gen 1/2 vending resolves a held slug to this game's id (ours or the game's
+  own of that name) and draws its icon from the held atlas; Gen 3 draws the Bag's icon, which
+  `src/item_art.lua` now answers from the held atlas too.
+- **Tests:** `tests/held_items_test.lua [game]` (Gen 3), the held checks in
+  `tests/gen12_mech_test.lua`, `tests/gen12_vending_test.lua`.
 
 ### In the real engine (`tests/drivers/gen12_probe.lua`)
 
