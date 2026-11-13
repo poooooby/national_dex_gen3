@@ -43,13 +43,15 @@ Core.STATS = { "attack", "defense", "spAtk", "spDef", "speed", "accuracy", "evas
 -- the mechanic families, each a file returning function(core, opts) that defines its mechanics
 -- (loaded by src/gen12/main.lua in this order)
 Core.FAMILIES = {
+  "src/gen12/mech/track.lua",
   "src/gen12/mech/meta.lua",
+  "src/gen12/mech/power.lua",
 }
 
 function Core.new(opts)
   opts = opts or {}
   local self = setmetatable({
-    gen = opts.generation, log = opts.log,
+    gen = opts.generation, log = opts.log, facts = opts.facts,
     byMove = {}, rules = {}, g3 = {}, hooks = {},
     extra = {},                     -- move id -> the Gen 3 `extra` table (data/moves.lua)
   }, Core)
@@ -121,6 +123,40 @@ function Core:fold(name, value, ...)
     if v ~= nil then value = v end
   end
   return value
+end
+
+-- ------------------------------------------------------------------ the engine's battle events
+-- Both games emit these with the same payload keys (battle, user, target, battler, ...); each
+-- is handed on to the hook of that name as (A, ev). Once per mod load.
+Core.EVENTS = {
+  ["battle.started"] = "battleStarted", ["battle.turn_started"] = "turnStarted",
+  ["battle.move_used"] = "moveUsed", ["battle.damage_dealt"] = "damageDealt",
+  ["battle.fainted"] = "fainted", ["battle.battler_switched"] = "switchedIn",
+  ["battle.turn_ended"] = "turnEnded", ["battle.status_inflicted"] = "statusInflicted",
+}
+
+function Core:listen(mod, Adapter, deps)
+  for event, hook in pairs(Core.EVENTS) do
+    mod.events:on(event, function(ev)
+      if not (type(ev) == "table" and ev.battle and self.hooks[hook]) then return end
+      local A = Adapter.adapter(ev.battle, deps)
+      local ok, err = pcall(self.fire, self, hook, A, ev)
+      if not ok and self.log and not self.warnedEvent then
+        self.warnedEvent = true
+        self.log:warn("move mechanics: %s failed: %s", hook, tostring(err))
+      end
+    end)
+  end
+end
+
+-- ------------------------------------------------------------------ species facts
+-- data/gen12/battle.lua (Core.new opts.facts): a species record's weight in hectograms
+function Core:weight(record, id)
+  local facts = self.facts
+  if not (facts and record) then return nil end
+  local w = record.form and facts.formWeights and facts.formWeights[id or record.id]
+  if not w and record.dex and facts.weights then w = facts.weights[record.baseDex or record.dex] end
+  return (w and w > 0) and w or nil
 end
 
 -- ------------------------------------------------------------------ the `extra` data

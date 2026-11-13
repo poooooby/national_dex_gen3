@@ -121,6 +121,46 @@ function RedA:status(b)
   return STATUS_OUT[s]
 end
 function RedA:hasSub(b) return b.substituteHP ~= nil end
+function RedA:turn() return self.battle.turnCount or 0 end
+function RedA:speed(b) return self.deps.require("src.battle.TurnOrder").effectiveSpeed(b) end
+function RedA:record(b) return self.battle.data.pokemon[b.mon.species] end
+function RedA:dex(b) local r = self:record(b); return r and (r.baseDex or r.dex) end
+function RedA:weight(b) return self.core:weight(self:record(b), b.mon.species) end
+-- Red's hidden friendship (src/gen12/evolutions.lua keeps it on the mon), else 70
+function RedA:friendship(b)
+  local bag = b.mon.extra and b.mon.extra.national_dex_gen3
+  return (bag and bag.friendship) or 70
+end
+function RedA:item(b)
+  local bag = b.mon.extra and b.mon.extra.national_dex_gen3
+  return bag and bag.item or nil
+end
+function RedA:dvs(b) return b.mon.dvs or {} end
+-- the battler's moves: { id, pp }
+function RedA:moves(b) return b.curMoves or b.mon.moves or {} end
+-- a type (modern name) against the battler: x10 (0, 5, 10, 20 ...)
+function RedA:effectiveness(typeName, b)
+  local Types = self.deps.types
+  local t = Types and Types.cartId(typeName) or typeName
+  return self.TypeChart.effectiveness(t, b.curTypes)
+end
+-- "physical" / "special" (Red: by the move's own category, else its type's)
+function RedA:category(move)
+  local c = move.category or self.TypeChart.category(move.type)
+  return c == "special" and "special" or "physical"
+end
+-- another move, used by this one (Nature Power, Assist)
+function RedA:callMove(u, t, id) self.battle:performMove(u, t, { id = id, pp = 1 }, true) end
+-- the battler's party (mon tables)
+function RedA:party(b)
+  if b.isPlayer then return self.battle:playerPartyView() or { b.mon } end
+  return self.battle.enemyParty or { b.mon }
+end
+-- the move this battler chose this turn (battle.turn_started), or nil
+function RedA:chosen(b)
+  local c = self:field().chosen
+  return c and c[self:sideName(b)] or nil
+end
 function RedA:lastMove(b) return b.lastMove end
 function RedA:moveDef(id) return self.battle.data.moves[id] end
 function RedA:moveType(m) return (tostring(m.type or ""):gsub("_TYPE$", "")) end
@@ -248,10 +288,13 @@ function Red.record(spec, deps)
 
   local record = { kind = "full" }
   if spec.fail then
+    -- true: "But, it failed!"; a string: that text instead ("" for none)
     record.gate = function(ctx)
       local A = adapter(ctx)
-      if spec.fail(A, ctx.user, ctx.target, ctx.move) then return false, A:failText() end
-      return true
+      local r = spec.fail(A, ctx.user, ctx.target, ctx.move)
+      if not r then return true end
+      if type(r) == "string" then return false, r ~= "" and r or nil end
+      return false, A:failText()
     end
   end
   if spec.sureHit then record.neverMiss = true end
@@ -261,7 +304,7 @@ function Red.record(spec, deps)
       return spec.hits(adapter(ctx), ctx.user, ctx.target, ctx.move) or 1
     end
   end
-  if spec.fixed or spec.power or spec.crit or spec.stats then
+  if spec.fixed or spec.power or spec.crit or spec.stats or spec.type or spec.mult or spec.cap then
     record.chooseDamage = function(ctx)
       local A, battle = adapter(ctx), ctx.battle
       local move = ctx.move
@@ -273,13 +316,30 @@ function Red.record(spec, deps)
         return math.max(1, math.floor(n)), { crit = false, typeMult = 10 }
       end
       local m = move
-      if spec.power then
+      if spec.power or spec.type then
         m = {}
         for k, v in pairs(move) do m[k] = v end
-        m.power = math.max(1, math.floor(spec.power(A, ctx.user, ctx.target, move) or move.power))
+        if spec.power then
+          m.power = math.max(1, math.floor(spec.power(A, ctx.user, ctx.target, move) or move.power))
+        end
+        if spec.type then
+          local t = spec.type(A, ctx.user, ctx.target, move)
+          if t then m.type = deps.types and deps.types.cartId(t) or t end
+        end
       end
-      return battle:computeDamage(ctx.user, ctx.target, m, { rng = battle.rng,
-        forceCrit = spec.crit and true or nil, ndxStats = spec.stats })
+      local crit = spec.crit
+      if type(crit) == "function" then crit = crit(A, ctx.user, ctx.target, move) end
+      local dmg, info = battle:computeDamage(ctx.user, ctx.target, m, { rng = battle.rng,
+        forceCrit = crit and true or nil, ndxStats = spec.stats })
+      if spec.mult and dmg and dmg > 0 and info and (info.typeMult or 10) > 0 then
+        local k = spec.mult(A, ctx.user, ctx.target, m, info)
+        if k and k ~= 1 then dmg = math.max(1, math.floor(dmg * k)) end
+      end
+      if spec.cap and dmg and dmg > 0 and not ctx.target.substituteHP then
+        local most = spec.cap(A, ctx.user, ctx.target, m)
+        if most then dmg = math.max(0, math.min(dmg, most)) end
+      end
+      return dmg, info
     end
   end
   if spec.onMiss then
@@ -328,6 +388,10 @@ function Red.installSeams(mod, deps)
     local ok, a, b = pcall(function()
       if want.attack then put(user, atkSlot, want.from == "target" and target or user, want.attack) end
       if want.defense then put(target, defSlot, target, want.defense) end
+      if want.ignoreDefenseStages then
+        saved[#saved + 1] = { target, defSlot, target.curStats[defSlot], target.stages[defSlot] }
+        target.stages[defSlot] = 0
+      end
       return nextFn(c)
     end)
     for i = #saved, 1, -1 do

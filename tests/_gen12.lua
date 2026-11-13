@@ -159,7 +159,17 @@ function H.sim(version, extra)
     wild.moves = { { id = "TACKLE", pp = 35, maxPp = 35 } }
     local random
     if o.roll == "high" then random = function(n) return (n or 1) - 1 end
-    else random = function(n) return (n or 1) > 1 and 1 or 0 end end
+    else
+      -- low, but every fourth roll a little higher: Gold re-rolls some bytes until they are not
+      -- zero (Tri Attack), which a constant could never satisfy
+      local k = 0
+      random = function(n)
+        k = k + 1
+        if (n or 1) <= 1 then return 0 end
+        if k % 4 == 0 then return math.min(n - 1, 20) end
+        return 1
+      end
+    end
     local b = Battle.new({ data = data, party = { player }, wild = wild,
       save = { player = { id = 7, badges = {}, kantoBadges = {} } }, random = random })
     local w = { battle = b, gen = 2 }

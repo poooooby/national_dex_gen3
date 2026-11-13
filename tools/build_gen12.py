@@ -491,8 +491,12 @@ def build(api: bs.API, workers: int, engine: Path) -> dict[str, Any]:
             kind = proxy and carts[g]["icons"].get(dex_of.get(proxy))
             if kind:
                 r.setdefault("icon", {})[f"gen{g}"] = kind
+    # battle facts every species needs in a battle (src/gen12/mech/): weights in hectograms
+    # (Low Kick, Heavy Slam), by dex number and by form id
+    battle = {"weights": [by_dex[d]["pokemon"].get("weight") or 0 for d in range(1, max(by_dex) + 1)],
+              "formWeights": {f["id"]: f["weight"] for f in forms}}
     return {"records": records, "forms": forms, "crossgen": crossgen, "moves": moves,
-            "cart": cart, "items": items, "modern": modern, "report": report}
+            "cart": cart, "items": items, "modern": modern, "battle": battle, "report": report}
 
 
 # ---------------------------------------------------------------- evolution items
@@ -908,6 +912,10 @@ def write(result: dict[str, Any], out: Path) -> None:
     listing("modern.lua", "-- Modern Moves: the carts' own species' newest level-up list ({ level, move }) and egg\n"
             "-- moves, by dex number, as National move numbers.\n",
             result["modern"])
+    (out / "battle.lua").write_text(
+        HEADER + "-- Battle facts for the mechanics layer (src/gen12/mech/): weights in hectograms by dex\n"
+        "-- number (1-1025, in order) and by form id.\n"
+        + "return " + lua(result["battle"]) + "\n", encoding="utf-8")
     (out / "cart.lua").write_text(
         HEADER + "-- Per generation: the cart's own species and moves whose modern typing differs, the\n"
         "-- types the game gains, and the matchup rows to add ({ attacker, defender, tenths }) or\n"

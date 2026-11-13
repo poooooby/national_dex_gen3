@@ -47,7 +47,8 @@ return function(mod, loadSibling)
       or "src/gen12/battle/gold.lua")
     local gen3Moves = Adapter and loadSibling(mod, "data/moves.lua")
     if Core and Install and Adapter and gen3Moves then
-      local core = Core.new({ generation = generation, gen3 = gen3Moves, log = mod.log })
+      local core = Core.new({ generation = generation, gen3 = gen3Moves, log = mod.log,
+        facts = loadSibling(mod, "data/gen12/battle.lua") })
       for _, path in ipairs(Core.FAMILIES or {}) do
         local family = loadSibling(mod, path)
         if type(family) == "function" then
@@ -58,6 +59,7 @@ return function(mod, loadSibling)
       local seams = { require = require, core = core, types = Types }
       local okS, errS = pcall(Adapter.installSeams, mod, seams)
       if not okS then mod.log:warn("move mechanics: a battle seam failed: %s", tostring(errS)) end
+      pcall(core.listen, core, mod, Adapter, seams)
       local fx = Install.register({ mod = mod, generation = generation, rows = moveRows, core = core,
         adapter = Adapter, types = Types, state = moveState, require = require, log = mod.log })
       moveState.registered = moveState.registered + fx.registered

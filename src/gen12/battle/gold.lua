@@ -120,6 +120,40 @@ function GoldA:setTypes(b, list)
 end
 function GoldA:status(b) return STATUS_OUT[b.status] end
 function GoldA:hasSub(b) return (self.battle:volatile(b).substitute or 0) > 0 end
+function GoldA:turn() return self.battle.turn or 0 end
+function GoldA:speed(b) return self.battle:effectiveSpeed(b) end
+function GoldA:record(b) return self.battle.data.pokemon[b.species] end
+function GoldA:dex(b) local r = self:record(b); return r and (r.baseDex or r.dex) end
+function GoldA:weight(b) return self.core:weight(self:record(b), b.species) end
+function GoldA:friendship(b) return b.happiness or 70 end
+function GoldA:item(b) return b.item end
+function GoldA:dvs(b) return b.dvs or {} end
+function GoldA:moves(b) return b.moves or {} end
+function GoldA:effectiveness(typeName, b)
+  local Types = self.deps.types
+  local t = Types and Types.cartId(typeName) or typeName
+  return self.Damage.typeMultiplier(t, self.battle:battlerTypes(b), self.battle:matchupsAgainst(b))
+end
+function GoldA:category(move)
+  local chart = self.battle.data.type_chart
+  return self.Damage.isPhysical(move.type, chart and chart.types) and "physical" or "special"
+end
+function GoldA:callMove(u, t, id)
+  local bt = self.battle
+  bt.copyDepth = (bt.copyDepth or 0) + 1
+  local ok, err = pcall(bt.useMove, bt, u, t, id)
+  bt.copyDepth = bt.copyDepth - 1
+  if not ok then error(err, 0) end
+end
+function GoldA:party(b)
+  local bt = self.battle
+  if bt:sideOf(b) == "player" then return bt.party or { b } end
+  return bt.enemyParty or { b }
+end
+function GoldA:chosen(b)
+  local c = self:field().chosen
+  return c and c[self:sideName(b)] or nil
+end
 function GoldA:lastMove(b) return self.battle:volatile(b).lastMove end
 function GoldA:moveDef(id) return self.battle:moveDef(id) end
 function GoldA:moveType(m) return (tostring(m.type or ""):gsub("_TYPE$", "")) end
@@ -222,10 +256,13 @@ function Gold.record(spec, deps)
         return
       end
 
-      if spec.fail and spec.fail(A, attacker, defender, def) then
-        self:markMissed()
-        A:say(A:failText())
-        return
+      if spec.fail then
+        local r = spec.fail(A, attacker, defender, def)
+        if r then
+          self:markMissed()
+          if type(r) ~= "string" then A:say(A:failText()) elseif r ~= "" then A:say(r) end
+          return
+        end
       end
       if not (sureHit or spec.sureHit) and not self:accuracyRoll(def, attacker, defender) then
         self:markMissed()
@@ -262,8 +299,21 @@ function Gold.record(spec, deps)
           if spec.power then
             power = math.max(1, math.floor(spec.power(A, attacker, defender, def) or def.power))
           end
-          self.__ndxCalc = { stats = spec.stats, crit = spec.crit }
-          local ok, a, b = pcall(self.hitOnce, self, attacker, defender, def, { power = power, moveId = moveId })
+          local hitDef = def
+          if spec.type then
+            local t = spec.type(A, attacker, defender, def)
+            if t then
+              hitDef = {}
+              for k, v in pairs(def) do hitDef[k] = v end
+              hitDef.type = deps.types and deps.types.cartId(t) or t
+            end
+          end
+          local crit = spec.crit
+          if type(crit) == "function" then crit = crit(A, attacker, defender, def) end
+          self.__ndxCalc = { stats = spec.stats, crit = crit, mult = spec.mult, A = A, user = attacker,
+            target = defender, def = hitDef,
+            cap = spec.cap and not A:hasSub(defender) and spec.cap(A, attacker, defender, def) or nil }
+          local ok, a, b = pcall(self.hitOnce, self, attacker, defender, hitDef, { power = power, moveId = moveId })
           self.__ndxCalc = nil
           if not ok then error(a, 0) end
           dealt, info = a, b
@@ -287,20 +337,16 @@ function Gold.record(spec, deps)
 end
 
 -- ------------------------------------------------------------------ seams (once per mod load)
--- battle.damage: `stats` (Psyshock, Body Press, Foul Play) writes the stats the move reads into
--- the slots Gold's formula reads (the move's type picks physical or special); battle.crit: a move
--- that always crits.
+-- battle.crit: a move that always crits (its __ndxCalc.crit). battle.damage: `stats` (Psyshock,
+-- Body Press, Foul Play, Sacred Sword) writes the stats the move reads into the slots Gold's
+-- formula reads (the move's type picks physical or special), and `mult` scales the finished
+-- number (Collision Course).
 function Gold.installSeams(mod, deps)
   local Damage = deps.require("src.battle.gen2.Damage")
-  mod.hooks:wrap("battle.crit", function(nextFn, c)
-    local calc = c and c.battle and rawget(c.battle, "__ndxCalc")
-    if calc and calc.crit then return true end
-    return nextFn(c)
-  end)
-  mod.hooks:wrap("battle.damage", function(nextFn, c)
-    local calc = c and c.battle and rawget(c.battle, "__ndxCalc")
-    local want = calc and calc.stats
-    if not want then return nextFn(c) end
+
+  -- the formula's inputs with the stats a move reads put in place (copies: the stage tables
+  -- are the battle's own)
+  local function placeStats(c, want)
     local battle, o = c.battle, c.opts
     local physical = Damage.isPhysical(c.move.type, battle.data.type_chart and battle.data.type_chart.types)
     local atkSlot = physical and "attack" or "specialAttack"
@@ -317,14 +363,58 @@ function Gold.installSeams(mod, deps)
       o.attacker.stages = st
       o.attacker[atkSlot] = (from.stats or {})[STAT[want.attack]] or o.attacker[atkSlot]
     end
-    if want.defense then
+    if want.defense or want.ignoreDefenseStages then
       local st = stagesOf(c.target)
-      st[defSlot] = (battle.stages[battle:sideOf(c.target)] or {})[STAGE[want.defense]] or 0
+      if want.defense then
+        st[defSlot] = (battle.stages[battle:sideOf(c.target)] or {})[STAGE[want.defense]] or 0
+        o.defender[defSlot] = (c.target.stats or {})[STAT[want.defense]] or o.defender[defSlot]
+      end
+      if want.ignoreDefenseStages then st[defSlot] = 0 end
       o.defender.stages = st
-      o.defender[defSlot] = (c.target.stats or {})[STAT[want.defense]] or o.defender[defSlot]
     end
+  end
+
+  mod.hooks:wrap("battle.crit", function(nextFn, c)
+    local calc = c and c.battle and rawget(c.battle, "__ndxCalc")
+    if calc and calc.crit then return true end
     return nextFn(c)
   end)
+  mod.hooks:wrap("battle.damage", function(nextFn, c)
+    local calc = c and c.battle and rawget(c.battle, "__ndxCalc")
+    if not calc then return nextFn(c) end
+    if calc.stats then placeStats(c, calc.stats) end
+    local dmg, info = nextFn(c)
+    if calc.mult and dmg and dmg > 0 then
+      local eff = type(info) == "table" and (info.effectiveness or info.typeMult) or 10
+      if eff > 0 then
+        local k = calc.mult(calc.A, calc.user, calc.target, calc.def, { typeMult = eff })
+        if k and k ~= 1 then dmg = math.max(1, math.floor(dmg * k)) end
+      end
+    end
+    if calc.cap and dmg then dmg = math.max(0, math.min(dmg, calc.cap)) end
+    return dmg, info
+  end)
+
+  -- once per process (games switch in-process): Gold orders moves by their EFFECT's priority, so
+  -- a move on our records answers its own; a type change made by a move (Soak, Burn Up) is the
+  -- battler's types until it switches out (volatile(mon).__ndx.types)
+  local Battle = deps.require("src.battle.gen2.Battle")
+  local hub = Battle.__ndxMech
+  if not hub then
+    hub = {}
+    Battle.__ndxMech = hub
+    local movePriority, battlerTypes = Battle.movePriority, Battle.battlerTypes
+    Battle.movePriority = function(self, moveId, ...)
+      local def = moveId and self:moveDef(moveId)
+      if def and tostring(def.effect or ""):find("^NDX_M_") then return def.priority or 0 end
+      return movePriority(self, moveId, ...)
+    end
+    Battle.battlerTypes = function(self, mon, ...)
+      local v = mon and mon.volatile and mon.volatile.__ndx
+      if v and v.types then return v.types end
+      return battlerTypes(self, mon, ...)
+    end
+  end
 end
 
 return Gold
