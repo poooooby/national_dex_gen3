@@ -57,6 +57,35 @@ function Summary.install(opts)
         pcall(hub.drawInfo, self)
       end
     end
+    -- the battle boxes: the gender sign after the level, as Gold prints it
+    local BattleState = require("src.battle.BattleState")
+    local bHub = BattleState.__ndxGender
+    if not bHub then
+      bHub = {}
+      BattleState.__ndxGender = bHub
+      local drawHUDs = BattleState.drawHUDs
+      BattleState.drawHUDs = function(self, slide, ...)
+        local a, b = drawHUDs(self, slide, ...)
+        if bHub.draw and (slide or 0) == 0 then pcall(bHub.draw, self) end
+        return a, b
+      end
+    end
+    bHub.draw = function(self)
+      if self.fieldCleared or not self:statusHUDVisible() then return end
+      local data = self.data
+      love.graphics.setColor(0, 0, 0, 1)
+      local e, p = self.enemy, self.player
+      if e and e.mon and not e.fainted and not self.showEnemyTrainer and not self.enemySendingOut
+          and not self.enemyHudPending and not e.shownStatus then
+        local g = genderOf(data, e.mon)
+        if g then Font.draw(g == "F" and "♀" or "♂", 40 + 8 * #tostring(e.mon.level or 1), 8) end
+      end
+      if p and p.mon and not p.fainted and not self.showPlayerBack and not p.shownStatus
+          and not (self.safari or self.demo) then
+        local g = genderOf(data, p.mon)
+        if g then Font.draw(g == "F" and "♀" or "♂", 120 + 8 * #tostring(p.mon.level or 1), 64) end
+      end
+    end
     hub.on = true
     hub.drawInfo = function(self)
       local mon, data = self.mon, self.game.data
