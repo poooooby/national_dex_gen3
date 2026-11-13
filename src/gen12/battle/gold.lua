@@ -514,6 +514,13 @@ function Gold.installSeams(mod, deps)
           if k ~= 1 then dmg = math.max(1, math.floor(dmg * k)) end
         end
       end
+      if c and c.battle and core.hooks.damageCap and dmg and dmg > 0 then
+        local A = Gold.adapter(c.battle, deps)
+        if not A:hasSub(c.target) then
+          local most = core:ask("damageCap", A, c.user, c.target, c.move, dmg)
+          if most then dmg = math.max(0, math.min(dmg, most)) end
+        end
+      end
       return dmg, info
     end
     if calc.stats then placeStats(c, calc.stats) end
@@ -533,6 +540,10 @@ function Gold.installSeams(mod, deps)
       end
     end
     if calc.cap and dmg then dmg = math.max(0, math.min(dmg, calc.cap)) end
+    if core.hooks.damageCap and dmg and dmg > 0 and calc.A and not calc.A:hasSub(calc.target) then
+      local most = core:ask("damageCap", calc.A, calc.user, calc.target, calc.def, dmg)
+      if most then dmg = math.max(0, math.min(dmg, most)) end
+    end
     return dmg, info
   end)
 

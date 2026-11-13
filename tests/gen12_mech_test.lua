@@ -303,6 +303,40 @@ for _, version in ipairs(H.versions()) do
   w.A:setItem(w.battler("player"), "CHARCOAL")
   w.use("FLING")
   T.eq(w.A:item(w.battler("player")), nil, version .. ": Fling throws the item")
+
+  -- abilities (src/gen12/mech/abilities.lua): the first of the species' list for an even
+  -- Defense DV, the second for an odd one
+  local function first(x, side) x.mon(side).dvs.defense = 0; x.A:vol(x.battler(side)).abilityEntered = nil end
+  local function second(x, side) x.mon(side).dvs.defense = 1; x.A:vol(x.battler(side)).abilityEntered = nil end
+  w = sim.fresh({ mine = "GYARADOS", foe = "RATTATA" })
+  first(w, "player")
+  T.eq(core.abilityOf(w.A, w.battler("player")), "INTIMIDATE", version .. ": Gyarados has Intimidate")
+  w.A:setStage(w.battler("enemy"), "attack", 0)
+  core:fire("switchedIn", w.A, { battler = w.battler("player") })
+  T.eq(w.stage("enemy", "attack"), -1, version .. ": Intimidate lowers the foe's Attack")
+  w = sim.fresh({ mine = "KOFFING" })
+  first(w, "player")
+  T.check(core:ask("immune", w.A, w.battler("enemy"), w.battler("player"), data.moves.EARTHQUAKE),
+    version .. ": Levitate: Ground moves miss")
+  w = sim.fresh({ mine = "LAPRAS" })
+  first(w, "player")
+  w.mon("player").hp = 10
+  T.check(core:ask("immune", w.A, w.battler("enemy"), w.battler("player"), data.moves.WATER_GUN)
+    and w.hp("player") > 10, version .. ": Water Absorb takes Water moves and heals")
+  w = sim.fresh({ mine = "MAGIKARP" })
+  first(w, "player")
+  local sp = w.A:speed(w.battler("player"))
+  w.A:setWeather("rain", 5)
+  T.eq(core:fold("speed", sp, w.A, w.battler("player")), sp * 2, version .. ": Swift Swim in the rain")
+  w = sim.fresh({ mine = "GEODUDE", foe = "MACHAMP", level = 10, foeLevel = 90 })
+  second(w, "player")
+  T.eq(core.abilityOf(w.A, w.battler("player")), "STURDY", version .. ": Geodude's second ability, Sturdy")
+  w.use("KARATE_CHOP", "enemy")
+  T.eq(w.hp("player"), 1, version .. ": Sturdy survives at full HP")
+  w = sim.fresh({ mine = "GYARADOS", foe = "PIKACHU" })
+  first(w, "player"); first(w, "enemy")
+  w.use("SKILL_SWAP")
+  T.eq(core.abilityOf(w.A, w.battler("player")), "STATIC", version .. ": Skill Swap")
   sim.release()
 end
 
