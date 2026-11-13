@@ -576,6 +576,36 @@ def gen3_effect_names(engine: Path) -> dict[int, str]:
     return {num: name for name, num in names.items() if isinstance(num, int)}
 
 
+STAT_SHORT = {"attack": "attack", "defense": "defense", "special-attack": "spAtk",
+              "special-defense": "spDef", "speed": "speed", "accuracy": "accuracy", "evasion": "evasion"}
+
+
+def move_meta(a: dict[str, Any]) -> dict[str, Any]:
+    """PokéAPI's modern facts about a move, compact (src/gen12/mech/meta.lua builds the simple
+    mechanics from them): its category and target, stat changes and their chance, an ailment and
+    its chance, flinch chance, drain / recoil and healing percent, crit stage, hit and turn
+    counts."""
+    m = a.get("meta") or {}
+    out: dict[str, Any] = {"cat": (m.get("category") or {}).get("name", "unique"),
+                           "target": (a.get("target") or {}).get("name", "selected-pokemon")}
+    stats = {STAT_SHORT[c["stat"]["name"]]: c["change"] for c in a.get("stat_changes", [])
+             if c["stat"]["name"] in STAT_SHORT}
+    if stats:
+        out["stats"] = stats
+    for key, name in (("stat_chance", "statChance"), ("ailment_chance", "ailmentChance"),
+                      ("flinch_chance", "flinch"), ("drain", "drain"), ("healing", "healing"),
+                      ("crit_rate", "crit"), ("min_hits", "minHits"), ("max_hits", "maxHits"),
+                      ("min_turns", "minTurns"), ("max_turns", "maxTurns")):
+        if m.get(key):
+            out[name] = m[key]
+    ailment = (m.get("ailment") or {}).get("name")
+    if ailment and ailment != "none":
+        out["ailment"] = ailment
+    if a.get("accuracy") is None and a["damage_class"]["name"] != "status":
+        out["sure"] = True                 # a damaging move that never misses (Aerial Ace)
+    return out
+
+
 def mech_for(n: int, move_id: str, e3: int | None, chance: int | None,
              special: dict[int, dict[str, Any]], effect_names: dict[int, str]) -> dict[str, Any]:
     """What a newer move runs on where its cart has no effect for it (src/gen12/mech/):
@@ -696,6 +726,8 @@ def build_moves(api: bs.API, workers: int, carts: dict[int, dict[str, Any]],
                 rec[f"gen{gen}"] = row
         if any(n > g["moves"] and f"gen{gen}" not in rec for gen, g in GENS.items()):
             rec["mech"] = mech_for(n, rec["id"], e3, chance, special3, effect_names)
+            if not rec["mech"].get("doubles"):
+                rec["meta"] = move_meta(a)
         out.append(rec)
 
     # stand-ins: the closest move the game has -- its cart's own, or a newer one that runs

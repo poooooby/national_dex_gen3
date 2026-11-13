@@ -60,6 +60,48 @@ for _, version in ipairs(H.versions()) do
   local hp = w.hp("enemy")
   w.use("CLOSE_COMBAT")
   T.check(w.hp("enemy") < hp and w.stage("player", "defense") == -1, version .. ": Close Combat")
+
+  -- every move on the layer runs both ways without an error (low and high rolls)
+  local failed, first = 0, nil
+  for _, id in ipairs(want) do
+    if data.moves[id] and tostring(data.moves[id].effect):find("^NDX_M_") then
+      for _, roll in ipairs({ "low", "high" }) do
+        for _, side in ipairs({ "player", "enemy" }) do
+          local x = sim.fresh({ roll = roll })
+          local ok, err = pcall(x.use, id, side)
+          if not ok then failed = failed + 1; first = first or (id .. ": " .. tostring(err)) end
+        end
+      end
+    end
+  end
+  T.eq(failed, 0, version .. ": every layer move runs" .. (first and (" -- " .. first) or ""))
+
+  -- simple moves from PokeAPI's modern facts (src/gen12/mech/meta.lua)
+  local function use(id, o)
+    local x = sim.fresh(o)
+    x.hp0 = x.hp("enemy")
+    x.use(id)
+    return x
+  end
+  w = use("TAIL_GLOW")
+  T.eq(w.stage("player", "spAtk"), 3, version .. ": Tail Glow: Sp. Atk +3 (Gen 9)")
+  w = use("CHARM")
+  if gen == 2 then
+    T.eq(w.stage("enemy", "attack"), -2, version .. ": Charm: Attack -2")
+  else
+    T.eq(w.stage("enemy", "attack"), -2, version .. ": Charm (new on Red): Attack -2")
+  end
+  w = use("POISON_FANG")
+  T.eq(w.status("enemy"), "TOX", version .. ": Poison Fang badly poisons")
+  w = use("DUAL_CHOP", { foe = "SNORLAX", level = 20, foeLevel = 70 })
+  local said = table.concat(w.texts(), " | ")
+  T.check(said:find("2 times") ~= nil, version .. ": Dual Chop hits twice (" .. said .. ")")
+  w = use("OVERHEAT")
+  T.eq(w.stage("player", "spAtk"), -2, version .. ": Overheat: the user's Sp. Atk -2")
+  w = use("TOXIC_THREAD")
+  T.check(w.status("enemy") == "PSN" and w.stage("enemy", "speed") == -1, version .. ": Toxic Thread")
+  w = use("SWAGGER")
+  T.eq(w.stage("enemy", "attack"), 2, version .. ": Swagger: the foe's Attack +2")
   sim.release()
 end
 

@@ -55,8 +55,11 @@ function Install.register(opts)
           local effectId = Install.PREFIX .. row.id
           effects:register(effectId, Adapter.record(spec, deps))
           rec.effect = effectId
+          if gen == 2 and (row.highCrit or spec.highCrit) then
+            opts.state.highCrit[#opts.state.highCrit + 1] = row.id
+          end
           if gen == 1 then
-            if row.highCrit then rec.highCrit = true end
+            if row.highCrit or spec.highCrit then rec.highCrit = true end
             local like = look and moves:get(look)
             if like and like.anim then rec.anim = copy(like.anim) end
           else

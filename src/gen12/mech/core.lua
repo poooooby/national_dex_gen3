@@ -29,6 +29,7 @@
 --     run(A,u,t,m) -> ok               false: "But it failed!" (unless it said why itself)
 --   both:
 --     priority(A,u,t,m) -> n           its priority this turn, when it varies
+--     highCrit = true                  a raised critical-hit ratio (Red's highCrit flag, Gold's list)
 --
 -- Passive behaviour (field state, abilities, items) hangs on hooks: Core:on(name, fn), called by
 -- the adapters at the matching engine seam (see each adapter's header for the list).
@@ -41,7 +42,9 @@ Core.STATS = { "attack", "defense", "spAtk", "spDef", "speed", "accuracy", "evas
 
 -- the mechanic families, each a file returning function(core, opts) that defines its mechanics
 -- (loaded by src/gen12/main.lua in this order)
-Core.FAMILIES = {}
+Core.FAMILIES = {
+  "src/gen12/mech/meta.lua",
+}
 
 function Core.new(opts)
   opts = opts or {}
@@ -76,8 +79,12 @@ function Core:specFor(row)
   if mech.rule and self.rules[mech.rule] then return resolve(self.rules[mech.rule], row, self) end
   if mech.extra and self.extra[row.id] then return Core.extraSpec(self.extra[row.id]) end
   if mech.g3 and self.g3[mech.g3] then return resolve(self.g3[mech.g3], row, self) end
+  if mech.api and self.apiFallback then return resolve(self.apiFallback, row, self) end
   return nil
 end
+
+-- the mechanic for a move known only from PokeAPI (src/gen12/mech/meta.lua sets it)
+function Core:api(spec) self.apiFallback = spec end
 
 -- ------------------------------------------------------------------ hooks
 function Core:on(name, fn)
