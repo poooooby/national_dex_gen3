@@ -46,6 +46,7 @@ Core.FAMILIES = {
   "src/gen12/mech/track.lua",
   "src/gen12/mech/meta.lua",
   "src/gen12/mech/power.lua",
+  "src/gen12/mech/field.lua",
 }
 
 function Core.new(opts)
@@ -138,8 +139,11 @@ Core.EVENTS = {
 function Core:listen(mod, Adapter, deps)
   for event, hook in pairs(Core.EVENTS) do
     mod.events:on(event, function(ev)
-      if not (type(ev) == "table" and ev.battle and self.hooks[hook]) then return end
+      if not (type(ev) == "table" and ev.battle) then return end
       local A = Adapter.adapter(ev.battle, deps)
+      -- Red's battle.turn_order carries no battle: the one whose turn just started
+      if hook == "turnStarted" then self.lastAdapter = A end
+      if not self.hooks[hook] then return end
       local ok, err = pcall(self.fire, self, hook, A, ev)
       if not ok and self.log and not self.warnedEvent then
         self.warnedEvent = true
@@ -147,6 +151,30 @@ function Core:listen(mod, Adapter, deps)
       end
     end)
   end
+end
+
+-- ------------------------------------------------------------------ turn order
+-- Who moves first when the field, abilities or a move's own rule change priority or Speed: the
+-- "priority" hooks fold each move's priority (A, battler, move), the "speed" hooks each battler's
+-- Speed (A, battler), and "trickRoom" (A) reverses the Speed order. nil hands the decision back to
+-- the game (nothing changed: Quick Claw, ties and its own priority table stay the game's).
+function Core:order(A, p, pMove, e, eMove)
+  local h = self.hooks
+  if not (h.priority or h.speed or h.trickRoom) or not pMove or not eMove then return nil end
+  local rawP, rawE = A:basePriority(pMove), A:basePriority(eMove)
+  local pp = self:fold("priority", rawP, A, p, pMove)
+  local ep = self:fold("priority", rawE, A, e, eMove)
+  if pp ~= ep then return pp > ep end
+  local sp0, se0 = A:speed(p), A:speed(e)
+  local sp = self:fold("speed", sp0, A, p)
+  local se = self:fold("speed", se0, A, e)
+  local reversed = self:ask("trickRoom", A) and true or false
+  if rawP == rawE and sp == sp0 and se == se0 and not reversed then return nil end
+  if sp ~= se then
+    if reversed then return sp < se end
+    return sp > se
+  end
+  return A:rng(2) == 0
 end
 
 -- ------------------------------------------------------------------ species facts

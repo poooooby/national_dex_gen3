@@ -64,7 +64,10 @@ function Install.register(opts)
             if like and like.anim then rec.anim = copy(like.anim) end
           else
             rec.index, rec.effectChance = row.n, 0
-            if spec.kind == "status" and spec.selfOnly and okE and type(Effects.NO_CHECKHIT) == "table" then
+            -- past Gold's own Protect and Fly / Dig checks: what only touches the user, and what
+            -- breaks through (Feint)
+            if ((spec.kind == "status" and spec.selfOnly) or spec.ignoresProtect) and okE
+                and type(Effects.NO_CHECKHIT) == "table" then
               Effects.NO_CHECKHIT[effectId] = true
             end
           end

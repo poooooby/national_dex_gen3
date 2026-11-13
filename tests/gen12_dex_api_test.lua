@@ -43,8 +43,11 @@ for _, version in ipairs(H.versions()) do
   local gd = api.moveById("GIGA_DRAIN")
   T.check(gd and gd.drain == 50, version .. ": Giga Drain drains 50%")
   local sr = api.moveById("STEALTHROCK")
-  T.check(sr and sr.registered == false and sr.effectModeled == false and sr.target == "opponents-field",
-    version .. ": a move this game does not register is still described")
+  T.check(sr and sr.registered ~= false and sr.effectModeled == true,
+    version .. ": Stealth Rock runs here (the mechanics layer)")
+  local hh = api.moveById("HELPINGHAND")
+  T.check(hh and hh.registered == false and hh.effectModeled == false and hh.target == "ally",
+    version .. ": a move this game does not register (doubles only) is still described")
   T.eq(api.moveById("NOT_A_MOVE"), nil, version .. ": an unknown move is nil")
   T.eq(api.moveById(nil), nil, version .. ": nil is nil")
 

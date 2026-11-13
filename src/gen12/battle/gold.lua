@@ -129,6 +129,38 @@ function GoldA:friendship(b) return b.happiness or 70 end
 function GoldA:item(b) return b.item end
 function GoldA:dvs(b) return b.dvs or {} end
 function GoldA:moves(b) return b.moves or {} end
+-- the weather: Gold's own rain / sun / sandstorm (battle.weather: its damage, its turns, its
+-- screen), and our hail / snow beside it (one weather at a time)
+local NATIVE_WEATHER = { rain = "rain", sun = "sun", sand = "sandstorm" }
+local FROM_NATIVE = { rain = "rain", sun = "sun", sandstorm = "sand" }
+function GoldA:weather()
+  local w = FROM_NATIVE[self.battle.weather or ""]
+  if w then return w end
+  local f = self:field().weather
+  return f and f.kind or nil
+end
+function GoldA:setWeather(kind, turns, text)
+  local native = NATIVE_WEATHER[kind]
+  if native then
+    self:field().weather = nil
+    self.battle.weather, self.battle.weatherTurns = native, turns or 5
+    self.battle:emit({ kind = "weather", weather = native, text = text })
+  else
+    self.battle.weather, self.battle.weatherTurns = nil, 0
+    self:field().weather = { kind = kind, turns = turns or 5 }
+    if text then self:say(text) end
+  end
+end
+function GoldA:clearWeather()
+  self.battle.weather, self.battle.weatherTurns = nil, 0
+  self:field().weather = nil
+end
+function GoldA:nativeWeather(kind) return NATIVE_WEATHER[kind] ~= nil end
+-- a move record's priority as Gold orders it (by its effect; ours by their own)
+function GoldA:basePriority(move)
+  if not move then return 0 end
+  return self.battle:movePriority(move.id) or 0
+end
 function GoldA:effectiveness(typeName, b)
   local Types = self.deps.types
   local t = Types and Types.cartId(typeName) or typeName
@@ -377,13 +409,38 @@ function Gold.installSeams(mod, deps)
   mod.hooks:wrap("battle.crit", function(nextFn, c)
     local calc = c and c.battle and rawget(c.battle, "__ndxCalc")
     if calc and calc.crit then return true end
+    -- a critical hit the field forbids (core "noCrit": Lucky Chant)
+    if c and c.battle and c.attacker and deps.core.hooks.noCrit then
+      local A = Gold.adapter(c.battle, deps)
+      if deps.core:ask("noCrit", A, c.attacker, A:foe(c.attacker)) then return false end
+    end
     return nextFn(c)
   end)
+  local core = deps.core
   mod.hooks:wrap("battle.damage", function(nextFn, c)
     local calc = c and c.battle and rawget(c.battle, "__ndxCalc")
-    if not calc then return nextFn(c) end
+    if not calc then
+      local dmg, info = nextFn(c)
+      -- every hit: the multipliers the field, abilities and items put on it
+      if c and c.battle and core.hooks.damageMult and dmg and dmg > 0 then
+        local eff = type(info) == "table" and (info.effectiveness or info.typeMult) or 10
+        if eff > 0 then
+          local A = Gold.adapter(c.battle, deps)
+          local k = core:fold("damageMult", 1, A, c.user, c.target, c.move, { typeMult = eff })
+          if k ~= 1 then dmg = math.max(1, math.floor(dmg * k)) end
+        end
+      end
+      return dmg, info
+    end
     if calc.stats then placeStats(c, calc.stats) end
     local dmg, info = nextFn(c)
+    if core.hooks.damageMult and dmg and dmg > 0 then
+      local eff = type(info) == "table" and (info.effectiveness or info.typeMult) or 10
+      if eff > 0 then
+        local k = core:fold("damageMult", 1, calc.A, calc.user, calc.target, calc.def, { typeMult = eff })
+        if k ~= 1 then dmg = math.max(1, math.floor(dmg * k)) end
+      end
+    end
     if calc.mult and dmg and dmg > 0 then
       local eff = type(info) == "table" and (info.effectiveness or info.typeMult) or 10
       if eff > 0 then
@@ -398,12 +455,23 @@ function Gold.installSeams(mod, deps)
   -- once per process (games switch in-process): Gold orders moves by their EFFECT's priority, so
   -- a move on our records answers its own; a type change made by a move (Soak, Burn Up) is the
   -- battler's types until it switches out (volatile(mon).__ndx.types)
+  -- who moves first: priority and Speed as the field and abilities change them (Core:order)
+  mod.hooks:wrap("battle.turn_order", function(nextFn, a, aMove, b, bMove, c)
+    local battle = c and c.battle
+    if battle and battle.player == a then
+      local first = core:order(Gold.adapter(battle, deps), a, aMove, b, bMove)
+      if first ~= nil then return first end
+    end
+    return nextFn(a, aMove, b, bMove, c)
+  end)
+
   local Battle = deps.require("src.battle.gen2.Battle")
   local hub = Battle.__ndxMech
   if not hub then
     hub = {}
     Battle.__ndxMech = hub
     local movePriority, battlerTypes = Battle.movePriority, Battle.battlerTypes
+    local betweenTurnEffects, useMove = Battle.betweenTurnEffects, Battle.useMove
     Battle.movePriority = function(self, moveId, ...)
       local def = moveId and self:moveDef(moveId)
       if def and tostring(def.effect or ""):find("^NDX_M_") then return def.priority or 0 end
@@ -413,6 +481,59 @@ function Gold.installSeams(mod, deps)
       local v = mon and mon.volatile and mon.volatile.__ndx
       if v and v.types then return v.types end
       return battlerTypes(self, mon, ...)
+    end
+    -- the end of the turn (core "endTurn"), after Gold's own; then any faint it caused
+    Battle.betweenTurnEffects = function(self, ...)
+      local a, b = betweenTurnEffects(self, ...)
+      if hub.endTurn and not self.over then
+        local ok, err = pcall(hub.endTurn, self)
+        if not ok and hub.log then hub.log:warn("move mechanics: end of turn failed: %s", tostring(err)) end
+        if ((self.player and self.player.hp or 1) <= 0 or (self.enemy and self.enemy.hp or 1) <= 0) then
+          self:resolveFaints(true)
+        end
+      end
+      return a, b
+    end
+    -- a status the field or an ability stops (core "blockStatus")
+    local applyStatus, applyConfusion = Battle.applyStatus, Battle.applyConfusion
+    Battle.applyStatus = function(self, mon, status, source, ...)
+      if hub.gate and mon and not mon.status and status ~= "confuse" then
+        local ok, r = pcall(hub.gate, self, mon, status, source)
+        if ok and r then return false end
+      end
+      return applyStatus(self, mon, status, source, ...)
+    end
+    Battle.applyConfusion = function(self, mon, turns, source, ...)
+      if hub.gate and mon then
+        local ok, r = pcall(hub.gate, self, mon, "confuse", source)
+        if ok and r then return false end
+      end
+      return applyConfusion(self, mon, turns, source, ...)
+    end
+    -- after a move (core "afterMove"): what a Protect variant does to the attacker
+    Battle.useMove = function(self, attacker, defender, moveId, ...)
+      local a, b, c = useMove(self, attacker, defender, moveId, ...)
+      if hub.afterMove then
+        local ok, err = pcall(hub.afterMove, self, attacker, defender, moveId)
+        if not ok and hub.log then hub.log:warn("move mechanics: after a move failed: %s", tostring(err)) end
+      end
+      return a, b, c
+    end
+  end
+  hub.log = core.log
+  local GATE_STATUS = { burn = "BRN", paralyze = "PAR", poison = "PSN", toxic = "TOX", sleep = "SLP",
+    freeze = "FRZ", confuse = "CONFUSION" }
+  hub.gate = function(battle, mon, status, source)
+    if not core.hooks.blockStatus then return nil end
+    local A = Gold.adapter(battle, deps)
+    local r = core:ask("blockStatus", A, mon, GATE_STATUS[status] or status, { from = source })
+    if type(r) == "string" and r ~= "" then A:say(r) end
+    return r
+  end
+  hub.endTurn = function(battle) core:fire("endTurn", Gold.adapter(battle, deps)) end
+  hub.afterMove = function(battle, attacker, defender, moveId)
+    if core.hooks.afterMove then
+      core:fire("afterMove", Gold.adapter(battle, deps), attacker, defender, moveId)
     end
   end
 end

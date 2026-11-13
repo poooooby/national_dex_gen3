@@ -138,6 +138,21 @@ end
 function RedA:dvs(b) return b.mon.dvs or {} end
 -- the battler's moves: { id, pp }
 function RedA:moves(b) return b.curMoves or b.mon.moves or {} end
+-- the weather (rain / sun / sand / hail / snow): Red has none of its own, so it is all ours
+function RedA:weather() local w = self:field().weather; return w and w.kind or nil end
+function RedA:setWeather(kind, turns, text)
+  self:field().weather = { kind = kind, turns = turns or 5 }
+  if text then self:say(text) end
+end
+function RedA:clearWeather() self:field().weather = nil end
+-- does the game run this weather itself (its damage, its turns)?
+function RedA:nativeWeather() return false end
+-- a move record's priority as Red orders it (src/battle/TurnOrder.lua)
+function RedA:basePriority(move)
+  if not move then return 0 end
+  if move.priority then return move.priority end
+  return (move.id == "QUICK_ATTACK" and 1) or (move.id == "COUNTER" and -1) or 0
+end
 -- a type (modern name) against the battler: x10 (0, 5, 10, 20 ...)
 function RedA:effectiveness(typeName, b)
   local Types = self.deps.types
@@ -219,13 +234,21 @@ function RedA:ailment(b, name, opts)
   local s = AILMENT[name]
   if not s then return false end
   local msgs = self.StatusRegistry.inflict(self.battle, b, s, { secondary = opts.secondary,
-    moveType = opts.moveType, source = opts.source, toxic = name == "TOXIC" or nil }) or {}
+    moveType = opts.moveType, source = opts.source, toxic = name == "TOXIC" or nil,
+    from = opts.from or false }) or {}
   for _, m in ipairs(msgs) do self:say(m) end
   if name == "TOXIC" and #msgs > 0 and not b.toxicCounter then b.toxicCounter = 0 end
   return #msgs > 0
 end
 function RedA:confuse(b, opts)
   if b.confusedTurns or (b.substituteHP and opts and opts.from) then return false end
+  if self.core.hooks.blockStatus then
+    local r = self.core:ask("blockStatus", self, b, "CONFUSION", opts or {})
+    if r then
+      if type(r) == "string" and r ~= "" and not (opts and opts.secondary) then self:say(r) end
+      return false
+    end
+  end
   b.confusedTurns = self.battle.rng(2, 5)
   self:say(self.romText(self.battle.data, "_BecameConfusedText", "%s\nbecame confused!", self:name(b)))
   return true
@@ -370,6 +393,140 @@ end
 -- one call.
 function Red.installSeams(mod, deps)
   local TypeChart = deps.require("src.battle.TypeChart")
+  local core = deps.core
+
+  -- every hit: the multipliers the field, abilities and items put on it (core "damageMult"),
+  -- and the most it may take (core "damageCap": Endure)
+  mod.hooks:wrap("battle.damage", function(nextFn, c)
+    local dmg, info = nextFn(c)
+    if not (c and c.battle) or (c.opts and c.opts.typeless) then return dmg, info end
+    if dmg and dmg > 0 and info and (info.typeMult or 10) > 0 then
+      local A = Red.adapter(c.battle, deps)
+      if core.hooks.damageMult then
+        local k = core:fold("damageMult", 1, A, c.user, c.target, c.move, info)
+        if k ~= 1 then dmg = math.max(1, math.floor(dmg * k)) end
+      end
+      if core.hooks.damageCap and not c.target.substituteHP then
+        local most = core:ask("damageCap", A, c.user, c.target, c.move, dmg)
+        if most then dmg = math.max(0, math.min(dmg, most)) end
+      end
+    end
+    return dmg, info
+  end)
+
+  -- a critical hit the field forbids (core "noCrit": Lucky Chant); Red's crit ctx names only the
+  -- attacker, so the battle is the one whose turn it is
+  mod.hooks:wrap("battle.crit", function(nextFn, c)
+    local A = core.lastAdapter
+    if A and A.gen == 1 and core.hooks.noCrit and c and c.attacker then
+      if core:ask("noCrit", A, c.attacker, A:foe(c.attacker)) then return false end
+    end
+    return nextFn(c)
+  end)
+
+  -- a charge turn the field skips (core "skipCharge": Solar Beam in the sun)
+  mod.hooks:wrap("battle.charge_required", function(nextFn, c)
+    if c and c.battle and core.hooks.skipCharge then
+      if core:ask("skipCharge", Red.adapter(c.battle, deps), c.user, c.move) then return false end
+    end
+    return nextFn(c)
+  end)
+
+  -- a status the field or an ability stops (core "blockStatus" -> true or a line to say)
+  local StatusRegistry = deps.require("src.battle.StatusRegistry")
+  local sHub = StatusRegistry.__ndxMech
+  if not sHub then
+    sHub = {}
+    StatusRegistry.__ndxMech = sHub
+    local inflict = StatusRegistry.inflict
+    StatusRegistry.inflict = function(battle, target, status, opts)
+      if sHub.gate and battle and target and not target.mon.status then
+        local ok, r = pcall(sHub.gate, battle, target, status, opts or {})
+        if ok and r then return {} end
+      end
+      return inflict(battle, target, status, opts)
+    end
+  end
+  sHub.gate = function(battle, target, status, opts)
+    if not core.hooks.blockStatus then return nil end
+    local A = Red.adapter(battle, deps)
+    local s = (status == "PSN" and opts.toxic) and "TOX" or status
+    if opts.from == nil then
+      -- Red's own moves name no source: the battler whose move is landing on this one
+      local cur = rawget(battle, "__ndxCur")
+      if cur and cur.target == target and cur.user ~= target then
+        local o = {}
+        for k, v in pairs(opts) do o[k] = v end
+        o.from, opts = cur.user, o
+      end
+    end
+    local r = core:ask("blockStatus", A, target, s, opts)
+    if type(r) == "string" and r ~= "" and not opts.secondary then A:say(r) end
+    return r
+  end
+
+  -- who moves first: priority and Speed as the field and abilities change them (Core:order)
+  mod.hooks:wrap("battle.turn_order", function(nextFn, a, aMove, b, bMove, c)
+    local A = core.lastAdapter
+    if A and A.gen == 1 and A.battle.player == a then
+      local first = core:order(A, a, aMove, b, bMove)
+      if first ~= nil then return first end
+    end
+    return nextFn(a, aMove, b, bMove, c)
+  end)
+
+  -- once per process: the end of the turn (core "endTurn", before the field residuals), and a
+  -- move stopped before it lands (core "blocks": Protect) through a record whose `perform`
+  -- replaces the move's own resolution right after "X used Y!"
+  local BattleState = deps.require("src.battle.BattleState")
+  local hub = BattleState.__ndxMech
+  if not hub then
+    hub = {}
+    BattleState.__ndxMech = hub
+    local applyFieldResiduals, performMove, effectRecord =
+      BattleState.applyFieldResiduals, BattleState.performMove, BattleState.effectRecord
+    BattleState.applyFieldResiduals = function(self, ...)
+      if hub.endTurn then
+        local ok, err = pcall(hub.endTurn, self)
+        if not ok and hub.log then hub.log:warn("move mechanics: end of turn failed: %s", tostring(err)) end
+      end
+      return applyFieldResiduals(self, ...)
+    end
+    BattleState.performMove = function(self, user, target, moveInst, isCalled)
+      local prev = rawget(self, "__ndxCur")
+      self.__ndxCur = { user = user, target = target, moveInst = moveInst, isCalled = isCalled }
+      local ok, err = pcall(performMove, self, user, target, moveInst, isCalled)
+      self.__ndxCur = prev
+      if not ok then error(err, 0) end
+    end
+    BattleState.effectRecord = function(self, effect)
+      local rec = effectRecord(self, effect)
+      local cur = rawget(self, "__ndxCur")
+      if hub.block and cur and rec ~= nil then
+        local ok, perform = pcall(hub.block, self, cur, rec)
+        if ok and perform then
+          return setmetatable({ perform = perform, callsMove = false }, { __index = rec })
+        end
+      end
+      return rec
+    end
+  end
+  hub.log = core.log
+  hub.endTurn = function(battle) core:fire("endTurn", Red.adapter(battle, deps)) end
+  hub.block = function(battle, cur, rec)
+    if not core.hooks.blocks or rec.callsMove then return nil end
+    local move = battle.data.moves[cur.moveInst.id]
+    if not move or cur.user == cur.target then return nil end
+    local aimed = (move.power or 0) > 0 or rec.accuracyChecked or rec.kind == "full"
+    if not aimed then return nil end
+    local A = Red.adapter(battle, deps)
+    local handler = core:ask("blocks", A, cur.user, cur.target, move)
+    if not handler then return nil end
+    return function(ctx)
+      battle:cancelMoveAnim()
+      handler(A, cur.user, cur.target, move)
+    end
+  end
   local function slotOf(move)
     local category = move.category or TypeChart.category(move.type)
     return category == "special" and "special" or "attack", category == "special" and "special" or "defense"
