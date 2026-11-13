@@ -27,10 +27,11 @@ for _, version in ipairs(H.versions()) do
   T.eq(#run.errors, 0, version .. ": loads clean")
 
   local list = api.listSpecies()
-  T.eq(#list, 1025 - maxDex, version .. ": listSpecies has every new species")
+  -- every species the game has, the cart's own included (the read API's listSpecies)
+  T.eq(#list, 1025, version .. ": listSpecies has every species")
   local ordered = true
   for i, s in ipairs(list) do
-    if s.dex ~= maxDex + i or s.slot ~= s.dex + 64 then ordered = false end
+    if s.dex ~= i or s.slot ~= s.dex + 64 then ordered = false end
   end
   T.check(ordered, version .. ": in dex order, each at its Gen 3 slot")
   T.eq(api.slotOf("LUCARIO"), 512, version .. ": slotOf by id")

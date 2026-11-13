@@ -41,6 +41,10 @@ local function sameList(a, b)
   return true
 end
 
+-- Gold: the evolution items' indices, in data/gen12/items.lua's order, 850-901 (the Exp. Candies are 950+,
+-- the TMs 1100+)
+Items.GEN2_FIRST_INDEX = 850
+
 -- opts: { mod, generation, rows = data/gen12/items.lua, use = function(ctx) (Gen 1 effect)
 --         or function(ctx) (Gen 2 stone), log }
 function Items.register(opts)
@@ -56,7 +60,7 @@ function Items.register(opts)
   end
 
   local firstError
-  for _, row in ipairs(opts.rows) do
+  for n, row in ipairs(opts.rows) do
     local cart = row.carts and row.carts[key]
     if cart then
       state.idOf[row.slug] = cart
@@ -73,8 +77,16 @@ function Items.register(opts)
         rec.fieldMenu = usable and "ITEMMENU_PARTY" or "ITEMMENU_NOUSE"
         rec.heldEffect, rec.heldParameter = "HELD_NONE", 0
         rec.description = Items.GEN2_DESCRIPTION[row.kind]
+        -- a number of our own, well past the cart's (850-901): the engine would hand out
+        -- 251, 252, ... in load order, the numbers another mod may have fixed for its own items
+        -- (battle_forms' TM171 is 252). Gold's save keeps the bag by id, never by this number.
+        rec.index = Items.GEN2_FIRST_INDEX + n - 1
       end
       local ok, err = pcall(items.register, items, row.id, rec)
+      if not ok and rec.index then
+        rec.index = nil                          -- the number is taken: let the engine pick one
+        ok, err = pcall(items.register, items, row.id, rec)
+      end
       if ok and gen == 2 and (row.kind == "stone" or row.kind == "cord") then
         ok, err = pcall(effects.register, effects, row.id, { action = "stone", use = opts.use })
       end

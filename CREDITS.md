@@ -51,6 +51,14 @@ ships are fan-made, and the credits below belong to their authors.
   art VFX, <https://www.spritefusion.com/pixel-art-vfx>), recoloured for each move's type. The
   licence text is in [LICENSE](LICENSE).
 
+## Battle data for other mods
+
+- The move flags (contact, sound, punch ...) and item facts (fling power, Natural Gift, Plates ...)
+  that WoobleDex hands to battle mods on Red to Crystal come from **Pokémon Showdown**'s data
+  (Guangcong Luo and contributors, <https://github.com/smogon/pokemon-showdown>, MIT License; the
+  licence text is in [LICENSE](LICENSE)). The descriptions of what each ability does are written
+  for this mod.
+
 ## Shop prices
 
 - The evolution items' shop prices are derived from the item price tables on

@@ -254,6 +254,9 @@ the game's own Pokémon keep their original data, so its event gifts arrive as u
 
 - **It takes the place of the original National Dex mod** there: the two can't be on together.
   With both on, WoobleDex steps aside, so turn National Dex off for those games.
+- **Battle mods made for the original National Dex** (the g9 battle mods, Battle Forms) ask for
+  it by name, so for now they don't run beside WoobleDex. WoobleDex already answers everything
+  they ask of a National Dex, so they can run on it once they also accept WoobleDex.
 - **Red to Crystal's options** are Modern Moves, Register Owned, Bigger PC, Type Badges and (Red,
   Blue, Yellow) Day & Night, shared with the Generation 3 games: turning one off turns it off
   everywhere.
@@ -296,11 +299,12 @@ Species data from [PokéAPI](https://pokeapi.co/). Cries and item sprites are fa
 battle animations of the newer moves, borrowed from their
 [pokeemerald-expansion](https://github.com/rh-hideout/pokeemerald-expansion/) 1.17.2, and
 to Patch and Hugo Duprez for [pixelfx](https://github.com/patch-gg/pixelfx), whose effects
-draw 20 of them.
+draw 20 of them. Move flags and item facts for other mods come from
+[Pokémon Showdown](https://github.com/smogon/pokemon-showdown)'s data.
 
 The mod's code, tools, documentation and Wooble's item sprites are MIT licensed: see
 [LICENSE](LICENSE), which also lists what it does not cover (the other item sprites, the
-cries, the pixelfx effects, and the games' own text and data).
+cries, the pixelfx effects, Pokémon Showdown's data, and the games' own text and data).
 
 ---
 

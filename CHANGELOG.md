@@ -3,6 +3,21 @@
 All notable changes to this mod are documented here, in
 [keep a changelog](https://keepachangelog.com/en/1.1.0/) format.
 
+## [Unreleased]
+
+### Added
+
+- **Battle and stats mods made for the original National Dex can read WoobleDex** on Red, Blue,
+  Yellow, Gold, Silver and Crystal. They get the same answers about Pokémon, moves, abilities,
+  items and evolutions: moves with their flags, abilities described as data, items with their
+  facts, and every species' stats, abilities, EV yield and full learnsets. Those mods still ask
+  for the original by name, so they run on WoobleDex once they also accept it.
+
+### Changed
+
+- On Gold, Silver and Crystal the evolution items have item numbers of their own, so they no
+  longer take numbers another mod has fixed for its own items.
+
 ## [1.9.0] - 2026-11-12
 
 ### Added

@@ -642,7 +642,7 @@ Registered at load, first, so every record after can name them.
     with `evolutions` as `{ species, method, level }` from the rows `evolutions.lua` wrote;
   - `bridges`: the steps added to cart species, recorded by `Evolutions.install`, so
     `evolutionsOf("GOLBAT")` finds Crobat on Red.
-- **What is published:** `apiVersion` 2, `isActive`, `provider`, `listSpecies`, `slotOf`,
+- **What is published:** `apiVersion` 2 (9 with the read API below), `isActive`, `provider`, `listSpecies`, `slotOf`,
   `listForms`, `formsOf`, `baseDexOf`, `idOfSlot`, `evolutionsOf`, `setArtProvider`, and
   `clockSource` (Red `"device"`, Gold `"game"`: the clocks the time-of-day evolutions read), plus
   `generation`.
@@ -658,6 +658,76 @@ Registered at load, first, so every record after can name them.
   ways, a cart species' bridge, the clock, no Gen 3 extras). It then loads `mods/modern_spawns`
   beside the mod and checks the candidate count, Turtwig's family and stages, a bridge in one
   family, and Red's Route 1 rolling only species the game has.
+
+### The National Dex read API on Gen 1/2 (`src/gen12/dex_api.lua`, `data/gen12/api/`)
+
+The g9 battle mods (g9-battle-engine, g9-Battle-Scene, g9-battle-sample) and battle_forms read a
+National Dex through `mod.find("national_dex").exports`. The Gen 1/2 exports answer every call
+they make (`apiVersion` 9), worked out from those mods' calls and national_dex's own README,
+INSTRUCTION and CHANGELOG. National_dex's code and data were never opened. The engine resolves
+`mod.find` and hard `dependencies` by exact id, so those mods only use WoobleDex once they look
+for `national_dex_gen3` too.
+
+- **Moves.**
+  - `moveById(id)`: PokéAPI's facts for a move, found by the id this game registers it under
+    (`AQUA_JET`, `PSYCHIC_M`), its separator-free spelling (`AQUAJET`) or its number.
+    - Fields: `type` is this game's own id; `accuracy` 0 means it never misses; `damageClass`,
+      `target`, `category`, `drain`, `healing`, `ailment`, `statChanges` and the hit counts are
+      PokéAPI's words; `meta` keeps PokéAPI's shape.
+    - `engineMove` is true for the cart's own moves.
+    - `effectModeled` / `gen1EffectModeled` / `gen2EffectModeled`: whether the move runs as
+      itself. The other generation's flag is only true when this game runs the move too. g9
+      reads `isGen2 and gen2 or gen1`, which falls through to the Gen 1 flag.
+  - `listMoves()`: only ids registered here. g9 patches each one.
+  - `moveFlags(id)`: Showdown's flags as a set.
+- **Abilities.** `abilityById(id)`: name, effect text, `effectChanges`, and a `behaviour` block
+  written by hand in `tools/ability_behaviour.py`.
+  - Ids are upper case with only letters and digits; names are plain ASCII, so `mon.ability`
+    strips back to the id.
+  - `behaviour` has `trigger`, `scope` and `chance`, plus `effects` from a small vocabulary:
+    `stat_multiplier`, `damage_dealt_multiplier`, `type_immunity`, `heal`, `stat_change`,
+    `set_weather` and others.
+  - g9 lists the abilities each of its handlers takes and reads only the numbers from here.
+  - `moveType` is stored modern and handed out as this game's id (`PSYCHIC_TYPE`).
+- **Items.** `itemById` covers every PokéAPI item, retried with `HELD` on the end.
+  `itemFlags` returns Showdown's facts (fling, natural gift, berry, plate type, holder).
+- **Species.**
+  - `statsBySpecies` / `statsByDex`: a deep copy of the registered record plus a normalised view:
+    - `stats`, with Red's `special` and the split specials;
+    - `abilities` (`{ name, slot, hidden }`) and `evYield` (all six keys);
+    - `movesFull` (`{ level, move = separator-free id }`), the newest level-up list;
+    - `movesByMethod` (machine, tutor, egg, other);
+    - breeding facts, and `forms` on a base.
+  - `listSpecies()` here covers all 1,025 species, the cart's included. g9 patches every listed
+    species' learnset from `movesFull`, keeping the moves it can use.
+- **Evolutions.**
+  - `evolutionsOf`: PokéAPI's chain (`chainId`, `chain`, `stage`, methods with `trigger`,
+    `item`, `heldItem`, `minHappiness`, ... and `text`).
+  - The game's own rows fill in forms and any step the chain lacks. A row's engine method is
+    kept as `method`, and `trigger` is PokéAPI's.
+  - modern_spawns reads only ids and levels.
+- **`patch(kind, id, partial)`.**
+  - Overlay kinds: species, move, ability, item, moveFlags, evolution, itemFlags. Maps merge and
+    lists replace.
+  - Species and move fields the registered record has also go to the registry. That only lands
+    while mods load.
+  - The engine kinds (`typeChart`, `moveEffect`, ...) go to their registries whole.
+- **Data:** `python tools/build_api.py`. It reads PokéAPI from `tools/.cache` and Showdown's
+  `moves.ts` / `items.ts` at a pinned commit, cached under `tools/.cache/showdown/`. Output is
+  2.5 MB of Lua in `data/gen12/api/`, loaded lazily on the first call that needs each file.
+- **Gold item numbers:** the evolution items have fixed indices 850–901 in `data/gen12/items.lua`'s
+  order (`Items.GEN2_FIRST_INDEX`).
+  - Before, the engine numbered them from 251 in load order, which took battle_forms' fixed
+    TM171 number (252).
+  - Gold's save keeps the bag by id, so nothing saved changes.
+- **Tests:**
+  - `tests/gen12_dex_api_test.lua` makes the calls the way those mods do: every species' ability
+    names find their record, every listed move answers with itself, replies are copies, patch.
+  - g9-battle-engine itself, loaded headless beside WoobleDex from a copy that asks for
+    `national_dex_gen3`, boots 148/148 subsystems on Red and 147/148 on Gold. The one failure
+    is g9's own: it needs a Gen 1-only battle module.
+  - battle_forms loads clean on Red. On Gold it fails at its own TM171 (fixed index 252),
+    which its own Dynamax Band, numbered automatically, has already taken.
 
 ### Gen 3 extras on Gen 1/2 (Phase A: `options.lua`, `dex_sync.lua`, `modern_moves.lua`, Day & Night)
 
@@ -872,6 +942,7 @@ Engine facts the design rests on (checked against the source, 2026-11-11):
 python -m pip install requests
 python tools/build_species.py            # PokéAPI responses cached in tools/.cache
 python tools/build_gen12.py              # data/gen12 (needs red, gold and firered imported, luajit)
+python tools/build_api.py                # data/gen12/api (the read API's reference data)
 python tools/build_placeholder.py        # assets/gen12 (the Gen 1/2 placeholder pictures)
 ```
 

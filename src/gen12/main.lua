@@ -320,6 +320,15 @@ return function(mod, loadSibling)
   if Api and GenApi and speciesState then
     GenApi(mod, { api = Api, species = speciesState, evolutions = evoState, generation = generation,
       art = pictures })
+    -- the read API a battle or stats mod expects of a National Dex (apiVersion 9: moveById,
+    -- moveFlags, abilityById, statsBySpecies, ...), over the exports above
+    local DexApi = loadSibling(mod, "src/gen12/dex_api.lua")
+    if DexApi and Types then
+      local ok, err = pcall(DexApi, mod, { generation = generation, types = Types, species = speciesState,
+        direct = directMove, evolutions = evoState,
+        load = function(path) return loadSibling(mod, path) end })
+      if not ok then mod.log:warn("read API: %s", tostring(err)) end
+    end
     -- the candies' ids, as on Gen 3 (a reward mod can give them)
     if candyState and #candyState.registered > 0 then
       local ids = {}
