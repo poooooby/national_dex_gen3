@@ -373,8 +373,22 @@ return function(mod, loadSibling)
   if vendingOn and itemState then
     local okV, err = pcall(function()
       local BadgeIds = loadSibling(mod, "src/gen12/type_badges.lua")
+      -- an item slug -> this game's id: the evolution items, else the held items (ours, or the
+      -- game's own of that name: Gold's LEFTOVERS, BLACKGLASSES)
+      local heldRows = loadSibling(mod, "data/held_items.lua") or {}
+      local function itemId(slug)
+        local id = itemState.id(slug)
+        if id then return id end
+        local items = mod.content.items
+        for _, c in ipairs({ slug:upper():gsub("%-", "_"), (slug:upper():gsub("%-", "")),
+            (slug:upper():gsub("%-", "_"):gsub("_I$", "")) }) do
+          local ok, rec = pcall(items.get, items, c)
+          if ok and rec ~= nil then return c end
+        end
+        return nil
+      end
       local V = Vending.new({ mod = mod, generation = generation, require = require, log = mod.log,
-        machines = vendingData, screen = vendingScreen, items = itemRows, itemId = itemState.id,
+        machines = vendingData, screen = vendingScreen, items = itemRows, itemId = itemId, held = heldRows,
         tms = tmState and tmRows or {}, moves = loadSibling(mod, "data/moves.lua"),
         gen3Items = loadSibling(mod, "data/items.lua"), icons = loadSibling(mod, "data/item_icons.lua"),
         typeId = BadgeIds and BadgeIds.idOf })

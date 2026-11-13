@@ -25,14 +25,25 @@ for _, version in ipairs(H.versions()) do
   local run = H.load(version)
   local data = run.data
   local V = run.loader.exports.national_dex_gen3._vending
-  T.check(V and #V.machines == 2, version .. ": two machines")
+  T.check(V and #V.machines == 3, version .. ": three machines")
   if V then
     local where = {}
     for _, e in ipairs(V.machines) do where[e.m.id] = e.place.map end
     T.eq(where.evo, gen == 1 and "CELADON_MART_4F" or "GOLDENROD_DEPT_STORE_4F", version .. ": EVO EXPRESS")
     T.eq(where.tm, gen == 1 and "CELADON_MART_2F" or "GOLDENROD_DEPT_STORE_5F", version .. ": TM EXPRESS")
-    local evo, tm
-    for _, e in ipairs(V.machines) do if e.m.id == "evo" then evo = e.m else tm = e.m end end
+    T.eq(where.held, gen == 1 and "CELADON_MART_4F" or "GOLDENROD_DEPT_STORE_4F", version .. ": HELD EXPRESS")
+    local evo, tm, held
+    for _, e in ipairs(V.machines) do
+      if e.m.id == "evo" then evo = e.m elseif e.m.id == "tm" then tm = e.m else held = e.m end
+    end
+    local hcount, hlabels, hsaw = 0, {}, {}
+    for _, tab in ipairs(V.stock(held, data)) do
+      hlabels[#hlabels + 1] = tab.label
+      hcount = hcount + #tab.entries
+      for _, e in ipairs(tab.entries) do hsaw[e.id] = true end
+    end
+    T.check(hcount >= 150, version .. ": HELD EXPRESS sells " .. hcount .. " items (" .. table.concat(hlabels, ", ") .. ")")
+    T.check(hsaw.LIFE_ORB and hsaw.CHOICE_SCARF and hsaw.LEFTOVERS, version .. ": ... the newer ones and the game's own Leftovers")
     local count, labels = 0, {}
     for _, tab in ipairs(V.stock(evo, data)) do
       labels[#labels + 1] = tab.label

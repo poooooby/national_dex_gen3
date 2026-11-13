@@ -24,6 +24,8 @@ local Vending = {}
 Vending.PLACES = {
   evo = { [1] = { map = "CELADON_MART_4F", x = 19, y = 2, store = "Celadon Dept. Store 4F" },
           [2] = { map = "GOLDENROD_DEPT_STORE_4F", x = 10, y = 1, store = "Goldenrod Dept. Store 4F" } },
+  held = { [1] = { map = "CELADON_MART_4F", x = 18, y = 2, store = "Celadon Dept. Store 4F" },
+           [2] = { map = "GOLDENROD_DEPT_STORE_4F", x = 11, y = 1, store = "Goldenrod Dept. Store 4F" } },
   tm = { [1] = { map = "CELADON_MART_2F", x = 19, y = 2, store = "Celadon Dept. Store 2F" },
          [2] = { map = "GOLDENROD_DEPT_STORE_5F", x = 4, y = 1, store = "Goldenrod Dept. Store 5F" } },
 }
@@ -210,6 +212,28 @@ function Vending.new(opts)
       end
     end
     if not atlas then return nil end
+    -- the newer held items: their own atlas (assets/items/held_icons.png, 16 cells a row)
+    local hq = atlas.held and atlas.held[id]
+    if hq == nil and opts.held then
+      atlas.held = atlas.held or {}
+      hq = false
+      for _, row in ipairs(opts.held) do
+        if row.id == id and row.icon then
+          if atlas.heldImage == nil then
+            local ok, img = pcall(love.graphics.newImage, mod.path .. "/assets/items/held_icons.png")
+            atlas.heldImage = ok and img or false
+            if atlas.heldImage then pcall(img.setFilter, img, "nearest", "nearest") end
+          end
+          if atlas.heldImage then
+            hq = love.graphics.newQuad((row.icon % 16) * 24, math.floor(row.icon / 16) * 24, 24, 24,
+              atlas.heldImage:getDimensions())
+          end
+          break
+        end
+      end
+      atlas.held[id] = hq
+    end
+    if hq then return hq, atlas.heldImage end
     local q = atlas.quads[id]
     if q == nil then
       q = false
@@ -225,7 +249,7 @@ function Vending.new(opts)
       end
       atlas.quads[id] = q
     end
-    return q or nil
+    return q or nil, atlas.image
   end
 
   local layer = { isMenu = true }
@@ -257,10 +281,10 @@ function Vending.new(opts)
       if Sound and sfx and current then pcall(Sound.play, current.data, sfx) end
     end,
     icon = function(G, id, x, y, size)
-      local q = iconFor(id)
+      local q, img = iconFor(id)
       if not q then return end
       G.setColor(1, 1, 1, 1)
-      G.draw(atlas.image, q, x, y, 0, size / 24, size / 24)
+      G.draw(img, q, x, y, 0, size / 24, size / 24)
     end,
     now = function() return love and love.timer and love.timer.getTime() or os.clock() end,
     safeArea = function()
