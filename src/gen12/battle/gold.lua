@@ -161,6 +161,12 @@ function GoldA:basePriority(move)
   if not move then return 0 end
   return self.battle:movePriority(move.id) or 0
 end
+function GoldA:typeEff(attackType, defendType)
+  local Types = self.deps.types
+  local a = Types and Types.cartId(attackType) or attackType
+  local d = Types and Types.cartId(defendType) or defendType
+  return self.Damage.typeMultiplier(a, { d }, nil)
+end
 function GoldA:effectiveness(typeName, b)
   local Types = self.deps.types
   local t = Types and Types.cartId(typeName) or typeName
@@ -247,6 +253,7 @@ function GoldA:damage(b, n, opts)
   return dealt
 end
 function GoldA:heal(b, n, opts)
+  if self.core.hooks.noHeal and self.core:ask("noHeal", self, b) then return 0 end
   local healed = self.battle:heal(b, math.max(0, math.floor(n)))
   if opts and opts.text then
     self:say(type(opts.text) == "string" and opts.text or self:text("%s regained health!", self:name(b)))
@@ -255,6 +262,7 @@ function GoldA:heal(b, n, opts)
 end
 function GoldA:drain(u, t, n)
   if self:hp(u) >= self:maxHp(u) then return 0 end
+  if self.core.hooks.noHeal and self.core:ask("noHeal", self, u) then return 0 end
   local healed = self.battle:heal(u, n)
   self:say(self:text("%s's energy was drained!", self:name(t)))
   return healed
@@ -410,13 +418,50 @@ function Gold.installSeams(mod, deps)
     local calc = c and c.battle and rawget(c.battle, "__ndxCalc")
     if calc and calc.crit then return true end
     -- a critical hit the field forbids (core "noCrit": Lucky Chant)
-    if c and c.battle and c.attacker and deps.core.hooks.noCrit then
+    if c and c.battle and c.attacker then
       local A = Gold.adapter(c.battle, deps)
-      if deps.core:ask("noCrit", A, c.attacker, A:foe(c.attacker)) then return false end
+      if deps.core.hooks.noCrit and deps.core:ask("noCrit", A, c.attacker, A:foe(c.attacker)) then return false end
+      if deps.core.hooks.forceCrit and deps.core:ask("forceCrit", A, c.attacker) then return true end
     end
     return nextFn(c)
   end)
   local core = deps.core
+  -- before the formula: an immunity the field gives (core "immune"), types a hit ignores (core
+  -- "dropTypes"), the move's type this time (core "moveType"), a battler's stats as moves left
+  -- them (A:vol(b).statOver)
+  mod.hooks:wrap("battle.damage", function(nextFn, c)
+    if not (c and c.battle and c.opts) then return nextFn(c) end
+    local A = Gold.adapter(c.battle, deps)
+    local o = c.opts
+    if core.hooks.immune and core:ask("immune", A, c.user, c.target, c.move) then
+      return 0, { effectiveness = 0, typeMult = 0 }
+    end
+    if core.hooks.moveType then
+      local t = core:ask("moveType", A, c.user, c.move)
+      if t then o.moveType = deps.types and deps.types.cartId(t) or t end
+    end
+    if core.hooks.dropTypes then
+      local drop = core:ask("dropTypes", A, c.user, c.target, c.move)
+      if drop and o.defender and o.defender.types then
+        local keep = {}
+        for _, t in ipairs(o.defender.types) do
+          if not drop[(tostring(t):gsub("_TYPE$", ""))] then keep[#keep + 1] = t end
+        end
+        if #keep == 0 then keep[1] = deps.types and deps.types.cartId("NORMAL") or "NORMAL" end
+        o.defender.types = keep
+      end
+    end
+    local function over(mon, side, keys)
+      local v = mon and mon.volatile and mon.volatile.__ndx
+      local s = v and v.statOver
+      if s and side then
+        for stat, slot in pairs(keys) do if s[stat] then side[slot] = s[stat] end end
+      end
+    end
+    over(c.user, o.attacker, { attack = "attack", spAtk = "specialAttack" })
+    over(c.target, o.defender, { defense = "defense", spDef = "specialDefense" })
+    return nextFn(c)
+  end)
   mod.hooks:wrap("battle.damage", function(nextFn, c)
     local calc = c and c.battle and rawget(c.battle, "__ndxCalc")
     if not calc then
@@ -455,6 +500,15 @@ function Gold.installSeams(mod, deps)
   -- once per process (games switch in-process): Gold orders moves by their EFFECT's priority, so
   -- a move on our records answers its own; a type change made by a move (Soak, Burn Up) is the
   -- battler's types until it switches out (volatile(mon).__ndx.types)
+  -- a move that never misses this time (core "accuracy": Lock-On)
+  mod.hooks:wrap("battle.accuracy", function(nextFn, c)
+    if c and c.battle and core.hooks.accuracy then
+      local r = core:ask("accuracy", Gold.adapter(c.battle, deps), c.user, c.target, c.move)
+      if r ~= nil then return r end
+    end
+    return nextFn(c)
+  end)
+
   -- who moves first: priority and Speed as the field and abilities change them (Core:order)
   mod.hooks:wrap("battle.turn_order", function(nextFn, a, aMove, b, bMove, c)
     local battle = c and c.battle
@@ -512,6 +566,20 @@ function Gold.installSeams(mod, deps)
     end
     -- after a move (core "afterMove"): what a Protect variant does to the attacker
     Battle.useMove = function(self, attacker, defender, moveId, ...)
+      -- before the move (core "beforeMove"): stopped with a line, or another move / user
+      if hub.before and attacker and moveId then
+        local okB, r = pcall(hub.before, self, attacker, defender, moveId)
+        if okB and r ~= nil then
+          if type(r) == "string" then
+            if r ~= "" then self:emit({ kind = "message", text = r }) end
+            return
+          end
+          if type(r) == "table" then
+            if r.id then moveId = r.id end
+            if r.user then attacker, defender = r.user, r.target end
+          end
+        end
+      end
       local a, b, c = useMove(self, attacker, defender, moveId, ...)
       if hub.afterMove then
         local ok, err = pcall(hub.afterMove, self, attacker, defender, moveId)
@@ -529,6 +597,13 @@ function Gold.installSeams(mod, deps)
     local r = core:ask("blockStatus", A, mon, GATE_STATUS[status] or status, { from = source })
     if type(r) == "string" and r ~= "" then A:say(r) end
     return r
+  end
+  hub.before = function(battle, attacker, defender, moveId)
+    if not core.hooks.beforeMove then return nil end
+    local def = battle:moveDef(moveId)
+    if not def then return nil end
+    return core:ask("beforeMove", Gold.adapter(battle, deps), attacker, defender, def,
+      (battle.copyDepth or 0) > 0)
   end
   hub.endTurn = function(battle) core:fire("endTurn", Gold.adapter(battle, deps)) end
   hub.afterMove = function(battle, attacker, defender, moveId)

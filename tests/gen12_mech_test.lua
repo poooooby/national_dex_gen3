@@ -190,6 +190,52 @@ for _, version in ipairs(H.versions()) do
   w.use("AURORA_VEIL", "enemy")
   T.eq(core:fold("damageMult", 1, w.A, w.battler("player"), w.battler("enemy"), data.moves.TACKLE, {}), 0.5,
     version .. ": Aurora Veil halves a hit")
+
+  -- conditions (src/gen12/mech/volatile.lua)
+  w = sim.fresh()
+  w.use("TAUNT", "enemy")
+  w.use("SWORDS_DANCE")
+  T.eq(w.stage("player", "attack"), 0, version .. ": Taunt stops Swords Dance")
+  w = sim.fresh()
+  w.use("BELLY_DRUM")
+  T.check(w.stage("player", "attack") == 6 and w.hp("player") <= math.ceil(w.maxHp("player") / 2) + 1,
+    version .. ": Belly Drum")
+  w = sim.fresh({ foe = "CHARMANDER" })
+  w.use("SOAK")
+  T.check(#w.types("enemy") == 1 and w.types("enemy")[1] == "WATER", version .. ": Soak makes it Water")
+  w = sim.fresh()
+  w.use("MAGNET_RISE", "enemy")
+  T.check(core:ask("immune", w.A, w.battler("player"), w.battler("enemy"), data.moves.EARTHQUAKE),
+    version .. ": Magnet Rise: Ground moves miss it")
+  w = sim.fresh({ foe = "SNORLAX", level = 30, foeLevel = 70 })
+  w.use("STOCKPILE"); w.use("STOCKPILE")
+  hp = w.hp("enemy")
+  w.use("SPIT_UP")
+  T.check(w.hp("enemy") < hp and (w.A:vol(w.battler("player")).stockpile or 0) == 0, version .. ": Stockpile, Spit Up")
+  w = sim.fresh({ foe = "RATTATA" })
+  w.use("WISH")
+  w.mon("player").hp = 10
+  w.nextTurn()
+  w.endTurn()
+  T.check(w.hp("player") > 10, version .. ": Wish heals the next turn")
+  w = sim.fresh()
+  w.use("INGRAIN")
+  w.mon("player").hp = 10
+  w.endTurn()
+  T.check(w.hp("player") > 10, version .. ": Ingrain heals at the end of the turn")
+  w = sim.fresh({ level = 50, foeLevel = 50 })
+  w.use("PERISH_SONG")
+  -- ours on Red counts 3; Gold's own counts 4
+  for _ = 1, gen == 1 and 3 or 4 do w.endTurn() end
+  T.check(w.hp("enemy") == 0, version .. ": Perish Song")
+  w = sim.fresh()
+  w.use("GEOMANCY")
+  T.eq(w.stage("player", "spAtk"), 0, version .. ": Geomancy charges first")
+  w = sim.fresh()
+  w.use("HEAL_BLOCK", "enemy")
+  w.mon("player").hp = 10
+  w.use("RECOVER")
+  T.eq(w.hp("player"), 10, version .. ": Heal Block stops Recover")
   sim.release()
 end
 

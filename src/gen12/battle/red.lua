@@ -153,6 +153,13 @@ function RedA:basePriority(move)
   if move.priority then return move.priority end
   return (move.id == "QUICK_ATTACK" and 1) or (move.id == "COUNTER" and -1) or 0
 end
+-- one type against another (modern names): x10
+function RedA:typeEff(attackType, defendType)
+  local Types = self.deps.types
+  local a = Types and Types.cartId(attackType) or attackType
+  local d = Types and Types.cartId(defendType) or defendType
+  return self.TypeChart.effectiveness(a, { d })
+end
 -- a type (modern name) against the battler: x10 (0, 5, 10, 20 ...)
 function RedA:effectiveness(typeName, b)
   local Types = self.deps.types
@@ -268,6 +275,7 @@ function RedA:damage(b, n, opts)
   return dealt
 end
 function RedA:heal(b, n, opts)
+  if self.core.hooks.noHeal and self.core:ask("noHeal", self, b) then return 0 end
   local mon = b.mon
   local before = mon.hp
   mon.hp = math.min(self:maxHp(b), mon.hp + math.max(0, math.floor(n)))
@@ -281,6 +289,7 @@ end
 function RedA:drain(u, t, n)
   if self:hp(u) >= self:maxHp(u) then return 0 end
   local healed = self:heal(u, n)
+  if healed <= 0 then return 0 end
   self:say(self.romText(self.battle.data, "_SuckedHealthText", "Sucked health from\n%s!", self:name(t)))
   return healed
 end
@@ -291,9 +300,11 @@ function RedA:recoil(u, n) self.battle:applyRecoil(u, math.max(1, math.floor(n))
 -- "full" record on EffectRegistry.runDamaging's stages.
 function Red.record(spec, deps)
   local function adapter(ctx) return Red.adapter(ctx.battle, deps) end
+  -- a turn of charging first (Geomancy; Phantom Force vanishes)
+  local charge = spec.charge and { invulnerable = spec.charge.vanish or nil } or nil
   if spec.kind == "status" then
     return {
-      kind = "primary", accuracyChecked = spec.aimed or nil,
+      kind = "primary", accuracyChecked = spec.aimed or nil, charge = charge,
       run = function(ctx)
         local A = adapter(ctx)
         A:sink()
@@ -309,7 +320,7 @@ function Red.record(spec, deps)
     }
   end
 
-  local record = { kind = "full" }
+  local record = { kind = "full", charge = charge }
   if spec.fail then
     -- true: "But, it failed!"; a string: that text instead ("" for none)
     record.gate = function(ctx)
@@ -418,8 +429,9 @@ function Red.installSeams(mod, deps)
   -- attacker, so the battle is the one whose turn it is
   mod.hooks:wrap("battle.crit", function(nextFn, c)
     local A = core.lastAdapter
-    if A and A.gen == 1 and core.hooks.noCrit and c and c.attacker then
-      if core:ask("noCrit", A, c.attacker, A:foe(c.attacker)) then return false end
+    if A and A.gen == 1 and c and c.attacker then
+      if core.hooks.noCrit and core:ask("noCrit", A, c.attacker, A:foe(c.attacker)) then return false end
+      if core.hooks.forceCrit and core:ask("forceCrit", A, c.attacker) then return true end
     end
     return nextFn(c)
   end)
@@ -493,11 +505,35 @@ function Red.installSeams(mod, deps)
       return applyFieldResiduals(self, ...)
     end
     BattleState.performMove = function(self, user, target, moveInst, isCalled)
+      -- before the move (core "beforeMove"): stopped with a line (Taunt, Heal Block), or turned
+      -- into another (Encore)
+      if hub.before and moveInst then
+        local okB, r = pcall(hub.before, self, user, target, moveInst, isCalled)
+        if okB and type(r) == "table" then
+          if r.stop then
+            if r.stop ~= "" then self:sayNext(r.stop) end
+            return
+          end
+          if r.inst then moveInst = r.inst end
+          if r.user then user, target = r.user, r.target end
+        end
+      end
       local prev = rawget(self, "__ndxCur")
       self.__ndxCur = { user = user, target = target, moveInst = moveInst, isCalled = isCalled }
       local ok, err = pcall(performMove, self, user, target, moveInst, isCalled)
       self.__ndxCur = prev
       if not ok then error(err, 0) end
+    end
+    -- a move that works while its user sleeps (Sleep Talk, Snore): the sleep turn is spent as
+    -- usual, then the move runs
+    local statusInterrupt = BattleState.statusInterrupt
+    BattleState.statusInterrupt = function(self, user, target, selectedId, ...)
+      local interrupted = statusInterrupt(self, user, target, selectedId, ...)
+      if interrupted and hub.sleepMove and user.mon.status == "SLP" and selectedId
+          and hub.sleepMove(self, user, selectedId) then
+        return false
+      end
+      return interrupted
     end
     BattleState.effectRecord = function(self, effect)
       local rec = effectRecord(self, effect)
@@ -512,6 +548,27 @@ function Red.installSeams(mod, deps)
     end
   end
   hub.log = core.log
+  hub.before = function(battle, user, target, moveInst, isCalled)
+    if not core.hooks.beforeMove then return nil end
+    local move = battle.data.moves[moveInst.id]
+    if not move then return nil end
+    local A = Red.adapter(battle, deps)
+    local r = core:ask("beforeMove", A, user, target, move, isCalled)
+    if type(r) == "string" then return { stop = r } end
+    if type(r) == "table" and r.user then
+      return { user = r.user, target = r.target, inst = { id = r.id or moveInst.id, pp = 1 } }
+    end
+    if type(r) == "table" and r.id then
+      for _, mv in ipairs(A:moves(user)) do
+        if mv.id == r.id then return { inst = mv } end
+      end
+      return { inst = { id = r.id, pp = 1 } }
+    end
+    return nil
+  end
+  hub.sleepMove = function(battle, user, id)
+    return core:ask("sleepMove", Red.adapter(battle, deps), user, id) and true or false
+  end
   hub.endTurn = function(battle) core:fire("endTurn", Red.adapter(battle, deps)) end
   hub.block = function(battle, cur, rec)
     if not core.hooks.blocks or rec.callsMove then return nil end
@@ -531,32 +588,85 @@ function Red.installSeams(mod, deps)
     local category = move.category or TypeChart.category(move.type)
     return category == "special" and "special" or "attack", category == "special" and "special" or "defense"
   end
+  -- before the formula, for the one call: an immunity the field gives (core "immune": Magnet
+  -- Rise), types a hit ignores (core "dropTypes": Foresight, Smack Down), the move's type this
+  -- time (core "moveType": Electrify, Ion Deluge), a battler's stats as moves left them
+  -- (A:vol(b).statOver: Power Split, Power Trick), and the stats a move reads (`ndxStats`)
   mod.hooks:wrap("battle.damage", function(nextFn, c)
-    local want = c and c.opts and c.opts.ndxStats
-    if not want then return nextFn(c) end
+    if not (c and c.battle) or (c.opts and c.opts.typeless) then return nextFn(c) end
+    local want = c.opts and c.opts.ndxStats
     local user, target = c.user, c.target
+    local A = Red.adapter(c.battle, deps)
+    if core.hooks.immune and core:ask("immune", A, user, target, c.move) then
+      return 0, { crit = false, typeMult = 0 }
+    end
+    if core.hooks.moveType then
+      local t = core:ask("moveType", A, user, c.move)
+      if t then
+        local m = {}
+        for k, v in pairs(c.move) do m[k] = v end
+        m.type = deps.types and deps.types.cartId(t) or t
+        c.move = m
+      end
+    end
     local atkSlot, defSlot = slotOf(c.move)
-    local saved = {}
+    local saved, types = {}, nil
     local function put(who, slot, from, stat)
       saved[#saved + 1] = { who, slot, who.curStats[slot], who.stages[slot] }
       who.curStats[slot] = from.curStats[STAGE[stat] or stat]
       who.stages[slot] = from.stages[STAGE[stat] or stat] or 0
     end
+    local function over(who, slot, stat)
+      local o = rawget(who, "__ndx") and who.__ndx.statOver
+      local v = o and o[stat]
+      if v then
+        saved[#saved + 1] = { who, slot, who.curStats[slot], who.stages[slot] }
+        who.curStats[slot] = v
+      end
+    end
     local ok, a, b = pcall(function()
-      if want.attack then put(user, atkSlot, want.from == "target" and target or user, want.attack) end
-      if want.defense then put(target, defSlot, target, want.defense) end
-      if want.ignoreDefenseStages then
-        saved[#saved + 1] = { target, defSlot, target.curStats[defSlot], target.stages[defSlot] }
-        target.stages[defSlot] = 0
+      over(user, atkSlot, atkSlot == "special" and "spAtk" or "attack")
+      over(target, defSlot, defSlot == "special" and "spDef" or "defense")
+      if want then
+        if want.attack then put(user, atkSlot, want.from == "target" and target or user, want.attack) end
+        if want.defense then put(target, defSlot, target, want.defense) end
+        if want.ignoreDefenseStages then
+          saved[#saved + 1] = { target, defSlot, target.curStats[defSlot], target.stages[defSlot] }
+          target.stages[defSlot] = 0
+        end
+      end
+      if core.hooks.dropTypes then
+        local drop = core:ask("dropTypes", A, user, target, c.move)
+        if drop then
+          types = target.curTypes
+          local keep = {}
+          for _, t in ipairs(types or {}) do
+            local name = tostring(t):gsub("_TYPE$", "")
+            if name == "BIRD" then name = "FLYING" end
+            if not drop[name] then keep[#keep + 1] = t end
+          end
+          if #keep == 0 then keep[1] = deps.types and deps.types.cartId("NORMAL") or "NORMAL" end
+          target.curTypes = keep
+        end
       end
       return nextFn(c)
     end)
+    if types then target.curTypes = types end
     for i = #saved, 1, -1 do
       local s = saved[i]
       s[1].curStats[s[2]], s[1].stages[s[2]] = s[3], s[4]
     end
     if not ok then error(a, 0) end
     return a, b
+  end)
+
+  -- a move that never misses this time (core "accuracy" -> true / false: Lock-On)
+  mod.hooks:wrap("battle.accuracy", function(nextFn, c)
+    if c and c.battle and core.hooks.accuracy then
+      local r = core:ask("accuracy", Red.adapter(c.battle, deps), c.user, c.target, c.move)
+      if r ~= nil then return r end
+    end
+    return nextFn(c)
   end)
 end
 

@@ -58,6 +58,14 @@ function Install.register(opts)
           if gen == 2 and (row.highCrit or spec.highCrit) then
             opts.state.highCrit[#opts.state.highCrit + 1] = row.id
           end
+          if spec.charge then
+            if gen == 1 then
+              rec.chargeText = spec.charge.text
+              if spec.charge.vanish then rec.semiInvulnerable = true end
+            elseif okE and type(Effects.CHARGE) == "table" then
+              Effects.CHARGE[effectId] = { text = spec.charge.text, vanish = spec.charge.vanish or nil }
+            end
+          end
           if gen == 1 then
             if row.highCrit or spec.highCrit then rec.highCrit = true end
             local like = look and moves:get(look)
@@ -99,6 +107,7 @@ function Install.register(opts)
     end
   end
   if next(goldAdded) then pcall(anims.patch, anims, "moves", goldAdded) end
+  core.liveSpecs = result.specs
   if firstError and opts.log then
     opts.log:warn("%d new move mechanics failed (first: %s); those moves use stand-ins", result.failed,
       firstError)

@@ -140,6 +140,7 @@ function H.sim(version, extra)
         return out
       end
       function w.endTurn() tb:endOfTurn() end
+      function w.nextTurn() tb.turnCount = (tb.turnCount or 0) + 1 end
       if o.setup then o.setup(w) end
       return w
     end
@@ -199,6 +200,7 @@ function H.sim(version, extra)
       if b.betweenTurnEffects then b:betweenTurnEffects() end
       b:applyFieldResiduals()
     end
+    function w.nextTurn() b.turn = (b.turn or 0) + 1 end
     if o.setup then o.setup(w) end
     return w
   end
