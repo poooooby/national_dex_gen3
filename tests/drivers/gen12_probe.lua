@@ -447,7 +447,7 @@ local function body(game, log, dir)
     check(V ~= nil, "the vending machines are installed")
     if not V then return end
     if gen == 1 then
-      U.teleport(game, "CELADON_MART_4F", 18, 2, "right")
+      U.teleport(game, "CELADON_MART_4F", 19, 3, "up")         -- (18,2) is HELD EXPRESS
     else
       game.world:warpToMapId("GOLDENROD_DEPT_STORE_4F", 10, 2, "up")
     end

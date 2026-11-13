@@ -121,14 +121,14 @@ function Summary.install(opts)
       local gender = genderOf(data, mon)
       Font.draw(Strings("NATURE/"), 8, 72)
       Font.draw(natureOf(mon) or "-", 72, 72)
-      Font.draw(Strings("ABILITY/"), 8, 88)
-      Font.draw(abilityOf(data, mon) or "-", 24, 96)
-      Font.draw(Strings("ITEM/"), 8, 112)
-      Font.draw(itemDef and itemDef.name or (held and tostring(held)) or Strings("NONE"), 24, 120)
+      Font.draw(Strings("ABILITY/"), 8, 84)
+      Font.draw(abilityOf(data, mon) or "-", 24, 92)
+      Font.draw(Strings("ITEM/"), 8, 104)
+      Font.draw(itemDef and itemDef.name or (held and tostring(held)) or Strings("NONE"), 24, 112)
       local spd = core.traits and core.traits.spDef and core.traits.spDef(mon, data)
       if spd then
-        Font.draw(Strings("SP.DEF"), 8, 136)
-        Font.draw(("%3d"):format(spd), 72, 136)
+        Font.draw(Strings("SP.DEF"), 8, 124)
+        Font.draw(("%3d"):format(spd), 72, 124)
       end
       if gender then Font.draw(gender == "F" and "♀" or "♂", 144, 72) end
     end
