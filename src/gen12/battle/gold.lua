@@ -124,7 +124,11 @@ function GoldA:turn() return self.battle.turn or 0 end
 function GoldA:speed(b) return self.battle:effectiveSpeed(b) end
 function GoldA:record(b) return self.battle.data.pokemon[b.species] end
 function GoldA:dex(b) local r = self:record(b); return r and (r.baseDex or r.dex) end
-function GoldA:weight(b) return self.core:weight(self:record(b), b.species) end
+function GoldA:weight(b)
+  local w = self.core:weight(self:record(b), b.species)
+  if w and self.core.hooks.weight then w = self.core:fold("weight", w, self, b) end
+  return w
+end
 function GoldA:friendship(b) return b.happiness or 70 end
 function GoldA:item(b) return b.item end
 function GoldA:setItem(b, id) b.item = id end
@@ -139,6 +143,7 @@ function GoldA:moves(b) return b.moves or {} end
 local NATIVE_WEATHER = { rain = "rain", sun = "sun", sand = "sandstorm" }
 local FROM_NATIVE = { rain = "rain", sun = "sun", sandstorm = "sand" }
 function GoldA:weather()
+  if self.core.hooks.noWeather and self.core:ask("noWeather", self) then return nil end
   local w = FROM_NATIVE[self.battle.weather or ""]
   if w then return w end
   local f = self:field().weather
@@ -241,6 +246,8 @@ function GoldA:moveType(m) return (tostring(m.type or ""):gsub("_TYPE$", "")) en
 function GoldA:rng(n) return rand(self.battle.random, n or 256) end
 function GoldA:chance(pct)
   pct = tonumber(pct) or 100
+  local mover = self:field().mover
+  if mover and self.core.hooks.chanceScale then pct = self.core:fold("chanceScale", pct, self, mover) end
   if pct >= 100 then return true end
   return rand(self.battle.random, 256) < math.floor(pct * 256 / 100)
 end
@@ -280,6 +287,7 @@ end
 function GoldA:confuse(b, opts) return self:ailment(b, "CONFUSION", opts) end
 function GoldA:cure(b) b.status, b.statusTurns, b.toxicCounter = nil, nil, nil end
 function GoldA:flinch(b)
+  if self.core.hooks.noFlinch and self.core:ask("noFlinch", self, b) then return end
   if self.battle.flinch then return self.battle:flinch(b) end
   self.battle:volatile(b).flinched = true
 end
@@ -302,6 +310,11 @@ function GoldA:heal(b, n, opts)
   return healed
 end
 function GoldA:drain(u, t, n)
+  if self.core.hooks.drainReversed and self.core:ask("drainReversed", self, u, t) then
+    self:damage(u, math.max(1, math.floor(n)))
+    self:say(self:text("%s sucked up the liquid ooze!", self:name(u)))
+    return 0
+  end
   if self:hp(u) >= self:maxHp(u) then return 0 end
   if self.core.hooks.noHeal and self.core:ask("noHeal", self, u) then return 0 end
   if self.core.hooks.drainHeal then n = self.core:fold("drainHeal", n, self, u) end
@@ -310,6 +323,7 @@ function GoldA:drain(u, t, n)
   return healed
 end
 function GoldA:recoil(u, n)
+  if self.core.hooks.noRecoil and self.core:ask("noRecoil", self, u) then return end
   self:damage(u, math.max(1, math.floor(n)))
   self:say(self:text("%s is hit with recoil!", self:name(u)))
 end
@@ -500,6 +514,22 @@ function Gold.installSeams(mod, deps)
         for stat, slot in pairs(keys) do if s[stat] then side[slot] = s[stat] end end
       end
     end
+    -- Unaware: the other side's stages do not count for this hit (copies: the stage tables are the
+    -- battle's own)
+    if core.hooks.ignoreStages then
+      local function zeroed(st, keys)
+        local copy = {}
+        for k, v in pairs(st or {}) do copy[k] = v end
+        for _, k in ipairs(keys) do copy[k] = 0 end
+        return copy
+      end
+      if o.attacker and core:ask("ignoreStages", A, c.target, c.user) then
+        o.attacker.stages = zeroed(o.attacker.stages, { "attack", "specialAttack" })
+      end
+      if o.defender and core:ask("ignoreStages", A, c.user, c.target) then
+        o.defender.stages = zeroed(o.defender.stages, { "defense", "specialDefense", "evasion" })
+      end
+    end
     over(c.user, o.attacker, { attack = "attack", spAtk = "specialAttack" })
     over(c.target, o.defender, { defense = "defense", spDef = "specialDefense" })
     -- physical / special by the move (option move_split): Gold picks by type, so the class's
@@ -677,7 +707,23 @@ function Gold.installSeams(mod, deps)
           end
         end
       end
-      local a, b, c = useMove(self, attacker, defender, moveId, ...)
+      -- Rock Head / Magic Guard: Gold's own recoil moves (Double-Edge, Brave Bird ...) hit plainly,
+      -- the move's record swapped for a copy without the recoil effect for the one call
+      local moves, swapped = self.data and self.data.moves, nil
+      if hub.noRecoil and moves and type(moveId) == "string" and moves[moveId]
+          and moves[moveId].effect == "EFFECT_RECOIL_HIT" then
+        local okR, yes = pcall(hub.noRecoil, self, attacker)
+        if okR and yes then
+          swapped = moves[moveId]
+          local copy = {}
+          for k, v in pairs(swapped) do copy[k] = v end
+          copy.effect = "EFFECT_NORMAL_HIT"
+          moves[moveId] = copy
+        end
+      end
+      local okU, a, b, c = pcall(useMove, self, attacker, defender, moveId, ...)
+      if swapped then moves[moveId] = swapped end
+      if not okU then error(a, 0) end
       if hub.afterMove then
         local ok, err = pcall(hub.afterMove, self, attacker, defender, moveId)
         if not ok and hub.log then hub.log:warn("move mechanics: after a move failed: %s", tostring(err)) end
@@ -707,6 +753,9 @@ function Gold.installSeams(mod, deps)
       (battle.copyDepth or 0) > 0)
   end
   hub.endTurn = function(battle) core:fire("endTurn", Gold.adapter(battle, deps)) end
+  hub.noRecoil = function(battle, attacker)
+    return core.hooks.noRecoil and core:ask("noRecoil", Gold.adapter(battle, deps), attacker) or false
+  end
   hub.afterMove = function(battle, attacker, defender, moveId)
     if core.hooks.afterMove then
       core:fire("afterMove", Gold.adapter(battle, deps), attacker, defender, moveId)

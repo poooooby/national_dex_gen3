@@ -141,9 +141,11 @@ Crystal have their own section after them.
 - 🌦️ **Weather and terrain everywhere:** rain, sun, sandstorm, hail and snow, Electric, Grassy,
   Misty and Psychic Terrain, with their modern effects (Gold, Silver and Crystal keep their own
   rain, sun and sandstorm).
-- 💪 **Abilities:** every Pokémon has one of its species' abilities, the same one for good:
-  Intimidate, Levitate, Swift Swim, Water Absorb, Static, Sturdy, Guts, Technician and many more
-  do what they do today.
+- 💪 **Abilities:** every Pokémon has one of its species' abilities, the same one for good, and
+  they do what they do today: Intimidate, Levitate, Clear Body, Mold Breaker, Unaware, Magic
+  Guard, Protean, Disguise, Stance Change, the Ruin abilities and nearly 300 more. Only the few
+  that need a partner beside you (Commander, Receiver...) or change nothing in a battle like
+  these (Ball Fetch, Illusion...) are just their name.
 - 🌿 **Natures:** every Pokémon has a nature that raises one stat and lowers another, as in the
   newer games.
 - 📊 **The summary shows it all:** nature, ability, held item and Sp. Def on a third page in Red,
@@ -302,6 +304,9 @@ the game's own Pokémon keep their original data, so its event gifts arrive as u
 - **Red to Crystal's options** are Modern Moves, Register Owned, Bigger PC, Type Badges, Move
   Split and (Red, Blue, Yellow) Day & Night and Modern Rules, shared with the Generation 3 games:
   turning one off turns it off everywhere.
+- **A few abilities work in part on Red to Crystal:** Rock Head, Magic Guard, Liquid Ooze,
+  Serene Grace and Air Lock / Cloud Nine cover the newer moves and items, not every one of the
+  game's own (Gold's sandstorm and Leech Seed, for one); Corrosion and Imposter are just names.
 - **A few held items work in part on Red to Crystal:** Binding Band does nothing; Grip Claw works
   in Gold, Silver and Crystal but not with Red's Wrap; Booster Energy does nothing (Protosynthesis
   and Quark Drive aren't working abilities there); the Amulet Coin and Luck Incense double prize

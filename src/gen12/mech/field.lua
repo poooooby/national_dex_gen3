@@ -143,6 +143,7 @@ return function(core)
   core:on("blocks", function(A, u, t, m)
     local v = A:vol(t)
     if v.protect ~= A:turn() or m.id == "FEINT" then return nil end
+    if core.hooks.bypassProtect and core:ask("bypassProtect", A, u, t, m) then return nil end
     if ATTACKS_ONLY[v.protectKind or ""] and (m.power or 0) == 0 then return nil end
     return function()
       say(A, "%s protected itself!", A:name(t))
@@ -314,7 +315,8 @@ return function(core)
   core:rule("LUCKY_CHANT", sideTurns("luckyChant", 5, "Lucky Chant shielded %s's team from critical hits!"))
   core:effect("SAFEGUARD", sideTurns("safeguard", 5, "%s's team cloaked itself in a mystical veil!"))
   core:on("damageMult", function(k, A, u, t, m, info)
-    if (A:side(t).auroraVeil or 0) > 0 and not (info and (info.crit or info.critical)) then k = k * 0.5 end
+    if (A:side(t).auroraVeil or 0) > 0 and not (info and (info.crit or info.critical))
+        and not core:ask("infiltrates", A, u, t) then k = k * 0.5 end
     return k
   end)
   core:on("speed", function(s, A, b)
@@ -436,7 +438,7 @@ return function(core)
         say(A, row.stop)
       else
         say(A, row.go)
-        if row.hurt then
+        if row.hurt and not core:ask("noWeather", A) then
           for _, b in ipairs({ p, e }) do
             local immune = false
             for _, ty in ipairs(row.immune) do if A:hasType(b, ty) then immune = true end end

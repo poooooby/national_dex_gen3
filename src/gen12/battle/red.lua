@@ -138,7 +138,11 @@ function RedA:turn() return self.battle.turnCount or 0 end
 function RedA:speed(b) return self.deps.require("src.battle.TurnOrder").effectiveSpeed(b) end
 function RedA:record(b) return self.battle.data.pokemon[b.mon.species] end
 function RedA:dex(b) local r = self:record(b); return r and (r.baseDex or r.dex) end
-function RedA:weight(b) return self.core:weight(self:record(b), b.mon.species) end
+function RedA:weight(b)
+  local w = self.core:weight(self:record(b), b.mon.species)
+  if w and self.core.hooks.weight then w = self.core:fold("weight", w, self, b) end
+  return w
+end
 -- Red's hidden friendship (src/gen12/evolutions.lua keeps it on the mon), else 70
 function RedA:friendship(b)
   local bag = b.mon.extra and b.mon.extra.national_dex_gen3
@@ -164,7 +168,11 @@ function RedA:dvs(b) return b.mon.dvs or {} end
 -- the battler's moves: { id, pp }
 function RedA:moves(b) return b.curMoves or b.mon.moves or {} end
 -- the weather (rain / sun / sand / hail / snow): Red has none of its own, so it is all ours
-function RedA:weather() local w = self:field().weather; return w and w.kind or nil end
+function RedA:weather()
+  if self.core.hooks.noWeather and self.core:ask("noWeather", self) then return nil end
+  local w = self:field().weather
+  return w and w.kind or nil
+end
 function RedA:setWeather(kind, turns, text)
   self:field().weather = { kind = kind, turns = turns or 5 }
   if text then self:say(text) end
@@ -294,6 +302,8 @@ function RedA:moveType(m) return (tostring(m.type or ""):gsub("_TYPE$", "")) end
 function RedA:rng(n) return self.battle.rng(0, (n or 256) - 1) end
 function RedA:chance(pct)
   pct = tonumber(pct) or 100
+  local mover = self:field().mover
+  if mover and self.core.hooks.chanceScale then pct = self.core:fold("chanceScale", pct, self, mover) end
   if pct >= 100 then return true end
   return self.battle.rng(0, 255) < math.floor(pct * 256 / 100)
 end
@@ -382,7 +392,10 @@ function RedA:confuse(b, opts)
   return true
 end
 function RedA:cure(b) b.mon.status = nil; b.toxicCounter = nil end
-function RedA:flinch(b) b.flinched = true end
+function RedA:flinch(b)
+  if self.core.hooks.noFlinch and self.core:ask("noFlinch", self, b) then return end
+  b.flinched = true
+end
 
 -- HP lost to anything but the move's own hit (recoil, hazards, the weather): past a Substitute
 function RedA:damage(b, n, opts)
@@ -408,6 +421,10 @@ function RedA:heal(b, n, opts)
   return mon.hp - before
 end
 function RedA:drain(u, t, n)
+  if self.core.hooks.drainReversed and self.core:ask("drainReversed", self, u, t) then
+    self:damage(u, math.max(1, math.floor(n)), { text = self:text("%s sucked up the liquid ooze!", self:name(u)) })
+    return 0
+  end
   if self:hp(u) >= self:maxHp(u) then return 0 end
   if self.core.hooks.drainHeal then n = self.core:fold("drainHeal", n, self, u) end
   local healed = self:heal(u, n)
@@ -415,7 +432,10 @@ function RedA:drain(u, t, n)
   self:say(self.romText(self.battle.data, "_SuckedHealthText", "Sucked health from\n%s!", self:name(t)))
   return healed
 end
-function RedA:recoil(u, n) self.battle:applyRecoil(u, math.max(1, math.floor(n))) end
+function RedA:recoil(u, n)
+  if self.core.hooks.noRecoil and self.core:ask("noRecoil", self, u) then return end
+  self.battle:applyRecoil(u, math.max(1, math.floor(n)))
+end
 
 -- ------------------------------------------------------------------ the record a mechanic becomes
 -- Red runs a status move's record as a "primary" (its messages returned), a damaging one as a
@@ -690,6 +710,23 @@ function Red.installSeams(mod, deps)
     end
   end
   hub.log = core.log
+  -- Red's own recoil (Take Down, Double-Edge, Submission): none for Rock Head / Magic Guard
+  local rHub = BattleState.__ndxRecoil
+  if not rHub then
+    rHub = {}
+    BattleState.__ndxRecoil = rHub
+    local applyRecoil = BattleState.applyRecoil
+    BattleState.applyRecoil = function(self, user, recoil, ...)
+      if rHub.skip then
+        local ok, yes = pcall(rHub.skip, self, user)
+        if ok and yes then return end
+      end
+      return applyRecoil(self, user, recoil, ...)
+    end
+  end
+  rHub.skip = function(battle, user)
+    return core.hooks.noRecoil and core:ask("noRecoil", Red.adapter(battle, deps), user) or false
+  end
   hub.afterMove = function(battle, user, target, moveId)
     if core.hooks.afterMove then core:fire("afterMove", Red.adapter(battle, deps), user, target, moveId) end
   end
@@ -783,6 +820,13 @@ function Red.installSeams(mod, deps)
         who.curStats[slot] = v
       end
     end
+    -- Infiltrator: the target's screens do not count (Red reads them through opts.screens)
+    if core.hooks.infiltrates and core:ask("infiltrates", A, user, target) then
+      local o2 = {}
+      for k, v in pairs(c.opts or {}) do o2[k] = v end
+      o2.screens = false
+      c.opts = o2
+    end
     local ok, a, b = pcall(function()
       -- a special move meets the target's Sp. Def and Sp. Def stage, not its SPECIAL
       if defSlot == "special" and core.spDefOf then
@@ -791,6 +835,17 @@ function Red.installSeams(mod, deps)
           saved[#saved + 1] = { target, "special", target.curStats.special, target.stages.special }
           target.curStats.special = v
           target.stages.special = A:stage(target, "spDef")
+        end
+      end
+      -- Unaware: the other side's stages do not count for this hit
+      if core.hooks.ignoreStages then
+        if core:ask("ignoreStages", A, target, user) then
+          saved[#saved + 1] = { user, atkSlot, user.curStats[atkSlot], user.stages[atkSlot] }
+          user.stages[atkSlot] = 0
+        end
+        if core:ask("ignoreStages", A, user, target) then
+          saved[#saved + 1] = { target, defSlot, target.curStats[defSlot], target.stages[defSlot] }
+          target.stages[defSlot] = 0
         end
       end
       over(user, atkSlot, atkSlot == "special" and "spAtk" or "attack")

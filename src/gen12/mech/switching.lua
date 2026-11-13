@@ -67,6 +67,8 @@ return function(core)
   end }))
   local function drag(A, u, t)
     if A:hp(t) <= 0 or not A:replacement(t, true) or A:vol(t).ingrain then return end
+    -- Suction Cups, Guard Dog
+    if core.hooks.noForceSwitch and core:ask("noForceSwitch", A, t) then return end
     skipIfPending(A, t)
     A:switchOut(t, { random = true })
   end

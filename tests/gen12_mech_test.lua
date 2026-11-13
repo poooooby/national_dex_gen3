@@ -396,11 +396,15 @@ for _, version in ipairs(H.versions()) do
     x.use(move)
     return before - x.hp("enemy"), x
   end
-  local plain = hitWith(nil, "STRENGTH")
-  local band = hitWith("CHOICE_BAND", "STRENGTH")
-  T.check(band > plain, version .. ": Choice Band: a physical move hits harder (" .. plain .. " -> " .. band .. ")")
+  -- (the damage multipliers asked directly: a fresh battle rolls new stats)
+  local xm = sim.fresh({ mine = "MACHAMP", foe = "SNORLAX", level = 50 })
+  give(xm, "player", "CHOICE_BAND")
+  T.eq(core:fold("damageMult", 1, xm.A, xm.battler("player"), xm.battler("enemy"), data.moves.STRENGTH, {}), 1.5,
+    version .. ": Choice Band: 1.5x a physical move")
+  give(xm, "player", "LIFE_ORB")
+  T.eq(core:fold("damageMult", 1, xm.A, xm.battler("player"), xm.battler("enemy"), data.moves.STRENGTH, {}), 1.3,
+    version .. ": Life Orb: 1.3x")
   local orb, xo = hitWith("LIFE_ORB", "STRENGTH")
-  T.check(orb > plain, version .. ": Life Orb: harder hits")
   T.check(xo.hp("player") < xo.maxHp("player"), version .. ": ... and the user loses HP")
   w = sim.fresh({ mine = "MACHAMP", foe = "RATTATA", level = 80, foeLevel = 5 })
   give(w, "enemy", "FOCUS_SASH")
@@ -467,6 +471,159 @@ for _, version in ipairs(H.versions()) do
       m.extra.national_dex_gen3.friendship = 70
       T.eq(Evolutions.addFriendship(m, 70, 2), 73, version .. ": Soothe Bell: friendship rises half again")
     end
+  end
+
+  -- the abilities written out (src/gen12/mech/abilities_more.lua)
+  do
+    local function as(x, side, id) x.A:vol(x.battler(side)).ability = id end
+    -- every ability a species can have does something, or is one of the few that cannot here
+    local ABS = H.module("data/gen12/abilities.lua")
+    local function slurp(path) local f = io.open(H.modRoot() .. path, "rb"); local t = f:read("*a"); f:close(); return t end
+    local src = slurp("/src/gen12/mech/abilities_more.lua") .. slurp("/src/gen12/mech/abilities.lua")
+    local NAMES_ONLY = { BALLFETCH = true, COMMANDER = true, RECEIVER = true, TELEPATHY = true, HONEYGATHER = true,
+      CURIOUSMEDICINE = true, ILLUSION = true, POWERCONSTRUCT = true, RKSSYSTEM = true, TERASHIFT = true, CORROSION = true,
+      IMPOSTER = true, PROPELLERTAIL = true, STALWART = true, SYMBIOSIS = true, COSTAR = true, POWEROFALCHEMY = true }
+    local missing = {}
+    for id, a in pairs(ABS) do
+      if not a.b and not NAMES_ONLY[id] and not src:find('"' .. id .. '"', 1, true) and not src:find(id .. " =", 1, true) then
+        missing[#missing + 1] = id
+      end
+    end
+    table.sort(missing)
+    T.eq(#missing, 0, version .. ": every ability has an effect or is text only (" .. table.concat(missing, ", ") .. ")")
+
+    -- (the player's Growl: the game's own makes a foe's stat drops fail at the low test roll)
+    w = sim.fresh({ mine = "MACHAMP", foe = "RATTATA" })
+    as(w, "enemy", "CLEARBODY")
+    w.use("GROWL")
+    T.eq(w.stage("enemy", "attack"), 0, version .. ": Clear Body: Growl does nothing")
+    w = sim.fresh({ mine = "MACHAMP", foe = "RATTATA" })
+    as(w, "enemy", "DEFIANT")
+    w.use("GROWL")
+    T.eq(w.stage("enemy", "attack"), 1, version .. ": Defiant: Growl, then +2 Attack")
+    w = sim.fresh({ mine = "MACHAMP", foe = "RATTATA" })
+    as(w, "player", "CONTRARY")
+    w.use("SWORDS_DANCE")
+    T.eq(w.stage("player", "attack"), -2, version .. ": Contrary: Swords Dance lowers Attack")
+    local function dealt(o, setup)
+      local x = sim.fresh(o)
+      if setup then setup(x) end
+      local h0 = x.hp("enemy")
+      x.use(o.move or "STRENGTH")
+      return h0 - x.hp("enemy"), x
+    end
+    -- (one battle, the foe's HP put back between hits: a fresh battle rolls new stats)
+    w = sim.fresh({ mine = "MACHAMP", foe = "SNORLAX", level = 50 })
+    local full = w.hp("enemy")
+    local function hitOnce()
+      w.mon("enemy").hp = full
+      w.use("STRENGTH")
+      return full - w.hp("enemy")
+    end
+    as(w, "enemy", "UNAWARE")
+    local base = hitOnce()
+    w.A:setStage(w.battler("player"), "attack", 6)
+    if gen == 1 then
+      T.eq(hitOnce(), base, version .. ": Unaware: the attacker's +6 does not count")
+    else
+      -- (Gold's test rolls vary hit to hit: the stage the formula reads is what counts)
+      local Damage = require("src.battle.gen2.Damage")
+      local calc, seen = Damage.calc, nil
+      Damage.calc = function(o, ...) seen = o.attacker and o.attacker.stages and o.attacker.stages.attack; return calc(o, ...) end
+      hitOnce()
+      Damage.calc = calc
+      T.eq(seen, 0, version .. ": Unaware: the attacker's +6 does not count")
+    end
+    w.A:setStage(w.battler("player"), "attack", 0)
+    as(w, "enemy", "RUNAWAY")
+    local plain = hitOnce()
+    as(w, "player", "SWORDOFRUIN")
+    T.check(hitOnce() > plain, version .. ": Sword of Ruin hits harder")
+    w = sim.fresh({ mine = "MACHAMP", foe = "RATTATA" })
+    as(w, "player", "NOGUARD")
+    T.eq(core:ask("accuracy", w.A, w.battler("player"), w.battler("enemy"), data.moves.STRENGTH), true,
+      version .. ": No Guard: never misses")
+    w = sim.fresh({ mine = "MACHAMP", foe = "RATTATA" })
+    as(w, "enemy", "SHADOWTAG")
+    T.check(core:ask("trapped", w.A, w.battler("player")) ~= nil, version .. ": Shadow Tag traps")
+    w = sim.fresh({ mine = "MACHAMP", foe = "RATTATA" })
+    as(w, "enemy", "STATIC")
+    as(w, "player", "TRACE")
+    w.A:vol(w.battler("player")).abilityEntered = nil
+    core:fire("switchedIn", w.A, { battler = w.battler("player") })
+    T.eq(core.abilityOf(w.A, w.battler("player")), "STATIC", version .. ": Trace copies the foe's ability")
+    w = sim.fresh({ mine = "PIDGEOT", foe = "SNORLAX", level = 50 })
+    as(w, "player", "ROCKHEAD")
+    w.use("BRAVE_BIRD")
+    T.eq(w.hp("player"), w.maxHp("player"), version .. ": Rock Head: no recoil")
+    w = sim.fresh({ mine = "MACHAMP", foe = "SNORLAX", level = 50 })
+    as(w, "player", "MAGICGUARD")
+    w.A:setItem(w.battler("player"), "LIFE_ORB")
+    w.use("STRENGTH")
+    T.eq(w.hp("player"), w.maxHp("player"), version .. ": Magic Guard: no Life Orb cost")
+    w = sim.fresh({ mine = "CLEFAIRY", foe = "SNORLAX", level = 50 })
+    as(w, "enemy", "LIQUIDOOZE")
+    w.mon("player").hp = w.maxHp("player") - 20
+    hp = w.hp("player")
+    w.use("DRAINING_KISS")
+    T.check(w.hp("player") < hp, version .. ": Liquid Ooze: draining hurts")
+    w = sim.fresh({ mine = "MACHAMP", foe = "SNORLAX" })
+    as(w, "enemy", "HEAVYMETAL")
+    T.eq(w.A:weight(w.battler("enemy")), core:weight(w.A:record(w.battler("enemy"))) * 2,
+      version .. ": Heavy Metal doubles weight")
+    w = sim.fresh({ mine = "MACHAMP", foe = "SNORLAX", level = 50 })
+    as(w, "enemy", "DISGUISE")
+    hp = w.hp("enemy")
+    w.use("STRENGTH")
+    T.eq(hp - w.hp("enemy"), math.floor(w.maxHp("enemy") / 8), version .. ": Disguise takes the hit, at 1/8 HP")
+    w = sim.fresh({ mine = "MACHAMP", foe = "SNORLAX", level = 50 })
+    as(w, "player", "TRUANT")
+    core:ask("beforeMove", w.A, w.battler("player"), w.battler("enemy"), data.moves.STRENGTH, false)
+    T.check(core:ask("beforeMove", w.A, w.battler("player"), w.battler("enemy"), data.moves.STRENGTH, false) ~= nil,
+      version .. ": Truant loafs every other turn")
+    w = sim.fresh({ mine = "MACHAMP", foe = "RATTATA" })
+    as(w, "enemy", "DAMP")
+    T.check(core:ask("beforeMove", w.A, w.battler("player"), w.battler("enemy"), data.moves.EXPLOSION, false) ~= nil,
+      version .. ": Damp stops Explosion")
+    w = sim.fresh({ mine = "MACHAMP", foe = "RATTATA" })
+    as(w, "enemy", "SOUNDPROOF")
+    T.check(core:ask("beforeMove", w.A, w.battler("player"), w.battler("enemy"), data.moves.GROWL, false) ~= nil,
+      version .. ": Soundproof: Growl does nothing")
+    w = sim.fresh({ mine = "GEODUDE", foe = "GASTLY", level = 40 })
+    as(w, "player", "MOLDBREAKER")
+    as(w, "enemy", "LEVITATE")
+    hp = w.hp("enemy")
+    w.use("EARTHQUAKE")
+    T.check(w.hp("enemy") < hp, version .. ": Mold Breaker: Earthquake hits a Levitate Pokemon")
+    w = sim.fresh({ mine = "KOFFING", foe = "RATTATA" })
+    as(w, "player", "NEUTRALIZINGGAS")
+    as(w, "enemy", "STATIC")
+    core:fire("switchedIn", w.A, { battler = w.battler("player") })
+    T.eq(core.abilityOf(w.A, w.battler("enemy")), nil, version .. ": Neutralizing Gas quiets the foe's ability")
+    w = sim.fresh({ mine = "PSYDUCK", foe = "RATTATA" })
+    as(w, "player", "CLOUDNINE")
+    w.A:setWeather("rain", 5)
+    T.eq(w.A:weather(), nil, version .. ": Cloud Nine: no weather")
+    w = sim.fresh({ mine = "PORYGON", foe = "SNORLAX" })
+    as(w, "player", "DOWNLOAD")
+    w.A:vol(w.battler("player")).abilityEntered = nil
+    core:fire("switchedIn", w.A, { battler = w.battler("player") })
+    T.eq(w.stage("player", "attack") + w.stage("player", "spAtk"), 1, version .. ": Download raises one stat")
+    w = sim.fresh({ mine = "RATTATA", foe = "RATTATA", level = 40 })
+    as(w, "player", "GUARDDOG")
+    as(w, "enemy", "INTIMIDATE")
+    w.A:vol(w.battler("enemy")).abilityEntered = nil
+    core:fire("switchedIn", w.A, { battler = w.battler("enemy") })
+    T.eq(w.stage("player", "attack"), 1, version .. ": Guard Dog: Intimidate raises its Attack")
+    w = sim.fresh({ mine = "MACHAMP", foe = "SNORLAX", level = 50 })
+    as(w, "player", "STANCECHANGE")
+    w.use("STRENGTH")
+    T.check(w.A:vol(w.battler("player")).statOver ~= nil, version .. ": Stance Change: an attack is the Blade Forme")
+    w = sim.fresh({ mine = "MACHAMP", foe = "SNORLAX", level = 30, foeLevel = 60 })
+    as(w, "player", "MAGICIAN")
+    w.A:setItem(w.battler("enemy"), "LEFTOVERS")
+    w.use("STRENGTH")
+    T.eq(w.A:item(w.battler("player")), "LEFTOVERS", version .. ": Magician steals the item")
   end
 
   -- Red's Sp. Def (src/gen12/mech/traits.lua Traits.spDef, src/gen12/battle/red.lua)

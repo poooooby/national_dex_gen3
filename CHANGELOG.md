@@ -42,6 +42,12 @@ All notable changes to this mod are documented here, in
 - Gold, Silver and Crystal's summary and Pack describe every newer move and held item in the
   games' own style.
 
+- **Red to Crystal: nearly every ability does what it does today,** the ~140 that were only a
+  name before among them: Clear Body, Mold Breaker, Unaware, Magic Guard, Neutralizing Gas,
+  Protean, Magic Bounce, Disguise, Stance Change, Trace, Download, Shadow Tag, the Ruin four,
+  Protosynthesis and Quark Drive (with Booster Energy), Sniper, Skill Link, Pressure and the
+  rest. Only the partner abilities and a few with nothing to act on in these battles stay names.
+
 ### Fixed
 
 - Gold, Silver and Crystal: the new Pokémon keep their colours (two taken from their picture)

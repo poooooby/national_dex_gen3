@@ -463,7 +463,7 @@ def lua(v: Any, indent: str = "") -> str:
 
 
 NL = chr(10)
-FLAG_KINDS = ("contact", "punch", "sound", "powder", "bite", "slicing", "wind", "bullet", "pulse")
+FLAG_KINDS = ("contact", "punch", "sound", "powder", "bite", "slicing", "wind", "bullet", "pulse", "dance")
 
 
 def move_flags() -> dict[str, list[str]]:

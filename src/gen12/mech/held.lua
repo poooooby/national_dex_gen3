@@ -24,6 +24,7 @@ return function(core, opts)
   -- the item, unless Magic Room or Embargo keeps it quiet
   local function itemOf(A, b)
     if A:field().magicRoom then return nil end
+    if core.hooks.itemSuppressed and core:ask("itemSuppressed", A, b) then return nil end
     return A:item(b)
   end
   local function eat(A, b)
@@ -32,9 +33,14 @@ return function(core, opts)
     A:setItem(b, nil)
     local v = A:vol(b)
     v.consumed = id
-    if isBerry(id) then v.ateBerry = true end
+    if isBerry(id) then
+      v.ateBerry = true
+      if core.hooks.ateBerry then core:fire("ateBerry", A, b, id) end
+    end
     return id
   end
+  -- Sticky Hold: a foe's move cannot take the item
+  local function locked(A, b) return core.hooks.itemLocked and core:ask("itemLocked", A, b) or false end
 
   -- ------------------------------------------------------------------ Red's held items
   if gen == 1 then
@@ -150,7 +156,7 @@ return function(core, opts)
       power = function(A, u, t, m) return A:item(t) and math.floor((m.power or 65) * 3 / 2) or m.power end,
       secondary = function(A, u, t)
         local id = A:item(t)
-        if not id then return end
+        if not id or locked(A, t) then return end
         A:setItem(t, nil)
         if A:sideName(t) == "player" then
           local f = A:field()
@@ -178,7 +184,7 @@ return function(core, opts)
   -- Red: Thief and Covet steal (Gold runs its own Thief)
   core:effect("THIEF", hit({ secondary = function(A, u, t)
     local id = A:item(t)
-    if id and not A:item(u) then
+    if id and not A:item(u) and not locked(A, t) then
       A:setItem(t, nil)
       A:setItem(u, id)
       say(A, "%s stole %s's %s!", A:name(u), A:name(t), A:itemName(id))
@@ -186,7 +192,7 @@ return function(core, opts)
   -- swap items (Trick, Switcheroo)
   core:effect("TRICK", status({ aimed = true, run = function(A, u, t)
     local a, b = A:item(u), A:item(t)
-    if not a and not b then return false end
+    if not a and not b or locked(A, t) then return false end
     A:setItem(u, b)
     A:setItem(t, a)
     say(A, "%s switched items with its target!", A:name(u))
@@ -213,7 +219,7 @@ return function(core, opts)
   local function stealBerry(burn)
     return hit({ secondary = function(A, u, t)
       local id = A:item(t)
-      if not isBerry(id) then return end
+      if not isBerry(id) or locked(A, t) then return end
       A:setItem(t, nil)
       if burn then
         say(A, "%s's %s was burned up!", A:name(t), A:itemName(id))

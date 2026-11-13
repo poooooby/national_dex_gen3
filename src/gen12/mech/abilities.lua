@@ -34,8 +34,8 @@ return function(core, opts)
     local dex = A:dex(b)
     return dex and facts.abilities and facts.abilities[dex] or nil
   end
-  -- the Pokemon's ability id, or nil (suppressed, or none known)
-  local function abilityOf(A, b)
+  -- the Pokemon's own ability id, or nil (suppressed, or none known)
+  local function rawAbility(A, b)
     if not b then return nil end
     local v = A:vol(b)
     if v.abilitySuppressed then return nil end
@@ -48,6 +48,25 @@ return function(core, opts)
       if (d.defense or 0) % 2 == 1 then return second end
     end
     return first ~= false and first or nil
+  end
+  core.rawAbility = rawAbility
+  -- abilities a foe's Mold Breaker cannot set aside
+  local UNBREAKABLE = { SHADOWSHIELD = true, PRISMARMOR = true, FULLMETALBODY = true, COMATOSE = true,
+    MULTITYPE = true, RKSSYSTEM = true, ASONEGLASTRIER = true, ASONESPECTRIER = true, NEUTRALIZINGGAS = true }
+  -- the ability as the battle sees it: Neutralizing Gas on the field quiets every other one; the
+  -- target of a Mold Breaker's move (A:field().moldBreaking, set for that move) has none
+  local function abilityOf(A, b)
+    local id = rawAbility(A, b)
+    if not id then return nil end
+    local f = A:field()
+    if id ~= "NEUTRALIZINGGAS" and f.gasOn then
+      for _, x in ipairs({ A:battlers() }) do
+        if x and x ~= b and A:hp(x) > 0 and rawAbility(A, x) == "NEUTRALIZINGGAS" then return nil end
+      end
+    end
+    local mb = f.moldBreaking
+    if mb and mb.target == b and mb.user ~= b and not UNBREAKABLE[id] then return nil end
+    return id
   end
   core.abilityOf = abilityOf
   -- outside battle (the summary): a party Pokemon's ability from its species record and DVs
@@ -241,12 +260,27 @@ return function(core, opts)
   end)
 
   -- ------------------------------------------------------------------ triggers
+  -- abilities that shrug off Intimidate (Gen 8 on), and Guard Dog, which turns it around
+  local INTIMIDATE_PROOF = { OWNTEMPO = true, OBLIVIOUS = true, INNERFOCUS = true, SCRAPPY = true }
   local function apply(A, b, beh, id, foe)
     for _, e in ipairs(beh.effects or {}) do
       local who = (beh.scope == "foes") and foe or b
       if e.kind == "stat_change" and STAT[e.stat] and who and A:hp(who) > 0 then
         say(A, "%s's %s!", A:name(b), nameOf(id))
-        A:stages(who, { [STAT[e.stat]] = e.stages or 1 }, who ~= b and { from = b } or nil)
+        local delta = e.stages or 1
+        local wid = who ~= b and abilityOf(A, who) or nil
+        if id == "INTIMIDATE" and wid and INTIMIDATE_PROOF[wid] then
+          say(A, "%s's %s prevents it from being intimidated!", A:name(who), nameOf(wid))
+        elseif id == "INTIMIDATE" and wid == "GUARDDOG" then
+          A:stages(who, { attack = 1 })
+        else
+          local before = A:stage(who, STAT[e.stat])
+          A:stages(who, { [STAT[e.stat]] = delta }, who ~= b and { from = b } or nil)
+          -- what the one whose stat fell does about it (Clear Body, Defiant, Contrary ...)
+          local fell = A:stage(who, STAT[e.stat]) - before
+          if who ~= b and fell < 0 and core.reactToDrops then core.reactToDrops(A, who, { [STAT[e.stat]] = fell }, b) end
+          if id == "INTIMIDATE" and who ~= b then core:fire("intimidated", A, who, b) end
+        end
       elseif e.kind == "set_weather" then
         local w = ({ rain = "rain", sun = "sun", sandstorm = "sand", hail = (id == "SNOWWARNING") and "snow" or "hail" })[e.weather]
         if w and A:weather() ~= w then
@@ -320,7 +354,7 @@ return function(core, opts)
       for _, x in ipairs(e and { e } or list) do
         if x.kind == "inflict_status" and AILMENT[x.status] then
           A:ailment(u, AILMENT[x.status], { from = t, secondary = true })
-        elseif x.kind == "damage" then
+        elseif x.kind == "damage" and not core:ask("noIndirect", A, u) then
           A:damage(u, math.max(1, math.floor(A:maxHp(u) * (x.fraction or 0.125))),
             { text = A:text("%s was hurt by %s's %s!", A:name(u), A:name(t), nameOf(id)) })
         elseif x.kind == "stat_change" and STAT[x.stat] then
@@ -365,6 +399,8 @@ return function(core, opts)
     local v = A:vol(b)
     v.ability, v.abilitySuppressed, v.abilityEntered = id, nil, nil
   end
+  core.setAbility = setAbility
+  core.abilityEntered = function(A, b) entered(A, b) end
   local function status(t) t.kind = "status"; return t end
   core:effect("ROLE_PLAY", status({ aimed = true, run = function(A, u, t)
     local id = abilityOf(A, t)

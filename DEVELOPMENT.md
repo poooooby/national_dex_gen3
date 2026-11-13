@@ -933,6 +933,19 @@ Instruct, Decorate), which keep stand-ins. Neither the engine nor any Gen 3 file
   `perform` stops a protected move, `statusInterrupt`, `resolveSwitch`; Gold `movePriority`,
   `battlerTypes`, `betweenTurnEffects`, `useMove`, `applyStatus` / `applyConfusion`,
   `switchLocked`.
+- **The other abilities** (`mech/abilities_more.lua`, after `abilities.lua`): every ability without
+  a `b` block, written out on the hooks (the file's header lists them). `abilities.lua` `abilityOf`
+  answers Neutralizing Gas (`A:field().gasOn` + a scan) and a Mold Breaker's target
+  (`A:field().moldBreaking`, set in beforeMove for that move); `core.rawAbility` ignores both.
+  beforeMove snapshots both sides (stages, status, HP) and afterMove compares (`core.reactToDrops`
+  is also called by Intimidate). New hooks the adapters ask: `weight`, `noWeather`, `chanceScale`
+  (Serene Grace; `A:field().mover`), `noFlinch`, `noRecoil` (Red's `applyRecoil` wrapped; Gold's
+  recoil moves run as a plain hit via a swapped move record), `drainReversed`, `ignoreStages`
+  (Unaware, in both damage wraps), `infiltrates`, `bypassProtect`, `noForceSwitch`, `itemLocked`,
+  `itemSuppressed`, `gluttony`, `ripen`, `ateBerry`, `noIndirect`, `skillLink`, `loadedDice`.
+  Forms that change stats in battle (Stance Change, Zero to Hero, Schooling, Zen Mode) use
+  `A:vol(b).statOver` from hand-written form base stats. The test checks every ability has a
+  `b` block, is named in the code, or is on the names-only list.
 - **Natures and abilities** come from the DVs (`traits.natureIndex`, the ability slot), so
   nothing is saved; natures apply in Red `Stats.calc` and Gold `Mon.stats` (Red's SPECIAL is the
   Sp. Atk and takes Sp. Atk's factor). Abilities run `data/gen12/abilities.lua`'s `b` behaviour

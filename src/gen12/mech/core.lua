@@ -53,6 +53,7 @@ Core.FAMILIES = {
   "src/gen12/mech/traits.lua",
   "src/gen12/mech/held.lua",
   "src/gen12/mech/abilities.lua",
+  "src/gen12/mech/abilities_more.lua",
 }
 
 function Core.new(opts)

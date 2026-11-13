@@ -40,6 +40,8 @@ return function(core, opts)
     local id = A:item(b)
     local r = id and byId[id]
     if r and A:vol(b).embargo then return nil end
+    -- Klutz: the holder's item does nothing
+    if r and core.hooks.itemSuppressed and core:ask("itemSuppressed", A, b) then return nil end
     return r, id
   end
   local function kind(A, b, k)
@@ -51,9 +53,17 @@ return function(core, opts)
     A:setItem(b, nil)
     local v = A:vol(b)
     v.consumed = id
-    if tostring(id):find("BERRY") then v.ateBerry = true end
+    if tostring(id):find("BERRY") then
+      v.ateBerry = true
+      if core.hooks.ateBerry then core:fire("ateBerry", A, b, id) end
+    end
   end
   local function named(A, id) return A:itemName(id) end
+  -- HP an item takes (Life Orb, Rocky Helmet, Black Sludge, Sticky Barb, Jaboca): Magic Guard none
+  local function hurt(A, b, n, o)
+    if core.hooks.noIndirect and core:ask("noIndirect", A, b) then return 0 end
+    return A:damage(b, n, o)
+  end
 
   -- ------------------------------------------------------------------ damage
   local PHYS, SPEC = "physical", "special"
@@ -292,7 +302,7 @@ return function(core, opts)
     if r and A:hp(u) > 0 then
       local e = r.effect
       if e.kind == "lifeOrb" and vu.lifeOrbHit and dealt > 0 then
-        A:damage(u, math.max(1, math.floor(A:maxHp(u) / 10)), { text = A:text("%s lost some of its HP!", A:name(u)) })
+        hurt(A, u, math.max(1, math.floor(A:maxHp(u) / 10)), { text = A:text("%s lost some of its HP!", A:name(u)) })
       elseif e.kind == "shellBell" and dealt > 0 and A:hp(u) < A:maxHp(u) then
         A:heal(u, math.max(1, math.floor(dealt / 8)), { text = A:text("%s restored a little HP using its %s!", A:name(u), named(A, id)) })
       elseif e.kind == "flinch" and dealt > 0 and t and t ~= u and A:hp(t) > 0 and A:rng(100) < (e.chance or 10) then
@@ -340,7 +350,7 @@ return function(core, opts)
         local e = d.effect
         local contact = flag("contact", m) and not core:ask("noContact", A, u)
         if e.kind == "rockyHelmet" and contact and A:hp(u) > 0 then
-          A:damage(u, math.max(1, math.floor(A:maxHp(u) / 6)), { text = A:text("%s was hurt by the %s!", A:name(u), named(A, did)) })
+          hurt(A, u, math.max(1, math.floor(A:maxHp(u) / 6)), { text = A:text("%s was hurt by the %s!", A:name(u), named(A, did)) })
         elseif e.kind == "stickyBarb" and contact and not A:item(u) then
           A:setItem(t, nil)
           A:setItem(u, did)
@@ -354,7 +364,7 @@ return function(core, opts)
           end
         elseif e.kind == "berryRetaliate" and e.category == cat and A:hp(u) > 0 then
           use(A, t, did)
-          A:damage(u, math.max(1, math.floor(A:maxHp(u) / 8)), { text = A:text("%s was hurt by %s's %s!", A:name(u), A:name(t), named(A, did)) })
+          hurt(A, u, math.max(1, math.floor(A:maxHp(u) / 8)), { text = A:text("%s was hurt by %s's %s!", A:name(u), A:name(t), named(A, did)) })
         elseif e.kind == "berryEnigma" and (A:effectiveness(mt, t) or 10) > 10 and A:hp(t) > 0 then
           use(A, t, did)
           A:heal(t, math.max(1, math.floor(A:maxHp(t) / 4)), { text = A:text("%s restored its health using its %s!", A:name(t), named(A, did)) })
@@ -463,6 +473,7 @@ return function(core, opts)
   end)
   core:on("screenTurns", function(n, A, u) if u and kind(A, u, "lightClay") then return 8 end return n end)
   core:on("terrainTurns", function(n, A, u) if u and kind(A, u, "terrainExtender") then return 8 end return n end)
+  core:on("weight", function(w, A, b) if kind(A, b, "floatStone") then return math.max(1, math.floor(w / 2)) end return w end)
   core:on("drainHeal", function(n, A, b) if kind(A, b, "bigRoot") then return math.floor(n * 1.3) end return n end)
 
   -- ------------------------------------------------------------------ berries in a pinch
@@ -471,9 +482,11 @@ return function(core, opts)
   local function berry(A, b)
     local r, id = row(A, b)
     if not r or A:hp(b) <= 0 then return end
+    if A:vol(b).unnerved then return end
     local e = r.effect
     local hp, max = A:hp(b), A:maxHp(b)
-    local quarter = hp * 4 <= max
+    local quarter = hp * 4 <= max or (core.hooks.gluttony and core:ask("gluttony", A, b) and hp * 2 <= max)
+    local ripe = core.hooks.ripen and core:ask("ripen", A, b) and 2 or 1
     if e.kind == "berryCure" then
       local s = A:status(b)
       local want = e.status
@@ -492,21 +505,21 @@ return function(core, opts)
       end
     elseif e.kind == "berryHeal" and hp * 2 <= max then
       use(A, b, id)
-      local n = e.amount or math.floor(max * (e.fraction or 0.25))
+      local n = (e.amount or math.floor(max * (e.fraction or 0.25))) * ripe
       A:heal(b, math.max(1, n), { text = A:text("%s restored its health using its %s!", A:name(b), named(A, id)) })
     elseif e.kind == "berryPinch" and quarter then
       use(A, b, id)
-      A:heal(b, math.max(1, math.floor(max * (e.fraction or 1 / 3))), { text = A:text("%s restored its health using its %s!", A:name(b), named(A, id)) })
+      A:heal(b, math.max(1, math.floor(max * (e.fraction or 1 / 3)) * ripe), { text = A:text("%s restored its health using its %s!", A:name(b), named(A, id)) })
       local down = core.natureDown and core.natureDown(A, b)
       if down and down == e.dislike then A:confuse(b, {}) end
     elseif e.kind == "berryStat" and quarter then
       use(A, b, id)
       say(A, "%s used its %s!", A:name(b), named(A, id))
-      A:stages(b, { [e.stat] = 1 })
+      A:stages(b, { [e.stat] = ripe })
     elseif e.kind == "berryStarf" and quarter then
       use(A, b, id)
       say(A, "%s used its %s!", A:name(b), named(A, id))
-      A:stages(b, { [STATS5[A:rng(5) + 1]] = 2 })
+      A:stages(b, { [STATS5[A:rng(5) + 1]] = 2 * ripe })
     elseif e.kind == "berryCrit" and quarter then
       use(A, b, id)
       A:vol(b).lansat = true
@@ -551,7 +564,8 @@ return function(core, opts)
     local be, beid = kind(A, b, "boosterEnergy")
     if be and core.boosterReady and core.boosterReady(A, b) then
       use(A, b, beid)
-      b.__ndxBooster = true
+      -- (Gen 3's battler is the battle's own; Red's and Gold's may be the party Pokemon itself)
+      if A.gen == 3 then b.__ndxBooster = true else A:vol(b).booster = true end
       say(A, "%s used its %s to activate its %s!", A:name(b), named(A, beid),
         (core.abilityOf(A, b) == "QUARK_DRIVE") and "Quark Drive" or "Protosynthesis")
     end
@@ -584,10 +598,10 @@ return function(core, opts)
               A:heal(b, math.max(1, math.floor(max / 16)), { text = A:text("%s restored a little HP using its %s!", A:name(b), named(A, id)) })
             end
           else
-            A:damage(b, math.max(1, math.floor(max / 8)), { text = A:text("%s was hurt by its %s!", A:name(b), named(A, id)) })
+            hurt(A, b, math.max(1, math.floor(max / 8)), { text = A:text("%s was hurt by its %s!", A:name(b), named(A, id)) })
           end
         elseif e.kind == "stickyBarb" then
-          A:damage(b, math.max(1, math.floor(max / 8)), { text = A:text("%s was hurt by its %s!", A:name(b), named(A, id)) })
+          hurt(A, b, math.max(1, math.floor(max / 8)), { text = A:text("%s was hurt by its %s!", A:name(b), named(A, id)) })
         elseif e.kind == "inflictSelf" and not A:status(b) then
           local landed = A:ailment(b, e.status == "TOX" and "TOXIC" or "BURN", {})
           if landed then
