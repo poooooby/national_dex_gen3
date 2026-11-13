@@ -384,6 +384,30 @@ for _, version in ipairs(H.versions()) do
   T.check(x.hp("enemy") < hp, version .. ": a physical Fire Punch still hits")
   opts.national_dex_gen3.move_split = nil
 
+  -- Modern Rules on Red (src/gen12/modern_rules.lua, option modern_rules, on by default)
+  if gen == 1 then
+    local MR = sim.api and sim.api._modernRules
+    T.check(MR ~= nil, version .. ": Modern Rules installed")
+    local ours = MR and data.rulesets and data.rulesets[MR.ID]
+    T.check(ours ~= nil and ours.hidden == true and ours.oneIn256Miss == false and ours.focusEnergyBug == false,
+      version .. ": its ruleset is registered, hidden from the game's own list")
+    w = sim.fresh({ mine = "MACHAMP", foe = "SNORLAX", level = 50 })
+    sim.run.loader.events:emit("battle.started", { battle = w.battle })
+    T.check(ours ~= nil and w.battle.ruleset == ours, version .. ": a battle takes it when it starts")
+    local tb, punch = w.battle, data.moves.STRENGTH
+    local base = tb:computeDamage(tb.player, tb.enemy, punch, { rng = tb.rng, forceCrit = false })
+    local crit = tb:computeDamage(tb.player, tb.enemy, punch, { rng = tb.rng })
+    T.eq(crit, math.floor(base * 3 / 2), version .. ": a critical hit does 1.5x")
+    T.eq(tb:computeDamage(tb.player, tb.enemy, punch, { rng = function(a, b) if b == 24 then return 24 end return a end }),
+      base, version .. ": 23 rolls in 24 are not critical")
+    T.eq(MR.CRIT_ODDS[MR.critStage({ focusEnergy = true }, { highCrit = true }) + 1], 1, version .. ": Focus Energy + a high-critical move always crits")
+    opts.national_dex_gen3.modern_rules = false
+    local w2 = sim.fresh({ mine = "MACHAMP", foe = "SNORLAX", level = 50 })
+    sim.run.loader.events:emit("battle.started", { battle = w2.battle })
+    T.check(w2.battle.ruleset ~= ours, version .. ": off: the game's own ruleset")
+    opts.national_dex_gen3.modern_rules = nil
+  end
+
   -- breeding on Red (src/gen12/breeding_red.lua)
   if gen == 1 then
     local Breeding = H.module("src/gen12/breeding_red.lua")

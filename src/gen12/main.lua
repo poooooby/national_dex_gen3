@@ -111,6 +111,17 @@ return function(mod, loadSibling)
     end
   end
 
+  -- Red: today's battle rules and critical hits (src/gen12/modern_rules.lua, option modern_rules)
+  if generation == 1 then
+    local ModernRules = loadSibling(mod, "src/gen12/modern_rules.lua")
+    if ModernRules then
+      local okR, errR = pcall(ModernRules.install, { mod = mod, require = require, option = option,
+        mech = function() return mod.exports._mech end })
+      if okR then mod.exports._modernRules = ModernRules
+      else mod.log:warn("modern rules are off: %s", tostring(errR)) end
+    end
+  end
+
   -- Red: Gold's held items (src/gen12/held_red.lua): registered, sold, given from the party menu
   if generation == 1 then
     local HeldRed = loadSibling(mod, "src/gen12/held_red.lua")

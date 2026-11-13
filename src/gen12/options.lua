@@ -47,6 +47,14 @@ Options.ROWS = {
     description = "Show each Pokemon's types as small badges beside its HP box in battle: right of a foe's name and HP bar, left of yours. They follow the battle: a Pokemon that used Conversion or Transform shows its new type.",
   },
   {
+    key = "modern_rules",
+    label = "Modern Rules",
+    type = "toggle",
+    default = true,
+    generations = { [1] = true },
+    description = "Battle by today's rules: no 1-in-256 misses, Focus Energy works, Hyper Beam always needs a rest, foes use up PP, critical hits come 1 in 24 (more with Focus Energy or a high-critical move) and do 1.5x damage. Off: the game's own Gen 1 rules, bugs and all.",
+  },
+  {
     key = "move_split",
     label = "Move Split",
     type = "toggle",

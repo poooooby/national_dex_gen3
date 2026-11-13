@@ -99,7 +99,7 @@ function H.sim(version, extra)
   local gen = H.GENERATION[version]
   local data = run.data or (run.loader and run.loader.data)
   local mech = api and api._mech
-  local sim = { gen = gen, run = run, data = data, mech = mech, version = version }
+  local sim = { gen = gen, run = run, data = data, mech = mech, version = version, api = api }
   function sim.release() run.release() end
 
   if gen == 1 then
