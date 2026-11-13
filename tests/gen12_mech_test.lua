@@ -408,6 +408,24 @@ for _, version in ipairs(H.versions()) do
     T.eq(w.A:stage(w.battler("player"), "spAtk"), 1, version .. ": Sp. Atk changes are the SPECIAL's")
   end
 
+  -- shiny on Red (src/gen12/shiny_red.lua): the engine's own rule, a sparkle as it comes out
+  if gen == 1 then
+    local ShinyRed = H.module("src/gen12/shiny_red.lua")
+    T.check(ShinyRed.isShiny(require, { dvs = { attack = 2, defense = 10, speed = 10, special = 10 } }), version .. ": shiny DVs")
+    T.check(not ShinyRed.isShiny(require, { dvs = { attack = 1, defense = 10, speed = 10, special = 10 } }), version .. ": not shiny")
+    w = sim.fresh({ mine = "PIKACHU", foe = "RATTATA" })
+    w.mon("enemy").dvs = { attack = 2, defense = 10, speed = 10, special = 10, hp = 0 }
+    local Runtime = require("src.mods.Runtime")
+    local drew = 0
+    local g = love.graphics
+    local rect = g.rectangle
+    g.rectangle = function(...) drew = drew + 1; return rect(...) end
+    pcall(Runtime.call, "battle.overlay", function() end, w.battle)
+    g.rectangle = rect
+    T.check(drew > 0, version .. ": a shiny foe sparkles as it comes out")
+    T.check(w.battle.__ndxShiny and w.battle.__ndxShiny.seen[w.battle.enemy] == 1, version .. ": the sparkle counts its frames")
+  end
+
   -- Modern Rules on Red (src/gen12/modern_rules.lua, option modern_rules, on by default)
   if gen == 1 then
     local MR = sim.api and sim.api._modernRules

@@ -93,13 +93,23 @@ function Summary.install(opts)
       end
     end
     hub.on = true
-    hub.relabel = core.spDefOf and function(self)
+    -- the first page: SPECIAL is the Sp. Atk now, and a shiny Pokemon has a star under its picture
+    hub.relabel = function(self)
       local g = love.graphics
-      g.setColor(1, 1, 1, 1)
-      g.rectangle("fill", 8, 120, 56, 8)
-      g.setColor(0, 0, 0, 1)
-      Font.draw(Strings("SP.ATK"), 8, 120)
-    end or nil
+      if core.spDefOf then
+        g.setColor(1, 1, 1, 1)
+        g.rectangle("fill", 8, 120, 56, 8)
+        g.setColor(0, 0, 0, 1)
+        Font.draw(Strings("SP.ATK"), 8, 120)
+      end
+      if opts.shiny and opts.shiny(self.mon) then
+        g.setColor(0, 0, 0, 1)
+        local x, y = 60, 48
+        g.rectangle("fill", x - 3, y, 7, 1)
+        g.rectangle("fill", x, y - 3, 1, 7)
+        g.rectangle("fill", x - 1, y - 1, 3, 3)
+      end
+    end
     hub.drawInfo = function(self)
       local mon, data = self.mon, self.game.data
       local g = love.graphics

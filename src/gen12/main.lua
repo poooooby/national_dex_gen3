@@ -73,7 +73,13 @@ return function(mod, loadSibling)
       -- the summary screens: nature, ability, held item (src/gen12/summary.lua)
       local Summary = loadSibling(mod, "src/gen12/summary.lua")
       if Summary then
-        local okY, errY = pcall(Summary.install, { require = require, generation = generation, core = core })
+        local ShinyRed = generation == 1 and loadSibling(mod, "src/gen12/shiny_red.lua") or nil
+        if ShinyRed then
+          local okZ, errZ = pcall(ShinyRed.install, { mod = mod, require = require })
+          if not okZ then mod.log:warn("the shiny sparkle is off: %s", tostring(errZ)) end
+        end
+        local okY, errY = pcall(Summary.install, { require = require, generation = generation, core = core,
+          shiny = ShinyRed and function(mon) return ShinyRed.isShiny(require, mon) end or nil })
         if not okY then mod.log:warn("summary additions are off: %s", tostring(errY)) end
       end
       mod.log:info("move mechanics: %d moves run on them, %d without one yet (stand-ins)", fx.registered,
