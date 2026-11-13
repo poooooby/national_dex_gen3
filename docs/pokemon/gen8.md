@@ -59,31 +59,31 @@
 ### #819 Skwovet
 
 - Type: Normal
-- Ability: Pickup
+- Ability: Cheek Pouch
 - Learnset: 1 Tackle · 1 Tail Whip · 5 Bite · 10 Stuff Cheeks · 15 Stockpile · 15 Spit Up · 15 Swallow · 20 Body Slam · 25 Rest · 30 Counter · 35 Bullet Seed · 40 Super Fang · 45 Belch
 
 ### #820 Greedent
 
 - Type: Normal
-- Ability: Pickup
+- Ability: Cheek Pouch
 - Learnset: 1 Tackle · 1 Tail Whip · 1 Bite · 1 Covet · 1 Stuff Cheeks · 15 Stockpile · 15 Spit Up · 15 Swallow · 20 Body Slam · 27 Rest · 34 Counter · 41 Bullet Seed · 48 Super Fang · 55 Belch
 
 ### #821 Rookidee
 
 - Type: Flying
-- Ability: Keen Eye / Pressure
+- Ability: Keen Eye / Unnerve
 - Learnset: 1 Leer · 1 Peck · 4 Power Trip · 8 Hone Claws · 12 Fury Attack · 16 Pluck · 20 Taunt · 24 Scary Face · 28 Drill Peck · 32 Swagger · 36 Brave Bird
 
 ### #822 Corvisquire
 
 - Type: Flying
-- Ability: Keen Eye / Pressure
+- Ability: Keen Eye / Unnerve
 - Learnset: 1 Leer · 1 Peck · 1 Hone Claws · 1 Power Trip · 12 Fury Attack · 16 Pluck · 22 Taunt · 28 Scary Face · 34 Drill Peck · 40 Swagger · 46 Brave Bird
 
 ### #823 Corviknight
 
 - Type: Flying / Steel
-- Ability: Pressure
+- Ability: Pressure / Unnerve
 - Learnset: 1 Leer · 1 Peck · 1 Screech · 1 Steel Wing · 1 Metal Sound · 1 Iron Defense · 1 Hone Claws · 1 Power Trip · 12 Fury Attack · 16 Pluck · 22 Taunt · 28 Scary Face · 34 Drill Peck · 42 Swagger · 50 Brave Bird
 
 ### #824 Blipbug
@@ -107,25 +107,25 @@
 ### #827 Nickit
 
 - Type: Dark
-- Ability: Run Away / Chlorophyll
+- Ability: Run Away / Unburden
 - Learnset: 1 Tail Whip · 1 Quick Attack · 4 Beat Up · 8 Hone Claws · 12 Snarl · 16 Assurance · 20 Nasty Plot · 24 Sucker Punch · 28 Night Slash · 32 Tail Slap · 36 Foul Play
 
 ### #828 Thievul
 
 - Type: Dark
-- Ability: Run Away / Chlorophyll
+- Ability: Run Away / Unburden
 - Learnset: 1 Tail Whip · 1 Quick Attack · 1 Thief · 1 Beat Up · 1 Hone Claws · 12 Snarl · 16 Assurance · 22 Nasty Plot · 28 Sucker Punch · 34 Night Slash · 40 Tail Slap · 46 Foul Play · 52 Parting Shot
 
 ### #829 Gossifleur
 
 - Type: Grass
-- Ability: Effect Spore / Regenerator
+- Ability: Cotton Down / Regenerator
 - Learnset: 1 Sing · 1 Leafage · 4 Rapid Spin · 8 Sweet Scent · 12 Razor Leaf · 16 Round · 21 Leaf Tornado · 24 Synthesis · 28 Hyper Voice · 32 Aromatherapy · 36 Leaf Storm
 
 ### #830 Eldegoss
 
 - Type: Grass
-- Ability: Effect Spore / Regenerator
+- Ability: Cotton Down / Regenerator
 - Learnset: 1 Sing · 1 Cotton Spore · 1 Rapid Spin · 1 Sweet Scent · 1 Leafage · 12 Razor Leaf · 16 Round · 23 Leaf Tornado · 28 Synthesis · 34 Hyper Voice · 40 Aromatherapy · 46 Leaf Storm · 52 Cotton Guard
 
 ### #831 Wooloo
@@ -137,7 +137,7 @@
 ### #832 Dubwool
 
 - Type: Normal
-- Ability: Fluffy / Inner Focus
+- Ability: Fluffy / Steadfast
 - Learnset: 1 Tackle · 1 Growl · 1 Defense Curl · 1 Copycat · 12 Guard Split · 16 Double Kick · 21 Headbutt · 27 Take Down · 32 Guard Swap · 38 Reversal · 44 Cotton Guard · 50 Double-Edge · 56 Last Resort
 
 ### #833 Chewtle
@@ -167,55 +167,55 @@
 ### #837 Rolycoly
 
 - Type: Rock
-- Ability: Flame Body / Heatproof
+- Ability: Steam Engine / Heatproof
 - Learnset: 1 Tackle · 1 Smokescreen · 5 Rapid Spin · 10 Smack Down · 15 Rock Polish · 20 Ancientpower · 25 Incinerate · 30 Stealth Rock · 35 Heat Crash · 40 Rock Blast
 
 ### #838 Carkol
 
 - Type: Rock / Fire
-- Ability: Flame Body
+- Ability: Steam Engine / Flame Body
 - Learnset: 1 Tackle · 1 Smokescreen · 1 Rapid Spin · 1 Smack Down · 1 Flame Charge · 15 Rock Polish · 20 Ancientpower · 27 Incinerate · 35 Stealth Rock · 41 Heat Crash · 48 Rock Blast · 55 Stone Edge
 
 ### #839 Coalossal
 
 - Type: Rock / Fire
-- Ability: Flame Body
+- Ability: Steam Engine / Flame Body
 - Learnset: 1 Tackle · 1 Smokescreen · 1 Rapid Spin · 1 Smack Down · 1 Flame Charge · 1 Tar Shot · 15 Rock Polish · 20 Ancientpower · 27 Incinerate · 37 Stealth Rock · 45 Heat Crash · 54 Rock Blast · 63 Stone Edge
 
 ### #840 Applin
 
 - Type: Grass / Dragon
-- Ability: Pickup
+- Ability: Ripen / Gluttony
 - Learnset: 1 Withdraw · 1 Astonish
 
 ### #841 Flapple
 
 - Type: Grass / Dragon
-- Ability: Pickup
+- Ability: Ripen / Gluttony
 - Learnset: 1 Wing Attack · 1 Growth · 1 Withdraw · 1 Twister · 1 Recycle · 1 Astonish · 4 Acid Spray · 8 Acrobatics · 12 Leech Seed · 16 Protect · 20 Dragonbreath · 24 Dragon Dance · 28 Dragon Pulse · 32 Grav Apple · 36 Iron Defense · 40 Fly · 44 Dragon Rush
 
 ### #842 Appletun
 
 - Type: Grass / Dragon
-- Ability: Pickup
+- Ability: Ripen / Gluttony
 - Learnset: 1 Headbutt · 1 Growth · 1 Withdraw · 1 Sweet Scent · 1 Recycle · 1 Astonish · 4 Curse · 8 Stomp · 12 Leech Seed · 16 Protect · 20 Bullet Seed · 24 Recover · 28 Apple Acid · 32 Body Slam · 36 Iron Defense · 40 Dragon Pulse · 44 Energy Ball
 
 ### #843 Silicobra
 
 - Type: Ground
-- Ability: Sand Stream / Shed Skin
+- Ability: Sand Spit / Shed Skin
 - Learnset: 1 Sand-Attack · 1 Wrap · 5 Minimize · 10 Brutal Swing · 15 Bulldoze · 20 Headbutt · 25 Glare · 30 Dig · 35 Sandstorm · 40 Slam · 45 Coil · 50 Sand Tomb
 
 ### #844 Sandaconda
 
 - Type: Ground
-- Ability: Sand Stream / Shed Skin
+- Ability: Sand Spit / Shed Skin
 - Learnset: 1 Sand-Attack · 1 Wrap · 1 Minimize · 1 Brutal Swing · 15 Bulldoze · 20 Headbutt · 25 Glare · 30 Dig · 35 Sandstorm · 42 Slam · 49 Coil · 51 Sand Tomb
 
 ### #845 Cramorant
 
 - Type: Flying / Water
-- Ability: Torrent
+- Ability: Gulp Missile
 - Learnset: 1 Peck · 1 Stockpile · 1 Spit Up · 1 Swallow · 7 Water Gun · 14 Fury Attack · 21 Pluck · 28 Dive · 35 Drill Peck · 42 Amnesia · 49 Thrash · 56 Hydro Pump
 
 ### #846 Arrokuda
@@ -239,7 +239,7 @@
 ### #849 Toxtricity
 
 - Type: Electric / Poison
-- Ability: Soundproof / Plus
+- Ability: Punk Rock / Plus
 - Learnset: 1 Leer · 1 Growl · 1 Acid · 1 Thundershock · 1 Flail · 1 Spark · 1 Acid Spray · 1 Belch · 1 Noble Roar · 1 Nuzzle · 1 Tearful Look · 4 Charge · 8 Shock Wave · 12 Scary Face · 16 Taunt · 24 Screech · 28 Swagger · 32 Toxic · 36 Discharge · 40 Poison Jab · 44 Overdrive · 48 Boomburst · 52 Shift Gear
 
 ### #850 Sizzlipede
@@ -335,19 +335,19 @@
 ### #865 Sirfetch'd
 
 - Type: Fighting
-- Ability: Inner Focus
+- Ability: Steadfast
 - Learnset: 1 Sand-Attack · 1 Leer · 1 Peck · 1 Fury Cutter · 1 Iron Defense · 1 First Impression · 15 Rock Smash · 20 Brutal Swing · 25 Detect · 30 Knock Off · 35 Defog · 40 Brick Break · 45 Swords Dance · 50 Slam · 55 Leaf Blade · 60 Final Gambit · 65 Brave Bird · 70 Meteor Assault
 
 ### #866 Mr. Rime
 
 - Type: Ice / Psychic
-- Ability: Own Tempo
+- Ability: Tangled Feet / Screen Clean
 - Learnset: 1 Pound · 1 Mimic · 1 Light Screen · 1 Reflect · 1 Protect · 1 Safeguard · 1 Baton Pass · 1 Encore · 1 Rapid Spin · 1 Role Play · 1 Recycle · 1 Slack Off · 1 Fake Tears · 1 Block · 1 Copycat · 1 Ice Shard · 1 Belly Drum · 1 Misty Terrain · 1 Dazzling Gleam · 12 Confusion · 16 Magic Coat · 20 Icy Wind · 24 Double Kick · 28 Psybeam · 32 Hypnosis · 36 Mirror Coat · 40 Sucker Punch · 44 Freeze-Dry · 48 Psychic · 52 Teeter Dance
 
 ### #867 Runerigus
 
 - Type: Ground / Ghost
-- Ability: Rough Skin
+- Ability: Wanderspirit
 - Learnset: 1 Night Shade · 1 Haze · 1 Protect · 1 Scary Face · 1 Astonish · 1 Shadow Claw · 12 Disable · 16 Brutal Swing · 20 Crafty Shield · 24 Hex · 28 Mean Look · 32 Slam · 38 Curse · 44 Shadow Ball · 50 Earthquake · 56 Guard Split · 56 Power Split · 62 Destiny Bond
 
 ### #868 Milcery
@@ -395,7 +395,7 @@
 ### #875 Eiscue
 
 - Type: Ice
-- Ability: Sturdy
+- Ability: Ice Face
 - Learnset: 1 Tackle · 1 Powder Snow · 6 Mist · 12 Weather Ball · 18 Icy Wind · 24 Headbutt · 30 Amnesia · 36 Freeze-Dry · 42 Snowscape · 48 Aurora Veil · 54 Surf · 60 Blizzard
 
 ### #876 Indeedee
@@ -407,19 +407,19 @@
 ### #877 Morpeko
 
 - Type: Electric / Dark
-- Ability: Own Tempo
+- Ability: Hunger Swtch
 - Learnset: 1 Tail Whip · 1 Thundershock · 5 Leer · 10 Power Trip · 15 Quick Attack · 20 Flatter · 25 Bite · 30 Spark · 35 Torment · 40 Agility · 45 Bullet Seed · 50 Crunch · 55 Aura Wheel · 60 Thrash
 
 ### #878 Cufant
 
 - Type: Steel
-- Ability: Hustle
+- Ability: Sheer Force
 - Learnset: 1 Tackle · 1 Growl · 5 Rollout · 10 Rock Smash · 15 Bulldoze · 20 Stomp · 25 Iron Defense · 30 Dig · 35 Strength · 40 Iron Head · 45 Play Rough · 50 High Horsepower · 55 Superpower
 
 ### #879 Copperajah
 
 - Type: Steel
-- Ability: Hustle
+- Ability: Sheer Force
 - Learnset: 1 Tackle · 1 Growl · 1 Rollout · 1 Rock Smash · 1 Heavy Slam · 15 Bulldoze · 20 Stomp · 25 Iron Defense · 30 Dig · 37 Strength · 44 Iron Head · 51 Play Rough · 58 High Horsepower · 65 Superpower
 
 ### #880 Dracozolt
@@ -449,37 +449,37 @@
 ### #884 Duraludon
 
 - Type: Steel / Dragon
-- Ability: Oblivious / Sturdy
+- Ability: Light Metal / Heavy Metal
 - Learnset: 1 Leer · 1 Metal Claw · 6 Rock Smash · 12 Hone Claws · 18 Metal Sound · 24 Breaking Swipe · 30 Dragon Tail · 36 Iron Defense · 42 Focus Energy · 48 Dragon Claw · 54 Flash Cannon · 60 Metal Burst · 66 Hyper Beam
 
 ### #885 Dreepy
 
 - Type: Dragon / Ghost
-- Ability: Clear Body / Keen Eye
+- Ability: Clear Body / Infiltrator
 - Learnset: 1 Bite · 1 Quick Attack · 1 Astonish · 1 Infestation
 
 ### #886 Drakloak
 
 - Type: Dragon / Ghost
-- Ability: Clear Body / Keen Eye
+- Ability: Clear Body / Infiltrator
 - Learnset: 1 Bite · 1 Quick Attack · 1 Astonish · 1 Dragon Pulse · 1 Infestation · 6 Lock-On · 12 Assurance · 18 Hex · 24 Agility · 30 Double Hit · 36 U-Turn · 42 Dragon Dance · 48 Phantom Force · 54 Take Down · 61 Dragon Rush · 66 Double-Edge · 72 Last Resort
 
 ### #887 Dragapult
 
 - Type: Dragon / Ghost
-- Ability: Clear Body / Keen Eye
+- Ability: Clear Body / Infiltrator
 - Learnset: 1 Bite · 1 Quick Attack · 1 Dragonbreath · 1 Astonish · 1 Infestation · 1 Dragon Darts · 6 Lock-On · 12 Assurance · 18 Hex · 24 Agility · 30 Double Hit · 36 U-Turn · 42 Dragon Dance · 48 Phantom Force · 54 Take Down · 63 Dragon Rush · 70 Double-Edge · 78 Last Resort
 
 ### #888 Zacian
 
 - Type: Fairy
-- Ability: Intimidate
+- Ability: Intrepid Swd
 - Learnset: 1 Bite · 1 Quick Attack · 1 Metal Claw · 1 Howl · 1 Quick Guard · 1 Sacred Sword · 11 Slash · 22 Swords Dance · 33 Iron Head · 44 Noble Roar · 55 Crunch · 66 Moonblast · 77 Close Combat · 88 Giga Impact
 
 ### #889 Zamazenta
 
 - Type: Fighting
-- Ability: Clear Body
+- Ability: Dauntless Sh
 - Learnset: 1 Bite · 1 Quick Attack · 1 Metal Claw · 1 Howl · 1 Wide Guard · 11 Slash · 22 Iron Defense · 33 Iron Head · 44 Metal Burst · 55 Crunch · 66 Moonblast · 77 Close Combat · 88 Giga Impact
 
 ### #890 Eternatus
@@ -497,7 +497,7 @@
 ### #892 Urshifu
 
 - Type: Fighting / Dark
-- Ability: Guts
+- Ability: Unseen Fist
 - Learnset: 1 Leer · 1 Focus Energy · 1 Endure · 1 Rock Smash · 1 Sucker Punch · 1 Wicked Blow · 12 Aerial Ace · 16 Scary Face · 20 Headbutt · 24 Brick Break · 28 Detect · 32 Bulk Up · 36 Iron Head · 40 Dynamicpunch · 44 Counter · 48 Close Combat · 52 Focus Punch
 
 ### #893 Zarude
@@ -509,31 +509,31 @@
 ### #894 Regieleki
 
 - Type: Electric
-- Ability: Plus
+- Ability: Transistor
 - Learnset: 1 Thundershock · 1 Rapid Spin · 6 Electroweb · 12 Ancientpower · 18 Shock Wave · 24 Thunder Wave · 30 Extremespeed · 36 Thunder Cage · 42 Thunderbolt · 48 Magnet Rise · 54 Thrash · 60 Lock-On · 66 Zap Cannon · 72 Hyper Beam · 78 Explosion
 
 ### #895 Regidrago
 
 - Type: Dragon
-- Ability: Guts
+- Ability: Dragon's Maw
 - Learnset: 1 Twister · 6 Bite · 12 Ancientpower · 18 Dragonbreath · 30 Crunch · 36 Dragon Claw · 42 Hammer Arm · 48 Dragon Dance · 54 Thrash · 60 Focus Energy · 66 Dragon Energy · 72 Hyper Beam · 78 Explosion
 
 ### #896 Glastrier
 
 - Type: Ice
-- Ability: Guts
+- Ability: Chill. Neigh
 - Learnset: 1 Tackle · 1 Tail Whip · 6 Double Kick · 12 Avalanche · 18 Stomp · 24 Torment · 30 Mist · 36 Icicle Crash · 42 Take Down · 48 Iron Defense · 54 Thrash · 60 Taunt · 66 Double-Edge · 72 Swords Dance
 
 ### #897 Spectrier
 
 - Type: Ghost
-- Ability: Guts
+- Ability: Grim Neigh
 - Learnset: 1 Tackle · 1 Tail Whip · 6 Double Kick · 12 Hex · 18 Stomp · 24 Confuse Ray · 30 Haze · 36 Shadow Ball · 42 Take Down · 48 Agility · 54 Thrash · 60 Disable · 66 Double-Edge · 72 Nasty Plot
 
 ### #898 Calyrex
 
 - Type: Psychic / Grass
-- Ability: Pressure
+- Ability: Unnerve
 - Learnset: 1 Pound · 1 Mega Drain · 1 Growth · 1 Confusion · 8 Life Dew · 16 Giga Drain · 24 Psyshock · 32 Helping Hand · 40 Grassy Terrain · 40 Psychic Terrain · 48 Energy Ball · 56 Psychic · 64 Leech Seed · 72 Heal Pulse · 80 Solarbeam · 88 Future Sight
 
 ### #899 Wyrdeer
@@ -545,7 +545,7 @@
 ### #900 Kleavor
 
 - Type: Bug / Rock
-- Ability: Swarm / Hustle
+- Ability: Swarm / Sheer Force
 - Learnset: 1 Leer · 1 Quick Attack · 1 Stone Axe · 4 Fury Cutter · 8 False Swipe · 12 Smack Down · 16 Double Team · 20 Double Hit · 24 Slash · 28 Focus Energy · 32 Agility · 36 Rock Slide · 40 X-Scissor · 44 Swords Dance
 
 ### #901 Ursaluna
@@ -563,7 +563,7 @@
 ### #903 Sneasler
 
 - Type: Fighting / Poison
-- Ability: Pressure / Chlorophyll
+- Ability: Pressure / Unburden
 - Learnset: 1 Scratch · 1 Leer · 1 Rock Smash · 1 Fling · 1 Dire Claw · 6 Taunt · 12 Quick Attack · 18 Metal Claw · 24 Poison Jab · 30 Brick Break · 36 Hone Claws · 42 Slash · 48 Agility · 54 Screech · 60 Close Combat
 
 ### #904 Overqwil

@@ -125,6 +125,9 @@ return function(mod)
   local MoveField = loadSibling(mod, "src/move_field.lua")
   if MoveField then MoveField.hooks(mod) end
   if RealAbilities then RealAbilities.hooks(mod) end
+  -- optional: without it the rest of the newer abilities stay the closest Gen 3 one in effect
+  local MoreAbilities = RealAbilities and loadSibling(mod, "src/abilities_more.lua")
+  if MoreAbilities then MoreAbilities.hooks(mod) end
   -- optional: without it the newer held items are not in the game (src/held/gen3.lua)
   local HeldItems = loadSibling(mod, "src/held/gen3.lua")
   if HeldItems then HeldItems.hooks(mod) end
@@ -392,6 +395,14 @@ return function(mod)
         flags = read("data/move_flags.lua"), abilities = RealAbilities })
       if not okHe then mod.log:warn("held items have no effects: %s", tostring(heErr)) end
       mod.exports._held = { module = HeldItems, state = heldState }
+    end
+    -- the rest of the newer abilities (src/abilities_more.lua): after the abilities, field moves
+    -- and held items, whose wraps and hooks it adds to
+    if MoreAbilities then
+      local okMa, maErr = pcall(MoreAbilities.install, { data = read("data/abilities.lua") or {}, require = require,
+        log = mod.log, flags = read("data/move_flags.lua"), abilities = RealAbilities, moveField = MoveField,
+        moveEffects = MoveEffects, moveRules = MoveRules, held = HeldItems })
+      if not okMa then mod.log:warn("the other newer abilities are off: %s", tostring(maErr)) end
     end
     -- the Fairy type (src/types.lua): after the repairs, so National numbers resolve to this
     -- mod's slots and its reload hook runs after theirs

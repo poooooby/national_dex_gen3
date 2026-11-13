@@ -42,6 +42,18 @@ All notable changes to this mod are documented here, in
 - Gold, Silver and Crystal's summary and Pack describe every newer move and held item in the
   games' own style.
 
+- **FireRed, LeafGreen, Ruby, Sapphire and Emerald: every newer ability does what it does today.**
+  The 126 that were still the closest Gen 3 ability are real now: Mold Breaker, Teravolt and
+  Turboblaze, Neutralizing Gas, Magic Guard, Overcoat, Unaware, Sheer Force, Skill Link, Contrary,
+  Simple, Disguise, Ice Face, Stance Change, Schooling, Shields Down, Zero to Hero, the four
+  Surges, Orichalcum Pulse, Hadron Engine, the Ruin four, the auras, Unburden, Gluttony, Ripen,
+  Cheek Pouch, Cud Chew, Klutz, Unnerve, Dancer, Wimp Out, Emergency Exit, Innards Out, Mummy,
+  Wandering Spirit, Pickpocket, Magician, Corrosion, Good as Gold, the priority blockers and the
+  rest. Only the twelve that need a partner beside you or act on nothing these games have keep
+  their Gen 3 stand-in.
+- **Red to Crystal: the partner abilities are swapped for a working one** (Battery is Static,
+  Power Spot is Rocky Payload, Friend Guard is Shell Armor, Plus is Lightning Rod, Commander is
+  Storm Drain...): they used to boost the holder itself or do nothing.
 - **Red to Crystal: nearly every ability does what it does today,** the ~140 that were only a
   name before among them: Clear Body, Mold Breaker, Unaware, Magic Guard, Neutralizing Gas,
   Protean, Magic Bounce, Disguise, Stance Change, Trace, Download, Shadow Tag, the Ruin four,
@@ -50,6 +62,8 @@ All notable changes to this mod are documented here, in
 
 ### Fixed
 
+- Protosynthesis and Quark Drive's descriptions and the README no longer say Booster Energy does
+  nothing: it starts them on every game.
 - Gold, Silver and Crystal: the new Pokémon keep their colours (two taken from their picture)
   while a move animation plays, instead of turning grey.
 - Red to Crystal: Leaf Guard works only in the sun, Surge Surfer and Grass Pelt only on their

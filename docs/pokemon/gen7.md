@@ -59,31 +59,31 @@
 ### #731 Pikipek
 
 - Type: Normal / Flying
-- Ability: Keen Eye / Compoundeyes
+- Ability: Keen Eye / Skill Link
 - Learnset: 1 Peck · 3 Growl · 7 Echoed Voice · 9 Rock Smash · 13 Supersonic · 15 Pluck · 19 Roost · 21 Fury Attack · 25 Screech · 27 Drill Peck · 31 Bullet Seed · 33 Featherdance · 37 Hyper Voice
 
 ### #732 Trumbeak
 
 - Type: Normal / Flying
-- Ability: Keen Eye / Compoundeyes
+- Ability: Keen Eye / Skill Link
 - Learnset: 1 Growl · 1 Peck · 1 Rock Smash · 1 Rock Blast · 13 Supersonic · 16 Pluck · 21 Roost · 24 Fury Attack · 29 Screech · 32 Drill Peck · 37 Bullet Seed · 40 Featherdance · 45 Hyper Voice
 
 ### #733 Toucannon
 
 - Type: Normal / Flying
-- Ability: Keen Eye / Compoundeyes
+- Ability: Keen Eye / Skill Link
 - Learnset: 1 Growl · 1 Peck · 1 Rock Smash · 1 Rock Blast · 1 Echoed Voice · 1 Beak Blast · 13 Supersonic · 16 Pluck · 21 Roost · 24 Fury Attack · 30 Screech · 34 Drill Peck · 40 Bullet Seed · 44 Featherdance · 50 Hyper Voice
 
 ### #734 Yungoos
 
 - Type: Normal
-- Ability: Hustle / Strong Jaw
+- Ability: Stakeout / Strong Jaw
 - Learnset: 1 Tackle · 3 Leer · 7 Payback · 10 Sand-Attack · 13 Work Up · 19 Bite · 22 Mud-Slap · 25 Super Fang · 28 Take Down · 31 Scary Face · 34 Crunch · 37 Yawn · 40 Thrash · 43 Rest
 
 ### #735 Gumshoos
 
 - Type: Normal
-- Ability: Hustle / Strong Jaw
+- Ability: Stakeout / Strong Jaw
 - Learnset: 1 Sand-Attack · 1 Tackle · 1 Leer · 1 Payback · 13 Work Up · 19 Bite · 23 Mud-Slap · 27 Super Fang · 31 Take Down · 35 Scary Face · 39 Crunch · 43 Yawn · 47 Thrash · 52 Rest
 
 ### #736 Grubbin
@@ -119,7 +119,7 @@
 ### #741 Oricorio
 
 - Type: Fire / Flying
-- Ability: Own Tempo
+- Ability: Dancer
 - Learnset: 1 Pound · 4 Growl · 6 Peck · 10 Helping Hand · 13 Air Cutter · 16 Baton Pass · 20 Featherdance · 23 Acrobatics · 26 Teeter Dance · 30 Roost · 33 Flatter · 36 Air Slash · 40 Revelation Dance · 43 Agility · 47 Hurricane
 
 ### #742 Cutiefly
@@ -149,19 +149,19 @@
 ### #746 Wishiwashi
 
 - Type: Water
-- Ability: Swift Swim
+- Ability: Schooling
 - Learnset: 1 Growl · 1 Water Gun · 4 Helping Hand · 8 Beat Up · 12 Brine · 16 Tearful Look · 20 Dive · 24 Soak · 28 Uproar · 32 Aqua Tail · 36 Aqua Ring · 40 Endeavor · 44 Hydro Pump · 48 Double-Edge
 
 ### #747 Mareanie
 
 - Type: Poison / Water
-- Ability: Poison Point / Limber
+- Ability: Merciless / Limber
 - Learnset: 1 Poison Sting · 1 Peck · 5 Wide Guard · 10 Bite · 15 Venoshock · 20 Recover · 25 Pin Missile · 30 Toxic Spikes · 35 Liquidation · 40 Acid Spray · 45 Poison Jab · 50 Toxic
 
 ### #748 Toxapex
 
 - Type: Poison / Water
-- Ability: Poison Point / Limber
+- Ability: Merciless / Limber
 - Learnset: 1 Poison Sting · 1 Bite · 1 Peck · 1 Wide Guard · 1 Baneful Bunker · 15 Venoshock · 20 Recover · 25 Pin Missile · 30 Toxic Spikes · 35 Liquidation · 42 Acid Spray · 49 Poison Jab · 56 Toxic
 
 ### #749 Mudbray
@@ -179,13 +179,13 @@
 ### #751 Dewpider
 
 - Type: Water / Bug
-- Ability: Water Veil
+- Ability: Water Bubble
 - Learnset: 1 Water Gun · 1 Infestation · 4 Bug Bite · 8 Bite · 12 Bubblebeam · 16 Aqua Ring · 20 Headbutt · 24 Crunch · 28 Soak · 32 Entrainment · 36 Lunge · 40 Liquidation · 44 Leech Life · 48 Mirror Coat
 
 ### #752 Araquanid
 
 - Type: Water / Bug
-- Ability: Water Veil
+- Ability: Water Bubble
 - Learnset: 1 Bite · 1 Water Gun · 1 Bug Bite · 1 Wide Guard · 1 Infestation · 12 Bubblebeam · 16 Aqua Ring · 20 Headbutt · 26 Crunch · 32 Soak · 38 Entrainment · 44 Lunge · 50 Liquidation · 56 Leech Life · 62 Mirror Coat
 
 ### #753 Fomantis
@@ -215,25 +215,25 @@
 ### #757 Salandit
 
 - Type: Poison / Fire
-- Ability: Poison Point
+- Ability: Corrosion
 - Learnset: 1 Scratch · 1 Poison Gas · 5 Smog · 10 Ember · 15 Poison Fang · 20 Sweet Scent · 25 Nasty Plot · 30 Incinerate · 35 Venoshock · 40 Dragon Pulse · 45 Flamethrower · 50 Toxic · 55 Endeavor
 
 ### #758 Salazzle
 
 - Type: Poison / Fire
-- Ability: Poison Point
+- Ability: Corrosion
 - Learnset: 1 Pound · 1 Scratch · 1 Disable · 1 Ember · 1 Smog · 1 Poison Gas · 1 Swagger · 1 Encore · 1 Torment · 1 Knock Off · 1 Endeavor · 1 Fire Lash · 15 Poison Fang · 20 Sweet Scent · 25 Nasty Plot · 30 Incinerate · 37 Venoshock · 44 Dragon Pulse · 51 Flamethrower · 58 Toxic
 
 ### #759 Stufful
 
 - Type: Normal / Fighting
-- Ability: Fluffy / Oblivious
+- Ability: Fluffy / Klutz
 - Learnset: 1 Tackle · 1 Leer · 4 Baby-Doll Eyes · 8 Payback · 12 Brutal Swing · 16 Endure · 20 Strength · 24 Take Down · 28 Flail · 32 Hammer Arm · 36 Thrash · 40 Pain Split · 44 Double-Edge · 48 Superpower
 
 ### #760 Bewear
 
 - Type: Normal / Fighting
-- Ability: Fluffy / Oblivious
+- Ability: Fluffy / Klutz
 - Learnset: 1 Bind · 1 Tackle · 1 Leer · 1 Payback · 1 Baby-Doll Eyes · 12 Brutal Swing · 16 Endure · 20 Strength · 24 Take Down · 30 Flail · 36 Hammer Arm · 42 Thrash · 48 Pain Split · 54 Double-Edge · 60 Superpower
 
 ### #761 Bounsweet
@@ -251,13 +251,13 @@
 ### #763 Tsareena
 
 - Type: Grass
-- Ability: Leaf Guard / Inner Focus
+- Ability: Leaf Guard / Queenly Mjst
 - Learnset: 1 Razor Leaf · 1 Splash · 1 Flail · 1 Swagger · 1 Rapid Spin · 1 Power Whip · 1 Play Nice · 1 Trop Kick · 16 Sweet Scent · 22 Magical Leaf · 28 Stomp · 34 Teeter Dance · 40 Aromatic Mist · 46 Leaf Storm · 58 Hi Jump Kick
 
 ### #764 Comfey
 
 - Type: Fairy
-- Ability: Flower Veil / Shed Skin
+- Ability: Flower Veil / Triage
 - Learnset: 1 Wrap · 1 Growth · 3 Vine Whip · 6 Helping Hand · 9 Draining Kiss · 12 Charm · 15 Magical Leaf · 18 Synthesis · 21 Leech Seed · 24 Grass Knot · 27 Sweet Kiss · 30 Floral Healing · 33 Petal Blizzard · 36 Bind · 39 Play Rough · 42 Sweet Scent · 45 Petal Dance · 48 Grassy Terrain
 
 ### #765 Oranguru
@@ -275,31 +275,31 @@
 ### #767 Wimpod
 
 - Type: Bug / Water
-- Ability: Run Away
+- Ability: Wimp Out
 - Learnset: 1 Sand-Attack · 1 Defense Curl · 1 Struggle Bug
 
 ### #768 Golisopod
 
 - Type: Bug / Water
-- Ability: Run Away
+- Ability: Emergency Ex
 - Learnset: 1 Sand-Attack · 1 Defense Curl · 1 Spite · 1 Struggle Bug · 1 First Impression · 4 Rock Smash · 8 Fury Cutter · 12 Mud Shot · 16 Bug Bite · 20 Iron Defense · 24 Sucker Punch · 28 Slash · 32 Razor Shell · 36 Pin Missile · 40 Swords Dance · 44 Liquidation
 
 ### #769 Sandygast
 
 - Type: Ghost / Ground
-- Ability: Sturdy
+- Ability: Watercompact
 - Learnset: 1 Absorb · 1 Harden · 5 Astonish · 10 Sand Tomb · 15 Mega Drain · 20 Sand-Attack · 25 Bulldoze · 30 Hypnosis · 35 Giga Drain · 40 Iron Defense · 45 Shadow Ball · 50 Earth Power · 55 Shore Up · 60 Sandstorm
 
 ### #770 Palossand
 
 - Type: Ghost / Ground
-- Ability: Sturdy
+- Ability: Watercompact
 - Learnset: 1 Absorb · 1 Harden · 1 Astonish · 1 Sand Tomb · 15 Mega Drain · 20 Sand-Attack · 25 Bulldoze · 30 Hypnosis · 35 Giga Drain · 40 Iron Defense · 47 Shadow Ball · 54 Earth Power · 61 Shore Up · 68 Sandstorm
 
 ### #771 Pyukumuku
 
 - Type: Water
-- Ability: Rough Skin
+- Ability: Innards Out
 - Learnset: 1 Harden · 1 Baton Pass · 5 Helping Hand · 10 Taunt · 15 Safeguard · 20 Counter · 25 Purify · 30 Curse · 35 Gastro Acid · 40 Pain Split · 45 Recover · 50 Soak · 55 Toxic · 60 Memento
 
 ### #772 Type: Null
@@ -317,13 +317,13 @@
 ### #774 Minior
 
 - Type: Rock / Flying
-- Ability: Shell Armor
+- Ability: Shields Down
 - Learnset: 1 Tackle · 3 Defense Curl · 8 Rollout · 10 Confuse Ray · 15 Swift · 17 Ancientpower · 22 Selfdestruct · 24 Stealth Rock · 29 Take Down · 31 Rock Polish · 36 Cosmic Power · 38 Power Gem · 43 Double-Edge · 45 Shell Smash · 50 Explosion
 
 ### #775 Komala
 
 - Type: Normal
-- Ability: Insomnia
+- Ability: Comatose
 - Learnset: 1 Defense Curl · 1 Rollout · 6 Stockpile · 6 Spit Up · 6 Swallow · 11 Rapid Spin · 16 Yawn · 21 Slam · 26 Flail · 31 Sucker Punch · 36 Psych Up · 41 Wood Hammer · 46 Thrash
 
 ### #776 Turtonator
@@ -341,25 +341,25 @@
 ### #778 Mimikyu
 
 - Type: Ghost / Fairy
-- Ability: Sturdy
+- Ability: Disguise
 - Learnset: 1 Scratch · 1 Splash · 1 Astonish · 1 Copycat · 1 Wood Hammer · 6 Shadow Sneak · 12 Double Team · 18 Baby-Doll Eyes · 24 Mimic · 30 Hone Claws · 36 Slash · 42 Shadow Claw · 48 Charm · 54 Play Rough · 60 Pain Split
 
 ### #779 Bruxish
 
 - Type: Water / Psychic
-- Ability: Inner Focus / Strong Jaw
+- Ability: Dazzling / Strong Jaw
 - Learnset: 1 Water Gun · 4 Astonish · 9 Confusion · 12 Bite · 17 Aqua Jet · 20 Disable · 25 Psyshock · 28 Crunch · 33 Aqua Tail · 36 Screech · 41 Psychic Fangs · 44 Wave Crash
 
 ### #780 Drampa
 
 - Type: Normal / Dragon
-- Ability: Guts / Sap Sipper
+- Ability: Berserk / Sap Sipper
 - Learnset: 1 Echoed Voice · 1 Play Nice · 5 Twister · 10 Protect · 15 Glare · 20 Safeguard · 25 Dragonbreath · 30 Extrasensory · 35 Dragon Pulse · 40 Light Screen · 45 Fly · 50 Hyper Voice · 55 Outrage
 
 ### #781 Dhelmise
 
 - Type: Ghost / Grass
-- Ability: Hustle
+- Ability: Steelworker
 - Learnset: 1 Absorb · 1 Rapid Spin · 4 Astonish · 8 Wrap · 12 Mega Drain · 16 Growth · 20 Gyro Ball · 24 Switcheroo · 28 Giga Drain · 32 Whirlpool · 36 Heavy Slam · 40 Slam · 44 Shadow Ball · 48 Metal Sound · 52 Anchor Shot · 56 Energy Ball · 60 Phantom Force · 64 Power Whip
 
 ### #782 Jangmo-O
@@ -383,31 +383,31 @@
 ### #785 Tapu Koko
 
 - Type: Electric / Fairy
-- Ability: Static
+- Ability: Elec. Surge
 - Learnset: 1 Thundershock · 1 Quick Attack · 5 Withdraw · 10 Fairy Wind · 15 False Swipe · 20 Spark · 25 Shock Wave · 30 Charge · 35 Agility · 40 Screech · 45 Discharge · 50 Mean Look · 55 Nature's Madness · 60 Wild Charge · 65 Brave Bird · 70 Power Swap · 75 Electric Terrain
 
 ### #786 Tapu Lele
 
 - Type: Psychic / Fairy
-- Ability: Synchronize
+- Ability: Psy. Surge
 - Learnset: 1 Confusion · 1 Astonish · 5 Withdraw · 10 Aromatherapy · 15 Draining Kiss · 20 Psybeam · 25 Flatter · 30 Aromatic Mist · 35 Sweet Scent · 40 Extrasensory · 45 Psyshock · 50 Mean Look · 55 Nature's Madness · 60 Moonblast · 65 Tickle · 70 Skill Swap · 75 Psychic Terrain
 
 ### #787 Tapu Bulu
 
 - Type: Grass / Fairy
-- Ability: Overgrow
+- Ability: Grassy Surge
 - Learnset: 1 Rock Smash · 1 Leafage · 5 Withdraw · 10 Disable · 15 Leech Seed · 20 Mega Drain · 25 Whirlwind · 30 Horn Attack · 35 Scary Face · 40 Horn Leech · 45 Zen Headbutt · 50 Mean Look · 55 Nature's Madness · 60 Wood Hammer · 65 Megahorn · 70 Skull Bash · 75 Grassy Terrain
 
 ### #788 Tapu Fini
 
 - Type: Water / Fairy
-- Ability: Water Veil
+- Ability: Misty Surge
 - Learnset: 1 Water Gun · 1 Disarming Voice · 5 Withdraw · 10 Mist · 10 Haze · 15 Aqua Ring · 20 Water Pulse · 25 Brine · 30 Defog · 35 Heal Pulse · 40 Surf · 45 Muddy Water · 50 Mean Look · 55 Nature's Madness · 60 Moonblast · 65 Hydro Pump · 70 Soak · 75 Misty Terrain
 
 ### #789 Cosmog
 
 - Type: Psychic
-- Ability: Oblivious
+- Ability: Unaware
 - Learnset: 1 Teleport · 1 Splash
 
 ### #790 Cosmoem
@@ -419,13 +419,13 @@
 ### #791 Solgaleo
 
 - Type: Psychic / Steel
-- Ability: Clear Body
+- Ability: Fullmetal Bd
 - Learnset: 1 Teleport · 1 Metal Claw · 1 Cosmic Power · 1 Noble Roar · 1 Sunsteel Strike · 7 Iron Head · 14 Metal Sound · 21 Zen Headbutt · 28 Flash Cannon · 35 Morning Sun · 42 Crunch · 49 Metal Burst · 56 Wild Charge · 63 Solarbeam · 70 Flare Blitz · 77 Wide Guard · 84 Giga Impact
 
 ### #792 Lunala
 
 - Type: Psychic / Ghost
-- Ability: Thick Fat
+- Ability: Shadowshield
 - Learnset: 1 Confusion · 1 Hypnosis · 1 Teleport · 1 Cosmic Power · 1 Moongeist Beam · 7 Night Shade · 14 Confuse Ray · 21 Air Slash · 28 Shadow Ball · 35 Moonlight · 42 Night Daze · 49 Psychic · 56 Moonblast · 63 Phantom Force · 70 Dream Eater · 77 Wide Guard
 
 ### #793 Nihilego
@@ -479,7 +479,7 @@
 ### #801 Magearna
 
 - Type: Steel / Fairy
-- Ability: Pressure
+- Ability: Soul-Heart
 - Learnset: 1 Helping Hand · 1 Gyro Ball · 6 Defense Curl · 12 Rollout · 18 Iron Defense · 24 Magnetic Flux · 30 Psybeam · 36 Aurora Beam · 42 Lock-On · 48 Shift Gear · 54 Trick · 60 Iron Head · 66 Aura Sphere · 72 Flash Cannon · 78 Pain Split · 84 Zap Cannon · 90 Fleur Cannon
 
 ### #802 Marshadow

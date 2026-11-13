@@ -5,7 +5,7 @@
 ### #494 Victini
 
 - Type: Psychic / Fire
-- Ability: Compoundeyes
+- Ability: Victory Star
 - Learnset: 1 Confusion · 1 Quick Attack · 1 Focus Energy · 1 Flame Charge · 1 V-Create · 7 Work Up · 14 Incinerate · 21 Stored Power · 28 Headbutt · 35 Endure · 42 Zen Headbutt · 49 Inferno · 56 Reversal · 63 Searing Shot · 70 Double-Edge · 77 Flare Blitz · 84 Overheat · 91 Final Gambit
 
 ### #495 Snivy
@@ -95,61 +95,61 @@
 ### #509 Purrloin
 
 - Type: Dark
-- Ability: Limber / Chlorophyll
+- Ability: Limber / Unburden
 - Learnset: 1 Scratch · 1 Growl · 4 Sand-Attack · 5 Fake Out · 12 Fury Swipes · 16 Torment · 21 Assurance · 24 Hone Claws · 28 Sucker Punch · 32 Nasty Plot · 36 Night Slash · 40 Play Rough
 
 ### #510 Liepard
 
 - Type: Dark
-- Ability: Limber / Chlorophyll
+- Ability: Limber / Unburden
 - Learnset: 1 Scratch · 1 Sand-Attack · 1 Growl · 1 Fake Out · 12 Fury Swipes · 16 Torment · 23 Assurance · 28 Hone Claws · 34 Sucker Punch · 40 Nasty Plot · 46 Night Slash · 52 Play Rough
 
 ### #511 Pansage
 
 - Type: Grass
-- Ability: Pickup
+- Ability: Gluttony
 - Learnset: 1 Scratch · 1 Play Nice · 4 Leer · 7 Lick · 10 Vine Whip · 13 Fury Swipes · 16 Leech Seed · 19 Bite · 22 Seed Bomb · 25 Torment · 28 Fling · 31 Acrobatics · 34 Grass Knot · 37 Recycle · 40 Natural Gift · 43 Crunch
 
 ### #512 Simisage
 
 - Type: Grass
-- Ability: Pickup
+- Ability: Gluttony
 - Learnset: 1 Leer · 1 Lick · 1 Fury Swipes · 1 Seed Bomb
 
 ### #513 Pansear
 
 - Type: Fire
-- Ability: Pickup
+- Ability: Gluttony
 - Learnset: 1 Scratch · 1 Play Nice · 4 Leer · 7 Lick · 10 Incinerate · 13 Fury Swipes · 16 Yawn · 19 Bite · 22 Flame Burst · 25 Amnesia · 28 Fling · 31 Acrobatics · 34 Fire Blast · 37 Recycle · 40 Natural Gift · 43 Crunch
 
 ### #514 Simisear
 
 - Type: Fire
-- Ability: Pickup
+- Ability: Gluttony
 - Learnset: 1 Leer · 1 Lick · 1 Fury Swipes · 1 Flame Burst
 
 ### #515 Panpour
 
 - Type: Water
-- Ability: Pickup
+- Ability: Gluttony
 - Learnset: 1 Scratch · 1 Play Nice · 4 Leer · 7 Lick · 10 Water Gun · 13 Fury Swipes · 16 Water Sport · 19 Bite · 22 Scald · 25 Taunt · 28 Fling · 31 Acrobatics · 34 Brine · 37 Recycle · 40 Natural Gift · 43 Crunch
 
 ### #516 Simipour
 
 - Type: Water
-- Ability: Pickup
+- Ability: Gluttony
 - Learnset: 1 Leer · 1 Lick · 1 Fury Swipes · 1 Scald
 
 ### #517 Munna
 
 - Type: Psychic
-- Ability: Pressure / Synchronize
+- Ability: Forewarn / Synchronize
 - Learnset: 1 Defense Curl · 1 Stored Power · 4 Hypnosis · 8 Psybeam · 12 Imprison · 16 Moonlight · 20 Magic Coat · 24 Zen Headbutt · 28 Calm Mind · 32 Yawn · 36 Psychic · 40 Moonblast · 44 Dream Eater · 48 Future Sight · 52 Wonder Room
 
 ### #518 Musharna
 
 - Type: Psychic
-- Ability: Pressure / Synchronize
+- Ability: Forewarn / Synchronize
 - Learnset: 1 Psybeam · 1 Psychic · 1 Hypnosis · 1 Defense Curl · 1 Dream Eater · 1 Moonlight · 1 Future Sight · 1 Magic Coat · 1 Yawn · 1 Imprison · 1 Calm Mind · 1 Zen Headbutt · 1 Wonder Room · 1 Stored Power · 1 Moonblast · 1 Psychic Terrain
 
 ### #519 Pidove
@@ -203,13 +203,13 @@
 ### #527 Woobat
 
 - Type: Psychic / Flying
-- Ability: Oblivious
+- Ability: Unaware / Klutz
 - Learnset: 1 Gust · 1 Attract · 5 Confusion · 10 Endeavor · 15 Air Cutter · 20 Imprison · 25 Assurance · 30 Amnesia · 35 Air Slash · 40 Psychic · 45 Calm Mind · 50 Future Sight · 55 Simple Beam
 
 ### #528 Swoobat
 
 - Type: Psychic / Flying
-- Ability: Oblivious
+- Ability: Unaware / Klutz
 - Learnset: 1 Gust · 1 Confusion · 1 Attract · 1 Endeavor · 15 Air Cutter · 20 Imprison · 25 Assurance · 30 Amnesia · 35 Air Slash · 40 Psychic · 45 Calm Mind · 50 Future Sight · 55 Simple Beam
 
 ### #529 Drilbur
@@ -233,19 +233,19 @@
 ### #532 Timburr
 
 - Type: Fighting
-- Ability: Guts / Hustle
+- Ability: Guts / Sheer Force
 - Learnset: 1 Pound · 1 Leer · 4 Low Kick · 8 Rock Throw · 12 Focus Energy · 16 Bulk Up · 20 Rock Slide · 24 Slam · 28 Scary Face · 32 Dynamicpunch · 36 Hammer Arm · 40 Stone Edge · 44 Superpower · 48 Focus Punch
 
 ### #533 Gurdurr
 
 - Type: Fighting
-- Ability: Guts / Hustle
+- Ability: Guts / Sheer Force
 - Learnset: 1 Pound · 1 Leer · 1 Low Kick · 1 Rock Throw · 12 Focus Energy · 16 Bulk Up · 20 Rock Slide · 24 Slam · 30 Scary Face · 36 Dynamicpunch · 42 Hammer Arm · 48 Stone Edge · 54 Superpower · 60 Focus Punch
 
 ### #534 Conkeldurr
 
 - Type: Fighting
-- Ability: Guts / Hustle
+- Ability: Guts / Sheer Force
 - Learnset: 1 Pound · 1 Leer · 1 Low Kick · 1 Rock Throw · 12 Focus Energy · 16 Bulk Up · 20 Rock Slide · 24 Slam · 30 Scary Face · 36 Dynamicpunch · 42 Hammer Arm · 48 Stone Edge · 54 Superpower · 60 Focus Punch
 
 ### #535 Tympole
@@ -317,13 +317,13 @@
 ### #546 Cottonee
 
 - Type: Grass / Fairy
-- Ability: Prankster / Keen Eye
+- Ability: Prankster / Infiltrator
 - Learnset: 1 Absorb · 1 Helping Hand · 3 Fairy Wind · 6 Stun Spore · 12 Mega Drain · 15 Razor Leaf · 18 Growth · 21 Poisonpowder · 24 Giga Drain · 27 Charm · 30 Leech Seed · 33 Cotton Spore · 36 Energy Ball · 39 Sunny Day · 42 Endeavor · 45 Cotton Guard · 48 Solarbeam
 
 ### #547 Whimsicott
 
 - Type: Grass / Fairy
-- Ability: Prankster / Keen Eye
+- Ability: Prankster / Infiltrator
 - Learnset: 1 Gust · 1 Absorb · 1 Mega Drain · 1 Leech Seed · 1 Growth · 1 Razor Leaf · 1 Solarbeam · 1 Poisonpowder · 1 Stun Spore · 1 Cotton Spore · 1 Giga Drain · 1 Charm · 1 Sunny Day · 1 Memento · 1 Helping Hand · 1 Endeavor · 1 Tailwind · 1 Energy Ball · 1 Cotton Guard · 1 Hurricane · 1 Fairy Wind · 1 Moonblast
 
 ### #548 Petilil
@@ -371,7 +371,7 @@
 ### #555 Darmanitan
 
 - Type: Fire
-- Ability: Hustle
+- Ability: Sheer Force
 - Learnset: 1 Tackle · 1 Bite · 1 Ember · 1 Taunt · 1 Hammer Arm · 12 Incinerate · 16 Work Up · 20 Fire Fang · 24 Headbutt · 28 Fire Punch · 32 Uproar · 38 Belly Drum · 44 Flare Blitz · 50 Thrash · 56 Superpower
 
 ### #556 Maractus
@@ -407,19 +407,19 @@
 ### #561 Sigilyph
 
 - Type: Psychic / Flying
-- Ability: Shield Dust
+- Ability: Wonder Skin / Magic Guard
 - Learnset: 1 Gust · 1 Confusion · 5 Gravity · 10 Hypnosis · 15 Air Cutter · 20 Psybeam · 25 Whirlwind · 30 Cosmic Power · 35 Air Slash · 40 Psychic · 45 Tailwind · 50 Light Screen · 50 Reflect · 55 Sky Attack · 60 Skill Swap
 
 ### #562 Yamask
 
 - Type: Ghost
-- Ability: Rough Skin
+- Ability: Mummy
 - Learnset: 1 Protect · 1 Astonish · 4 Haze · 8 Night Shade · 12 Disable · 16 Will-O-Wisp · 20 Crafty Shield · 24 Hex · 28 Mean Look · 32 Grudge · 36 Curse · 40 Shadow Ball · 44 Dark Pulse · 48 Guard Split · 48 Power Split · 52 Destiny Bond
 
 ### #563 Cofagrigus
 
 - Type: Ghost
-- Ability: Rough Skin
+- Ability: Mummy
 - Learnset: 1 Night Shade · 1 Haze · 1 Protect · 1 Scary Face · 1 Astonish · 1 Shadow Claw · 12 Disable · 16 Will-O-Wisp · 20 Crafty Shield · 24 Hex · 28 Mean Look · 32 Grudge · 38 Curse · 44 Shadow Ball · 50 Dark Pulse · 56 Guard Split · 56 Power Split · 62 Destiny Bond
 
 ### #564 Tirtouga
@@ -437,13 +437,13 @@
 ### #566 Archen
 
 - Type: Rock / Flying
-- Ability: Own Tempo
+- Ability: Defeatist
 - Learnset: 1 Leer · 1 Quick Attack · 3 Rock Throw · 6 Wing Attack · 9 Dragonbreath · 12 Ancientpower · 15 Pluck · 18 Quick Guard · 21 U-Turn · 24 Rock Slide · 27 Scary Face · 30 Crunch · 33 Agility · 36 Tailwind · 39 Dragon Claw · 42 Thrash · 45 Endeavor
 
 ### #567 Archeops
 
 - Type: Rock / Flying
-- Ability: Own Tempo
+- Ability: Defeatist
 - Learnset: 1 Wing Attack · 1 Leer · 1 Rock Throw · 1 Quick Attack · 9 Dragonbreath · 12 Ancientpower · 15 Pluck · 18 Quick Guard · 21 U-Turn · 24 Rock Slide · 27 Scary Face · 30 Crunch · 33 Agility · 36 Tailwind · 41 Dragon Claw · 46 Thrash · 51 Endeavor
 
 ### #568 Trubbish
@@ -503,19 +503,19 @@
 ### #577 Solosis
 
 - Type: Psychic
-- Ability: Shield Dust
+- Ability: Overcoat / Magic Guard
 - Learnset: 1 Confusion · 1 Protect · 4 Recover · 8 Endeavor · 12 Psybeam · 16 Charm · 20 Psyshock · 24 Light Screen · 24 Reflect · 28 Magic Coat · 33 Pain Split · 36 Psychic · 40 Skill Swap · 44 Future Sight · 48 Wonder Room
 
 ### #578 Duosion
 
 - Type: Psychic
-- Ability: Shield Dust
+- Ability: Overcoat / Magic Guard
 - Learnset: 1 Confusion · 1 Recover · 1 Protect · 1 Endeavor · 12 Psybeam · 16 Charm · 20 Psyshock · 24 Light Screen · 24 Reflect · 28 Magic Coat · 35 Pain Split · 40 Psychic · 46 Skill Swap · 52 Future Sight · 58 Wonder Room
 
 ### #579 Reuniclus
 
 - Type: Psychic
-- Ability: Shield Dust
+- Ability: Overcoat / Magic Guard
 - Learnset: 1 Confusion · 1 Recover · 1 Protect · 1 Endeavor · 1 Hammer Arm · 12 Psybeam · 16 Charm · 20 Psyshock · 24 Light Screen · 24 Reflect · 28 Magic Coat · 35 Pain Split · 40 Psychic · 48 Skill Swap · 56 Future Sight · 64 Wonder Room
 
 ### #580 Ducklett
@@ -593,13 +593,13 @@
 ### #592 Frillish
 
 - Type: Water / Ghost
-- Ability: Water Absorb / Effect Spore
+- Ability: Water Absorb / Cursed Body
 - Learnset: 1 Water Gun · 1 Absorb · 4 Poison Sting · 8 Night Shade · 12 Water Pulse · 16 Rain Dance · 20 Hex · 24 Brine · 28 Recover · 32 Shadow Ball · 36 Whirlpool · 41 Hydro Pump · 44 Destiny Bond · 48 Water Spout
 
 ### #593 Jellicent
 
 - Type: Water / Ghost
-- Ability: Water Absorb / Effect Spore
+- Ability: Water Absorb / Cursed Body
 - Learnset: 1 Poison Sting · 1 Water Gun · 1 Absorb · 1 Night Shade · 1 Acid Armor · 12 Water Pulse · 16 Rain Dance · 20 Hex · 24 Brine · 28 Recover · 32 Shadow Ball · 36 Whirlpool · 43 Hydro Pump · 48 Destiny Bond · 54 Water Spout
 
 ### #594 Alomomola
@@ -611,13 +611,13 @@
 ### #595 Joltik
 
 - Type: Bug / Electric
-- Ability: Compoundeyes / Pressure
+- Ability: Compoundeyes / Unnerve
 - Learnset: 1 Absorb · 1 Fury Cutter · 4 Electroweb · 8 Bug Bite · 12 String Shot · 16 Thunder Wave · 20 Electro Ball · 24 Agility · 28 Sucker Punch · 32 Slash · 37 Discharge · 40 Screech · 44 Gastro Acid · 48 Bug Buzz
 
 ### #596 Galvantula
 
 - Type: Bug / Electric
-- Ability: Compoundeyes / Pressure
+- Ability: Compoundeyes / Unnerve
 - Learnset: 1 Absorb · 1 Fury Cutter · 1 Bug Bite · 1 Electroweb · 1 Sticky Web · 12 String Shot · 16 Thunder Wave · 20 Electro Ball · 24 Agility · 28 Sucker Punch · 32 Slash · 39 Discharge · 44 Screech · 50 Gastro Acid · 56 Bug Buzz
 
 ### #597 Ferroseed
@@ -701,19 +701,19 @@
 ### #610 Axew
 
 - Type: Dragon
-- Ability: Rivalry / Hustle
+- Ability: Rivalry / Mold Breaker
 - Learnset: 1 Scratch · 1 Leer · 3 Bite · 6 False Swipe · 9 Assurance · 12 Taunt · 15 Slash · 18 Dragon Claw · 21 Scary Face · 24 Crunch · 27 Dragon Dance · 30 Breaking Swipe · 33 Focus Energy · 36 Dragon Pulse · 39 Swords Dance · 42 Outrage · 45 Guillotine · 48 Giga Impact
 
 ### #611 Fraxure
 
 - Type: Dragon
-- Ability: Rivalry / Hustle
+- Ability: Rivalry / Mold Breaker
 - Learnset: 1 Scratch · 1 Leer · 1 Bite · 1 False Swipe · 9 Assurance · 12 Taunt · 15 Slash · 18 Dragon Claw · 21 Scary Face · 24 Crunch · 27 Dragon Dance · 30 Breaking Swipe · 33 Focus Energy · 36 Dragon Pulse · 41 Swords Dance · 46 Outrage · 51 Guillotine · 56 Giga Impact
 
 ### #612 Haxorus
 
 - Type: Dragon
-- Ability: Rivalry / Hustle
+- Ability: Rivalry / Mold Breaker
 - Learnset: 1 Scratch · 1 Leer · 1 Bite · 1 False Swipe · 9 Assurance · 12 Taunt · 15 Slash · 18 Dragon Claw · 21 Scary Face · 24 Crunch · 27 Dragon Dance · 30 Breaking Swipe · 33 Focus Energy · 36 Dragon Pulse · 41 Swords Dance · 46 Outrage · 53 Guillotine · 60 Giga Impact
 
 ### #613 Cubchoo
@@ -767,19 +767,19 @@
 ### #621 Druddigon
 
 - Type: Dragon
-- Ability: Rough Skin / Hustle
+- Ability: Rough Skin / Sheer Force
 - Learnset: 1 Scratch · 1 Leer · 5 Bite · 10 Dragon Tail · 15 Metal Claw · 20 Scary Face · 25 Slash · 30 Dragon Claw · 35 Hone Claws · 40 Crunch · 45 Iron Head · 50 Outrage · 55 Superpower
 
 ### #622 Golett
 
 - Type: Ground / Ghost
-- Ability: Iron Fist / Oblivious
+- Ability: Iron Fist / Klutz
 - Learnset: 1 Mud-Slap · 1 Astonish · 4 Defense Curl · 8 Pound · 12 Shadow Punch · 16 Curse · 20 Night Shade · 24 Stomping Tantrum · 28 Iron Defense · 32 Mega Punch · 36 Shadow Ball · 40 Heavy Slam · 44 Phantom Force · 48 Hammer Arm · 52 Earthquake · 56 Dynamicpunch
 
 ### #623 Golurk
 
 - Type: Ground / Ghost
-- Ability: Iron Fist / Oblivious
+- Ability: Iron Fist / Klutz
 - Learnset: 1 Pound · 1 Defense Curl · 1 Astonish · 1 High Horsepower · 12 Shadow Punch · 16 Curse · 20 Night Shade · 24 Stomping Tantrum · 28 Iron Defense · 32 Mega Punch · 36 Shadow Ball · 40 Heavy Slam · 46 Phantom Force · 52 Hammer Arm · 58 Earthquake · 64 Dynamicpunch
 
 ### #624 Pawniard
@@ -803,31 +803,31 @@
 ### #627 Rufflet
 
 - Type: Normal / Flying
-- Ability: Keen Eye / Hustle
+- Ability: Keen Eye / Sheer Force
 - Learnset: 1 Leer · 1 Peck · 6 Hone Claws · 12 Wing Attack · 18 Tailwind · 24 Scary Face · 30 Aerial Ace · 36 Slash · 42 Whirlwind · 48 Crush Claw · 55 Air Slash · 60 Defog · 66 Thrash · 72 Brave Bird
 
 ### #628 Braviary
 
 - Type: Normal / Flying
-- Ability: Keen Eye / Hustle
+- Ability: Keen Eye / Sheer Force
 - Learnset: 1 Wing Attack · 1 Leer · 1 Peck · 1 Sky Attack · 1 Superpower · 1 Hone Claws · 18 Tailwind · 24 Scary Face · 30 Aerial Ace · 36 Slash · 42 Whirlwind · 48 Crush Claw · 57 Air Slash · 64 Defog · 72 Thrash
 
 ### #629 Vullaby
 
 - Type: Dark / Flying
-- Ability: Big Pecks / Shield Dust
+- Ability: Big Pecks / Overcoat
 - Learnset: 1 Gust · 1 Leer · 6 Flatter · 12 Pluck · 18 Tailwind · 24 Knock Off · 30 Iron Defense · 36 Whirlwind · 42 Air Slash · 48 Dark Pulse · 54 Nasty Plot · 60 Defog · 66 Attract · 72 Brave Bird
 
 ### #630 Mandibuzz
 
 - Type: Dark / Flying
-- Ability: Big Pecks / Shield Dust
+- Ability: Big Pecks / Overcoat
 - Learnset: 1 Gust · 1 Leer · 1 Toxic · 1 Sky Attack · 1 Bone Rush · 1 Flatter · 1 Pluck · 18 Tailwind · 24 Knock Off · 30 Iron Defense · 36 Whirlwind · 42 Air Slash · 48 Dark Pulse · 57 Nasty Plot · 64 Defog · 72 Attract · 80 Brave Bird
 
 ### #631 Heatmor
 
 - Type: Fire
-- Ability: Pickup / Flash Fire
+- Ability: Gluttony / Flash Fire
 - Learnset: 1 Tackle · 1 Lick · 5 Fury Swipes · 10 Incinerate · 15 Bug Bite · 20 Stockpile · 20 Spit Up · 20 Swallow · 25 Slash · 30 Bind · 35 Fire Lash · 40 Hone Claws · 45 Amnesia · 50 Fire Spin · 55 Inferno · 60 Flare Blitz
 
 ### #632 Durant
@@ -899,13 +899,13 @@
 ### #643 Reshiram
 
 - Type: Dragon / Fire
-- Ability: Pressure
+- Ability: Turboblaze
 - Learnset: 1 Dragonbreath · 1 Ancientpower · 1 Fire Fang · 1 Noble Roar · 8 Slash · 16 Crunch · 24 Extrasensory · 32 Dragon Pulse · 40 Flamethrower · 48 Fusion Flare · 56 Hyper Voice · 64 Fire Blast · 72 Imprison · 80 Outrage · 88 Blue Flare
 
 ### #644 Zekrom
 
 - Type: Dragon / Electric
-- Ability: Pressure
+- Ability: Teravolt
 - Learnset: 1 Dragonbreath · 1 Ancientpower · 1 Thunder Fang · 1 Noble Roar · 8 Slash · 16 Crunch · 24 Zen Headbutt · 32 Dragon Claw · 40 Thunderbolt · 48 Fusion Bolt · 56 Hyper Voice · 64 Thunder · 72 Imprison · 80 Outrage · 88 Bolt Strike
 
 ### #645 Landorus
@@ -935,6 +935,6 @@
 ### #649 Genesect
 
 - Type: Bug / Steel
-- Ability: Trace
+- Ability: Download
 - Learnset: 1 Quick Attack · 1 Fury Cutter · 7 Screech · 14 Metal Claw · 21 Fell Stinger · 28 Flame Charge · 35 Metal Sound · 42 X-Scissor · 49 Magnet Rise · 56 Bug Buzz · 63 Simple Beam · 70 Zap Cannon · 77 Lock-On · 84 Techno Blast · 91 Selfdestruct
 

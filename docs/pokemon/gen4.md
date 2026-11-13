@@ -77,13 +77,13 @@
 ### #399 Bidoof
 
 - Type: Normal
-- Ability: Own Tempo / Oblivious
+- Ability: Simple / Unaware
 - Learnset: 1 Tackle · 1 Growl · 5 Defense Curl · 9 Rollout · 13 Headbutt · 17 Hyper Fang · 21 Yawn · 25 Crunch · 29 Take Down · 33 Super Fang · 37 Swords Dance · 41 Amnesia · 45 Superpower · 49 Curse
 
 ### #400 Bibarel
 
 - Type: Normal / Water
-- Ability: Own Tempo / Oblivious
+- Ability: Simple / Unaware
 - Learnset: 1 Tackle · 1 Growl · 1 Water Gun · 1 Aqua Jet · 1 Rototiller · 5 Defense Curl · 9 Rollout · 13 Headbutt · 18 Hyper Fang · 23 Yawn · 28 Crunch · 33 Take Down · 38 Super Fang · 43 Swords Dance · 48 Amnesia · 53 Superpower · 58 Curse
 
 ### #401 Kricketot
@@ -131,13 +131,13 @@
 ### #408 Cranidos
 
 - Type: Rock
-- Ability: Hustle
+- Ability: Mold Breaker
 - Learnset: 1 Headbutt · 1 Leer · 6 Focus Energy · 10 Rock Smash · 15 Take Down · 19 Scary Face · 24 Assurance · 28 Slam · 33 Ancientpower · 37 Zen Headbutt · 42 Screech · 46 Head Smash
 
 ### #409 Rampardos
 
 - Type: Rock
-- Ability: Hustle
+- Ability: Mold Breaker
 - Learnset: 1 Headbutt · 1 Leer · 1 Focus Energy · 1 Endeavor · 10 Rock Smash · 15 Take Down · 19 Scary Face · 24 Assurance · 28 Slam · 36 Ancientpower · 43 Zen Headbutt · 51 Screech · 58 Head Smash
 
 ### #410 Shieldon
@@ -209,7 +209,7 @@
 ### #421 Cherrim
 
 - Type: Grass
-- Ability: Chlorophyll
+- Ability: Flower Gift
 - Learnset: 1 Tackle · 1 Growth · 1 Morning Sun · 1 Sunny Day · 1 Flower Shield · 1 Leafage · 15 Helping Hand · 20 Magical Leaf · 28 Leech Seed · 34 Take Down · 41 Petal Blizzard · 48 Worry Seed · 55 Solarbeam · 62 Petal Dance
 
 ### #422 Shellos
@@ -233,25 +233,25 @@
 ### #425 Drifloon
 
 - Type: Ghost / Flying
-- Ability: Aftermath / Chlorophyll
+- Ability: Aftermath / Unburden
 - Learnset: 1 Minimize · 1 Astonish · 4 Gust · 8 Focus Energy · 12 Payback · 16 Hex · 20 Shadow Ball · 24 Stockpile · 24 Spit Up · 24 Swallow · 29 Selfdestruct · 32 Destiny Bond · 36 Baton Pass · 40 Tailwind · 44 Explosion
 
 ### #426 Drifblim
 
 - Type: Ghost / Flying
-- Ability: Aftermath / Chlorophyll
+- Ability: Aftermath / Unburden
 - Learnset: 1 Gust · 1 Minimize · 1 Focus Energy · 1 Astonish · 1 Phantom Force · 1 Strength Sap · 12 Payback · 16 Hex · 20 Shadow Ball · 24 Stockpile · 24 Spit Up · 24 Swallow · 31 Selfdestruct · 36 Destiny Bond · 42 Baton Pass · 48 Tailwind · 54 Explosion
 
 ### #427 Buneary
 
 - Type: Normal
-- Ability: Run Away / Oblivious
+- Ability: Run Away / Klutz
 - Learnset: 1 Pound · 1 Splash · 4 Defense Curl · 8 Baby-Doll Eyes · 12 Belly Drum · 16 Quick Attack · 20 Double Kick · 24 Charm · 28 Baton Pass · 32 Headbutt · 36 Agility · 40 Entrainment · 44 Flatter · 48 Bounce · 52 Healing Wish
 
 ### #428 Lopunny
 
 - Type: Normal
-- Ability: Cute Charm / Oblivious
+- Ability: Cute Charm / Klutz
 - Learnset: 1 Pound · 1 Defense Curl · 1 Splash · 1 Mirror Coat · 1 Magic Coat · 1 Baby-Doll Eyes · 12 Belly Drum · 16 Quick Attack · 20 Double Kick · 24 Charm · 28 Baton Pass · 32 Headbutt · 36 Agility · 40 Entrainment · 44 Flatter · 48 Bounce · 52 Healing Wish · 56 Hi Jump Kick
 
 ### #429 Mismagius
@@ -329,7 +329,7 @@
 ### #441 Chatot
 
 - Type: Normal / Flying
-- Ability: Keen Eye / Own Tempo
+- Ability: Keen Eye / Tangled Feet
 - Learnset: 1 Peck · 1 Taunt · 1 Hyper Voice · 1 Chatter · 1 Confide · 5 Growl · 9 Mirror Move · 13 Sing · 17 Fury Attack · 21 Chatter · 25 Taunt · 29 Round · 33 Mimic · 37 Echoed Voice · 41 Roost · 45 Uproar · 49 Synchronoise · 50 Featherdance · 57 Hyper Voice
 
 ### #442 Spiritomb
@@ -365,13 +365,13 @@
 ### #447 Riolu
 
 - Type: Fighting
-- Ability: Inner Focus
+- Ability: Steadfast / Inner Focus
 - Learnset: 1 Quick Attack · 1 Endure · 4 Feint · 8 Metal Claw · 12 Counter · 16 Work Up · 20 Rock Smash · 24 Vacuum Wave · 28 Screech · 32 Quick Guard · 36 Force Palm · 40 Swords Dance · 44 Helping Hand · 48 Copycat · 52 Final Gambit · 56 Reversal
 
 ### #448 Lucario
 
 - Type: Fighting / Steel
-- Ability: Inner Focus
+- Ability: Steadfast / Inner Focus
 - Learnset: 1 Quick Attack · 1 Screech · 1 Reversal · 1 Detect · 1 Metal Claw · 1 Rock Smash · 1 Helping Hand · 1 Feint · 1 Copycat · 1 Aura Sphere · 1 Vacuum Wave · 1 Final Gambit · 1 Life Dew · 12 Counter · 16 Work Up · 20 Force Palm · 24 Calm Mind · 28 Metal Sound · 32 Quick Guard · 36 Bone Rush · 40 Swords Dance · 44 Heal Pulse · 48 Meteor Mash · 52 Dragon Pulse · 56 Extremespeed · 60 Close Combat
 
 ### #449 Hippopotas
@@ -527,13 +527,13 @@
 ### #474 Porygon-Z
 
 - Type: Normal
-- Ability: Adaptability / Trace
+- Ability: Adaptability / Download
 - Learnset: 1 Tackle · 1 Defense Curl · 1 Conversion · 1 Recycle · 1 Magnet Rise · 1 Nasty Plot · 1 Trick Room · 15 Thundershock · 20 Psybeam · 25 Conversion 2 · 30 Agility · 35 Recover · 40 Discharge · 45 Tri Attack · 50 Double-Edge · 55 Lock-On · 60 Zap Cannon · 65 Hyper Beam
 
 ### #475 Gallade
 
 - Type: Psychic / Fighting
-- Ability: Inner Focus / Guts
+- Ability: Steadfast / Sharpness
 - Learnset: 1 Leer · 1 Growl · 1 Psybeam · 1 Confusion · 1 Psychic · 1 Hypnosis · 1 Double Team · 1 Dream Eater · 1 Slash · 1 Charm · 1 Fury Cutter · 1 Future Sight · 1 Imprison · 1 Calm Mind · 1 Leaf Blade · 1 Night Slash · 1 Sacred Sword · 1 Disarming Voice · 1 Draining Kiss · 1 Life Dew · 1 Aqua Cutter · 9 Helping Hand · 12 Feint · 15 Teleport · 18 Aerial Ace · 23 False Swipe · 28 Protect · 35 Swords Dance · 42 Psycho Cut · 49 Heal Pulse · 56 Wide Guard · 56 Quick Guard · 63 Close Combat
 
 ### #476 Probopass
@@ -599,7 +599,7 @@
 ### #486 Regigigas
 
 - Type: Normal
-- Ability: Truant
+- Ability: Slow Start
 - Learnset: 1 Pound · 1 Confuse Ray · 6 Payback · 12 Facade · 18 Stomp · 24 Protect · 30 Knock Off · 36 Mega Punch · 42 Body Press · 48 Wide Guard · 54 Zen Headbutt · 60 Heavy Slam · 66 Hammer Arm · 72 Giga Impact · 78 Crush Grip
 
 ### #487 Giratina
@@ -629,7 +629,7 @@
 ### #491 Darkrai
 
 - Type: Dark
-- Ability: Insomnia
+- Ability: Bad Dreams
 - Learnset: 1 Disable · 11 Quick Attack · 20 Hypnosis · 29 Sucker Punch · 38 Night Shade · 47 Double Team · 57 Haze · 66 Dark Void · 75 Nasty Plot · 84 Dream Eater · 93 Dark Pulse
 
 ### #492 Shaymin
@@ -641,6 +641,6 @@
 ### #493 Arceus
 
 - Type: Normal
-- Ability: Pressure
+- Ability: Multitype
 - Learnset: 1 Seismic Toss · 1 Cosmic Power · 10 Gravity · 20 Earth Power · 30 Hyper Voice · 40 Extremespeed · 50 Healing Wish · 60 Future Sight · 70 Recover · 80 Hyper Beam · 90 Perish Song · 100 Judgment
 

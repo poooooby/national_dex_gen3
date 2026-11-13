@@ -668,8 +668,10 @@ out("docs/moves.md", M)
 local A = {
   "# Added Abilities",
   "",
-  "Abilities from later generations that work in battle here. Every other newer ability is the",
-  "closest Gen 3 ability (see each Pokémon's page). The summary screen has room for one short line,",
+  "Abilities from later generations that work in battle here. The dozen that need a partner beside",
+  "you (Battery, Power Spot, Friend Guard, Commander, Receiver, Hospitality, Curious Medicine) or",
+  "act on nothing these games have (Ball Fetch, Illusion, RKS System, Power Construct, Tera Shift)",
+  "are the closest Gen 3 ability instead (see each Pokémon's page). The summary screen has room for one short line,",
   "so **What it does** below is the full effect, with every number and anything that works",
   "differently from the newer games. Gen 3 decides physical or special by a move's type.",
   "",

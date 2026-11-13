@@ -26,7 +26,8 @@
 --       Status moves        LEAF_GUARD, SWEET_VEIL, FLOWER_VEIL (a status from a move's side
 --                           effect is not blocked: that check is local to the engine)
 --     HEALER, TELEPATHY and HONEY_GATHER have no effect here, not even in a double battle (no
---     HONEY in Gen 3); QUARK_DRIVE works on Electric Terrain (no Booster Energy in Gen 3)
+--     HONEY in Gen 3); a held Booster Energy (src/held/gen3.lua) also starts PROTOSYNTHESIS / QUARK_DRIVE
+--   The rest of the newer abilities are src/abilities_more.lua's
 -- An ability whose wrap target is missing is not installed, and its Pokemon keep the closest
 -- Gen 3 ability. Every addition runs protected: an error falls back to the engine's own result.
 

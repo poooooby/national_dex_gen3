@@ -92,10 +92,13 @@ Crystal have their own section after them.
   Fling and Natural Gift all do what they do today. Seven moves that need a partner to act out
   of turn (After You, Quash, Instruct, Me First, Ally Switch, Bestow, Teatime) are swapped, at
   the same level, for the closest Gen 3 move of the same type.
-- 🧬 **52 newer abilities, for real:** Technician, Adaptability, Multiscale, Snow Warning,
-  Regenerator, Prankster, Moxie, Sap Sipper, Iron Fist, Strong Jaw, Frisk and more work in
-  battle, with their own name and description. Pokémon you already have get them too. Every
-  other newer ability is the closest Gen 3 one.
+- 🧬 **Every newer ability, for real:** Technician, Adaptability, Multiscale, Prankster, Moxie,
+  Mold Breaker, Magic Guard, Unaware, Sheer Force, Contrary, Disguise, Dancer, Unburden, the
+  Surges, the Ruin four and 160 more work in battle, with their own name and description.
+  Pokémon you already have get them too. Only the dozen that need a partner beside you (Battery,
+  Power Spot, Friend Guard, Commander, Receiver, Hospitality, Curious Medicine) or act on nothing
+  these games have (Ball Fetch, Illusion, RKS System, Power Construct, Tera Shift) are the
+  closest Gen 3 ability instead.
 - 🧚 **The Fairy type:** Fairy is a real type, with today's matchups (it beats Dragon, Dark and
   Fighting; Dragon can't touch it; Poison and Steel hit it hard) and its own type icon. Every
   Pokémon has its modern typing, the originals too: Clefairy, Jigglypuff, Togepi, Snubbull,
@@ -143,9 +146,10 @@ Crystal have their own section after them.
   rain, sun and sandstorm).
 - 💪 **Abilities:** every Pokémon has one of its species' abilities, the same one for good, and
   they do what they do today: Intimidate, Levitate, Clear Body, Mold Breaker, Unaware, Magic
-  Guard, Protean, Disguise, Stance Change, the Ruin abilities and nearly 300 more. Only the few
-  that need a partner beside you (Commander, Receiver...) or change nothing in a battle like
-  these (Ball Fetch, Illusion...) are just their name.
+  Guard, Protean, Disguise, Stance Change, the Ruin abilities and nearly 300 more. The few that
+  need a partner beside you (Battery, Friend Guard, Commander, Receiver...) or change nothing in a
+  battle like these (Ball Fetch, Illusion...) are swapped for a working one (Battery is Static,
+  Friend Guard is Shell Armor, Commander is Storm Drain).
 - 🌿 **Natures:** every Pokémon has a nature that raises one stat and lowers another, as in the
   newer games.
 - 📊 **The summary shows it all:** nature, ability, held item and Sp. Def on a third page in Red,
@@ -282,7 +286,9 @@ the game's own Pokémon keep their original data, so its event gifts arrive as u
   multi-strike moves.
 - **A few abilities work in part.** Leaf Guard, Sweet Veil and Flower Veil stop status moves but
   not a status an attack can cause; Super Luck doesn't stack with a high critical-hit move;
-  Ice Body and Snow Cloak don't block hail damage.
+  Ice Body and Snow Cloak don't block hail damage; Infiltrator and Mold Breaker don't get past
+  Soundproof's own check; the Pokémon that change form in battle (Aegislash, Wishiwashi, Minior,
+  Palafin, Eiscue, Cramorant) change their stats but keep their picture.
 - **Moves follow Gen 3's rules.** A move's type decides whether it is physical or special (Fairy
   moves are special, Shadow Claw is physical; Foul Play, a Dark move, turns the foe's Attack
   against it as a special hit), and contest data for the newest moves is basic.
@@ -306,10 +312,9 @@ the game's own Pokémon keep their original data, so its event gifts arrive as u
   turning one off turns it off everywhere.
 - **A few abilities work in part on Red to Crystal:** Rock Head, Magic Guard, Liquid Ooze,
   Serene Grace and Air Lock / Cloud Nine cover the newer moves and items, not every one of the
-  game's own (Gold's sandstorm and Leech Seed, for one); Corrosion and Imposter are just names.
+  game's own (Gold's sandstorm and Leech Seed, for one); Corrosion is Poison Point there.
 - **A few held items work in part on Red to Crystal:** Binding Band does nothing; Grip Claw works
-  in Gold, Silver and Crystal but not with Red's Wrap; Booster Energy does nothing (Protosynthesis
-  and Quark Drive aren't working abilities there); the Amulet Coin and Luck Incense double prize
+  in Gold, Silver and Crystal but not with Red's Wrap; the Amulet Coin and Luck Incense double prize
   money only in Gold, Silver and Crystal; Mental Herb frees a Pokémon from the newer moves'
   effects (Taunt, Encore...) but not from the game's own Disable.
 - **The new TMs keep their Generation 3 numbers,** so a number is the same TM in every game (TM74

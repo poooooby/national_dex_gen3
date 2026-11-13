@@ -26,20 +26,20 @@ form also counts the base Pokémon in your Pokédex.
 ### Darmanitan (Galar Standard) — #555
 
 - Type: Ice
-- Ability: Guts
+- Ability: Gorilla Tact
 - Learnset: 1 Tackle · 1 Bite · 1 Powder Snow · 1 Taunt · 1 Icicle Crash · 12 Avalanche · 16 Work Up · 20 Ice Fang · 24 Headbutt · 28 Ice Punch · 32 Uproar · 38 Belly Drum · 44 Blizzard · 50 Thrash · 56 Superpower
 
 ### Yamask (Galar) — #562
 
 - Type: Ground / Ghost
-- Ability: Rough Skin
+- Ability: Wanderspirit
 - Learnset: 1 Protect · 1 Astonish · 4 Haze · 8 Night Shade · 12 Disable · 16 Brutal Swing · 20 Crafty Shield · 24 Hex · 28 Mean Look · 32 Slam · 36 Curse · 40 Shadow Ball · 44 Earthquake · 48 Guard Split · 48 Power Split · 52 Destiny Bond
 - Evolves: into Runerigus (leveling up 49+ HP down)
 
 ### Stunfisk (Galar) — #618
 
 - Type: Ground / Steel
-- Ability: Color Change
+- Ability: Mimicry
 - Learnset: 1 Tackle · 1 Water Gun · 1 Mud-Slap · 1 Metal Claw · 5 Endure · 10 Mud Shot · 15 Revenge · 20 Metal Sound · 25 Sucker Punch · 30 Iron Defense · 35 Bounce · 40 Muddy Water · 45 Snap Trap · 50 Flail · 55 Fissure
 
 ### Zorua (Hisui) — #570
@@ -70,7 +70,7 @@ form also counts the base Pokémon in your Pokédex.
 ### Braviary (Hisui) — #628
 
 - Type: Psychic / Flying
-- Ability: Keen Eye / Hustle
+- Ability: Keen Eye / Sheer Force
 - Learnset: 1 Wing Attack · 1 Leer · 1 Peck · 1 Sky Attack · 1 Superpower · 1 Hone Claws · 1 Esper Wing · 18 Tailwind · 24 Scary Face · 30 Aerial Ace · 36 Slash · 42 Whirlwind · 48 Crush Claw · 57 Air Slash · 64 Defog · 72 Thrash · 80 Hurricane
 
 ### Sliggoo (Hisui) — #705
@@ -142,19 +142,19 @@ form also counts the base Pokémon in your Pokédex.
 ### Oricorio (Pau) — #741
 
 - Type: Psychic / Flying
-- Ability: Own Tempo
+- Ability: Dancer
 - Learnset: 1 Pound · 4 Growl · 6 Peck · 10 Helping Hand · 13 Air Cutter · 16 Baton Pass · 20 Featherdance · 23 Acrobatics · 26 Teeter Dance · 30 Roost · 33 Flatter · 36 Air Slash · 40 Revelation Dance · 43 Agility · 47 Hurricane
 
 ### Oricorio (Pom Pom) — #741
 
 - Type: Electric / Flying
-- Ability: Own Tempo
+- Ability: Dancer
 - Learnset: 1 Pound · 4 Growl · 6 Peck · 10 Helping Hand · 13 Air Cutter · 16 Baton Pass · 20 Featherdance · 23 Acrobatics · 26 Teeter Dance · 30 Roost · 33 Flatter · 36 Air Slash · 40 Revelation Dance · 43 Agility · 47 Hurricane
 
 ### Oricorio (Sensu) — #741
 
 - Type: Ghost / Flying
-- Ability: Own Tempo
+- Ability: Dancer
 - Learnset: 1 Pound · 4 Growl · 6 Peck · 10 Helping Hand · 13 Air Cutter · 16 Baton Pass · 20 Featherdance · 23 Acrobatics · 26 Teeter Dance · 30 Roost · 33 Flatter · 36 Air Slash · 40 Revelation Dance · 43 Agility · 47 Hurricane
 
 ### Pumpkaboo (Small) — #710
@@ -211,7 +211,7 @@ form also counts the base Pokémon in your Pokédex.
 ### Urshifu (Rapid Strike) — #892
 
 - Type: Fighting / Water
-- Ability: Guts
+- Ability: Unseen Fist
 - Learnset: 1 Leer · 1 Focus Energy · 1 Endure · 1 Rock Smash · 1 Aqua Jet · 1 Surging Strikes · 12 Aerial Ace · 16 Scary Face · 20 Headbutt · 24 Brick Break · 28 Detect · 32 Bulk Up · 36 Iron Head · 40 Dynamicpunch · 44 Counter · 48 Close Combat · 52 Focus Punch
 
 ### Giratina (Origin) — #487
@@ -259,25 +259,25 @@ form also counts the base Pokémon in your Pokédex.
 ### Enamorus (Therian) — #905
 
 - Type: Fairy / Flying
-- Ability: Shield Dust
+- Ability: Overcoat
 - Learnset: 1 Astonish · 1 Fairy Wind · 5 Torment · 10 Flatter · 15 Twister · 20 Draining Kiss · 25 Iron Defense · 30 Imprison · 35 Mystical Fire · 40 Dazzling Gleam · 45 Extrasensory · 50 Uproar · 55 Superpower · 60 Healing Wish · 65 Moonblast · 70 Outrage · 75 Springtide Storm
 
 ### Kyurem (Black) — #646
 
 - Type: Dragon / Ice
-- Ability: Pressure
+- Ability: Teravolt
 - Learnset: 1 Dragonbreath · 1 Ancientpower · 1 Noble Roar · 1 Freeze-Dry · 8 Slash · 16 Endeavor · 24 Dragon Pulse · 32 Ice Beam · 40 Hyper Voice · 48 Fusion Bolt · 56 Blizzard · 64 Imprison · 72 Outrage · 80 Freeze Shock · 88 Sheer Cold
 
 ### Kyurem (White) — #646
 
 - Type: Dragon / Ice
-- Ability: Pressure
+- Ability: Turboblaze
 - Learnset: 1 Dragonbreath · 1 Ancientpower · 1 Noble Roar · 1 Freeze-Dry · 8 Slash · 16 Endeavor · 24 Dragon Pulse · 32 Ice Beam · 40 Hyper Voice · 48 Fusion Flare · 56 Blizzard · 64 Imprison · 72 Outrage · 80 Ice Burn · 88 Sheer Cold
 
 ### Hoopa (Unbound) — #720
 
 - Type: Psychic / Dark
-- Ability: Pickup
+- Ability: Magician
 - Learnset: 1 Confusion · 1 Destiny Bond · 1 Magic Coat · 6 Astonish · 10 Trick · 15 Light Screen · 19 Psybeam · 25 Skill Swap · 29 Guard Split · 29 Power Split · 46 Knock Off · 50 Trick Room · 50 Wonder Room · 55 Dark Pulse · 75 Psychic · 85 Hyperspace Fury
 
 ### Necrozma (Dusk) — #800
@@ -295,25 +295,25 @@ form also counts the base Pokémon in your Pokédex.
 ### Calyrex (Ice) — #898
 
 - Type: Psychic / Ice
-- Ability: Pressure
+- Ability: As One
 - Learnset: 1 Pound · 1 Swords Dance · 1 Stomp · 1 Double Kick · 1 Tackle · 1 Take Down · 1 Thrash · 1 Double-Edge · 1 Tail Whip · 1 Mist · 1 Mega Drain · 1 Growth · 1 Confusion · 1 Torment · 1 Taunt · 1 Iron Defense · 1 Avalanche · 1 Icicle Crash · 1 Glacial Lance · 8 Life Dew · 16 Giga Drain · 24 Psyshock · 32 Helping Hand · 40 Grassy Terrain · 40 Psychic Terrain · 48 Energy Ball · 56 Psychic · 64 Leech Seed · 72 Heal Pulse · 80 Solarbeam · 88 Future Sight
 
 ### Calyrex (Shadow) — #898
 
 - Type: Psychic / Ghost
-- Ability: Pressure
+- Ability: As One
 - Learnset: 1 Pound · 1 Stomp · 1 Double Kick · 1 Tackle · 1 Take Down · 1 Thrash · 1 Double-Edge · 1 Tail Whip · 1 Disable · 1 Mega Drain · 1 Growth · 1 Confusion · 1 Agility · 1 Confuse Ray · 1 Haze · 1 Shadow Ball · 1 Nasty Plot · 1 Hex · 1 Astral Barrage · 8 Life Dew · 16 Giga Drain · 24 Psyshock · 32 Helping Hand · 40 Grassy Terrain · 40 Psychic Terrain · 48 Energy Ball · 56 Psychic · 64 Leech Seed · 72 Heal Pulse · 80 Solarbeam · 88 Future Sight
 
 ### Zacian (Crowned) — #888
 
 - Type: Fairy / Steel
-- Ability: Intimidate
+- Ability: Intrepid Swd
 - Learnset: 1 Bite · 1 Quick Attack · 1 Metal Claw · 1 Howl · 1 Quick Guard · 1 Sacred Sword · 11 Slash · 22 Swords Dance · 33 Iron Head · 44 Noble Roar · 55 Crunch · 66 Moonblast · 77 Close Combat · 88 Giga Impact
 
 ### Zamazenta (Crowned) — #889
 
 - Type: Fighting / Steel
-- Ability: Clear Body
+- Ability: Dauntless Sh
 - Learnset: 1 Bite · 1 Quick Attack · 1 Metal Claw · 1 Howl · 1 Wide Guard · 11 Slash · 22 Iron Defense · 33 Iron Head · 44 Metal Burst · 55 Crunch · 66 Moonblast · 77 Close Combat · 88 Giga Impact
 
 ### Ogerpon (Wellspring Mask) — #1017
@@ -325,7 +325,7 @@ form also counts the base Pokémon in your Pokédex.
 ### Ogerpon (Hearthflame Mask) — #1017
 
 - Type: Grass / Fire
-- Ability: Hustle
+- Ability: Mold Breaker
 - Learnset: 1 Vine Whip · 1 Leech Seed · 1 Quick Attack · 1 Follow Me · 6 Focus Energy · 12 Growth · 18 Slam · 24 Low Sweep · 30 Ivy Cudgel · 36 Throat Chop · 42 Synthesis · 48 Spiky Shield · 54 Power Whip · 60 Superpower · 66 Wood Hammer
 
 ### Ogerpon (Cornerstone Mask) — #1017
@@ -337,13 +337,13 @@ form also counts the base Pokémon in your Pokédex.
 ### Ursaluna (Bloodmoon) — #901
 
 - Type: Ground / Normal
-- Ability: Keen Eye
+- Ability: Mind's Eye
 - Learnset: 1 Scratch · 1 Leer · 1 Lick · 1 Headlong Rush · 8 Fury Swipes · 13 Payback · 17 Harden · 22 Slash · 25 Play Nice · 35 Scary Face · 41 Rest · 41 Snore · 48 Earth Power · 56 Moonblast · 64 Hammer Arm · 70 Blood Moon
 
 ### Zygarde (10) — #718
 
 - Type: Dragon / Ground
-- Ability: Pressure
+- Ability: Aura Break
 - Learnset: 1 Bind · 1 Bite · 1 Dragonbreath · 1 Bulldoze · 1 Thousand Arrows · 1 Thousand Waves · 1 Core Enforcer · 8 Haze · 16 Dig · 24 Safeguard · 32 Crunch · 40 Dragon Pulse · 48 Land's Wrath · 56 Glare · 64 Sandstorm · 72 Coil · 80 Earthquake · 88 Outrage
 
 ### Zygarde (Complete) — #718
@@ -548,20 +548,20 @@ form also counts the base Pokémon in your Pokédex.
 ### Rattata (Alola) — #19
 
 - Type: Dark / Normal
-- Ability: Pickup / Hustle
+- Ability: Gluttony / Hustle
 - Learnset: 1 Tackle · 1 Tail Whip · 4 Quick Attack · 7 Focus Energy · 10 Bite · 13 Pursuit · 16 Hyper Fang · 19 Assurance · 22 Crunch · 25 Sucker Punch · 28 Super Fang · 31 Double-Edge · 34 Endeavor
 - Evolves: into Raticate (Alola) (level 20, at night)
 
 ### Raticate (Alola) — #20
 
 - Type: Dark / Normal
-- Ability: Pickup / Hustle
+- Ability: Gluttony / Hustle
 - Learnset: 1 Swords Dance · 1 Tackle · 1 Tail Whip · 1 Quick Attack · 1 Focus Energy · 1 Scary Face · 4 Quick Attack · 7 Focus Energy · 10 Bite · 13 Pursuit · 16 Hyper Fang · 19 Assurance · 24 Crunch · 29 Sucker Punch · 34 Super Fang · 39 Double-Edge · 44 Endeavor
 
 ### Raichu (Alola) — #26
 
 - Type: Electric / Psychic
-- Ability: Swift Swim
+- Ability: Surge Surfer
 - Learnset: 1 Tail Whip · 1 Growl · 1 Thundershock · 1 Thunder Wave · 1 Thunder · 1 Psychic · 1 Agility · 1 Quick Attack · 1 Double Team · 1 Light Screen · 1 Sweet Kiss · 1 Charm · 1 Spark · 1 Iron Tail · 1 Feint · 1 Nasty Plot · 1 Discharge · 1 Electro Ball · 1 Play Nice · 1 Nuzzle · 5 Thunderbolt
 
 ### Sandshrew (Alola) — #27
@@ -593,14 +593,14 @@ form also counts the base Pokémon in your Pokédex.
 ### Diglett (Alola) — #50
 
 - Type: Ground / Steel
-- Ability: Sand Veil / Static
+- Ability: Sand Veil / Tanglinghair
 - Learnset: 1 Sand-Attack · 1 Metal Claw · 4 Growl · 8 Astonish · 12 Mud-Slap · 16 Bulldoze · 20 Sucker Punch · 24 Iron Head · 28 Sandstorm · 32 Dig · 36 Earth Power · 40 Earthquake · 44 Fissure
 - Evolves: into Dugtrio (Alola) (level 26)
 
 ### Dugtrio (Alola) — #51
 
 - Type: Ground / Steel
-- Ability: Sand Veil / Static
+- Ability: Sand Veil / Tanglinghair
 - Learnset: 1 Sand-Attack · 1 Growl · 1 Tri Attack · 1 Metal Claw · 1 Astonish · 1 Sand Tomb · 1 Night Slash · 12 Mud-Slap · 16 Bulldoze · 20 Sucker Punch · 24 Iron Head · 30 Sandstorm · 36 Dig · 42 Earth Power · 48 Earthquake · 54 Fissure
 
 ### Meowth (Alola) — #52
@@ -620,7 +620,7 @@ form also counts the base Pokémon in your Pokédex.
 ### Persian (Alola) — #53
 
 - Type: Dark
-- Ability: Marvel Scale / Technician
+- Ability: Fur Coat / Technician
 - Learnset: 1 Scratch · 1 Growl · 1 Fake Out · 1 Feint · 1 Power Gem · 1 Switcheroo · 1 Torment · 12 Pay Day · 16 Bite · 20 Taunt · 24 Assurance · 31 Fury Swipes · 36 Screech · 42 Night Slash · 48 Nasty Plot · 54 Play Rough
 
 ### Geodude (Alola) — #74
@@ -646,14 +646,14 @@ form also counts the base Pokémon in your Pokédex.
 ### Grimer (Alola) — #88
 
 - Type: Poison / Dark
-- Ability: Poison Touch / Pickup
+- Ability: Poison Touch / Gluttony
 - Learnset: 1 Pound · 1 Poison Gas · 4 Harden · 7 Bite · 12 Disable · 15 Acid Spray · 18 Poison Fang · 21 Minimize · 26 Toxic · 29 Knock Off · 32 Crunch · 37 Screech · 40 Gunk Shot · 43 Acid Armor · 46 Belch · 48 Memento
 - Evolves: into Muk (Alola) (level 38)
 
 ### Muk (Alola) — #89
 
 - Type: Poison / Dark
-- Ability: Poison Touch / Pickup
+- Ability: Poison Touch / Gluttony
 - Learnset: 1 Pound · 1 Bite · 1 Harden · 1 Poison Gas · 12 Disable · 15 Acid Spray · 18 Poison Fang · 21 Minimize · 26 Toxic · 29 Knock Off · 32 Crunch · 37 Screech · 40 Gunk Shot · 46 Acid Armor · 52 Belch · 57 Memento
 
 ### Exeggutor (Alola) — #103
@@ -665,33 +665,33 @@ form also counts the base Pokémon in your Pokédex.
 ### Marowak (Alola) — #105
 
 - Type: Fire / Ghost
-- Ability: Effect Spore / Lightningrod
+- Ability: Cursed Body / Lightningrod
 - Learnset: 1 Headbutt · 1 Double-Edge · 1 Tail Whip · 1 Growl · 1 Fire Spin · 1 Focus Energy · 1 Mud-Slap · 1 False Swipe · 1 Retaliate · 1 Shadow Bone · 12 Flame Wheel · 16 Hex · 20 Fling · 24 Stomping Tantrum · 31 Bone Rush · 36 Will-O-Wisp · 42 Endeavor · 48 Bonemerang · 54 Thrash · 60 Flare Blitz
 
 ### Ponyta (Galar) — #77
 
 - Type: Psychic
-- Ability: Run Away / Immunity
+- Ability: Run Away / Pastel Veil
 - Learnset: 1 Tackle · 1 Growl · 5 Tail Whip · 10 Confusion · 15 Fairy Wind · 20 Agility · 25 Psybeam · 30 Stomp · 35 Heal Pulse · 41 Take Down · 45 Dazzling Gleam · 50 Psychic · 55 Healing Wish
 - Evolves: into Rapidash (Galar) (level 40)
 
 ### Rapidash (Galar) — #78
 
 - Type: Psychic / Fairy
-- Ability: Run Away / Immunity
+- Ability: Run Away / Pastel Veil
 - Learnset: 1 Tackle · 1 Tail Whip · 1 Growl · 1 Confusion · 1 Quick Attack · 1 Megahorn · 1 Psycho Cut · 15 Fairy Wind · 20 Agility · 25 Psybeam · 30 Stomp · 35 Heal Pulse · 43 Take Down · 49 Dazzling Gleam · 56 Psychic · 63 Healing Wish
 
 ### Slowpoke (Galar) — #79
 
 - Type: Psychic
-- Ability: Pickup / Own Tempo
+- Ability: Gluttony / Own Tempo
 - Learnset: 1 Tackle · 1 Curse · 3 Growl · 6 Acid · 9 Yawn · 12 Confusion · 15 Disable · 18 Water Pulse · 21 Headbutt · 24 Zen Headbutt · 27 Amnesia · 30 Surf · 33 Slack Off · 36 Psychic · 39 Psych Up · 42 Rain Dance · 45 Heal Pulse
 - Evolves: into Slowbro (Galar) (use Galarica Cuff); into Slowking (Galar) (use Galarica Wreath)
 
 ### Slowbro (Galar) — #80
 
 - Type: Poison / Psychic
-- Ability: Speed Boost / Own Tempo
+- Ability: Quick Draw / Own Tempo
 - Learnset: 1 Tackle · 1 Growl · 1 Acid · 1 Withdraw · 1 Curse · 1 Shell Side Arm · 9 Yawn · 12 Confusion · 15 Disable · 18 Water Pulse · 21 Headbutt · 24 Zen Headbutt · 27 Amnesia · 30 Surf · 33 Slack Off · 36 Psychic · 39 Psych Up · 42 Rain Dance · 45 Heal Pulse
 
 ### Slowking (Galar) — #199
@@ -703,20 +703,20 @@ form also counts the base Pokémon in your Pokédex.
 ### Farfetch'd (Galar) — #83
 
 - Type: Fighting
-- Ability: Inner Focus
+- Ability: Steadfast
 - Learnset: 1 Sand-Attack · 1 Peck · 5 Leer · 10 Fury Cutter · 15 Rock Smash · 20 Brutal Swing · 25 Detect · 30 Knock Off · 35 Defog · 40 Brick Break · 45 Swords Dance · 50 Slam · 55 Leaf Blade · 60 Final Gambit · 65 Brave Bird
 - Evolves: into Sirfetch'd (after 3 critical hits in one battle)
 
 ### Weezing (Galar) — #110
 
 - Type: Poison / Fairy
-- Ability: Levitate / Cloud Nine
+- Ability: Levitate / Neutral. Gas
 - Learnset: 1 Tackle · 1 Smokescreen · 1 Haze · 1 Smog · 1 Poison Gas · 1 Heat Wave · 1 Defog · 1 Double Hit · 1 Aromatic Mist · 1 Strange Steam · 12 Clear Smog · 16 Assurance · 20 Sludge · 24 Fairy Wind · 28 Selfdestruct · 32 Sludge Bomb · 38 Toxic · 44 Belch · 50 Explosion · 56 Memento · 62 Destiny Bond · 68 Misty Terrain
 
 ### Mr. Mime (Galar) — #122
 
 - Type: Ice / Psychic
-- Ability: Vital Spirit / Own Tempo
+- Ability: Vital Spirit / Screen Clean
 - Learnset: 1 Pound · 1 Mimic · 1 Light Screen · 1 Reflect · 1 Protect · 1 Safeguard · 1 Baton Pass · 1 Encore · 1 Rapid Spin · 1 Role Play · 1 Recycle · 1 Copycat · 1 Ice Shard · 1 Misty Terrain · 1 Dazzling Gleam · 12 Confusion · 16 Magic Coat · 20 Icy Wind · 24 Double Kick · 28 Psybeam · 32 Hypnosis · 36 Mirror Coat · 40 Sucker Punch · 44 Freeze-Dry · 48 Psychic · 52 Teeter Dance
 - Evolves: into Mr. Rime (level 42)
 
@@ -735,7 +735,7 @@ form also counts the base Pokémon in your Pokédex.
 ### Moltres (Galar) — #146
 
 - Type: Dark / Flying
-- Ability: Guts
+- Ability: Berserk
 - Learnset: 1 Gust · 1 Leer · 5 Payback · 10 Safeguard · 15 Wing Attack · 20 Agility · 25 Ancientpower · 30 Sucker Punch · 35 Air Slash · 40 Belly Drum · 45 Fiery Wrath · 50 Nasty Plot · 55 Hurricane · 60 Endure · 65 Memento · 70 Sky Attack
 
 ### Corsola (Galar) — #222
@@ -748,14 +748,14 @@ form also counts the base Pokémon in your Pokédex.
 ### Zigzagoon (Galar) — #263
 
 - Type: Dark / Normal
-- Ability: Pickup
+- Ability: Pickup / Gluttony
 - Learnset: 1 Tackle · 1 Leer · 3 Sand-Attack · 6 Lick · 9 Snarl · 12 Headbutt · 15 Baby-Doll Eyes · 18 Pin Missile · 21 Rest · 24 Take Down · 27 Scary Face · 30 Counter · 33 Taunt · 36 Double-Edge
 - Evolves: into Linoone (Galar) (level 20)
 
 ### Linoone (Galar) — #264
 
 - Type: Dark / Normal
-- Ability: Pickup
+- Ability: Pickup / Gluttony
 - Learnset: 1 Sand-Attack · 1 Tackle · 1 Pin Missile · 1 Leer · 1 Lick · 1 Night Slash · 1 Switcheroo · 1 Baby-Doll Eyes · 9 Snarl · 12 Headbutt · 15 Hone Claws · 18 Fury Swipes · 23 Rest · 28 Take Down · 33 Scary Face · 38 Counter · 43 Taunt · 48 Double-Edge
 - Evolves: into Obstagoon (level 35, at night)
 
@@ -808,18 +808,18 @@ form also counts the base Pokémon in your Pokédex.
 ### Tauros (Paldea Combat Breed) — #128
 
 - Type: Fighting
-- Ability: Intimidate / Guts
+- Ability: Intimidate / Anger Point
 - Learnset: 1 Tackle · 1 Tail Whip · 5 Work Up · 10 Double Kick · 15 Assurance · 20 Headbutt · 25 Scary Face · 30 Zen Headbutt · 35 Raging Bull · 40 Rest · 45 Swagger · 50 Thrash · 55 Double-Edge · 60 Close Combat
 
 ### Tauros (Paldea Blaze Breed) — #128
 
 - Type: Fighting / Fire
-- Ability: Intimidate / Guts
+- Ability: Intimidate / Anger Point
 - Learnset: 1 Tackle · 1 Tail Whip · 5 Work Up · 10 Double Kick · 15 Flame Charge · 20 Headbutt · 25 Scary Face · 30 Zen Headbutt · 35 Raging Bull · 40 Rest · 45 Swagger · 50 Thrash · 55 Flare Blitz · 60 Close Combat
 
 ### Tauros (Paldea Aqua Breed) — #128
 
 - Type: Fighting / Water
-- Ability: Intimidate / Guts
+- Ability: Intimidate / Anger Point
 - Learnset: 1 Tackle · 1 Tail Whip · 5 Work Up · 10 Double Kick · 15 Aqua Jet · 20 Headbutt · 25 Scary Face · 30 Zen Headbutt · 35 Raging Bull · 40 Rest · 45 Swagger · 50 Thrash · 55 Wave Crash · 60 Close Combat
 

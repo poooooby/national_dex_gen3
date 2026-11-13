@@ -59,13 +59,13 @@
 ### #915 Lechonk
 
 - Type: Normal
-- Ability: Own Tempo / Pickup
+- Ability: Aroma Veil / Gluttony
 - Learnset: 1 Tackle · 1 Tail Whip · 5 Disarming Voice · 8 Echoed Voice · 12 Mud Shot · 15 Covet · 17 Dig · 21 Headbutt · 24 Yawn · 27 Take Down · 30 Work Up · 32 Uproar · 35 Double-Edge
 
 ### #916 Oinkologne
 
 - Type: Normal
-- Ability: Effect Spore / Pickup
+- Ability: Linger Aroma / Gluttony
 - Learnset: 1 Tackle · 1 Tail Whip · 5 Disarming Voice · 8 Echoed Voice · 12 Mud Shot · 15 Covet · 17 Dig · 23 Headbutt · 26 Take Down · 27 Yawn · 34 Work Up · 38 Uproar · 42 Double-Edge · 48 Earth Power · 54 Belch
 
 ### #917 Tarountula
@@ -119,7 +119,7 @@
 ### #925 Maushold
 
 - Type: Normal
-- Ability: Shell Armor / Pickup
+- Ability: Shell Armor / Cheek Pouch
 - Learnset: 1 Pound · 1 Follow Me · 1 Baby-Doll Eyes · 1 Tidy Up · 5 Echoed Voice · 8 Helping Hand · 11 Super Fang · 14 Double Hit · 18 Bullet Seed · 22 Encore · 29 Play Rough · 33 Hyper Voice · 37 Charm · 41 Beat Up · 46 Copycat · 53 Population Bomb
 
 ### #926 Fidough
@@ -131,7 +131,7 @@
 ### #927 Dachsbun
 
 - Type: Fairy
-- Ability: Flash Fire
+- Ability: Well-Baked
 - Learnset: 1 Tackle · 1 Growl · 3 Lick · 6 Tail Whip · 8 Covet · 11 Bite · 15 Baby-Doll Eyes · 18 Play Rough · 22 Work Up · 29 Baton Pass · 33 Roar · 38 Double-Edge · 42 Charm · 47 Crunch · 53 Last Resort
 
 ### #928 Smoliv
@@ -149,7 +149,7 @@
 ### #930 Arboliva
 
 - Type: Grass / Normal
-- Ability: Overgrow
+- Ability: Seed Sower
 - Learnset: 1 Tackle · 1 Safeguard · 1 Sweet Scent · 1 Mirror Coat · 5 Absorb · 7 Growth · 10 Razor Leaf · 13 Helping Hand · 16 Flail · 20 Mega Drain · 23 Grassy Terrain · 29 Seed Bomb · 34 Energy Ball · 39 Leech Seed · 46 Terrain Pulse · 52 Petal Blizzard · 58 Petal Dance
 
 ### #931 Squawkabilly
@@ -161,19 +161,19 @@
 ### #932 Nacli
 
 - Type: Rock
-- Ability: Immunity / Sturdy
+- Ability: Purify Salt / Sturdy
 - Learnset: 1 Tackle · 1 Harden · 5 Rock Throw · 7 Mud Shot · 10 Smack Down · 13 Rock Polish · 16 Headbutt · 20 Iron Defense · 25 Recover · 30 Rock Slide · 33 Stealth Rock · 35 Heavy Slam · 40 Earthquake · 45 Stone Edge
 
 ### #933 Naclstack
 
 - Type: Rock
-- Ability: Immunity / Sturdy
+- Ability: Purify Salt / Sturdy
 - Learnset: 1 Tackle · 1 Harden · 1 Salt Cure · 5 Rock Throw · 7 Mud Shot · 10 Smack Down · 13 Rock Polish · 16 Headbutt · 20 Iron Defense · 30 Recover · 34 Rock Slide · 38 Stealth Rock · 41 Heavy Slam · 45 Earthquake · 51 Stone Edge
 
 ### #934 Garganacl
 
 - Type: Rock
-- Ability: Immunity / Sturdy
+- Ability: Purify Salt / Sturdy
 - Learnset: 1 Tackle · 1 Harden · 1 Block · 1 Rock Blast · 1 Hammer Arm · 1 Wide Guard · 5 Rock Throw · 7 Mud Shot · 10 Rock Tomb · 13 Rock Polish · 16 Headbutt · 24 Salt Cure · 30 Recover · 34 Rock Slide · 40 Stealth Rock · 44 Heavy Slam · 49 Earthquake · 54 Stone Edge · 60 Explosion
 
 ### #935 Charcadet
@@ -203,19 +203,19 @@
 ### #939 Bellibolt
 
 - Type: Electric
-- Ability: Volt Absorb / Static
+- Ability: Electromorph / Static
 - Learnset: 1 Tackle · 1 Mud-Slap · 1 Slack Off · 7 Thundershock · 11 Water Gun · 17 Charge · 21 Spark · 24 Mud Shot · 25 Flail · 32 Discharge · 36 Weather Ball · 40 Electric Terrain · 45 Sucker Punch · 50 Zap Cannon
 
 ### #940 Wattrel
 
 - Type: Electric / Flying
-- Ability: Volt Absorb
+- Ability: Wind Power / Volt Absorb
 - Learnset: 1 Growl · 1 Peck · 4 Thundershock · 7 Quick Attack · 11 Pluck · 15 Spark · 19 Uproar · 23 Roost · 27 Dual Wingbeat · 32 Agility · 37 Volt Switch · 43 Discharge
 
 ### #941 Kilowattrel
 
 - Type: Electric / Flying
-- Ability: Volt Absorb
+- Ability: Wind Power / Volt Absorb
 - Learnset: 1 Growl · 1 Peck · 1 Electro Ball · 4 Thundershock · 7 Quick Attack · 11 Pluck · 15 Spark · 19 Uproar · 24 Roost · 30 Dual Wingbeat · 36 Agility · 43 Volt Switch · 48 Discharge · 55 Hurricane
 
 ### #942 Maschiff
@@ -227,49 +227,49 @@
 ### #943 Mabosstiff
 
 - Type: Dark
-- Ability: Intimidate / Inner Focus
+- Ability: Intimidate / Guard Dog
 - Learnset: 1 Tackle · 1 Leer · 1 Scary Face · 1 Comeuppance · 4 Lick · 7 Snarl · 10 Hone Claws · 14 Bite · 18 Roar · 22 Headbutt · 26 Payback · 34 Crunch · 39 Swagger · 43 Reversal · 48 Jaw Lock · 55 Double-Edge · 60 Outrage
 
 ### #944 Shroodle
 
 - Type: Poison / Normal
-- Ability: Chlorophyll / Sticky Hold
+- Ability: Unburden / Pickpocket
 - Learnset: 1 Scratch · 1 Leer · 5 Acid Spray · 8 Bite · 8 Fury Swipes · 11 Switcheroo · 14 Poison Fang · 18 Flatter · 21 Slash · 25 U-Turn · 29 Poison Jab · 33 Taunt · 36 Substitute · 40 Knock Off · 45 Gunk Shot
 
 ### #945 Grafaiai
 
 - Type: Poison / Normal
-- Ability: Chlorophyll / Poison Touch
+- Ability: Unburden / Poison Touch
 - Learnset: 1 Scratch · 1 Leer · 1 Doodle · 5 Acid Spray · 8 Fury Swipes · 11 Switcheroo · 14 Poison Fang · 18 Flatter · 21 Slash · 25 U-Turn · 33 Poison Jab · 37 Taunt · 40 Substitute · 45 Knock Off · 51 Gunk Shot
 
 ### #946 Bramblin
 
 - Type: Grass / Ghost
-- Ability: Soundproof
+- Ability: Wind Rider
 - Learnset: 1 Defense Curl · 1 Rollout · 1 Astonish · 5 Absorb · 9 Rapid Spin · 13 Bullet Seed · 17 Infestation · 21 Hex · 25 Mega Drain · 29 Disable · 35 Phantom Force · 40 Giga Drain · 45 Curse · 50 Pain Split · 55 Power Whip
 
 ### #947 Brambleghast
 
 - Type: Grass / Ghost
-- Ability: Soundproof
+- Ability: Wind Rider
 - Learnset: 1 Defense Curl · 1 Rollout · 1 Astonish · 5 Absorb · 9 Rapid Spin · 13 Bullet Seed · 17 Infestation · 21 Hex · 25 Mega Drain · 29 Disable · 35 Phantom Force · 40 Giga Drain · 45 Curse · 50 Pain Split · 55 Power Whip
 
 ### #948 Toedscool
 
 - Type: Ground / Grass
-- Ability: Own Tempo
+- Ability: Mycelium Mgt
 - Learnset: 1 Wrap · 1 Mud-Slap · 4 Absorb · 8 Poisonpowder · 8 Stun Spore · 12 Supersonic · 15 Tackle · 16 Mega Drain · 20 Screech · 24 Mud Shot · 28 Hex · 32 Seed Bomb · 36 Spore · 40 Growth · 44 Giga Drain · 48 Earth Power · 52 Power Whip
 
 ### #949 Toedscruel
 
 - Type: Ground / Grass
-- Ability: Own Tempo
+- Ability: Mycelium Mgt
 - Learnset: 1 Wrap · 1 Mud-Slap · 1 Reflect Type · 4 Absorb · 8 Poisonpowder · 8 Stun Spore · 12 Supersonic · 15 Tackle · 16 Mega Drain · 20 Screech · 24 Mud Shot · 28 Hex · 34 Seed Bomb · 40 Spore · 44 Growth · 48 Giga Drain · 54 Earth Power · 58 Power Whip
 
 ### #950 Klawf
 
 - Type: Rock
-- Ability: Guts / Shell Armor
+- Ability: Anger Shell / Shell Armor
 - Learnset: 1 Rock Throw · 6 Harden · 9 Rock Smash · 13 Rock Tomb · 17 Metal Claw · 21 Protect · 24 Rock Blast · 29 X-Scissor · 33 Swords Dance · 37 Flail · 42 Rock Slide · 47 High Horsepower · 51 Iron Defense · 56 Guillotine
 
 ### #951 Capsakid
@@ -305,37 +305,37 @@
 ### #956 Espathra
 
 - Type: Psychic
-- Ability: Synchronize / Frisk
+- Ability: Opportunist / Frisk
 - Learnset: 1 Growl · 1 Peck · 1 Drill Peck · 1 Featherdance · 1 Lumina Crash · 5 Confusion · 8 Baby-Doll Eyes · 11 Disarming Voice · 15 Quick Attack · 19 Psybeam · 24 Pluck · 29 Agility · 34 Uproar · 43 Dazzling Gleam · 49 Psychic · 54 Last Resort
 
 ### #957 Tinkatink
 
 - Type: Fairy / Steel
-- Ability: Hustle / Own Tempo
+- Ability: Mold Breaker / Own Tempo
 - Learnset: 1 Astonish · 1 Fairy Wind · 5 Baby-Doll Eyes · 8 Metal Claw · 11 Covet · 14 Rock Smash · 17 Draining Kiss · 21 Sweet Kiss · 24 Brutal Swing · 27 Slam · 31 Flash Cannon · 35 Play Rough · 39 Fake Out · 43 Flatter · 47 Skitter Smack · 52 Knock Off
 
 ### #958 Tinkatuff
 
 - Type: Fairy / Steel
-- Ability: Hustle / Own Tempo
+- Ability: Mold Breaker / Own Tempo
 - Learnset: 1 Astonish · 1 Fairy Wind · 5 Baby-Doll Eyes · 8 Metal Claw · 11 Covet · 14 Rock Smash · 17 Draining Kiss · 21 Sweet Kiss · 24 Brutal Swing · 27 Slam · 31 Flash Cannon · 35 Play Rough · 39 Fake Out · 43 Flatter · 47 Skitter Smack · 52 Knock Off
 
 ### #959 Tinkaton
 
 - Type: Fairy / Steel
-- Ability: Hustle / Own Tempo
+- Ability: Mold Breaker / Own Tempo
 - Learnset: 1 Astonish · 1 Fairy Wind · 1 Gigaton Hammer · 5 Baby-Doll Eyes · 8 Metal Claw · 11 Covet · 14 Rock Smash · 17 Draining Kiss · 21 Sweet Kiss · 24 Brutal Swing · 27 Slam · 31 Flash Cannon · 35 Play Rough · 39 Fake Out · 43 Flatter · 47 Skitter Smack · 52 Knock Off
 
 ### #960 Wiglett
 
 - Type: Water
-- Ability: Static / Rattled
+- Ability: Gooey / Rattled
 - Learnset: 1 Sand-Attack · 1 Water Gun · 4 Mud-Slap · 8 Wrap · 12 Aqua Jet · 20 Slam · 20 Water Pulse · 24 Headbutt · 28 Dig · 32 Sucker Punch · 36 Throat Chop · 40 Liquidation
 
 ### #961 Wugtrio
 
 - Type: Water
-- Ability: Static / Rattled
+- Ability: Gooey / Rattled
 - Learnset: 1 Sand-Attack · 1 Wrap · 1 Water Gun · 1 Mud-Slap · 12 Aqua Jet · 16 Slam · 20 Water Pulse · 24 Headbutt · 30 Triple Dive · 36 Dig · 42 Sucker Punch · 48 Throat Chop · 54 Liquidation
 
 ### #962 Bombirdier
@@ -353,19 +353,19 @@
 ### #964 Palafin
 
 - Type: Water
-- Ability: Torrent
+- Ability: Zero To Hero
 - Learnset: 1 Supersonic · 1 Water Gun · 1 Flip Turn · 1 Jet Punch · 7 Astonish · 10 Focus Energy · 13 Aqua Jet · 17 Double Hit · 21 Dive · 25 Charm · 29 Acrobatics · 34 Encore · 39 Aqua Tail · 44 Mist · 50 Hydro Pump · 55 Focus Punch · 61 Wave Crash
 
 ### #965 Varoom
 
 - Type: Steel / Poison
-- Ability: Shield Dust
+- Ability: Overcoat
 - Learnset: 1 Lick · 1 Poison Gas · 4 Smog · 7 Taunt · 10 Assurance · 13 Sludge · 17 Gyro Ball · 21 Headbutt · 25 Screech · 28 Iron Head · 32 Swagger · 36 Poison Jab · 41 Uproar · 46 Spin Out · 50 Gunk Shot
 
 ### #966 Revavroom
 
 - Type: Steel / Poison
-- Ability: Shield Dust
+- Ability: Overcoat
 - Learnset: 1 Lick · 1 Poison Gas · 1 Magnet Rise · 1 Shift Gear · 4 Smog · 7 Taunt · 10 Assurance · 13 Sludge · 17 Gyro Ball · 21 Headbutt · 25 Screech · 28 Iron Head · 32 Swagger · 36 Poison Jab · 46 Uproar · 52 Spin Out · 58 Gunk Shot
 
 ### #967 Cyclizar
@@ -377,19 +377,19 @@
 ### #968 Orthworm
 
 - Type: Steel
-- Ability: Water Absorb
+- Ability: Earth Eater
 - Learnset: 1 Tackle · 1 Wrap · 1 Harden · 7 Mud-Slap · 12 Smack Down · 16 Bulldoze · 21 Iron Head · 26 Take Down · 30 Dig · 34 Sandstorm · 38 Iron Defense · 43 Iron Tail · 47 Earthquake · 52 Shed Tail
 
 ### #969 Glimmet
 
 - Type: Rock / Poison
-- Ability: Rough Skin
+- Ability: Toxic Debris
 - Learnset: 1 Rock Throw · 1 Harden · 1 Smack Down · 7 Acid Spray · 11 Ancientpower · 15 Rock Polish · 18 Stealth Rock · 22 Venoshock · 26 Sandstorm · 29 Selfdestruct · 33 Rock Slide · 37 Power Gem · 41 Acid Armor · 46 Sludge Wave
 
 ### #970 Glimmora
 
 - Type: Rock / Poison
-- Ability: Rough Skin
+- Ability: Toxic Debris
 - Learnset: 1 Rock Throw · 1 Harden · 1 Toxic Spikes · 1 Smack Down · 1 Spiky Shield · 1 Mortal Spin · 7 Acid Spray · 11 Ancientpower · 15 Rock Polish · 18 Stealth Rock · 22 Venoshock · 26 Sandstorm · 29 Selfdestruct · 33 Rock Slide · 39 Power Gem · 44 Acid Armor · 50 Sludge Wave
 
 ### #971 Greavard
@@ -407,7 +407,7 @@
 ### #973 Flamigo
 
 - Type: Flying / Fighting
-- Ability: Inner Focus / Own Tempo
+- Ability: Scrappy / Tangled Feet
 - Learnset: 1 Peck · 1 Copycat · 5 Double Kick · 9 Detect · 12 Wing Attack · 15 Focus Energy · 18 Low Kick · 21 Feint · 27 Payback · 31 Roost · 35 Air Slash · 39 Mega Kick · 44 Wide Guard · 48 Throat Chop · 54 Brave Bird
 
 ### #974 Cetoddle
@@ -425,13 +425,13 @@
 ### #976 Veluza
 
 - Type: Water / Psychic
-- Ability: Hustle
+- Ability: Mold Breaker
 - Learnset: 1 Tackle · 1 Aqua Jet · 7 Pluck · 11 Water Pulse · 15 Focus Energy · 20 Slash · 25 Aqua Cutter · 30 Fillet Away · 35 Night Slash · 40 Psycho Cut · 45 Liquidation · 50 Crunch · 55 Final Gambit
 
 ### #977 Dondozo
 
 - Type: Water
-- Ability: Oblivious
+- Ability: Unaware / Oblivious
 - Learnset: 1 Tackle · 1 Supersonic · 1 Water Gun · 5 Tickle · 10 Flail · 15 Rest · 15 Sleep Talk · 20 Dive · 25 Noble Roar · 30 Soak · 35 Body Slam · 40 Aqua Tail · 45 Rain Dance · 50 Order Up · 55 Heavy Slam · 60 Double-Edge · 65 Wave Crash
 
 ### #978 Tatsugiri
@@ -455,7 +455,7 @@
 ### #981 Farigiraf
 
 - Type: Normal / Psychic
-- Ability: Pickup / Inner Focus
+- Ability: Cud Chew / Armor Tail
 - Learnset: 1 Tackle · 1 Growl · 1 Astonish · 1 Power Swap · 1 Guard Swap · 5 Confusion · 10 Assurance · 14 Stomp · 19 Psybeam · 23 Agility · 28 Double Hit · 32 Twin Beam · 37 Crunch · 41 Baton Pass · 46 Nasty Plot · 50 Psychic
 
 ### #982 Dudunsparce
@@ -467,7 +467,7 @@
 ### #983 Kingambit
 
 - Type: Dark / Steel
-- Ability: Defiant / Guts
+- Ability: Defiant / Supreme Lord
 - Learnset: 1 Scratch · 1 Leer · 1 Fury Cutter · 1 Metal Claw · 1 Metal Burst · 1 Kowtow Cleave · 15 Torment · 20 Scary Face · 25 Assurance · 30 Metal Sound · 35 Slash · 40 Night Slash · 45 Iron Defense · 50 Retaliate · 57 Iron Head · 64 Swords Dance · 71 Guillotine
 
 ### #984 Great Tusk
@@ -545,19 +545,19 @@
 ### #996 Frigibax
 
 - Type: Dragon / Ice
-- Ability: Water Veil
+- Ability: Thermal Exch
 - Learnset: 1 Tackle · 1 Leer · 1 Dragon Tail · 6 Icy Wind · 12 Dragonbreath · 18 Focus Energy · 24 Bite · 29 Ice Fang · 32 Dragon Claw · 36 Take Down · 40 Ice Beam · 44 Crunch · 48 Icicle Crash
 
 ### #997 Arctibax
 
 - Type: Dragon / Ice
-- Ability: Water Veil
+- Ability: Thermal Exch
 - Learnset: 1 Tackle · 1 Leer · 1 Dragon Tail · 6 Icy Wind · 12 Dragonbreath · 18 Focus Energy · 24 Bite · 29 Ice Fang · 40 Take Down · 45 Ice Beam · 50 Crunch · 55 Icicle Crash
 
 ### #998 Baxcalibur
 
 - Type: Dragon / Ice
-- Ability: Water Veil
+- Ability: Thermal Exch
 - Learnset: 1 Tackle · 1 Leer · 1 Ice Shard · 1 Dragon Tail · 1 Breaking Swipe · 1 Glaive Rush · 1 Snowscape · 6 Icy Wind · 12 Dragonbreath · 18 Focus Energy · 24 Bite · 29 Ice Fang · 35 Dragon Claw · 42 Take Down · 48 Ice Beam · 55 Crunch · 62 Icicle Crash
 
 ### #999 Gimmighoul
@@ -569,31 +569,31 @@
 ### #1000 Gholdengo
 
 - Type: Steel / Ghost
-- Ability: Clear Body
+- Ability: Good As Gold
 - Learnset: 1 Tackle · 1 Astonish · 7 Night Shade · 14 Confuse Ray · 21 Substitute · 28 Metal Sound · 35 Shadow Ball · 42 Recover · 49 Power Gem · 56 Make It Rain · 63 Nasty Plot · 70 Memento
 
 ### #1001 Wo-Chien
 
 - Type: Dark / Grass
-- Ability: Intimidate
+- Ability: Ruin Tablets
 - Learnset: 1 Absorb · 1 Spite · 1 Mean Look · 5 Tickle · 10 Payback · 15 Poisonpowder · 15 Stun Spore · 20 Mega Drain · 25 Leech Seed · 30 Growth · 35 Ingrain · 40 Dark Pulse · 45 Giga Drain · 50 Ruination · 55 Foul Play · 60 Power Whip · 65 Grassy Terrain · 70 Knock Off · 75 Leaf Storm
 
 ### #1002 Chien-Pao
 
 - Type: Dark / Ice
-- Ability: Intimidate
+- Ability: Ruin Sword
 - Learnset: 1 Spite · 1 Powder Snow · 1 Mean Look · 5 Icy Wind · 10 Payback · 15 Mist · 15 Haze · 20 Ice Shard · 25 Swords Dance · 30 Snowscape · 35 Night Slash · 40 Dark Pulse · 45 Icicle Crash · 50 Ruination · 55 Sucker Punch · 60 Sacred Sword · 65 Recover · 70 Throat Chop · 75 Sheer Cold
 
 ### #1003 Ting-Lu
 
 - Type: Dark / Ground
-- Ability: Intimidate
+- Ability: Ruin Vessel
 - Learnset: 1 Spite · 1 Mean Look · 1 Sand Tomb · 5 Spikes · 10 Payback · 15 Stomp · 20 Bulldoze · 25 Whirlwind · 30 Taunt · 35 Thrash · 40 Dark Pulse · 45 Stomping Tantrum · 50 Ruination · 55 Throat Chop · 60 Rock Slide · 65 Memento · 70 Earthquake · 75 Fissure
 
 ### #1004 Chi-Yu
 
 - Type: Dark / Fire
-- Ability: Intimidate
+- Ability: Ruin Beads
 - Learnset: 1 Ember · 1 Spite · 1 Mean Look · 5 Flame Wheel · 10 Payback · 15 Will-O-Wisp · 20 Flame Charge · 25 Incinerate · 30 Confuse Ray · 35 Nasty Plot · 40 Dark Pulse · 45 Lava Plume · 50 Ruination · 55 Bounce · 60 Swagger · 65 Inferno · 70 Memento · 75 Overheat
 
 ### #1005 Roaring Moon
@@ -611,13 +611,13 @@
 ### #1007 Koraidon
 
 - Type: Fighting / Dragon
-- Ability: Drought
+- Ability: Orichalcum
 - Learnset: 1 Sunny Day · 1 Breaking Swipe · 7 Rock Smash · 14 Ancientpower · 21 Drain Punch · 28 Brick Break · 35 Agility · 42 Dragon Claw · 49 Flamethrower · 56 Collision Course · 63 Screech · 70 Counter · 77 Outrage · 84 Close Combat · 91 Flare Blitz · 98 Giga Impact
 
 ### #1008 Miraidon
 
 - Type: Electric / Dragon
-- Ability: Static
+- Ability: Hadron Eng.
 - Learnset: 1 Thundershock · 1 Dragonbreath · 1 Electric Terrain · 7 Shock Wave · 14 Charge · 21 Parabolic Charge · 28 Discharge · 35 Agility · 42 Dragon Pulse · 56 Electro Drift · 63 Metal Sound · 70 Mirror Coat · 77 Outrage · 84 Thunder · 91 Overheat · 98 Hyper Beam
 
 ### #1009 Walking Wake
@@ -635,7 +635,7 @@
 ### #1011 Dipplin
 
 - Type: Grass / Dragon
-- Ability: Intimidate / Pickup
+- Ability: Sweet Syrup / Gluttony
 - Learnset: 1 Withdraw · 1 Sweet Scent · 1 Recycle · 1 Astonish · 1 Double Hit · 4 Dragon Tail · 8 Growth · 12 Dragonbreath · 16 Protect · 20 Bullet Seed · 28 Syrup Bomb · 32 Dragon Pulse · 36 Recover · 40 Energy Ball · 44 Substitute
 
 ### #1012 Poltchageist
@@ -653,19 +653,19 @@
 ### #1014 Okidogi
 
 - Type: Poison / Fighting
-- Ability: Poison Point
+- Ability: Toxic Chain
 - Learnset: 1 Bite · 1 Low Kick · 1 Bulk Up · 8 Howl · 16 Poison Fang · 24 Force Palm · 32 Counter · 40 Poison Jab · 48 Brutal Swing · 56 Crunch · 64 Superpower · 72 Giga Impact
 
 ### #1015 Munkidori
 
 - Type: Poison / Psychic
-- Ability: Poison Point
+- Ability: Toxic Chain
 - Learnset: 1 Scratch · 1 Confusion · 1 Fake Out · 1 Flatter · 8 Helping Hand · 16 Psybeam · 24 Clear Smog · 32 Poison Jab · 40 Psychic · 48 Sludge Wave · 56 Nasty Plot · 64 Future Sight · 72 Parting Shot
 
 ### #1016 Fezandipiti
 
 - Type: Poison / Fairy
-- Ability: Poison Point
+- Ability: Toxic Chain
 - Learnset: 1 Double Kick · 1 Peck · 1 Poison Gas · 1 Disarming Voice · 8 Quick Attack · 16 Attract · 24 Wing Attack · 32 Cross Poison · 40 Tail Slap · 48 Beat Up · 56 Swagger · 56 Flatter · 64 Roost · 72 Moonblast
 
 ### #1017 Ogerpon
@@ -683,7 +683,7 @@
 ### #1019 Hydrapple
 
 - Type: Grass / Dragon
-- Ability: Intimidate / Regenerator
+- Ability: Sweet Syrup / Regenerator
 - Learnset: 1 Withdraw · 1 Sweet Scent · 1 Recycle · 1 Astonish · 1 Fickle Beam · 4 Dragon Tail · 8 Growth · 12 Dragonbreath · 16 Protect · 20 Bullet Seed · 28 Syrup Bomb · 32 Dragon Pulse · 36 Recover · 40 Energy Ball · 44 Substitute · 54 Power Whip
 
 ### #1020 Gouging Fire
@@ -719,6 +719,6 @@
 ### #1025 Pecharunt
 
 - Type: Poison / Ghost
-- Ability: Poison Point
+- Ability: Puppeteer
 - Learnset: 1 Smog · 1 Poison Gas · 1 Memento · 1 Astonish · 8 Withdraw · 16 Destiny Bond · 24 Fake Tears · 32 Parting Shot · 40 Shadow Ball · 48 Malignant Chain · 56 Toxic · 64 Nasty Plot · 72 Recover
 

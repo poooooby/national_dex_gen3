@@ -59,13 +59,13 @@
 ### #659 Bunnelby
 
 - Type: Normal
-- Ability: Pickup
+- Ability: Pickup / Cheek Pouch
 - Learnset: 1 Leer · 1 Mud-Slap · 3 Tackle · 6 Laser Focus · 9 Quick Attack · 12 Mud Shot · 15 Flail · 18 Double Kick · 21 Bulldoze · 24 Dig · 27 Bounce · 30 Take Down · 33 Swords Dance · 36 Earthquake · 39 Super Fang
 
 ### #660 Diggersby
 
 - Type: Normal / Ground
-- Ability: Pickup
+- Ability: Pickup / Cheek Pouch
 - Learnset: 1 Tackle · 1 Leer · 1 Mud-Slap · 1 Laser Focus · 9 Quick Attack · 12 Mud Shot · 15 Flail · 18 Double Kick · 23 Bulldoze · 28 Dig · 33 Bounce · 38 Take Down · 43 Swords Dance · 48 Earthquake · 53 Super Fang · 58 Hammer Arm
 
 ### #661 Fletchling
@@ -107,13 +107,13 @@
 ### #667 Litleo
 
 - Type: Fire / Normal
-- Ability: Rivalry / Pressure
+- Ability: Rivalry / Unnerve
 - Learnset: 1 Tackle · 1 Leer · 5 Ember · 8 Work Up · 11 Headbutt · 15 Noble Roar · 20 Take Down · 23 Fire Fang · 28 Endeavor · 33 Echoed Voice · 36 Flamethrower · 39 Crunch · 43 Hyper Voice · 46 Incinerate · 50 Overheat
 
 ### #668 Pyroar
 
 - Type: Fire / Normal
-- Ability: Rivalry / Pressure
+- Ability: Rivalry / Unnerve
 - Learnset: 1 Tackle · 1 Leer · 1 Ember · 1 Hyper Beam · 1 Work Up · 11 Headbutt · 15 Noble Roar · 20 Take Down · 23 Fire Fang · 28 Endeavor · 33 Echoed Voice · 38 Flamethrower · 42 Crunch · 48 Hyper Voice · 51 Incinerate · 57 Overheat
 
 ### #669 Flabébé
@@ -149,49 +149,49 @@
 ### #674 Pancham
 
 - Type: Fighting
-- Ability: Iron Fist / Hustle
+- Ability: Iron Fist / Mold Breaker
 - Learnset: 1 Tackle · 1 Leer · 4 Arm Thrust · 8 Taunt · 12 Circle Throw · 16 Low Sweep · 20 Work Up · 24 Slash · 28 Vital Throw · 33 Crunch · 36 Body Slam · 40 Parting Shot · 44 Entrainment
 
 ### #675 Pangoro
 
 - Type: Fighting / Dark
-- Ability: Iron Fist / Hustle
+- Ability: Iron Fist / Mold Breaker
 - Learnset: 1 Tackle · 1 Leer · 1 Taunt · 1 Arm Thrust · 1 Night Slash · 1 Bullet Punch · 12 Circle Throw · 16 Low Sweep · 20 Work Up · 24 Slash · 28 Vital Throw · 35 Crunch · 40 Body Slam · 46 Parting Shot · 52 Entrainment · 58 Hammer Arm
 
 ### #676 Furfrou
 
 - Type: Normal
-- Ability: Marvel Scale
+- Ability: Fur Coat
 - Learnset: 1 Tackle · 1 Growl · 5 Sand-Attack · 9 Baby-Doll Eyes · 12 Headbutt · 15 Tail Whip · 22 Bite · 27 Odor Sleuth · 33 Retaliate · 35 Take Down · 38 Charm · 42 Sucker Punch · 48 Cotton Guard
 
 ### #677 Espurr
 
 - Type: Psychic
-- Ability: Keen Eye
+- Ability: Keen Eye / Infiltrator
 - Learnset: 1 Scratch · 1 Leer · 3 Fake Out · 6 Disarming Voice · 9 Confusion · 18 Covet · 21 Psybeam · 30 Light Screen · 30 Reflect · 33 Psyshock
 
 ### #678 Meowstic
 
 - Type: Psychic
-- Ability: Keen Eye
+- Ability: Keen Eye / Infiltrator
 - Learnset: 1 Scratch · 1 Leer · 1 Mean Look · 1 Fake Out · 1 Disarming Voice · 9 Confusion · 12 Helping Hand · 15 Charm · 18 Covet · 21 Psybeam · 24 Sucker Punch · 29 Role Play · 34 Light Screen · 34 Reflect · 39 Psyshock · 44 Imprison · 49 Quick Guard · 54 Psychic · 59 Misty Terrain
 
 ### #679 Honedge
 
 - Type: Steel / Ghost
-- Ability: Compoundeyes
+- Ability: No Guard
 - Learnset: 1 Tackle · 1 Fury Cutter · 4 Shadow Sneak · 8 Autotomize · 12 Aerial Ace · 16 Metal Sound · 20 Slash · 24 Night Slash · 28 Retaliate · 32 Iron Defense · 36 Iron Head · 40 Power Trick · 44 Swords Dance · 48 Sacred Sword
 
 ### #680 Doublade
 
 - Type: Steel / Ghost
-- Ability: Compoundeyes
+- Ability: No Guard
 - Learnset: 1 Tackle · 1 Fury Cutter · 1 Shadow Sneak · 1 Autotomize · 12 Aerial Ace · 16 Metal Sound · 20 Slash · 24 Night Slash · 28 Retaliate · 32 Iron Defense · 38 Iron Head · 44 Power Trick · 50 Swords Dance · 56 Sacred Sword
 
 ### #681 Aegislash
 
 - Type: Steel / Ghost
-- Ability: Pressure
+- Ability: Stancechange
 - Learnset: 1 Swords Dance · 1 Tackle · 1 Slash · 1 Fury Cutter · 1 Metal Sound · 1 Aerial Ace · 1 Iron Defense · 1 Power Trick · 1 Night Slash · 1 Shadow Sneak · 1 Iron Head · 1 Head Smash · 1 Autotomize · 1 Retaliate · 1 Sacred Sword · 1 King's Shield
 
 ### #682 Spritzee
@@ -221,13 +221,13 @@
 ### #686 Inkay
 
 - Type: Dark / Psychic
-- Ability: Clear Body / Suction Cups
+- Ability: Contrary / Suction Cups
 - Learnset: 1 Tackle · 1 Peck · 3 Hypnosis · 6 Wrap · 9 Payback · 12 Pluck · 15 Psybeam · 18 Swagger · 21 Slash · 24 Night Slash · 27 Psycho Cut · 31 Switcheroo · 33 Foul Play · 36 Topsy-Turvy · 39 Superpower
 
 ### #687 Malamar
 
 - Type: Dark / Psychic
-- Ability: Clear Body / Suction Cups
+- Ability: Contrary / Suction Cups
 - Learnset: 1 Tackle · 1 Wrap · 1 Peck · 1 Hypnosis · 1 Reversal · 9 Payback · 12 Pluck · 15 Psybeam · 18 Swagger · 21 Slash · 24 Night Slash · 27 Psycho Cut · 33 Switcheroo · 37 Foul Play · 42 Topsy-Turvy · 47 Superpower
 
 ### #688 Binacle
@@ -257,13 +257,13 @@
 ### #692 Clauncher
 
 - Type: Water
-- Ability: Hustle
+- Ability: Megalauncher
 - Learnset: 1 Water Gun · 1 Splash · 10 Flail · 15 Aqua Jet · 20 Smack Down · 25 Hone Claws · 30 Water Pulse · 35 Swords Dance · 40 Aura Sphere · 45 Bounce · 50 Muddy Water · 55 Crabhammer
 
 ### #693 Clawitzer
 
 - Type: Water
-- Ability: Hustle
+- Ability: Megalauncher
 - Learnset: 1 Water Gun · 1 Splash · 1 Flail · 1 Dark Pulse · 1 Dragon Pulse · 1 Heal Pulse · 15 Aqua Jet · 20 Smack Down · 25 Hone Claws · 30 Water Pulse · 35 Swords Dance · 42 Aura Sphere · 49 Bounce · 56 Muddy Water · 63 Crabhammer
 
 ### #694 Helioptile
@@ -293,13 +293,13 @@
 ### #698 Amaura
 
 - Type: Rock / Ice
-- Ability: Hustle
+- Ability: Refrigerate
 - Learnset: 1 Growl · 1 Powder Snow · 4 Encore · 8 Ancientpower · 12 Icy Wind · 16 Round · 20 Mist · 24 Aurora Beam · 28 Thunder Wave · 32 Nature Power · 36 Freeze-Dry · 40 Ice Beam · 44 Light Screen · 48 Hail · 52 Blizzard · 56 Hyper Beam
 
 ### #699 Aurorus
 
 - Type: Rock / Ice
-- Ability: Hustle
+- Ability: Refrigerate
 - Learnset: 1 Growl · 1 Powder Snow · 1 Encore · 1 Ancientpower · 12 Icy Wind · 16 Round · 20 Mist · 24 Aurora Beam · 28 Thunder Wave · 32 Nature Power · 36 Freeze-Dry · 42 Ice Beam · 48 Light Screen · 54 Hail · 60 Blizzard · 66 Hyper Beam
 
 ### #700 Sylveon
@@ -311,13 +311,13 @@
 ### #701 Hawlucha
 
 - Type: Fighting / Flying
-- Ability: Limber / Chlorophyll
+- Ability: Limber / Unburden
 - Learnset: 1 Tackle · 1 Hone Claws · 4 Wing Attack · 8 Detect · 12 Aerial Ace · 16 Encore · 20 Featherdance · 24 Brick Break · 28 Bounce · 32 Taunt · 36 Roost · 40 Swords Dance · 44 Flying Press · 48 Hi Jump Kick · 52 Endeavor · 56 Sky Attack
 
 ### #702 Dedenne
 
 - Type: Electric / Fairy
-- Ability: Pickup
+- Ability: Cheek Pouch / Pickup
 - Learnset: 1 Tail Whip · 1 Nuzzle · 5 Tackle · 10 Charge · 15 Thundershock · 20 Charm · 25 Parabolic Charge · 30 Volt Switch · 35 Rest · 35 Snore · 40 Discharge · 45 Play Rough · 50 Super Fang · 55 Entrainment · 60 Thunder
 
 ### #703 Carbink
@@ -389,31 +389,31 @@
 ### #714 Noibat
 
 - Type: Flying / Dragon
-- Ability: Frisk / Keen Eye
+- Ability: Frisk / Infiltrator
 - Learnset: 1 Tackle · 1 Absorb · 4 Gust · 8 Supersonic · 12 Double Team · 16 Wing Attack · 20 Bite · 24 Air Cutter · 28 Whirlwind · 32 Super Fang · 36 Air Slash · 40 Screech · 44 Roost · 49 Tailwind · 52 Hurricane
 
 ### #715 Noivern
 
 - Type: Flying / Dragon
-- Ability: Frisk / Keen Eye
+- Ability: Frisk / Infiltrator
 - Learnset: 1 Gust · 1 Tackle · 1 Supersonic · 1 Absorb · 1 Moonlight · 1 Dragon Pulse · 12 Double Team · 16 Wing Attack · 20 Bite · 24 Air Cutter · 28 Whirlwind · 32 Super Fang · 36 Air Slash · 40 Screech · 44 Roost · 51 Tailwind · 56 Hurricane · 62 Boomburst
 
 ### #716 Xerneas
 
 - Type: Fairy
-- Ability: Pressure
+- Ability: Fairy Aura
 - Learnset: 1 Tackle · 1 Gravity · 5 Light Screen · 10 Aurora Beam · 15 Nature Power · 20 Night Slash · 25 Aromatherapy · 30 Psych Up · 35 Horn Leech · 40 Misty Terrain · 45 Ingrain · 50 Take Down · 55 Geomancy · 60 Moonblast · 65 Heal Pulse · 70 Megahorn · 75 Close Combat · 80 Outrage · 85 Giga Impact
 
 ### #717 Yveltal
 
 - Type: Dark / Flying
-- Ability: Pressure
+- Ability: Dark Aura
 - Learnset: 1 Gust · 1 Double Team · 5 Taunt · 10 Snarl · 15 Disable · 20 Sucker Punch · 25 Tailwind · 30 Roost · 35 Air Slash · 40 Dark Pulse · 45 Psychic · 50 Oblivion Wing · 55 Phantom Force · 60 Foul Play · 65 Dragon Rush · 70 Hurricane · 75 Focus Blast · 80 Sky Attack · 85 Hyper Beam
 
 ### #718 Zygarde
 
 - Type: Dragon / Ground
-- Ability: Pressure
+- Ability: Aura Break
 - Learnset: 1 Bind · 1 Bite · 1 Dragonbreath · 1 Bulldoze · 1 Thousand Arrows · 1 Thousand Waves · 1 Core Enforcer · 8 Haze · 16 Dig · 24 Safeguard · 32 Crunch · 40 Dragon Pulse · 48 Land's Wrath · 56 Glare · 64 Sandstorm · 72 Coil · 80 Earthquake · 88 Outrage
 
 ### #719 Diancie
@@ -425,7 +425,7 @@
 ### #720 Hoopa
 
 - Type: Psychic / Ghost
-- Ability: Pickup
+- Ability: Magician
 - Learnset: 1 Confusion · 1 Destiny Bond · 1 Magic Coat · 6 Astonish · 10 Trick · 15 Light Screen · 19 Psybeam · 25 Skill Swap · 29 Guard Split · 29 Power Split · 35 Phantom Force · 46 Zen Headbutt · 50 Trick Room · 50 Wonder Room · 55 Shadow Ball · 68 Nasty Plot · 75 Psychic · 85 Hyperspace Hole
 
 ### #721 Volcanion

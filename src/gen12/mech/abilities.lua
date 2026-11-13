@@ -34,20 +34,30 @@ return function(core, opts)
     local dex = A:dex(b)
     return dex and facts.abilities and facts.abilities[dex] or nil
   end
+  -- Abilities that only act on a battle partner, or on nothing these battles have: the Pokemon
+  -- has a working one in their place (the Gen 3 path's stand-in where that one works here)
+  local SWAP = { BATTERY = "STATIC", POWERSPOT = "ROCKYPAYLOAD", FRIENDGUARD = "SHELLARMOR",
+    HOSPITALITY = "SHEDSKIN", HEALER = "SHEDSKIN", PLUS = "LIGHTNINGROD", MINUS = "VOLTABSORB",
+    COMMANDER = "STORMDRAIN", RECEIVER = "TRACE", POWEROFALCHEMY = "TRACE", COSTAR = "TRACE",
+    TELEPATHY = "OBLIVIOUS", SYMBIOSIS = "PICKUP", CURIOUSMEDICINE = "NATURALCURE",
+    PROPELLERTAIL = "SWIFTSWIM", STALWART = "INNERFOCUS", BALLFETCH = "PICKUP", HONEYGATHER = "PICKUP",
+    ILLUSION = "COLORCHANGE", POWERCONSTRUCT = "PRESSURE", RKSSYSTEM = "PRESSURE", TERASHIFT = "PRESSURE",
+    CORROSION = "POISONPOINT", IMPOSTER = "LIMBER" }
+  core.ABILITY_SWAP = SWAP
   -- the Pokemon's own ability id, or nil (suppressed, or none known)
   local function rawAbility(A, b)
     if not b then return nil end
     local v = A:vol(b)
     if v.abilitySuppressed then return nil end
-    if v.ability then return v.ability end
+    if v.ability then return SWAP[v.ability] or v.ability end
     local list = speciesList(A, b)
     if not list then return nil end
     local first, second = list[1], list[2]
     if second and second ~= false then
       local d = A:dvs(b)
-      if (d.defense or 0) % 2 == 1 then return second end
+      if (d.defense or 0) % 2 == 1 then return SWAP[second] or second end
     end
-    return first ~= false and first or nil
+    return first ~= false and (SWAP[first] or first) or nil
   end
   core.rawAbility = rawAbility
   -- abilities a foe's Mold Breaker cannot set aside
@@ -78,8 +88,8 @@ return function(core, opts)
       list = dex and facts.abilities and facts.abilities[dex]
     end
     if not list then return nil end
-    if list[2] and list[2] ~= false and ((dvs and dvs.defense) or 0) % 2 == 1 then return list[2] end
-    return list[1] ~= false and list[1] or nil
+    if list[2] and list[2] ~= false and ((dvs and dvs.defense) or 0) % 2 == 1 then return SWAP[list[2]] or list[2] end
+    return list[1] ~= false and (SWAP[list[1]] or list[1]) or nil
   end
   core:on("ability", function(A, b) return abilityOf(A, b) end)
   local function nameOf(id) local a = ABILITIES[id]; return a and a.name or (id and tostring(id)) or "" end

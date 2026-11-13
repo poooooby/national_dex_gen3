@@ -109,6 +109,11 @@ local function weightOf(b)
     local entry = ok and sp and Pokemon.dexEntry and Pokemon.dexEntry(sp)
     w = entry and tonumber(entry.weight)
   end
+  -- Light Metal / Heavy Metal (src/abilities_more.lua sets the scale)
+  if w and w > 0 and MoveRules.weightScale then
+    local ok, k = pcall(MoveRules.weightScale, b)
+    if ok and tonumber(k) and k ~= 1 then w = math.max(1, math.floor(w * k)) end
+  end
   return (w and w > 0) and w or nil
 end
 

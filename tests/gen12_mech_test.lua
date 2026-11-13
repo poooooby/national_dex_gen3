@@ -480,17 +480,23 @@ for _, version in ipairs(H.versions()) do
     local ABS = H.module("data/gen12/abilities.lua")
     local function slurp(path) local f = io.open(H.modRoot() .. path, "rb"); local t = f:read("*a"); f:close(); return t end
     local src = slurp("/src/gen12/mech/abilities_more.lua") .. slurp("/src/gen12/mech/abilities.lua")
-    local NAMES_ONLY = { BALLFETCH = true, COMMANDER = true, RECEIVER = true, TELEPATHY = true, HONEYGATHER = true,
-      CURIOUSMEDICINE = true, ILLUSION = true, POWERCONSTRUCT = true, RKSSYSTEM = true, TERASHIFT = true, CORROSION = true,
-      IMPOSTER = true, PROPELLERTAIL = true, STALWART = true, SYMBIOSIS = true, COSTAR = true, POWEROFALCHEMY = true }
+    -- (the partner abilities and the ones with nothing to act on are swapped for a working one)
+    local SWAP = core.ABILITY_SWAP or {}
+    local function works(id)
+      local a = ABS[id]
+      return a ~= nil and (a.b ~= nil or src:find('"' .. id .. '"', 1, true) ~= nil or src:find(id .. " =", 1, true) ~= nil)
+    end
     local missing = {}
-    for id, a in pairs(ABS) do
-      if not a.b and not NAMES_ONLY[id] and not src:find('"' .. id .. '"', 1, true) and not src:find(id .. " =", 1, true) then
+    for id in pairs(ABS) do
+      if not (SWAP[id] and works(SWAP[id]) and not SWAP[SWAP[id]]) and not (works(id) and not SWAP[id]) then
         missing[#missing + 1] = id
       end
     end
     table.sort(missing)
-    T.eq(#missing, 0, version .. ": every ability has an effect or is text only (" .. table.concat(missing, ", ") .. ")")
+    T.eq(#missing, 0, version .. ": every ability has an effect or a working stand-in (" .. table.concat(missing, ", ") .. ")")
+    T.eq(SWAP.BATTERY, "STATIC", version .. ": Battery (a partner's boost) is Static here")
+    w = sim.fresh({ mine = "CHARJABUG", foe = "RATTATA" })
+    T.eq(core.abilityOf(w.A, w.battler("player")), "STATIC", version .. ": a Charjabug battles with Static")
 
     -- (the player's Growl: the game's own makes a foe's stat drops fail at the low test roll)
     w = sim.fresh({ mine = "MACHAMP", foe = "RATTATA" })

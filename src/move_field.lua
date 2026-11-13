@@ -117,6 +117,20 @@ local function terrainOf(st)
 end
 MoveField.terrainOf = terrainOf
 
+-- a terrain for 5 turns from outside a move (src/abilities_more.lua: the Surge abilities, Seed
+-- Sower); false when it is already up
+function MoveField.startTerrain(ad, kind)
+  local st = ad and ad._st
+  local t = TERRAIN_BY_KIND[kind]
+  if not (st and t) or terrainOf(st) == kind then return false end
+  local f = field(st)
+  f.terrain, f.terrainTurns = kind, 5
+  ad:say(t.start)
+  return true
+end
+-- fn(ad, b) -> true when b takes no indirect damage (Magic Guard; src/abilities_more.lua sets it)
+MoveField.noIndirect = nil
+
 local function fieldOn(st, key)
   local f = st and st.__ndxField
   return f and (f[key] or 0) > 0
@@ -251,7 +265,8 @@ local function entryHazards(st, ad, b)
       ad:say("The healing wish came true\nfor " .. prefixed(ad, b) .. "!")
     end
   end
-  if d.stealthRock then
+  local guarded = MoveField.noIndirect
+  if d.stealthRock and not (guarded and guarded(ad, b)) then
     local okT, Types = pcall(require, "src.core.game3.battle.types")
     local eff = 1
     if okT and Types.typeCalc then

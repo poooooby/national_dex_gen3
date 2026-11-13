@@ -28,7 +28,7 @@ move. Forms are registered as species of their own, each reporting its base spec
 | TM/HM compatibility | Every TM or HM (the same 58 machines in all five games) whose move the species can be taught by machine or tutor in any game (636 species; 37 of 58 machines on average) |
 | Move tutors | Whichever tutors the running game has (FireRed/LeafGreen's 15, Ruby/Sapphire's none, or Emerald's own larger set) whose move the species can be taught in any game |
 | Egg moves | Egg moves Gen 3 has (315 species) |
-| Abilities | Gen 3 abilities only: the cart's own are kept, and each newer ability is mapped to the closest Gen 3 one (`tools/ability_map.py`), e.g. Simple → Own Tempo, Moxie → Guts. The Gen 3 battle engine cannot take new abilities from a mod |
+| Abilities | The cart's own are kept; 178 newer ones are real (`data/abilities.lua`, ids 78-255, `src/abilities.lua` + `src/abilities_more.lua`, see Abilities below). The other twelve (partner-only or nothing to act on) and any that fails to install are the closest Gen 3 one (`tools/ability_map.py`), which saves and species records still carry |
 | Evolutions | Level, item, friendship and trade steps between species 1–1025, plus steps from the cart's own species into new ones (Magneton → Magnezone, Nosepass → Probopass ...) |
 
 **Shops** (`data/shops.lua`): the Marts sell only Dynamax Candy, Max Mushrooms and Max Honey,
@@ -271,6 +271,37 @@ crops it to 64×64), or nil to let the next provider answer.
 | `evolutionsOf(idOrDex)` | `{ id, dex, evolvesFrom = { id, methods }, evolvesInto = { … } }`, also for a cart species that gains a step into a new one, e.g. `evolutionsOf("RHYDON")` |
 | `setArtProvider(fn)` | registers an art provider |
 | `setDexPeek(fn)` | `fn(speciesSlot) -> true` lets that unseen species open in the Pokédex in a limited view (number shown, name dashed, "?" picture, no cry, only the AREA page). `nil` turns it off. Modern Spawns uses it |
+
+## Abilities (Gen 3)
+
+- `tools/build_abilities.py` `IMPLEMENTED` (append-only: a Pokemon's ability pair is by id) writes
+  `data/abilities.lua`; the ids run 78-255, so check nothing keeps an ability id in a byte before
+  adding one past 255.
+  `src/abilities.lua` gives each its number, name, text and the species' pairs, answers
+  `abilityOf` by species and slot, and acts for its 52 (header).
+- `src/abilities_more.lua` acts for the other 126, on the same seams plus a few more (its header
+  lists them): `battle.damage` / `battle.crit` / `battle.accuracy` / `battle.turn_order` hooks
+  at load; on game.ready wraps of `Adapter.new` (abilityOf for Neutralizing Gas and Mold
+  Breaker's whole move, canApplyStatus guards and Corrosion, applyHpLoss + sayText for Magic
+  Guard / Overcoat: a known indirect-damage message id with that battler as subject drops the
+  loss and the message), `Damage.calc` (Unaware, Scrappy, Infiltrator, Refrigerate), `Hit.run`,
+  `Effects.run`, the move context's `accuracyCheck` / `isProtected` (patched on its metatable),
+  `Engine.resolveMove` / `selfHit` / `switchInEffects`, `Ab.switchIn` / `absorb` / `onDamage` /
+  `endTurn` / `switchOut` / `runIntimidate`, `Secondary.changeStat` / `withChance`,
+  `HeldItems.of` / `has` / `normal`, `RealAbilities.speedModifiers` / `priorityOf`, and the held
+  items' core (`itemSuppressed`, `gluttony`, `ripen`, `ateBerry`, `noIndirect`). Process-wide
+  wraps read the newest install through `Abilities.__ndxMoreHub`. It also sets
+  `MoveField.startTerrain` / `MoveField.noIndirect` (Stealth Rock) and `MoveRules.weightScale`.
+- Forms that change in battle have no registered slot: their stats go on `__ndxStat` (computed
+  from hand-written base stats with the Pokemon's IVs, EVs, level and nature), which move_rules'
+  Damage.calc wrap and `RealAbilities.effectiveSpeed` read; the picture stays.
+- Tests: `tests/abilities_test.lua`, `tests/abilities_more_test.lua [game]` (whole moves through
+  `Engine.resolveMove`: `ad.roll` low, `st.rng` high for the damage and critical rolls). Driver
+  `tests/drivers/abilities_probe.lua` (a real battle: Intrepid Sword on entry, Mold Breaker's
+  Earthquake on a Levitate Gastly, Disguise; Emerald and FireRed 0 failures 2026-11-13). The game
+  hands `Engine.resolveMove` a side or slot, not a battler: resolve it with `State.occupant`.
+  A species of this mod answers its own ability ahead of a battler's `ability` field: give one
+  by `expTracedAbility`, as Skill Swap does.
 
 ## Technical limits
 
@@ -933,6 +964,11 @@ Instruct, Decorate), which keep stand-ins. Neither the engine nor any Gen 3 file
   `perform` stops a protected move, `statusInterrupt`, `resolveSwitch`; Gold `movePriority`,
   `battlerTypes`, `betweenTurnEffects`, `useMove`, `applyStatus` / `applyConfusion`,
   `switchLocked`.
+- **Swapped abilities** (`mech/abilities.lua` `SWAP`, `core.ABILITY_SWAP`): the partner abilities
+  and the ones with nothing to act on (Battery, Power Spot, Friend Guard, Hospitality, Healer,
+  Plus, Minus, Commander, Receiver, Telepathy, Ball Fetch...) are answered as a working one by
+  `rawAbility` and `abilityForMon`, so the battle and the summary agree. The test checks every
+  ability works or has a working stand-in.
 - **The other abilities** (`mech/abilities_more.lua`, after `abilities.lua`): every ability without
   a `b` block, written out on the hooks (the file's header lists them). `abilities.lua` `abilityOf`
   answers Neutralizing Gas (`A:field().gasOn` + a scan) and a Mold Breaker's target

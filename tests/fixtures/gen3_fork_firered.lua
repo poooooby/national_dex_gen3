@@ -16,7 +16,7 @@ return {
     types = "bc04f18a",
   },
   ready = {
-    abilities = "47816c1a",
+    abilities = "8fda2667",
     eggMoves = "92711d7a",
     evolutions = "755f8686",
     evolutionsOf = "f7d20458",

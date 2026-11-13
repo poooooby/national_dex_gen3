@@ -8,7 +8,7 @@ has in this game, and its level-up learnset (`level move`).
 
 ## How to read the entries
 
-- **Ability.** 52 newer abilities work for real ([the list](abilities.md));
+- **Ability.** 178 newer abilities work for real ([the list](abilities.md));
   any other is the closest Gen 3 ability (for example Simple becomes Own Tempo), which the
   Pokémon shows and acts like. A second name is its second ability slot.
 - **Typing.** The modern typing, Fairy included (Gen 6's type chart).

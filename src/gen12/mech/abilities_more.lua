@@ -23,9 +23,11 @@
 -- Multitype, Hunger Switch, Schooling, Pickup, Run Away.
 -- Also the hidden ones a Pokemon can come by through Skill Swap, Trace or Role Play: Protean,
 -- Libero, Magic Bounce, Aroma Veil, Moody, Harvest, Long Reach, Perish Body, Zen Mode.
--- Names and text only (no single battle effect, or nothing to act on here): Ball Fetch, Commander,
--- Receiver, Telepathy, Honey Gather, Curious Medicine, Illusion, Power Construct, RKS System,
--- Tera Shift, Corrosion, Imposter, Propeller Tail, Stalwart, Symbiosis, Costar, Power of Alchemy.
+-- The partner abilities and those with nothing to act on here (Battery, Power Spot, Friend Guard,
+-- Hospitality, Healer, Plus, Minus, Commander, Receiver, Telepathy, Ball Fetch, Honey Gather,
+-- Curious Medicine, Illusion, Power Construct, RKS System, Tera Shift, Corrosion, Imposter,
+-- Propeller Tail, Stalwart, Symbiosis, Costar, Power of Alchemy) never reach a battle: abilities.lua
+-- (core.ABILITY_SWAP) gives the Pokemon a working one in their place.
 
 return function(core, opts)
   local ab = core.abilityOf
