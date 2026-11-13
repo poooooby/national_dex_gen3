@@ -11,6 +11,9 @@ local H = dofile((arg[0]:gsub("\\", "/"):match("^(.*)/") or ".") .. "/_gen3.lua"
 
 local data = H.gen3Data()
 local run = T.sdk.loadMods({ "mods/national_dex_gen3" }, { data = data, generation = 3 })
+-- the default clock (the in-game one): the loader reads the engine checkout's options.lua, so a
+-- player's saved Clock Source would otherwise decide every time-of-day check below
+run.loader.modOptions.national_dex_gen3 = { clock_source = "game" }
 T.eq(#run.errors, 0, "loads clean (" .. tostring(run.errors[1]) .. ")")
 run.loader.events:emit("game.ready", {})
 

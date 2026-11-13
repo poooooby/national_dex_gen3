@@ -86,6 +86,9 @@ T.eq(friends("CHINGLING", 220, nil, 12), nil, "but not by day")
 T.check(friends("SNOM", 220, nil, 3) ~= nil, "Snom evolves at night")
 T.eq(friends("SNOM", 220, nil, 15), nil, "but not by day")
 
+-- set it explicitly: the loader reads the engine checkout's options.lua, so a player's saved
+-- Clock Source would otherwise decide these
+setSource("game")
 T.check(friends("BUDEW", 220, 12, 23) ~= nil, "Emerald, in-game clock: the cart's noon, not the device's night")
 T.eq(friends("BUDEW", 220, 23, 12), nil, "and the cart's night, not the device's noon")
 setSource("device")
