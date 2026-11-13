@@ -337,6 +337,20 @@ for _, version in ipairs(H.versions()) do
   first(w, "player"); first(w, "enemy")
   w.use("SKILL_SWAP")
   T.eq(core.abilityOf(w.A, w.battler("player")), "STATIC", version .. ": Skill Swap")
+  -- abilities that only hold in a weather or a terrain
+  w = sim.fresh({ mine = "LEAFEON" })
+  first(w, "player")
+  T.eq(core.abilityOf(w.A, w.battler("player")), "LEAFGUARD", version .. ": Leafeon has Leaf Guard")
+  T.eq(core:ask("blockStatus", w.A, w.battler("player"), "PAR"), nil, version .. ": Leaf Guard does nothing out of the sun")
+  w.A:setWeather("sun", 5)
+  T.check(core:ask("blockStatus", w.A, w.battler("player"), "PAR") ~= nil, version .. ": Leaf Guard in the sun")
+  w = sim.fresh({ mine = "RAICHU_ALOLA" })
+  first(w, "player")
+  T.eq(core.abilityOf(w.A, w.battler("player")), "SURGESURFER", version .. ": Alolan Raichu has Surge Surfer")
+  sp = w.A:speed(w.battler("player"))
+  T.eq(core:fold("speed", sp, w.A, w.battler("player")), sp, version .. ": Surge Surfer does nothing without a terrain")
+  w.A:field().terrain = { kind = "ELECTRIC", turns = 5 }
+  T.eq(core:fold("speed", sp, w.A, w.battler("player")), sp * 2, version .. ": Surge Surfer on Electric Terrain")
 
   -- physical / special by the move (option move_split, src/gen12/mech/split.lua)
   local opts = sim.run.loader.modOptions

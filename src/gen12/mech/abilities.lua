@@ -88,6 +88,9 @@ return function(core, opts)
     FLOWERGIFT = function(A) return weather(A) == "sun" end,
     SANDFORCE = function(A) return weather(A) == "sand" end,
     HUSTLE = function(A, b, m) return m and A:category(m) == "physical" end,
+    LEAFGUARD = function(A) return weather(A) == "sun" end,
+    SURGESURFER = function(A) return core.terrain ~= nil and core.terrain(A) == "ELECTRIC" end,
+    GRASSPELT = function(A) return core.terrain ~= nil and core.terrain(A) == "GRASSY" end,
   }
   -- the data's own "when" phrases
   local function whenHolds(A, b, m, when, ability)
