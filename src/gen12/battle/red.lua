@@ -780,10 +780,22 @@ function Red.installSeams(mod, deps)
   end)
 
   -- a move that never misses this time (core "accuracy" -> true / false: Lock-On)
+  -- core "accuracyScale" (Compound Eyes, Hustle) scales the game's own threshold
+  local Damage = deps.require("src.battle.Damage")
   mod.hooks:wrap("battle.accuracy", function(nextFn, c)
     if c and c.battle and core.hooks.accuracy then
       local r = core:ask("accuracy", Red.adapter(c.battle, deps), c.user, c.target, c.move)
       if r ~= nil then return r end
+    end
+    if c and c.battle and core.hooks.accuracyScale and Damage.accuracyThreshold then
+      local k = core:fold("accuracyScale", 1, Red.adapter(c.battle, deps), c.user, c.target, c.move)
+      if k ~= 1 then
+        local acc = Damage.accuracyThreshold(c.ruleset, c.move, c.user, c.target)
+        if acc == 256 then return true end
+        acc = math.max(0, math.min(256, math.floor(acc * k)))
+        if acc >= 256 then return true end
+        return (c.rng or love.math.random)(0, 255) < acc
+      end
     end
     return nextFn(c)
   end)

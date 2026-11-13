@@ -173,6 +173,13 @@ return function(core, opts)
     local id = target and abilityOf(A, target)
     if id == "BATTLEARMOR" or id == "SHELLARMOR" then return true end
   end)
+  -- an accuracy multiplier on the user (Compound Eyes 1.3, Victory Star 1.1, Hustle's 0.8 on
+  -- physical moves), read by the adapters' battle.accuracy wrap
+  core:on("accuracyScale", function(k, A, u, t, m)
+    if not (m and (m.power or 0) >= 0) then return k end
+    each(A, u, "accuracy_multiplier", function(e) k = k * (e.factor or 1) end, m)
+    return k
+  end)
   core:on("accuracy", function(A, u, t, m)
     -- an evasion boost on the target (Sand Veil, Snow Cloak): a fifth of moves miss
     local miss = false
@@ -332,12 +339,23 @@ return function(core, opts)
       end
     end
   end)
-  -- Natural Cure: its status is cured as it leaves
+  -- as it leaves: Natural Cure cures its status, Regenerator (an on_switch_out heal) gives back
+  -- a third of its HP
   core:on("switchedIn", function(A, ev)
     local prev = ev.previous
-    if prev and abilityOf(A, prev) == "NATURALCURE" then
-      local mon = A:mon(prev)
-      if mon then mon.status = nil end
+    local id = prev and abilityOf(A, prev)
+    if not id then return end
+    local mon = A:mon(prev)
+    if not mon then return end
+    if id == "NATURALCURE" then mon.status = nil end
+    local beh = behaviourOf(id)
+    if beh and beh.trigger == "on_switch_out" and (mon.hp or 0) > 0 then
+      for _, e in ipairs(beh.effects or {}) do
+        if e.kind == "heal" and e.fraction then
+          local max = A:maxHp(prev)
+          mon.hp = math.min(max, (mon.hp or 0) + math.floor(max * e.fraction))
+        end
+      end
     end
   end)
 

@@ -576,6 +576,14 @@ function Gold.installSeams(mod, deps)
       local r = core:ask("accuracy", Gold.adapter(c.battle, deps), c.user, c.target, c.move)
       if r ~= nil then return r end
     end
+    -- core "accuracyScale" (Compound Eyes, Hustle) scales the move's accuracy for this roll
+    if c and c.battle and core.hooks.accuracyScale and (c.accuracy or c.accuracyRaw) then
+      local k = core:fold("accuracyScale", 1, Gold.adapter(c.battle, deps), c.user, c.target, c.move)
+      if k ~= 1 then
+        if c.accuracyRaw then c.accuracyRaw = math.max(0, math.min(255, math.floor(c.accuracyRaw * k))) end
+        if c.accuracy then c.accuracy = math.max(0, math.min(100, math.floor(c.accuracy * k))) end
+      end
+    end
     return nextFn(c)
   end)
 

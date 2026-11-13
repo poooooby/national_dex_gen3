@@ -351,6 +351,23 @@ for _, version in ipairs(H.versions()) do
   T.eq(core:fold("speed", sp, w.A, w.battler("player")), sp, version .. ": Surge Surfer does nothing without a terrain")
   w.A:field().terrain = { kind = "ELECTRIC", turns = 5 }
   T.eq(core:fold("speed", sp, w.A, w.battler("player")), sp * 2, version .. ": Surge Surfer on Electric Terrain")
+  -- accuracy multipliers and an ability that acts as its Pokemon leaves
+  w = sim.fresh({ mine = "BUTTERFREE" })
+  first(w, "player")
+  T.eq(core:fold("accuracyScale", 1, w.A, w.battler("player"), w.battler("enemy"), data.moves.SLEEP_POWDER), 1.3,
+    version .. ": Compound Eyes")
+  w = sim.fresh({ mine = "CORSOLA" })
+  first(w, "player")
+  T.eq(core.abilityOf(w.A, w.battler("player")), "HUSTLE", version .. ": Corsola has Hustle")
+  T.check(math.abs(core:fold("accuracyScale", 1, w.A, w.battler("player"), w.battler("enemy"), data.moves.TACKLE) - 0.8) < 1e-9,
+    version .. ": Hustle: physical moves 0.8")
+  w = sim.fresh({ mine = "MIENFOO" })
+  second(w, "player")
+  T.eq(core.abilityOf(w.A, w.battler("player")), "REGENERATOR", version .. ": Mienfoo's Regenerator")
+  local max = w.A:maxHp(w.battler("player"))
+  w.mon("player").hp = 1
+  core:fire("switchedIn", w.A, { battler = w.battler("enemy"), previous = w.battler("player") })
+  T.eq(w.mon("player").hp, 1 + math.floor(max * 0.3333), version .. ": Regenerator heals a third as it leaves")
 
   -- physical / special by the move (option move_split, src/gen12/mech/split.lua)
   local opts = sim.run.loader.modOptions
