@@ -178,6 +178,82 @@ function RedA:party(b)
   if b.isPlayer then return self.battle:playerPartyView() or { b.mon } end
   return self.battle.enemyParty or { b.mon }
 end
+-- the party Pokemon that could come in for this battler (index, mon), or nil
+function RedA:replacement(b, random)
+  local bt = self.battle
+  local party, current
+  if b.isPlayer then party, current = bt:playerPartyView() or {}, b.mon
+  else
+    if bt.kind ~= "trainer" and bt.kind ~= "link" then return nil end
+    party, current = bt.enemyParty or {}, b.mon
+  end
+  local pool = {}
+  for i, mon in ipairs(party) do
+    if mon ~= current and (mon.hp or 0) > 0 and not mon.isEgg then pool[#pool + 1] = i end
+  end
+  if #pool == 0 then return nil end
+  local i = random and pool[self:rng(#pool) + 1] or pool[1]
+  return i, party[i]
+end
+
+-- switch this battler out mid-turn for the first (or a random) healthy party Pokemon, Red's way:
+-- the withdraw line and animation, then the new battler sent out. opts: random, carry (Baton
+-- Pass: stages, Substitute, confusion and our lasting state go with it). Returns whether it did.
+local CARRY = { "aquaRing", "ingrain", "magnetRise", "perish", "cursed", "trapped", "statOver" }
+function RedA:switchOut(b, opts)
+  opts = opts or {}
+  local bt = self.battle
+  local i, mon = self:replacement(b, opts.random)
+  if not mon then return false end
+  local BattleState = self.deps.require("src.battle.BattleState")
+  local Timing = self.deps.require("src.core.Timing")
+  local Runtime = self.deps.require("src.mods.Runtime")
+  local carry = opts.carry and {
+    stages = b.stages, sub = b.substituteHP, confused = b.confusedTurns,
+    ndx = rawget(b, "__ndx") } or nil
+  if b.isPlayer then
+    bt:sayNextAuto(bt:withdrawText(b.name), Timing.SWITCH_PLAYER_MON)
+    bt:queueRetreatAnim()
+  else
+    bt:sayNext(self:text("%s was withdrawn!", self:name(b)))
+  end
+  bt:actNext(function()
+    local previous = b.isPlayer and bt.player or bt.enemy
+    if b.isPlayer then
+      bt:restoreMimicked(bt.player)
+      bt.player = BattleState.makeBattler(bt.data, mon, true, bt.game.save)
+    else
+      bt.enemyIndex = i
+      bt.enemy = BattleState.makeBattler(bt.data, mon, false)
+      bt.participants = {}
+    end
+    local now = b.isPlayer and bt.player or bt.enemy
+    if carry then
+      for k, v in pairs(carry.stages or {}) do now.stages[k] = v end
+      now.substituteHP, now.confusedTurns = carry.sub, carry.confused
+      if carry.ndx then
+        local v = self:vol(now)
+        for _, key in ipairs(CARRY) do v[key] = carry.ndx[key] end
+      end
+    end
+    local foe = b.isPlayer and bt.enemy or bt.player
+    if foe then foe.trappingTurns, foe.trapMove = nil, nil end
+    bt:syncSides()
+    Runtime.emit("battle.battler_switched", { battle = bt, side = b.isPlayer and bt.sides[1] or bt.sides[2],
+      battler = now, previous = previous })
+    bt:markParticipant()
+    if now.isPlayer then
+      bt.sendingOut = true
+      bt:sayNextAuto(bt:sendOutText(now.name))
+      bt:queueSendOutAnim(false)
+    else
+      bt:sayNext(self:text("%s sent out %s!", (bt.trainer and bt.trainer.name) or "The foe", now.name))
+      bt:startGrowIn(now)
+    end
+  end)
+  return true
+end
+
 -- the move this battler chose this turn (battle.turn_started), or nil
 function RedA:chosen(b)
   local c = self:field().chosen
@@ -524,6 +600,21 @@ function Red.installSeams(mod, deps)
       self.__ndxCur = prev
       if not ok then error(err, 0) end
     end
+    -- a switch the player chose that the field or a move forbids (core "trapped": Mean Look,
+    -- Ingrain, No Retreat, Fairy Lock): refused with a line, back to the menu
+    local resolveSwitch = BattleState.resolveSwitch
+    BattleState.resolveSwitch = function(self, newMon, ...)
+      if hub.trapped and self.player then
+        local ok, why = pcall(hub.trapped, self, self.player)
+        if ok and why then
+          self.phase = "messages"
+          self.afterQueue = "menu"
+          self:say(why)
+          return
+        end
+      end
+      return resolveSwitch(self, newMon, ...)
+    end
     -- a move that works while its user sleeps (Sleep Talk, Snore): the sleep turn is spent as
     -- usual, then the move runs
     local statusInterrupt = BattleState.statusInterrupt
@@ -565,6 +656,12 @@ function Red.installSeams(mod, deps)
       return { inst = { id = r.id, pp = 1 } }
     end
     return nil
+  end
+  hub.trapped = function(battle, b)
+    if not core.hooks.trapped then return nil end
+    local A = Red.adapter(battle, deps)
+    local r = core:ask("trapped", A, b)
+    if r then return type(r) == "string" and r or A:text("%s can't be switched out!", A:name(b)) end
   end
   hub.sleepMove = function(battle, user, id)
     return core:ask("sleepMove", Red.adapter(battle, deps), user, id) and true or false

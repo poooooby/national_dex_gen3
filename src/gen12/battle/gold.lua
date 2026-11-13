@@ -188,6 +188,40 @@ function GoldA:party(b)
   if bt:sideOf(b) == "player" then return bt.party or { b } end
   return bt.enemyParty or { b }
 end
+-- the party Pokemon that could come in for this battler (index, mon), or nil
+function GoldA:replacement(b, random)
+  local bt = self.battle
+  local player = bt:sideOf(b) == "player"
+  if not player and not bt.trainer then return nil end
+  local party = player and bt.party or bt.enemyParty or {}
+  local pool = {}
+  for i, mon in ipairs(party) do
+    if mon ~= b and (mon.hp or 0) > 0 and not mon.isEgg then pool[#pool + 1] = i end
+  end
+  if #pool == 0 then return nil end
+  local i = random and pool[self:rng(#pool) + 1] or pool[1]
+  return i, party[i]
+end
+
+-- switch this battler out mid-turn, through Gold's own switch (its events, Spikes, the new
+-- side's empty stages); opts: random, carry (Baton Pass: stages and the volatile go with it)
+function GoldA:switchOut(b, opts)
+  opts = opts or {}
+  local bt = self.battle
+  local i, mon = self:replacement(b, opts.random)
+  if not mon then return false end
+  local side = bt:sideOf(b)
+  local stages = opts.carry and bt.stages[side] or nil
+  local vol = opts.carry and bt:volatile(b) or nil
+  local ok
+  if side == "player" then ok = bt:switch(i) else ok = bt:switchEnemy(i) end
+  if ok and opts.carry then
+    local now = side == "player" and bt.player or bt.enemy
+    bt.stages[side] = stages
+    now.volatile = vol
+  end
+  return ok and true or false
+end
 function GoldA:chosen(b)
   local c = self:field().chosen
   return c and c[self:sideName(b)] or nil
@@ -548,6 +582,16 @@ function Gold.installSeams(mod, deps)
       end
       return a, b
     end
+    -- the player's switch, refused while a move or the field holds it (core "trapped")
+    local switchLocked = Battle.switchLocked
+    Battle.switchLocked = function(self, ...)
+      if switchLocked(self, ...) then return true end
+      if hub.trapped and self.player then
+        local ok, r = pcall(hub.trapped, self, self.player)
+        if ok and r then return true end
+      end
+      return false
+    end
     -- a status the field or an ability stops (core "blockStatus")
     local applyStatus, applyConfusion = Battle.applyStatus, Battle.applyConfusion
     Battle.applyStatus = function(self, mon, status, source, ...)
@@ -597,6 +641,10 @@ function Gold.installSeams(mod, deps)
     local r = core:ask("blockStatus", A, mon, GATE_STATUS[status] or status, { from = source })
     if type(r) == "string" and r ~= "" then A:say(r) end
     return r
+  end
+  hub.trapped = function(battle, mon)
+    if not core.hooks.trapped then return nil end
+    return core:ask("trapped", Gold.adapter(battle, deps), mon)
   end
   hub.before = function(battle, attacker, defender, moveId)
     if not core.hooks.beforeMove then return nil end

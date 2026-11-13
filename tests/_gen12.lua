@@ -115,6 +115,7 @@ function H.sim(version, extra)
       Game.save.options.animations = false
       local mine = Pokemon.new(data, o.mine or "SQUIRTLE", o.level or 40)
       Game.save.party = { mine }
+      for _, id in ipairs(o.party or {}) do Game.save.party[#Game.save.party + 1] = Pokemon.new(data, id, o.level or 40) end
       local tb = BattleState.newWild(Game, o.foe or "RATTATA", o.foeLevel or o.level or 40)
       tb.queue, tb.nextInsert = {}, 0
       if o.roll == "high" then tb.rng = function(_, b) return b end else tb.rng = function(a) return a end end
@@ -141,6 +142,19 @@ function H.sim(version, extra)
       end
       function w.endTurn() tb:endOfTurn() end
       function w.nextTurn() tb.turnCount = (tb.turnCount or 0) + 1 end
+      -- run the queued actions (Red swaps battlers and such from its queue)
+      function w.flush()
+        local i = 1
+        while i <= #tb.queue do
+          local item = tb.queue[i]
+          if item.fn and not item.done then
+            item.done = true
+            tb.nextInsert = i
+            item.fn()
+          end
+          i = i + 1
+        end
+      end
       if o.setup then o.setup(w) end
       return w
     end
@@ -171,7 +185,13 @@ function H.sim(version, extra)
         return 1
       end
     end
-    local b = Battle.new({ data = data, party = { player }, wild = wild,
+    local party = { player }
+    for _, id in ipairs(o.party or {}) do
+      local m = Mon.new(data, id, o.level or 40)
+      m.moves = { { id = "TACKLE", pp = 35, maxPp = 35 } }
+      party[#party + 1] = m
+    end
+    local b = Battle.new({ data = data, party = party, wild = wild,
       save = { player = { id = 7, badges = {}, kantoBadges = {} } }, random = random })
     local w = { battle = b, gen = 2 }
     local function who(side) return side == "enemy" and b.enemy or b.player end
@@ -201,6 +221,7 @@ function H.sim(version, extra)
       b:applyFieldResiduals()
     end
     function w.nextTurn() b.turn = (b.turn or 0) + 1 end
+    function w.flush() end
     if o.setup then o.setup(w) end
     return w
   end

@@ -236,6 +236,27 @@ for _, version in ipairs(H.versions()) do
   w.mon("player").hp = 10
   w.use("RECOVER")
   T.eq(w.hp("player"), 10, version .. ": Heal Block stops Recover")
+
+  -- switching (src/gen12/mech/switching.lua)
+  w = sim.fresh({ mine = "SCYTHER", party = { "PIKACHU" }, foe = "SNORLAX", level = 30, foeLevel = 70 })
+  w.use("U_TURN")
+  w.flush()
+  T.eq(w.A:species(w.battler("player")), "PIKACHU", version .. ": U-turn brings in the next Pokemon")
+  w = sim.fresh({ party = { "PIKACHU" } })
+  w.use("SWORDS_DANCE")
+  w.use("BATON_PASS")
+  w.flush()
+  T.check(w.A:species(w.battler("player")) == "PIKACHU" and w.stage("player", "attack") == 2,
+    version .. ": Baton Pass carries the stages")
+  w = sim.fresh({ party = { "PIKACHU" } })
+  w.use("MEAN_LOOK", "enemy")
+  -- Gold's own Mean Look locks Gold's own way; Red's is ours
+  T.check(gen == 2 and w.battle:switchLocked() or core:ask("trapped", w.A, w.battler("player")) ~= nil,
+    version .. ": Mean Look traps")
+  w = sim.fresh({ party = { "PIKACHU" } })
+  w.use("NO_RETREAT")
+  T.check(gen == 1 and core:ask("trapped", w.A, w.battler("player")) ~= nil or (gen == 2 and w.battle:switchLocked()),
+    version .. ": No Retreat keeps the user in")
   sim.release()
 end
 
