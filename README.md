@@ -27,11 +27,15 @@ Crystal have their own section after them.
   all sold by a vending machine in the department store. Each unlocks with the Gym Badges it
   matches in the modern games: Dusk Stone and Linking Cord early, Ice Stone and Razor Claw at 4,
   Metal Alloy at 8.
-- 🏪 **Vending machines:** two touch-screen machines, EVO EXPRESS for the evolution items and TM
-  EXPRESS for the new TMs: in the Celadon Dept. Store (EVO EXPRESS on 4F, TM EXPRESS on 2F) in
-  FireRed / LeafGreen, and the Lilycove Dept. Store (EVO EXPRESS on 2F, TM EXPRESS on 4F) in Ruby /
-  Sapphire / Emerald. Browse by tab (stones, trade
-  items, held items...; TMs by move type), see each item's description and a TM's type, power,
+- 🎒 **Today's held items:** 138 held items from the later games work in battle: Choice Scarf
+  and Specs, Life Orb, Focus Sash, Assault Vest, Eviolite, Rocky Helmet, Air Balloon, Weakness
+  Policy, Heavy-Duty Boots, the Plates and Gems, the type-resist berries, Booster Energy and many
+  more, alongside the game's own (Choice Band, Leftovers, Shell Bell...).
+- 🏪 **Vending machines:** three touch-screen machines, EVO EXPRESS for the evolution items, HELD
+  EXPRESS for the held items and TM EXPRESS for the new TMs: in the Celadon Dept. Store (EVO and
+  HELD EXPRESS on 4F, TM EXPRESS on 2F) in FireRed / LeafGreen, and the Lilycove Dept. Store (EVO
+  and HELD EXPRESS on 2F, TM EXPRESS on 4F) in Ruby / Sapphire / Emerald. Browse by tab (stones,
+  trade items, power-ups, berries...; TMs by move type), see each item's description and a TM's type, power,
   accuracy and PP before you buy, pick how many, and watch it drop into the tray. Works with the
   buttons alone (the D-pad reaches the tabs too) or with touch and the mouse, and the screen fills
   your window, wide or held upright. Each machine boots up with its own logo first (a tap or any
@@ -119,8 +123,15 @@ Crystal have their own section after them.
   Gold, Silver and Crystal, plus the 128 alternate forms. Each has its stats, modern typing,
   level-up moves, TM moves, Pokédex entry (fitted to the game's own page) and a party icon.
 - 🧚 **Modern types:** Fairy joins both games, and Dark and Steel join Red, Blue and Yellow,
-  with today's matchups. The originals get their modern typing too: Magnemite is Electric /
-  Steel, Clefairy is Fairy, Bite is a Dark move.
+  with today's whole type chart (in Red, Blue and Yellow, Ghost moves hit Psychic types and Bug
+  and Poison no longer beat each other). The originals get their modern typing too: Magnemite is
+  Electric / Steel, Clefairy is Fairy, Bite is a Dark move.
+- ⚖️ **Today's battle rules in Red, Blue and Yellow:** no more 1-in-256 misses, Focus Energy
+  works, Hyper Beam always needs its rest, foes use up their PP, and critical hits come 1 in 24
+  for 1.5x damage, as today (the **Modern Rules** option, on by default).
+- 📈 **Sp. Atk and Sp. Def in Red, Blue and Yellow:** the one SPECIAL is the Sp. Atk, and every
+  Pokémon defends with a Sp. Def of its own, worked out from its species, as in Gold onwards.
+  Moves that change Sp. Def change it alone.
 - ⚔️ **Every newer move, for real, in the game's own battles:** all of them work with today's
   effects, each with the look of a similar move: Rage Fist grows with every hit taken, Stealth
   Rock and Spikes hurt whoever comes in, U-turn switches you out, Protect and King's Shield
@@ -134,9 +145,13 @@ Crystal have their own section after them.
   Intimidate, Levitate, Swift Swim, Water Absorb, Static, Sturdy, Guts, Technician and many more
   do what they do today.
 - 🌿 **Natures:** every Pokémon has a nature that raises one stat and lowers another, as in the
-  newer games (in Red, Blue and Yellow, Sp. Atk and Sp. Def natures move the one SPECIAL).
-- 📊 **The summary shows it all:** nature, ability and held item on a third page in Red, Blue and
-  Yellow, and under OT on the stats page in Gold, Silver and Crystal.
+  newer games.
+- 📊 **The summary shows it all:** nature, ability, held item and Sp. Def on a third page in Red,
+  Blue and Yellow (the first page's SPECIAL reads SP.ATK), and nature and ability under OT on the
+  stats page in Gold, Silver and Crystal.
+- ✨ **Shiny Pokémon in Red, Blue and Yellow:** by Gold's own rule (about 1 in 8,192), they
+  sparkle as they come out in battle and wear a star on their summary. Sprite mods can draw them
+  in their shiny colours.
 - ✨ **Their own animations:** Aura Sphere, Dark Pulse, Dragon Pulse, Flash Cannon, Focus Blast,
   Night Slash, Stone Edge and more (18 in all) play effects of their own instead of an older
   move's.
@@ -147,18 +162,21 @@ Crystal have their own section after them.
 - 💎 **The items to do it:** the evolution items each game lacks, sold by the EVO EXPRESS
   vending machine (below). In Red, Blue and Yellow, an item an evolution needs held or traded
   is used on the Pokémon like a stone (a Metal Coat turns Onix into Steelix).
-- 🎒 **Held items in Red, Blue and Yellow:** Gold's held items (berries, Leftovers, King's Rock,
-  Quick Claw, Scope Lens, the type boosters, Light Ball, Everstone, Smoke Ball...) work in
-  battle, sold at the Celadon Dept. Store 4F. Give or take them with ITEM on the party menu.
+- 🎒 **Held items:** every held item from Gold to today's games works in battle on both: Choice
+  Band, Scarf and Specs, Life Orb, Focus Sash, Assault Vest, Eviolite, Rocky Helmet, Air Balloon,
+  Weakness Policy, the Gems and Plates, every berry from Oran and Sitrus to the type-resist ones,
+  and Exp. Share, Macho Brace and the Power items outside battle. Red, Blue and Yellow get Gold's
+  own too (Leftovers, King's Rock, Quick Claw...); give or take them with ITEM on the party menu.
 - ♂️ **Gender in Red, Blue and Yellow:** every Pokémon is male, female or neither, by Gold's own
   rule, shown after its level in battle.
 - 🥚 **Breeding in Red, Blue and Yellow:** the Day Care Lady, beside the gentleman in the Route 5
   Day Care, raises a second Pokémon. Two that get along leave an Egg with her, which you carry
   until it hatches into the party, with any egg moves its parents know.
 - 🏪 **Vending machines:** the same touch-screen machines as in the Generation 3 games: EVO
-  EXPRESS for the evolution items and TM EXPRESS for the new TMs, in the Celadon Dept. Store
-  (EVO EXPRESS on 4F, TM EXPRESS on 2F) in Red, Blue and Yellow and the Goldenrod Dept. Store
-  (EVO EXPRESS on 4F, TM EXPRESS on 5F) in Gold, Silver and Crystal. Browse by tab, see each
+  EXPRESS for the evolution items, HELD EXPRESS for the held items and TM EXPRESS for the new
+  TMs, in the Celadon Dept. Store (EVO and HELD EXPRESS on 4F, TM EXPRESS on 2F) in Red, Blue and
+  Yellow and the Goldenrod Dept. Store (EVO and HELD EXPRESS on 4F, TM EXPRESS on 5F) in Gold,
+  Silver and Crystal. Browse by tab, see each
   TM's move, type and power, buy several at once; some items wait until you have enough Gym
   Badges.
 - 🔊 **Cries:** #387–1025 and their forms have their own cry; the rest borrow a similar
@@ -192,7 +210,7 @@ Crystal have their own section after them.
 
 Open **OPTIONS → MODS → WoobleDex**. Each option is one setting for every game it appears in.
 Red to Crystal show Modern Moves, Register Owned, Bigger PC, Type Badges and Move Split, and
-Red, Blue and Yellow also Day & Night; the rest are for FireRed to Emerald.
+Red, Blue and Yellow also Day & Night and Modern Rules; the rest are for FireRed to Emerald.
 
 | Option | Choices | Default | What it does |
 |---|---|---|---|
@@ -203,6 +221,7 @@ Red, Blue and Yellow also Day & Night; the rest are for FireRed to Emerald.
 | **Bigger PC** | On / Off | On | 40 PC boxes instead of the game's own: 14 in FireRed to Emerald (1,200 Pokémon), 12 in Red, Blue and Yellow and 14 in Gold, Silver and Crystal (800 Pokémon). Turning it off hides the extra boxes; the Pokémon in them stay in your save and come back when you turn it on again. |
 | **Register Owned** | On / Off | On | Opening the Pokédex counts every Pokémon in your party and PC as seen and caught, handy for Pokémon added with a save editor. |
 | **Type Badges** | On / Off | On | Shows each Pokémon's types as small badges by its HP box in battle. |
+| **Modern Rules** | On / Off | On | Red, Blue and Yellow: battles by today's rules: no 1-in-256 misses, Focus Energy works, Hyper Beam always needs its rest, foes use up PP, and critical hits come 1 in 24 (more with Focus Energy or a high-critical move) for 1.5x damage. Off: the game's own Gen 1 rules, quirks and all. |
 | **Move Split** | On / Off | Off | Red to Crystal: a move is physical or special by the move itself, as in today's games (Shadow Ball special; Crunch and Fire Punch physical), instead of by its type. It changes how the game's own moves hit too. |
 
 ## 💾 Installation
@@ -256,6 +275,9 @@ the game's own Pokémon keep their original data, so its event gifts arrive as u
   name; FireRed, LeafGreen and Emerald show them in full.
 - **The original 386 Pokémon,** the story, trainers and maps are unchanged, apart from the
   originals' Fairy typing, their new evolutions and, with **Modern Moves** on, their newer moves.
+- **A few held items work in part.** Power items raise every stat's growth as the Macho Brace
+  does, not just their own; Binding Band does nothing; Loaded Dice only helps the newer
+  multi-strike moves.
 - **A few abilities work in part.** Leaf Guard, Sweet Veil and Flower Veil stop status moves but
   not a status an attack can cause; Super Luck doesn't stack with a high critical-hit move;
   Ice Body and Snow Cloak don't block hail damage.
@@ -278,8 +300,13 @@ the game's own Pokémon keep their original data, so its event gifts arrive as u
   it by name, so for now they don't run beside WoobleDex. WoobleDex already answers everything
   they ask of a National Dex, so they can run on it once they also accept WoobleDex.
 - **Red to Crystal's options** are Modern Moves, Register Owned, Bigger PC, Type Badges, Move
-  Split and (Red, Blue, Yellow) Day & Night, shared with the Generation 3 games: turning one off
-  turns it off everywhere.
+  Split and (Red, Blue, Yellow) Day & Night and Modern Rules, shared with the Generation 3 games:
+  turning one off turns it off everywhere.
+- **A few held items work in part on Red to Crystal:** Binding Band does nothing; Grip Claw works
+  in Gold, Silver and Crystal but not with Red's Wrap; Booster Energy does nothing (Protosynthesis
+  and Quark Drive aren't working abilities there); the Amulet Coin and Luck Incense double prize
+  money only in Gold, Silver and Crystal; Mental Herb frees a Pokémon from the newer moves'
+  effects (Taunt, Encore...) but not from the game's own Disable.
 - **The new TMs keep their Generation 3 numbers,** so a number is the same TM in every game (TM74
   is Zen Headbutt).
 - **A Pokémon's nature and ability come from its stats' hidden values,** so they never change,
@@ -303,9 +330,8 @@ the game's own Pokémon keep their original data, so its event gifts arrive as u
   Candies and with walking, not with vitamins or Rare Candies.
 - **Gold, Silver and Crystal's summary** prints a number from #1000 on right against the level
   ("No.1000:L50").
-- **In Gold, Silver and Crystal, the new Pokémon turn grey while a move animation plays,** and
-  get their colours back when it ends: the game colours a Pokémon during an animation from its
-  own palette list, which they aren't in.
+- **In Gold, Silver and Crystal, a new Pokémon's colours during a move animation** are two taken
+  from its picture, so they come close to its own but may differ a little.
 
 ## 📚 Player Guides
 

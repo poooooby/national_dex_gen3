@@ -357,6 +357,9 @@ def own_text(effect: dict[str, Any]) -> str | None:
     }.get(k)
 
 
+GOLD_TEXT_FILE = ROOT / "tools" / "gold_text.json"   # Gold's two-line texts written for this mod
+
+
 def descriptions(api: bs.API, slug: str, effect: dict[str, Any] | None = None) -> tuple[str, str]:
     """(Gen 3 Bag text: 3 lines within LIMIT px; Gold's: 2 lines of 18), from the newest English
     flavor text that fits each."""
@@ -387,6 +390,11 @@ def descriptions(api: bs.API, slug: str, effect: dict[str, Any] | None = None) -
     berry = slug.endswith("-berry")
     g3 = g3 or ("A BERRY to be\nheld in battle." if berry else "An item to be held\nby a POKeMON.")
     g2 = g2 or ("A BERRY TO BE<NEXT>HELD IN BATTLE." if berry else "AN ITEM TO BE<NEXT>HELD IN BATTLE.")
+    if GOLD_TEXT_FILE.exists():
+        import json
+        mine2 = json.loads(GOLD_TEXT_FILE.read_text(encoding="utf-8")).get("items", {}).get(engine_id(slug))
+        if mine2:
+            g2 = mine2
     return g3, g2
 
 

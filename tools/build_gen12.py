@@ -755,7 +755,7 @@ def build_moves(api: bs.API, workers: int, carts: dict[int, dict[str, Any]],
         else:
             # no Gen 3 effect to lend it: a stand-in everywhere, so the name is never shown
             rec = {"n": n, "id": bs.engine_id(a["name"]), "name": a_name(a).upper()[:12]}
-        desc = move_description(a)
+        desc = GOLD_TEXT.get("moves", {}).get(rec["id"]) or move_description(a)
         if desc:
             rec["desc"] = desc
         rec.update({"type": a["type"]["name"].upper(), "power": a.get("power") or 0,
@@ -859,6 +859,11 @@ def build_moves(api: bs.API, workers: int, carts: dict[int, dict[str, Any]],
                   + ", ".join(name(c) for c in r["subs"][f"gen{gen}"][:3])
                   for r in out if f"gen{gen}" in r.get("subs", {})]
     return out, "\n".join(lines) + "\n"
+
+
+# Gold's two-line texts written for this mod where no official one fits (tools/gold_text.json:
+# { "moves": { id: "LINE<NEXT>LINE" }, "items": { id: ... } }, each line at most 18 characters)
+GOLD_TEXT: dict[str, Any] = json.loads((ROOT / "tools" / "gold_text.json").read_text(encoding="utf-8"))     if (ROOT / "tools" / "gold_text.json").exists() else {}
 
 
 def move_description(a: dict[str, Any]) -> str | None:
