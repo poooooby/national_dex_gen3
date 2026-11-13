@@ -35,9 +35,9 @@ return function(core)
     snow = { start = "It started to snow!", go = "Snow continues to fall.", stop = "The snow stopped." },
   }
   local function startWeather(kind)
-    return function(A)
+    return function(A, u)
       if A:weather() == kind then return false end
-      A:setWeather(kind, 5, A:text(WEATHER[kind].start))
+      A:setWeather(kind, core:fold("weatherTurns", 5, A, u, kind), A:text(WEATHER[kind].start))
       return true
     end
   end
@@ -52,6 +52,9 @@ return function(core)
   core:on("damageMult", function(k, A, u, t, m)
     local w = A:weather()
     local mt = A:moveType(m)
+    if (w == "rain" or w == "sun") and (core:ask("ignoresWeather", A, u) or core:ask("ignoresWeather", A, t)) then
+      w = nil
+    end
     if (w == "rain" or w == "sun") and not A:nativeWeather(w) then
       if mt == "WATER" then k = k * (w == "rain" and 1.5 or 0.5)
       elseif mt == "FIRE" then k = k * (w == "sun" and 1.5 or 0.5) end
@@ -148,6 +151,7 @@ return function(core)
   end)
   -- Gold stopped it with its own flag: the shield's touch
   core:on("afterMove", function(A, u, t, moveId)
+    if A.gen ~= 2 then return end
     local v = A:vol(t)
     local ev = A.battle.moveEvent
     if v.protect == A:turn() and v.protectKind and ev and ev.missed and A.battle:volatile(t).protect then
@@ -234,7 +238,7 @@ return function(core)
     local b = ev.battler
     if not b or A:hp(b) <= 0 then return end
     local h = sideOf(A, b).hazards
-    if not h then return end
+    if not h or core:ask("hazardImmune", A, b) then return end
     local max = A:maxHp(b)
     if h.rocks then
       local eff = A:effectiveness("ROCK", b) or 10
@@ -299,7 +303,7 @@ return function(core)
       if need and not need(A, u) then return false end
       local s = sideOf(A, u)
       if (s[field] or 0) > 0 then return false end
-      s[field] = turns
+      s[field] = (field == "auroraVeil") and core:fold("screenTurns", turns, A, u) or turns
       say(A, text, A:name(u))
       return true
     end })
@@ -341,9 +345,9 @@ return function(core)
   local function terrain(A) local t = A:field().terrain; return t and t.kind or nil end
   core.terrain = terrain
   for kind, row in pairs(TERRAIN) do
-    core:rule(kind .. "_TERRAIN", status({ selfOnly = true, run = function(A)
+    core:rule(kind .. "_TERRAIN", status({ selfOnly = true, run = function(A, u)
       if terrain(A) == kind then return false end
-      A:field().terrain = { kind = kind, turns = 5 }
+      A:field().terrain = { kind = kind, turns = core:fold("terrainTurns", 5, A, u) }
       say(A, row.start)
       return true
     end }))
@@ -436,7 +440,7 @@ return function(core)
           for _, b in ipairs({ p, e }) do
             local immune = false
             for _, ty in ipairs(row.immune) do if A:hasType(b, ty) then immune = true end end
-            if b and A:hp(b) > 0 and not immune then
+            if b and A:hp(b) > 0 and not immune and not core:ask("weatherImmune", A, b) then
               A:damage(b, math.max(1, math.floor(A:maxHp(b) / 16)), { text = A:text(row.hurt, A:name(b)) })
             end
           end

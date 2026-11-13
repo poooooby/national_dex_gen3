@@ -253,14 +253,14 @@ return function(core, opts)
           say(A, "%s's %s!", A:name(b), nameOf(id))
           local text = ({ rain = "It started to rain!", sun = "The sunlight turned harsh!",
             sand = "A sandstorm kicked up!", hail = "It started to hail!", snow = "It started to snow!" })[w]
-          A:setWeather(w, 5, A:text(text))
+          A:setWeather(w, core:fold("weatherTurns", 5, A, b, w), A:text(text))
         end
       elseif e.kind == "set_terrain" then
         local kind = tostring(e.terrain or ""):upper()
         local f = A:field()
         if kind ~= "" and not (f.terrain and f.terrain.kind == kind) then
           say(A, "%s's %s!", A:name(b), nameOf(id))
-          f.terrain = { kind = kind, turns = 5 }
+          f.terrain = { kind = kind, turns = core:fold("terrainTurns", 5, A, b) }
         end
       elseif e.kind == "heal" and A:hp(b) > 0 and A:hp(b) < A:maxHp(b) and whenHolds(A, b, nil, e.when, id) then
         A:heal(b, math.max(1, math.floor(A:maxHp(b) * (e.fraction or 0.0625))),
@@ -310,7 +310,7 @@ return function(core, opts)
     local id = abilityOf(A, t)
     local beh = id and behaviourOf(id)
     if not beh then return end
-    if beh.trigger == "on_contact_taken" and A:category(m) == "physical" then
+    if beh.trigger == "on_contact_taken" and A:category(m) == "physical" and not core:ask("noContact", A, u) then
       if beh.chance and A:rng(100) >= beh.chance then return end
       local effects = beh.effects or {}
       local list = {}
@@ -361,6 +361,7 @@ return function(core, opts)
 
   -- ------------------------------------------------------------------ the moves that change abilities
   local function setAbility(A, b, id)
+    if core:ask("abilityLocked", A, b) then return end
     local v = A:vol(b)
     v.ability, v.abilitySuppressed, v.abilityEntered = id, nil, nil
   end

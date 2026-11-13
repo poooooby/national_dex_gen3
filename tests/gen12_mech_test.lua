@@ -384,6 +384,66 @@ for _, version in ipairs(H.versions()) do
   T.check(x.hp("enemy") < hp, version .. ": a physical Fire Punch still hits")
   opts.national_dex_gen3.move_split = nil
 
+  -- the newer held items (src/held/effects.lua): registered, and what a few do
+  local heldState = sim.api and sim.api._heldModern
+  T.check(heldState and heldState.byId.LIFE_ORB and heldState.byId.CHOICE_SCARF, version .. ": the newer held items are registered")
+  T.check(data.items.LIFE_ORB ~= nil and data.items.FOCUS_SASH ~= nil, version .. ": ... as this game's items")
+  local function give(x, side, id) x.A:setItem(x.battler(side), id) end
+  local function hitWith(item, move, o)
+    local x = sim.fresh(o or { mine = "MACHAMP", foe = "SNORLAX", level = 50 })
+    if item then give(x, "player", item) end
+    local before = x.hp("enemy")
+    x.use(move)
+    return before - x.hp("enemy"), x
+  end
+  local plain = hitWith(nil, "STRENGTH")
+  local band = hitWith("CHOICE_BAND", "STRENGTH")
+  T.check(band > plain, version .. ": Choice Band: a physical move hits harder (" .. plain .. " -> " .. band .. ")")
+  local orb, xo = hitWith("LIFE_ORB", "STRENGTH")
+  T.check(orb > plain, version .. ": Life Orb: harder hits")
+  T.check(xo.hp("player") < xo.maxHp("player"), version .. ": ... and the user loses HP")
+  w = sim.fresh({ mine = "MACHAMP", foe = "RATTATA", level = 80, foeLevel = 5 })
+  give(w, "enemy", "FOCUS_SASH")
+  w.use("STRENGTH")
+  T.eq(w.hp("enemy"), 1, version .. ": Focus Sash: a full-HP holder lives with 1 HP")
+  T.eq(w.A:item(w.battler("enemy")), nil, version .. ": ... and the sash is used up")
+  w = sim.fresh({ mine = "GEODUDE", foe = "PIKACHU", level = 40 })
+  give(w, "enemy", "AIR_BALLOON")
+  hp = w.hp("enemy")
+  w.use("EARTHQUAKE")
+  T.eq(w.hp("enemy"), hp, version .. ": Air Balloon: Ground moves miss")
+  w.use("TACKLE")
+  T.eq(w.A:item(w.battler("enemy")), nil, version .. ": ... until a hit pops it")
+  w = sim.fresh({ mine = "MACHAMP", foe = "SNORLAX", level = 50 })
+  give(w, "enemy", "ROCKY_HELMET")
+  w.use("STRENGTH")
+  T.eq(w.hp("player"), w.maxHp("player") - math.floor(w.maxHp("player") / 6), version .. ": Rocky Helmet hurts a contact attacker 1/6")
+  w = sim.fresh({ mine = "SQUIRTLE", foe = "SNORLAX", level = 50 })
+  give(w, "enemy", "SITRUS_BERRY")
+  local snor = w.mon("enemy")
+  snor.hp = math.floor(w.maxHp("enemy") / 2) + 2
+  hp = snor.hp
+  w.use("WATER_GUN")
+  T.check(w.A:item(w.battler("enemy")) == nil and w.hp("enemy") > hp - 20, version .. ": Sitrus Berry heals once at half HP")
+  w = sim.fresh({ mine = "SQUIRTLE", foe = "CHARMANDER", level = 30 })
+  give(w, "enemy", "WEAKNESS_POLICY")
+  w.use("WATER_GUN")
+  T.eq(w.stage("enemy", "attack"), 2, version .. ": Weakness Policy: +2 Attack after a super-effective hit")
+  w = sim.fresh({ mine = "PIKACHU", foe = "RATTATA" })
+  give(w, "player", "BLACK_SLUDGE")
+  w.endTurn()
+  T.eq(w.hp("player"), w.maxHp("player") - math.floor(w.maxHp("player") / 8), version .. ": Black Sludge hurts a holder that is not Poison")
+  w = sim.fresh({ mine = "PIKACHU", foe = "RATTATA" })
+  give(w, "player", "CHOICE_SCARF")
+  local sp = w.A:speed(w.battler("player"))
+  T.eq(core:fold("speed", sp, w.A, w.battler("player")), sp * 1.5, version .. ": Choice Scarf: 1.5x Speed")
+  w = sim.fresh({ mine = "SQUIRTLE", foe = "CHARMANDER", level = 30 })
+  give(w, "enemy", "PASSHO_BERRY")
+  local d1 = (function() local x = sim.fresh({ mine = "SQUIRTLE", foe = "CHARMANDER", level = 30 }); local h0 = x.hp("enemy"); x.use("WATER_GUN"); return h0 - x.hp("enemy") end)()
+  hp = w.hp("enemy")
+  w.use("WATER_GUN")
+  T.check(hp - w.hp("enemy") < d1 and w.A:item(w.battler("enemy")) == nil, version .. ": Passho Berry halves a super-effective Water hit")
+
   -- Red's Sp. Def (src/gen12/mech/traits.lua Traits.spDef, src/gen12/battle/red.lua)
   if gen == 1 then
     w = sim.fresh({ mine = "MEWTWO", foe = "ALAKAZAM", level = 50 })

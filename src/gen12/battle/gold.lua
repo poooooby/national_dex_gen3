@@ -304,6 +304,7 @@ end
 function GoldA:drain(u, t, n)
   if self:hp(u) >= self:maxHp(u) then return 0 end
   if self.core.hooks.noHeal and self.core:ask("noHeal", self, u) then return 0 end
+  if self.core.hooks.drainHeal then n = self.core:fold("drainHeal", n, self, u) end
   local healed = self.battle:heal(u, n)
   self:say(self:text("%s's energy was drained!", self:name(t)))
   return healed
@@ -571,7 +572,7 @@ function Gold.installSeams(mod, deps)
   -- a move on our records answers its own; a type change made by a move (Soak, Burn Up) is the
   -- battler's types until it switches out (volatile(mon).__ndx.types)
   -- a move that never misses this time (core "accuracy": Lock-On)
-  mod.hooks:wrap("battle.accuracy", function(nextFn, c)
+  local function roll(nextFn, c)
     if c and c.battle and core.hooks.accuracy then
       local r = core:ask("accuracy", Gold.adapter(c.battle, deps), c.user, c.target, c.move)
       if r ~= nil then return r end
@@ -585,6 +586,14 @@ function Gold.installSeams(mod, deps)
       end
     end
     return nextFn(c)
+  end
+  -- core "missed" (Blunder Policy) when the roll fails
+  mod.hooks:wrap("battle.accuracy", function(nextFn, c)
+    local hit = roll(nextFn, c)
+    if hit == false and c and c.battle and core.hooks.missed then
+      pcall(core.fire, core, "missed", Gold.adapter(c.battle, deps), c.user, c.target, c.move)
+    end
+    return hit
   end)
 
   -- who moves first: priority and Speed as the field and abilities change them (Core:order)

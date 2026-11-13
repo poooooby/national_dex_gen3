@@ -409,6 +409,7 @@ function RedA:heal(b, n, opts)
 end
 function RedA:drain(u, t, n)
   if self:hp(u) >= self:maxHp(u) then return 0 end
+  if self.core.hooks.drainHeal then n = self.core:fold("drainHeal", n, self, u) end
   local healed = self:heal(u, n)
   if healed <= 0 then return 0 end
   self:say(self.romText(self.battle.data, "_SuckedHealthText", "Sucked health from\n%s!", self:name(t)))
@@ -644,6 +645,11 @@ function Red.installSeams(mod, deps)
       local ok, err = pcall(performMove, self, user, target, moveInst, isCalled)
       self.__ndxCur = prev
       if not ok then error(err, 0) end
+      -- after the move (core "afterMove", as Gold's): held items that act once it is over
+      if hub.afterMove and moveInst and not isCalled then
+        local okA, errA = pcall(hub.afterMove, self, user, target, moveInst.id)
+        if not okA and hub.log then hub.log:warn("move mechanics: after a move failed: %s", tostring(errA)) end
+      end
     end
     -- a switch the player chose that the field or a move forbids (core "trapped": Mean Look,
     -- Ingrain, No Retreat, Fairy Lock): refused with a line, back to the menu
@@ -684,6 +690,9 @@ function Red.installSeams(mod, deps)
     end
   end
   hub.log = core.log
+  hub.afterMove = function(battle, user, target, moveId)
+    if core.hooks.afterMove then core:fire("afterMove", Red.adapter(battle, deps), user, target, moveId) end
+  end
   hub.before = function(battle, user, target, moveInst, isCalled)
     if not core.hooks.beforeMove then return nil end
     local move = battle.data.moves[moveInst.id]
@@ -822,7 +831,7 @@ function Red.installSeams(mod, deps)
   -- a move that never misses this time (core "accuracy" -> true / false: Lock-On)
   -- core "accuracyScale" (Compound Eyes, Hustle) scales the game's own threshold
   local Damage = deps.require("src.battle.Damage")
-  mod.hooks:wrap("battle.accuracy", function(nextFn, c)
+  local function roll(nextFn, c)
     if c and c.battle and core.hooks.accuracy then
       local r = core:ask("accuracy", Red.adapter(c.battle, deps), c.user, c.target, c.move)
       if r ~= nil then return r end
@@ -838,6 +847,14 @@ function Red.installSeams(mod, deps)
       end
     end
     return nextFn(c)
+  end
+  -- core "missed" (Blunder Policy) when the roll fails
+  mod.hooks:wrap("battle.accuracy", function(nextFn, c)
+    local hit = roll(nextFn, c)
+    if hit == false and c and c.battle and core.hooks.missed then
+      pcall(core.fire, core, "missed", Red.adapter(c.battle, deps), c.user, c.target, c.move)
+    end
+    return hit
   end)
 end
 

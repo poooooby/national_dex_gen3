@@ -58,6 +58,24 @@ return function(mod, loadSibling)
           if not okF then mod.log:warn("move mechanics %s failed to load: %s", path, tostring(errF)) end
         end
       end
+      -- the newer held items (src/held/gen12.lua registers the ones this game lacks; their
+      -- battle effects are src/held/effects.lua's, a family like the others)
+      local HeldModern = loadSibling(mod, "src/held/gen12.lua")
+      local heldRows = HeldModern and loadSibling(mod, "data/held_items.lua")
+      local heldFx = heldRows and loadSibling(mod, "src/held/effects.lua")
+      if HeldModern and heldRows and type(heldFx) == "function" then
+        local okH, held = pcall(HeldModern.register, { mod = mod, generation = generation, rows = heldRows,
+          log = mod.log })
+        if okH then
+          local okE, errE = pcall(heldFx, core, { generation = generation, byId = held.byId,
+            flags = loadSibling(mod, "data/move_flags.lua") })
+          if not okE then mod.log:warn("held items have no effects: %s", tostring(errE)) end
+          mod.exports._heldModern = held
+          mod.log:info("held items: %d newer ones registered", #held.registered)
+        else
+          mod.log:warn("held items are off: %s", tostring(held))
+        end
+      end
       local seams = { require = require, core = core, types = Types }
       local okS, errS = pcall(Adapter.installSeams, mod, seams)
       if not okS then mod.log:warn("move mechanics: a battle seam failed: %s", tostring(errS)) end

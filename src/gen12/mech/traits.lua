@@ -28,6 +28,13 @@ return function(core, opts)
     return ((dvs.attack or 0) * 4096 + (dvs.defense or 0) * 256 + (dvs.speed or 0) * 16 + s) % 25
   end
   function Traits.nature(dvs) return Traits.NATURES[Traits.natureIndex(dvs) + 1] end
+  -- the stat a battler's nature lowers (attack / defense / speed / spAtk / spDef), or nil
+  core.natureDown = function(A, b)
+    local i = Traits.natureIndex(A:dvs(b) or {})
+    local up, down = math.floor(i / 5) + 1, i % 5 + 1
+    if up == down then return nil end
+    return KEYS[down]
+  end
   -- { stat = 1.1 / 0.9 } (empty for the five neutral natures)
   function Traits.mods(dvs)
     local i = Traits.natureIndex(dvs)
