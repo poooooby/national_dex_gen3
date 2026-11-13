@@ -277,6 +277,7 @@ return function(mod)
       local n = Editor.addToCatalog(ev and ev.data, registered, registeredForms, mod.content.pokemon)
       local items = Editor.addItems(ev and ev.data, registeredItems, require)
         + Editor.addItems(ev and ev.data, registeredTms, require)
+        + Editor.addItems(ev and ev.data, heldState and heldState.registered or {}, require)
       local moves = Editor.addMoves(ev and ev.data, registeredMoves)
       -- the Fairy type (src/types.lua): species types, the chart and the type's name; the editor
       -- writes type names as text, so no badge art
