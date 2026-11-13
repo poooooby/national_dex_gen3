@@ -197,7 +197,7 @@ end
 -- ------------------------------------------------------------------ the `extra` data
 -- data/moves.lua `extra` (the Gen 3 path's src/move_effects.lua data): stat changes on the user or
 -- the foe, a status or flinch chance, draining and recoil, healing. The behaviour of the
--- src/gen12/move_fx.lua these replace, on the adapters.
+-- Phase C's 88 moves, on the adapters.
 --   { kind = "hit"|"status", self, foe, chance, ailment, ailmentChance, flinch, drain, heal,
 --     healTarget }
 function Core.extraSpec(e)

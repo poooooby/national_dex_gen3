@@ -841,7 +841,8 @@ The owner asked for the Gen 3 extras on Gen 1/2 (2026-11-12). Phase A is the fou
 
 ### Gen 3 extras on Gen 1/2 (Phase C: `move_fx.lua`, `fx_anims.lua`, `dex_forms.lua`, `vending.lua`)
 
-- **Move mechanics** (`src/gen12/move_fx.lua`): every `data/gen12/moves.lua` row that has no
+- **Move mechanics** (`src/gen12/move_fx.lua`, since folded into the mechanics layer below; this is
+  the history): every `data/gen12/moves.lua` row that has no
   native effect here but a Gen 3 `extra` (data/moves.lua) becomes a real move, registered right
   after `Moves.register` and before the species (it fills `moveState.byNumber`, so the resolver
   and learnsets name it): 88 on both games. Red: one `move_effects` record per move
@@ -894,6 +895,65 @@ The owner asked for the Gen 3 extras on Gen 1/2 (2026-11-12). Phase A is the fou
   FORMS page shows 8 creams, the machines stand in the stores, open, and lock gated items with no
   badges. Gold shows the new species grey during ANY move animation (it colours pictures from
   `gen2Palettes` there, and they have none): a separate fix, noted in the README.
+
+### Gen 2-9 parity (`src/gen12/mech/`, `src/gen12/battle/`, the systems; branch gen12-modern)
+
+The goal: Red gets everything from Gens 2-9 and Gold everything from Gens 3-9, with today's
+rules, as Gen 3 has. Every newer move is real on both games except the ten doubles-only moves
+(Follow Me, Helping Hand, Rage Powder, After You, Ally Switch, Quash, Aromatic Mist, Spotlight,
+Instruct, Decorate), which keep stand-ins. Neither the engine nor any Gen 3 file was edited.
+
+- **One mechanics layer, two adapters.** `src/gen12/mech/core.lua` describes a move as a spec
+  (`kind = "hit"`: `fail`, `sureHit`, `power`, `fixed`, `crit`, `highCrit`, `hits`, `stats`,
+  `type`, `mult`, `cap`, `after`, `secondary`, `onMiss`, `charge`, `ignoresProtect`;
+  `kind = "status"`: `aimed`, `selfOnly`, `run`) and finds one per row with `specFor`: by move,
+  then `mech.rule`, `extra`, `g3`, `api`. It also keeps a hook bus (`core:on` / `fire` / `ask` /
+  `fold`: damageMult, damageCap, speed, priority, trickRoom, accuracy, immune, moveType,
+  blockStatus, blocks, beforeMove, endTurn, afterMove, switchedIn, fainted, gender, nature,
+  ability, noHeal ...) that the families and abilities share. `src/gen12/battle/red.lua` and
+  `gold.lua` give every spec the same adapter (who / where: `foe`, `side`, `field`, `vol`; facts:
+  `hp`, `stat`, `stage`, `types`, `status`, `item`, `dvs`, `chosen`, `category`; actions:
+  `damage`, `heal`, `stages`, `ailment`, `callMove`, `switchOut`, `setWeather`, `say`, `rng`).
+  State is on the battle's tables (`battler.__ndx` / `volatile(mon).__ndx`,
+  `battle.__ndxSides[side]`, `battle.__ndxField`), never the party mon.
+- **Families** (`Core.FAMILIES`, loaded in order, each `function(core, opts)`): `track`
+  (turn facts the moves read: hits taken for Rage Fist, faints, last moves, the chosen moves),
+  `meta` (PokeAPI meta: stat moves, ailments, flinch, drain, recoil, multi-hit), `power`
+  (variable power, stat swaps, crits, fixed damage, conditional failure), `field` (weather, the
+  Protect family, hazards, screens, terrains, rooms, Tailwind), `volatile` (Taunt to Perish Song,
+  type changes, two-turn moves, callers), `switching` (U-turn and kin, Dragon Tail, trapping),
+  `traits` (natures, gender), `held` (Red's held items in battle, the item moves on both),
+  `abilities`, `split`.
+- **Registration** (`mech/install.lua`): each row with no cart effect gets a `move_effects`
+  record `NDX_M_<id>` the adapter builds, before the species (the learnsets name them).
+  `mod.exports._mech` exposes the core, the adapter and the moves still missing a mechanic
+  (none).
+- **Seams** (process-wide hubs, `__ndxMech`): the `battle.damage` / `crit` / `accuracy` /
+  `turn_order` / `charge_required` hooks; Red `performMove`, an `effectRecord` proxy whose
+  `perform` stops a protected move, `statusInterrupt`, `resolveSwitch`; Gold `movePriority`,
+  `battlerTypes`, `betweenTurnEffects`, `useMove`, `applyStatus` / `applyConfusion`,
+  `switchLocked`.
+- **Natures and abilities** come from the DVs (`traits.natureIndex`, the ability slot), so
+  nothing is saved; natures apply in Red `Stats.calc` and Gold `Mon.stats` (Red's SPECIAL takes
+  Sp. Atk x Sp. Def). Abilities run `data/gen12/abilities.lua`'s `b` behaviour
+  (`tools/ability_behaviour.py`), plus hand code for the rest.
+- **Red systems:** `src/gen12/held_red.lua` (`data/gen12/held.lua`, hand-written and kept by the
+  build: Gold's held set as Red items, `mon.extra.national_dex_gen3.item`, the party ITEM submenu,
+  Everstone through `evolution.check`, Smoke Ball through `battle.run`, sold at Celadon 4F);
+  `src/gen12/breeding_red.lua` (the Day Care Lady at DAYCARE, `save.modData.national_dex_gen3
+  .breeding`, eggs carried and hatched on `world.stepped`, babies from `battle.lua` `baby`);
+  gender by Gold's rule. Shininess is not drawn (no shiny palettes ship).
+- **Summary** (`src/gen12/summary.lua`): Red's third page (`SummaryMenu.update` / `draw`,
+  `__ndxInfo`), Red's HUD gender sign (`BattleState.drawHUDs`, `__ndxGender`); Gold's page 3 via
+  `drawPanel`.
+- **Move Split** (`mech/split.lua`, option `move_split`, default off): `battle.lua` `split` by
+  move id; Red's damage reads the move's `category`, Gold picks by type, so the stats are
+  swapped for the call.
+- **TMs:** all 114 (`tms.lua` keeps every `direct(row.n)`).
+- **Tests:** `tests/gen12_mech_test.lua` (a battle sim per family on red / yellow / gold /
+  crystal, `H.sim` in `tests/_gen12.lua`), plus the existing gen12 suites. In game:
+  `tests/drivers/gen12_modern_probe.lua` (summary pages, five turns of new moves, the Day Care
+  Lady) ran with 0 failures on Red and Gold 2026-11-13.
 
 ### In the real engine (`tests/drivers/gen12_probe.lua`)
 

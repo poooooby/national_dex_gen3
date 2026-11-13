@@ -266,8 +266,9 @@ The same Pokémon and forms evolve on the Generation 1 and 2 games, in each game
   on your device in all six.
 - **The items** each game lacks are sold at the **Celadon Dept. Store 4F** (Red, Blue, Yellow)
   and the **Goldenrod Dept. Store 4F** (Gold, Silver, Crystal).
-- **No held items in Red, Blue and Yellow.** An evolution that needs a Pokémon to hold an item
-  (traded holding it, or levelling up holding it) works by **using** the item on it instead,
+- **Evolution items are used in Red, Blue and Yellow.** Those games' Pokémon can hold Gold's
+  battle items, but an evolution that needs a Pokémon to hold an item (traded holding it, or
+  levelling up holding it) works by **using** the item on it instead,
   like a stone: a Metal Coat on Onix makes Steelix, a Razor Claw on Sneasel at night makes
   Weavile, an Oval Stone on Happiny by day makes Chansey. Where the held item needs a level
   (Milcery's sweets, from level 25), it waits for that level. In Gold, Silver and Crystal they
@@ -278,14 +279,15 @@ The same Pokémon and forms evolve on the Generation 1 and 2 games, in each game
   at 220 (Golbat into Crobat, Pichu into Pikachu). Vitamins and Rare Candies don't raise it.
 - **Gender** comes from the Pokémon's stats (its DVs) by Gold's own rule, in all six games, so a
   female Combee or Salandit is female everywhere.
+- **Breeding in Red, Blue and Yellow:** the Day Care Lady in the Route 5 Day Care takes a
+  second Pokémon. An Egg hatches into the first stage of the mother's family (or of the
+  non-Ditto parent): Pichu from Pikachu, Phione from Manaphy, with any egg moves either parent
+  knows.
 - **Trade evolutions** need a real trade (there is no Linking Cord on these games).
 - **Adapted:**
   - These games have no rain, so Sliggoo evolves at level 50.
   - They have no battle ground, so a female Burmy always becomes Plant Wormadam.
   - Recoil isn't counted, so White-Striped Basculin evolves at level 36.
-  - There is no Rage Fist, so Primeape (level 35+) evolves into Annihilape after using **Rage**
-    20 times in battle.
-  - An evolution that needs a move the game doesn't have happens at its level instead.
 - **Forms** are the same 128. They don't have their own Pokédex entry; seeing or catching one
   counts its base Pokémon.
 

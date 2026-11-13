@@ -3,6 +3,32 @@
 All notable changes to this mod are documented here, in
 [keep a changelog](https://keepachangelog.com/en/1.1.0/) format.
 
+## [Unreleased]
+
+### Added
+
+- **Red, Blue and Yellow get everything from Generations 2 to 9, and Gold, Silver and Crystal
+  everything from Generations 3 to 9, with today's rules,** as the Generation 3 games have:
+  - **Every newer move is real** with its modern effect: weather and terrains, Protect and its
+    kin, entry hazards, screens, Trick Room, switching moves, trapping, two-turn moves, variable
+    power (Rage Fist, Eruption, Gyro Ball...), item moves. Only the ten moves that need a partner
+    in a double battle keep a stand-in.
+  - **Abilities** for every Pokémon, picked from its species' own and kept for good.
+  - **Natures** on both games, raising one stat and lowering another.
+  - **Red, Blue and Yellow:** Gold's held items (give and take with ITEM on the party menu, sold
+    at the Celadon Dept. Store 4F), gender by Gold's rule shown in battle, and breeding through
+    the Day Care Lady in the Route 5 Day Care.
+  - **The summary** shows nature, ability and (Red, Blue, Yellow) held item.
+- **Move Split** option for Red to Crystal (off by default): physical or special by the move, as
+  in today's games.
+
+### Changed
+
+- Red to Crystal have all 114 new TMs (TM51-TM164), the same as the Generation 3 games.
+- Primeape's Rage Fist uses count on Red to Crystal too (Rage still counts).
+- Gold, Silver and Crystal's summary has a line for every newer move: a short description
+  where one fits, else its type.
+
 ## [1.10.1] - 2026-11-13
 
 ### Changed

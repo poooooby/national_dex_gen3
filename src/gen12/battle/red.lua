@@ -7,7 +7,7 @@
 -- move_effects record (src/battle/EffectRegistry.lua's staged pipeline for a damaging move:
 -- gate -> hitCount -> accuracy -> chooseDamage -> afterDamage -> run). Red has one SPECIAL: an Sp.
 -- Atk effect is its Special when it attacks, an Sp. Def one when it defends (A:stages maps a
--- change of either to SPECIAL, Sp. Atk's first, as src/gen12/move_fx.lua did).
+-- change of either to SPECIAL, Sp. Atk's first).
 --
 -- Our state lives on the battle's own tables, never the party mon (it would be saved): a
 -- battler's in battler.__ndx (gone with the battler at a switch), a side's in

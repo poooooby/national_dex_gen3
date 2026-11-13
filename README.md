@@ -121,12 +121,22 @@ Crystal have their own section after them.
 - 🧚 **Modern types:** Fairy joins both games, and Dark and Steel join Red, Blue and Yellow,
   with today's matchups. The originals get their modern typing too: Magnemite is Electric /
   Steel, Clefairy is Fairy, Bite is a Dark move.
-- ⚔️ **Newer moves in the game's own battles:** 270 newer moves work for real in Red, Blue and
-  Yellow and 260 in Gold, Silver and Crystal (Night Slash, Iron Head, Aqua Jet, Play Rough,
-  Dazzling Gleam...), each with the look of a similar move. That includes 88 with effects these
-  games never had: Close Combat lowers your defences, Fire Fang can burn and flinch, Nasty Plot
-  and Shell Smash power you up, Draining Kiss heals, Flare Blitz costs recoil. A move the game
-  can't do is swapped for the closest one it can.
+- ⚔️ **Every newer move, for real, in the game's own battles:** all of them work with today's
+  effects, each with the look of a similar move: Rage Fist grows with every hit taken, Stealth
+  Rock and Spikes hurt whoever comes in, U-turn switches you out, Protect and King's Shield
+  block, Trick Room flips the turn order, Knock Off swats an item away, Skill Swap trades
+  abilities. Only the moves that need a partner beside you (Helping Hand, Follow Me, After
+  You...) are swapped for a similar one, as in the Generation 3 games.
+- 🌦️ **Weather and terrain everywhere:** rain, sun, sandstorm, hail and snow, Electric, Grassy,
+  Misty and Psychic Terrain, with their modern effects (Gold, Silver and Crystal keep their own
+  rain, sun and sandstorm).
+- 💪 **Abilities:** every Pokémon has one of its species' abilities, the same one for good:
+  Intimidate, Levitate, Swift Swim, Water Absorb, Static, Sturdy, Guts, Technician and many more
+  do what they do today.
+- 🌿 **Natures:** every Pokémon has a nature that raises one stat and lowers another, as in the
+  newer games (in Red, Blue and Yellow, Sp. Atk and Sp. Def natures move the one SPECIAL).
+- 📊 **The summary shows it all:** nature, ability and held item on a third page in Red, Blue and
+  Yellow, and under OT on the stats page in Gold, Silver and Crystal.
 - ✨ **Their own animations:** Aura Sphere, Dark Pulse, Dragon Pulse, Flash Cannon, Focus Blast,
   Night Slash, Stone Edge and more (18 in all) play effects of their own instead of an older
   move's.
@@ -135,8 +145,16 @@ Crystal have their own section after them.
   into Crobat in Red, Eevee into Leafeon, Glaceon and Sylveon). Red, Blue and Yellow keep a
   hidden friendship for every Pokémon, which grows as it levels up in battle and walks with you.
 - 💎 **The items to do it:** the evolution items each game lacks, sold by the EVO EXPRESS
-  vending machine (below). In Red, Blue and Yellow, which have no held items, a trade item or a
-  held item is used on the Pokémon like a stone (a Metal Coat turns Onix into Steelix).
+  vending machine (below). In Red, Blue and Yellow, an item an evolution needs held or traded
+  is used on the Pokémon like a stone (a Metal Coat turns Onix into Steelix).
+- 🎒 **Held items in Red, Blue and Yellow:** Gold's held items (berries, Leftovers, King's Rock,
+  Quick Claw, Scope Lens, the type boosters, Light Ball, Everstone, Smoke Ball...) work in
+  battle, sold at the Celadon Dept. Store 4F. Give or take them with ITEM on the party menu.
+- ♂️ **Gender in Red, Blue and Yellow:** every Pokémon is male, female or neither, by Gold's own
+  rule, shown after its level in battle.
+- 🥚 **Breeding in Red, Blue and Yellow:** the Day Care Lady, beside the gentleman in the Route 5
+  Day Care, raises a second Pokémon. Two that get along leave an Egg with her, which you carry
+  until it hatches into the party, with any egg moves its parents know.
 - 🏪 **Vending machines:** the same touch-screen machines as in the Generation 3 games: EVO
   EXPRESS for the evolution items and TM EXPRESS for the new TMs, in the Celadon Dept. Store
   (EVO EXPRESS on 4F, TM EXPRESS on 2F) in Red, Blue and Yellow and the Goldenrod Dept. Store
@@ -158,8 +176,8 @@ Crystal have their own section after them.
   morning, evening and night looks as in the Generation 3 games. Gold, Silver and Crystal keep
   their own day and night.
 - 📋 **Register Owned:** opening the Pokédex counts every Pokémon in your party and PC.
-- 💿 **43 new TMs:** the newer TMs whose move works in these games (Zen Headbutt, Dazzling
-  Gleam, Flash Cannon, Drain Punch, Earth Power, Scald...), sold by TM EXPRESS. They teach like
+- 💿 **114 new TMs:** TM51 to TM164, the same as in the Generation 3 games (Zen Headbutt,
+  Stealth Rock, U-turn, Scald, Dazzling Gleam...), sold by TM EXPRESS. They teach like
   the game's own TMs, with ABLE / NOT ABLE on the party screen, and in Gold, Silver and Crystal
   they sit in the TM pocket between TM50 and the HMs.
 - 🍬 **Exp. Candies XS to XL:** 100 to 30,000 Exp. Points from the Bag, sold with the vitamins
@@ -173,8 +191,8 @@ Crystal have their own section after them.
 ## ⚙️ Options
 
 Open **OPTIONS → MODS → WoobleDex**. Each option is one setting for every game it appears in.
-Red to Crystal show Modern Moves, Register Owned, Bigger PC and Type Badges, and Red, Blue and
-Yellow also Day & Night; the rest are for FireRed to Emerald.
+Red to Crystal show Modern Moves, Register Owned, Bigger PC, Type Badges and Move Split, and
+Red, Blue and Yellow also Day & Night; the rest are for FireRed to Emerald.
 
 | Option | Choices | Default | What it does |
 |---|---|---|---|
@@ -185,6 +203,7 @@ Yellow also Day & Night; the rest are for FireRed to Emerald.
 | **Bigger PC** | On / Off | On | 40 PC boxes instead of the game's own: 14 in FireRed to Emerald (1,200 Pokémon), 12 in Red, Blue and Yellow and 14 in Gold, Silver and Crystal (800 Pokémon). Turning it off hides the extra boxes; the Pokémon in them stay in your save and come back when you turn it on again. |
 | **Register Owned** | On / Off | On | Opening the Pokédex counts every Pokémon in your party and PC as seen and caught, handy for Pokémon added with a save editor. |
 | **Type Badges** | On / Off | On | Shows each Pokémon's types as small badges by its HP box in battle. |
+| **Move Split** | On / Off | Off | Red to Crystal: a move is physical or special by the move itself, as in today's games (Shadow Ball special; Crunch and Fire Punch physical), instead of by its type. It changes how the game's own moves hit too. |
 
 ## 💾 Installation
 
@@ -258,22 +277,28 @@ the game's own Pokémon keep their original data, so its event gifts arrive as u
 - **Battle mods made for the original National Dex** (the g9 battle mods, Battle Forms) ask for
   it by name, so for now they don't run beside WoobleDex. WoobleDex already answers everything
   they ask of a National Dex, so they can run on it once they also accept WoobleDex.
-- **Red to Crystal's options** are Modern Moves, Register Owned, Bigger PC, Type Badges and (Red,
-  Blue, Yellow) Day & Night, shared with the Generation 3 games: turning one off turns it off
-  everywhere.
+- **Red to Crystal's options** are Modern Moves, Register Owned, Bigger PC, Type Badges, Move
+  Split and (Red, Blue, Yellow) Day & Night, shared with the Generation 3 games: turning one off
+  turns it off everywhere.
 - **The new TMs keep their Generation 3 numbers,** so a number is the same TM in every game (TM74
-  is Zen Headbutt); the numbers in between are TMs whose move these games can't do.
+  is Zen Headbutt).
+- **A Pokémon's nature and ability come from its stats' hidden values,** so they never change,
+  and a Pokémon you already had gets them too (its stats are worked out again when you load).
+- **A switch made by a move** (U-turn, Baton Pass, Dragon Tail) brings in the first healthy
+  Pokémon in the party, as these games' own Baton Pass does.
+- **The Egg in Red, Blue and Yellow is carried, not shown:** those games' menus have no Egg, so
+  it waits with you until it hatches (one at a time).
 - **Keep the mod installed on a Gold, Silver or Crystal save** that holds its Pokémon: those
   games have nowhere to set aside a Pokémon they don't know.
 - **Exporting to a cartridge .sav** can't store the new Pokémon, and a newer move comes out as an
   empty move slot. In Red, Blue and Yellow, which have no Steel or Fairy, a Magnemite's Steel
   half comes out as Normal. Red, Blue and Yellow leave the new items out of the export; Gold,
   Silver and Crystal can't export a save that carries any (the new TMs are left out). Boxes past
-  the game's own 12 or 14 stay behind in the mod's part of the save.
-- **Some evolutions are adapted:** there is no rain, so Sliggoo evolves at level 50; no battle
-  ground, so a female Burmy becomes Plant Wormadam; recoil isn't counted, so White-Striped
-  Basculin evolves at level 36; and an evolution that needs a move the game doesn't have happens
-  at its level instead.
+  the game's own 12 or 14, held items and Eggs in Red, Blue and Yellow, and the second Day Care
+  Pokémon stay behind in the mod's part of the save.
+- **Some evolutions are adapted:** there is no overworld rain, so Sliggoo evolves at level 50;
+  no battle ground, so a female Burmy becomes Plant Wormadam; recoil isn't counted, so
+  White-Striped Basculin evolves at level 36.
 - **Friendship in Red, Blue and Yellow** grows only with level-ups in battle or from Exp.
   Candies and with walking, not with vitamins or Rare Candies.
 - **Gold, Silver and Crystal's summary** prints a number from #1000 on right against the level

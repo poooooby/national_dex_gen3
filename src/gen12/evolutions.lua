@@ -106,7 +106,7 @@ function Evolutions.convert(step, ctx)
         row.method, row.item, row.level = "ITEM", ids[1], nil
       end
     elseif k == "uses" then
-      -- the moves this game has (Rage Fist is swapped for a cart move here: Rage alone counts)
+      -- the moves this game runs (Rage Fist and Rage both count for Primeape)
       local ids = {}
       for _, n in ipairs(type(v.move) == "table" and v.move or { v.move }) do
         local id = ctx.direct(n)
