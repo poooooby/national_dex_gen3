@@ -79,6 +79,25 @@ for _, version in ipairs(H.versions()) do
   local cart = gen == 1 and "PIKACHU" or "CHIKORITA"
   local cartPath = Sprites.pic(data.pokemon[cart].spriteFront, { species = cart, side = "front", data = data })
   T.eq(cartPath, data.pokemon[cart].spriteFront, version .. ": the cart's own species untouched")
+  -- Gold: a newer species' two colours, from its picture (a stand-in image: blue and dark blue)
+  if gen == 2 then
+    local Palettes = require("src.world.gen2.Palettes")
+    love.image = love.image or {}
+    local was = love.image.newImageData
+    local seen
+    love.image.newImageData = function(p)
+      seen = p
+      return { mapPixel = function(self, fn)
+        for i = 1, 20 do
+          if i <= 10 then fn(0, 0, 0.4, 0.6, 1.0, 1) else fn(0, 0, 0.1, 0.2, 0.5, 1) end
+        end
+      end }
+    end
+    local colors = Palettes.monColors(data.gen2Palettes or {}, "LUCARIO", false)
+    love.image.newImageData = was
+    T.eq(seen, "mods/sprites/LUCARIO_front.png", version .. ": its colours come from the sprite mod's picture")
+    T.check(colors and colors[2][3] == 255 and colors[3][3] == 128, version .. ": Lucario gets its two colours, not grey")
+  end
 
   -- the Pokedex
   if gen == 1 then

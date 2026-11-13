@@ -251,6 +251,7 @@ return function(mod, loadSibling)
   if speciesState and Art then
     local c = Art.register({ mod = mod, generation = generation, species = speciesState, log = mod.log })
     pictures = Art.installPictures(mod, speciesState)
+    if generation == 2 then pcall(Art.installPalettes, mod, require, speciesState) end
     local cries = Art.installCries({ mod = mod, require = require, species = speciesState,
       index = loadSibling(mod, "data/cries.lua"), log = mod.log })
     mod.log:info("art: %d icons, %d borrowed cries%s", c.icons, c.cries,

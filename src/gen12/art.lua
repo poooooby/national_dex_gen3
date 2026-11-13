@@ -146,4 +146,69 @@ function Art.installCries(opts)
   return true
 end
 
+-- Gold: the two colours a species' picture is drawn in where the game paints it with its palette
+-- (a move animation's field, the summary on some layouts). Gold keeps one pair per species
+-- (Palettes.monColors); a newer species has none, so it came out grey. Here a species of ours with
+-- no pair gets one taken from its picture (whatever answers the pokemon.sprite hook: a sprite mod,
+-- else the placeholder): the average of its lighter half of colours and of its darker half,
+-- leaving out white, black and the clear background. Worked out once per species and shininess;
+-- the wrap is process-wide (`Palettes.__ndxColors`) and asks this load's handler.
+function Art.installPalettes(mod, require, species)
+  local okP, Palettes = pcall(require, "src.world.gen2.Palettes")
+  if not (okP and type(Palettes) == "table" and type(Palettes.monColors) == "function") then return false end
+  local Runtime = require("src.mods.Runtime")
+  local byId = species.byId
+  local cache = { [true] = {}, [false] = {} }
+  local function pairFor(id, shiny)
+    local c = cache[shiny][id]
+    if c ~= nil then return c or nil end
+    c = false
+    local entry = byId[id]
+    if entry then
+      local path = Runtime.call("pokemon.sprite", function(p) return p end,
+        entry.data.spriteFront or (mod.path .. "/assets/gen12/front.png"),
+        { species = id, side = "front", kind = "battle", shiny = shiny, data = mod.game and mod.game.data })
+      local okI, img = pcall(love.image.newImageData, path)
+      if okI and img then
+        local px = {}
+        img:mapPixel(function(_, _, r, g, b, a)
+          if a > 0.5 then
+            local l = 0.299 * r + 0.587 * g + 0.114 * b
+            if l > 0.08 and l < 0.94 then px[#px + 1] = { r, g, b, l } end
+          end
+          return r, g, b, a
+        end)
+        if #px >= 8 then
+          table.sort(px, function(x, y) return x[4] > y[4] end)
+          local half = math.floor(#px / 2)
+          local function avg(i, j)
+            local s = { 0, 0, 0 }
+            for k = i, j do for n = 1, 3 do s[n] = s[n] + px[k][n] end end
+            local cnt = j - i + 1
+            return { math.floor(s[1] / cnt * 255 + 0.5), math.floor(s[2] / cnt * 255 + 0.5), math.floor(s[3] / cnt * 255 + 0.5) }
+          end
+          c = { avg(1, half), avg(half + 1, #px) }
+        end
+      end
+    end
+    cache[shiny][id] = c
+    return c or nil
+  end
+  local hub = Palettes.__ndxColors
+  if not hub then
+    hub = {}
+    Palettes.__ndxColors = hub
+    local monColors = Palettes.monColors
+    Palettes.monColors = function(data, speciesId, shiny, ...)
+      local out = monColors(data, speciesId, shiny, ...)
+      if out or not hub.pairFor or speciesId == nil then return out end
+      local ok, pair = pcall(hub.pairFor, speciesId, shiny and true or false)
+      if not (ok and pair) then return out end
+      return { { 255, 255, 255 }, { pair[1][1], pair[1][2], pair[1][3] }, { pair[2][1], pair[2][2], pair[2][3] }, { 0, 0, 0 } }
+    end
+  end
+  hub.pairFor = pairFor
+  return true
+end
+
 return Art
