@@ -117,3 +117,4 @@ tests/gen12_vending_test.lua
 tools/build_api.py
 tools/ability_behaviour.py
 tests/gen12_dex_api_test.lua
+tests/gen12_mech_test.lua

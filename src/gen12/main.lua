@@ -39,15 +39,35 @@ return function(mod, loadSibling)
   if Types and Moves and moveRows then
     moveState = Moves.register({ mod = mod, rows = moveRows, generation = generation, types = Types,
       log = mod.log })
-    -- the newer moves described completely as data (src/gen12/move_fx.lua): real moves too
-    local MoveFx = loadSibling(mod, "src/gen12/move_fx.lua")
-    local gen3Moves = MoveFx and loadSibling(mod, "data/moves.lua")
-    if MoveFx and gen3Moves then
-      local fx = MoveFx.register({ mod = mod, generation = generation, rows = moveRows, gen3 = gen3Moves,
-        types = Types, state = moveState, require = require, log = mod.log })
+    -- every other newer move: the mechanics layer (src/gen12/mech/core.lua), run by this game's
+    -- battle through its adapter (src/gen12/battle/red.lua / gold.lua)
+    local Core = loadSibling(mod, "src/gen12/mech/core.lua")
+    local Install = Core and loadSibling(mod, "src/gen12/mech/install.lua")
+    local Adapter = Install and loadSibling(mod, generation == 1 and "src/gen12/battle/red.lua"
+      or "src/gen12/battle/gold.lua")
+    local gen3Moves = Adapter and loadSibling(mod, "data/moves.lua")
+    if Core and Install and Adapter and gen3Moves then
+      local core = Core.new({ generation = generation, gen3 = gen3Moves, log = mod.log })
+      for _, path in ipairs(Core.FAMILIES or {}) do
+        local family = loadSibling(mod, path)
+        if type(family) == "function" then
+          local okF, errF = pcall(family, core, { generation = generation, require = require })
+          if not okF then mod.log:warn("move mechanics %s failed to load: %s", path, tostring(errF)) end
+        end
+      end
+      local seams = { require = require, core = core, types = Types }
+      local okS, errS = pcall(Adapter.installSeams, mod, seams)
+      if not okS then mod.log:warn("move mechanics: a battle seam failed: %s", tostring(errS)) end
+      local fx = Install.register({ mod = mod, generation = generation, rows = moveRows, core = core,
+        adapter = Adapter, types = Types, state = moveState, require = require, log = mod.log })
       moveState.registered = moveState.registered + fx.registered
       moveState.mechanics = fx.registered
       moveState.looks = fx.looks
+      moveState.core, moveState.missingMechanics = core, fx.missing
+      mod.exports._mech = { core = core, adapter = Adapter, deps = seams, missing = fx.missing,
+        specs = fx.specs }
+      mod.log:info("move mechanics: %d moves run on them, %d without one yet (stand-ins)", fx.registered,
+        #fx.missing)
     end
     -- the pixelfx move animations (src/gen12/fx_anims.lua), over the borrowed ones
     local FxAnims = loadSibling(mod, "src/gen12/fx_anims.lua")

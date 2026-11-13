@@ -131,6 +131,11 @@ GEN2_PRIORITY = {"EFFECT_PRIORITY_HIT": 1, "EFFECT_PROTECT": 3, "EFFECT_ENDURE":
 
 GEN3_HIGH_CRITICAL = 43        # Gen 3's EFFECT_HIGH_CRITICAL: a plain hit with the crit flag
 
+# Moves that only do something next to an ally (doubles): neither game has double battles, so
+# these keep a stand-in, as on Gen 3 (tools/move_map.py substitutes the same family there).
+DOUBLES_ONLY = {"AFTER_YOU", "ALLY_SWITCH", "QUASH", "INSTRUCT", "FOLLOW_ME", "HELPING_HAND",
+                "RAGE_POWDER", "SPOTLIGHT", "AROMATIC_MIST", "COACHING", "DECORATE", "HOLD_HANDS"}
+
 # Never a stand-in, beside tools/move_map.py's EXCLUDED: a copy move, and a signature sleep
 # move that would turn every Dark status move into a 50% sleep.
 STAND_IN_EXCLUDED = {"COPYCAT", "DARK VOID"}
@@ -550,15 +555,49 @@ def build_items(api: bs.API, carts: dict[int, dict[str, Any]], records: list[dic
 
 # ---------------------------------------------------------------- moves
 
-def gen3_effects(engine: Path) -> tuple[dict[int, dict[str, Any]], dict[int, dict[str, Any]]]:
-    """(FireRed's move table #1-354, this mod's Gen 3 real moves #355+ by National number)."""
+def gen3_effects(engine: Path) -> tuple[dict[int, dict[str, Any]], dict[int, dict[str, Any]],
+                                         dict[int, dict[str, Any]]]:
+    """(FireRed's move table #1-354, this mod's Gen 3 real moves #355+ that run on a Gen 3
+    effect, and the ones that run on this mod's own Gen 3 code (`rule` / `extra`), each by
+    National number)."""
     fr = move_map.parse_cart(engine / "firered" / "data" / "generated" / "gba" / "pokemon")
-    real = {}
+    real, special = {}, {}
     for row in lua_json(engine, "--lua", str(ROOT / "data" / "moves.lua")):
         if row.get("rule") or row.get("extra"):
-            continue          # runs on this mod's own Gen 3 code: nothing on Gen 1/2 to lend
-        real[row["api"]] = row
-    return fr, real
+            special[row["api"]] = row     # nothing on a Gen 1/2 cart to lend: our mechanics
+        else:
+            real[row["api"]] = row
+    return fr, real, special
+
+
+def gen3_effect_names(engine: Path) -> dict[int, str]:
+    """Gen 3 effect number -> its pokefirered name (the engine's effect_ids table)."""
+    names = lua_json(engine, "--lua", str(engine / "src" / "core" / "game3" / "battle" / "effect_ids.lua"))
+    return {num: name for name, num in names.items() if isinstance(num, int)}
+
+
+def mech_for(n: int, move_id: str, e3: int | None, chance: int | None,
+             special: dict[int, dict[str, Any]], effect_names: dict[int, str]) -> dict[str, Any]:
+    """What a newer move runs on where its cart has no effect for it (src/gen12/mech/):
+    `doubles` (a stand-in: no double battles), `rule` (this mod's Gen 3 rule, by name), `extra`
+    (the Gen 3 `extra` data), `g3` (a Gen 3 effect, by pokefirered name), or `api` (PokéAPI's
+    meta only)."""
+    if move_id in DOUBLES_ONLY:
+        return {"doubles": True}
+    row = special.get(n)
+    mech: dict[str, Any] = {}
+    if row and row.get("rule"):
+        mech["rule"] = row["rule"]
+    if row and row.get("extra"):
+        mech["extra"] = True
+    effect = row["effect"] if row else e3
+    if effect is not None and effect != 0:
+        mech["g3"] = effect_names.get(effect, str(effect))
+        if (row.get("secondaryChance") if row else chance):
+            mech["chance"] = row.get("secondaryChance") if row else chance
+    if not mech:
+        mech["g3" if effect == 0 else "api"] = "HIT" if effect == 0 else True
+    return mech
 
 
 def gen3_looks(engine: Path) -> dict[int, int]:
@@ -607,7 +646,8 @@ def build_moves(api: bs.API, workers: int, carts: dict[int, dict[str, Any]],
     ids = sorted(set(range(1, 252)) | set(wanted))
     with concurrent.futures.ThreadPoolExecutor(max_workers=workers) as ex:
         api_moves = dict(zip(ids, ex.map(lambda i: api.get(f"/move/{i}"), ids)))
-    fr, real3 = gen3_effects(engine)
+    fr, real3, special3 = gen3_effects(engine)
+    effect_names = gen3_effect_names(engine)
 
     gold = carts[2]["moves"]
     out = []
@@ -621,6 +661,8 @@ def build_moves(api: bs.API, workers: int, carts: dict[int, dict[str, Any]],
             rec = {"n": n, "id": bs.engine_id(a["name"]), "name": fr[n]["name"]}
         elif n in real3:
             rec = {"n": n, "id": real3[n]["id"], "name": real3[n]["name"]}
+        elif n in special3:
+            rec = {"n": n, "id": special3[n]["id"], "name": special3[n]["name"]}
         else:
             # no Gen 3 effect to lend it: a stand-in everywhere, so the name is never shown
             rec = {"n": n, "id": bs.engine_id(a["name"]), "name": a_name(a).upper()[:12]}
@@ -652,6 +694,8 @@ def build_moves(api: bs.API, workers: int, carts: dict[int, dict[str, Any]],
                 if gen == 2 and chance:
                     row["chance"] = chance
                 rec[f"gen{gen}"] = row
+        if any(n > g["moves"] and f"gen{gen}" not in rec for gen, g in GENS.items()):
+            rec["mech"] = mech_for(n, rec["id"], e3, chance, special3, effect_names)
         out.append(rec)
 
     # stand-ins: the closest move the game has -- its cart's own, or a newer one that runs
@@ -685,7 +729,9 @@ def build_moves(api: bs.API, workers: int, carts: dict[int, dict[str, Any]],
                     "type": move_map._api_type(api_moves[n], fairy=True)} for n, m in cart.items()}
         mapper = move_map.MoveMapper(pool, api_moves, max(pool), fairy=True)
         for r in out:
-            if f"gen{gen}" in r:
+            # every move that runs here: on a cart effect, or on this mod's mechanics (src/gen12/mech/)
+            runs = f"gen{gen}" in r or (r["n"] > g["moves"] and not r.get("mech", {}).get("doubles"))
+            if runs:
                 look = looks3.get(r["n"])
                 if look not in cart:
                     look = mapper.ranked(r["n"])[0]
@@ -697,6 +743,17 @@ def build_moves(api: bs.API, workers: int, carts: dict[int, dict[str, Any]],
         real = [r for r in out if f"gen{gen}" in r]
         subbed = [r for r in out if f"gen{gen}" in r.get("subs", {})]
         lines.append(f"Gen {gen}: {len(real)} newer moves run on a cart effect, {len(subbed)} stand-ins")
+    # the mechanics the moves without a cart effect run on (src/gen12/mech/), most used first
+    for gen, g in GENS.items():
+        need = collections.Counter()
+        for r in out:
+            if r["n"] > g["moves"] and f"gen{gen}" not in r:
+                m = r["mech"]
+                key = ("doubles" if m.get("doubles") else f"rule {m['rule']}" if m.get("rule")
+                       else "extra" if m.get("extra") else f"g3 {m['g3']}" if m.get("g3") else "api")
+                need[key] += 1
+        lines += ["", f"GEN {gen} MECHANICS ({sum(need.values())} moves, {len(need)} mechanics):"]
+        lines += [f"  {count:3d}  {key}" for key, count in sorted(need.items(), key=lambda kv: (-kv[1], kv[0]))]
     for gen in GENS:
         lines += ["", f"GEN {gen} REAL MOVES:"]
         lines += [f"  #{r['n']} {r['name']} ({r['type']}) -> {r[f'gen{gen}']['effect']}"

@@ -191,8 +191,6 @@ local function body(game, log, dir)
       log("before Close Combat: Defense " .. tostring(st0.defense) .. ", Sp. Def " .. tostring(st0.specialDefense)
         .. ", Sp. Atk " .. tostring(st0.specialAttack))
       local calls = 0
-      local Battle = require("src.battle.gen2.Battle")
-      local hub = Battle.__ndxMoveFx
       b:useMove(b.player, b.enemy, "TACKLE")
       local seenTackle = 0
       for i = 1, 300 do
@@ -209,7 +207,7 @@ local function body(game, log, dir)
       for _, ev in ipairs(b.events or {}) do
         if ev.kind == "stage" then calls = calls + 1 end
       end
-      log("stage events: " .. calls .. "; hub specs: " .. tostring(hub and hub.specs and hub.specs.CLOSE_COMBAT ~= nil))
+      log("stage events: " .. calls .. "; Close Combat's effect: " .. tostring(b:moveDef("CLOSE_COMBAT") and b:moveDef("CLOSE_COMBAT").effect))
       log("after Close Combat: Defense " .. tostring(st.defense) .. ", Sp. Def " .. tostring(st.specialDefense))
       check(st.defense == st0.defense - 1 and st.specialDefense == st0.specialDefense - 1,
         "Close Combat lowered Lucario's defences by one each")

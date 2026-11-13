@@ -1,7 +1,7 @@
 -- Standalone: luajit mods/national_dex_gen3/tests/gen12_mechanics_test.lua [red|blue|yellow|gold|silver|crystal ...]
 -- (from the gen1recomp root; runs on red, yellow, gold and crystal when none is named).
--- The new move mechanics (src/gen12/move_fx.lua): the 88 newer moves data/moves.lua describes as
--- data are real moves on both games, each runs in the game's own battle both ways, and they do
+-- The mechanics layer (src/gen12/mech/, src/gen12/battle/): the 88 newer moves data/moves.lua
+-- describes as data (`extra`) are real moves on both games, each runs in the game's own battle both ways, and they do
 -- what they say: Close Combat lowers the user's defences, Nasty Plot raises its Sp. Atk (Red: its
 -- SPECIAL), Draining Kiss heals, Flare Blitz costs recoil, Fire Fang burns and flinches,
 -- Shell Smash changes five stats. Every chance is rolled low here, so each one lands.
@@ -11,22 +11,21 @@ if not _G.love then _G.love = require("tests.love_stub") end
 local T = require("tests.modkit")
 local H = dofile((arg[0]:gsub("\\", "/"):match("^(.*)/") or ".") .. "/_gen12.lua")
 local gen3 = H.module("data/moves.lua")
-local MoveFx = H.module("src/gen12/move_fx.lua")
+local Red = H.module("src/gen12/battle/red.lua")
 
 local described = {}
 for _, r in ipairs(gen3) do if r.extra then described[#described + 1] = r.id end end
 
 T.eq(#described, 88, "88 newer moves are described as data")
-local c1 = MoveFx.changes(1, { spAtk = 2, speed = 2, defense = -1, spDef = -1, attack = 2 })
-local c2 = MoveFx.changes(2, { spAtk = 2, spDef = -1 })
-T.check(#c1 == 4 and c1[4][1] == "special" and c1[4][2] == 2, "Red: Sp. Atk's change is SPECIAL's")
-T.check(c2[1][1] == "specialAttack" and c2[2][1] == "specialDefense", "Gold: its own stat names")
+T.eq(Red.wrap("Enemy PIDGEOTTO's attack was blocked by the barrier"),
+  table.concat({ "Enemy PIDGEOTTO's", "attack was blocked", "by the barrier" }, "\n"),
+  "Red text breaks at 18 columns")
 
 local function gen1(version)
   local run = H.load(version)
   local data = run.data
   for _, id in ipairs(described) do
-    if not (data.moves[id] and tostring(data.moves[id].effect):find("^NDX_FX_")) then
+    if not (data.moves[id] and tostring(data.moves[id].effect):find("^NDX_M_")) then
       T.check(false, version .. ": " .. id .. " is a real move")
     end
   end
@@ -141,7 +140,7 @@ local function gen2(version)
   b, hp, mine, foe = use("NOBLE_ROAR")
   T.check(foe.attack == -1 and foe.specialAttack == -1, version .. ": Noble Roar lowers the foe")
   local NoCheck = require("src.battle.gen2.Effects").NO_CHECKHIT
-  T.check(NoCheck["NDX_FX_NASTY_PLOT"] and not NoCheck["NDX_FX_NOBLE_ROAR"],
+  T.check(NoCheck["NDX_M_NASTY_PLOT"] and not NoCheck["NDX_M_NOBLE_ROAR"],
     version .. ": a self-only move gets past Protect as Gold's own stat-ups do")
   run.release()
 end
