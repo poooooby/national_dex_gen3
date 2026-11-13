@@ -32,13 +32,23 @@ All notable changes to this mod are documented here, in
   Pokémon learn their newer moves, while the option is on), Register Owned, and Day & Night on
   Red / Blue / Yellow by the device's clock (Gold / Silver / Crystal keep their own). Each is an
   option shared with the Gen 3 games.
+- **More Gen 3 extras on Red to Crystal:**
+  - 43 new TMs (the Gen 3 TMs whose move runs there, same numbers: TM74 Zen Headbutt), taught by
+    the game's own TM code with ABLE / NOT ABLE, sold at Celadon Dept. Store 2F / Goldenrod
+    Dept. Store 5F; Gold's TM pocket grows to hold them, sorted between TM50 and HM01;
+  - Exp. Candies XS to XL through each game's Rare Candy flow (stats, every move of the levels
+    gained, evolution), sold with the vitamins (Celadon 5F / Goldenrod 4F), and
+    `exports.expCandies` on these games too;
+  - Type Badges by the battle HP boxes (a foe's under its box, yours over your name);
+  - Bigger PC: 40 boxes; the boxes past the game's 12 / 14 are written to the mod's part of the
+    save, so the save stays a normal one without the mod or the option.
 
 ### Fixed
 
 - **Day & Night no longer tints another game** after a Gen 3 game in the same run: its renderer
   wraps are installed once and grade only the games the running copy was installed for.
 - **The clock and Lycanroc tests** set the clock option they test instead of reading the
-  player's own setting.
+  player's own setting; the Gen 1/2 evolution test allows for the dusk hour (19:00-20:00).
 
 ## [1.8.1] - 2026-11-09
 

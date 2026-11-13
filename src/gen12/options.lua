@@ -1,7 +1,8 @@
 -- The Mod Manager options on Gen 1 / Gen 2 (the manifest's options_schema is Gen 3's). The keys
 -- are the Gen 3 ones, so an option means the same thing on every game. Labels: 14 characters.
 -- Options.forGeneration(gen) -> the list this game shows (Day & Night is Red / Blue / Yellow's
--- only: Gold / Silver / Crystal have their own day and night).
+-- only: Gold / Silver / Crystal have their own day and night). A row's `byGeneration` replaces
+-- fields for one generation (the Bigger PC's box count).
 
 local Options = {}
 
@@ -28,6 +29,23 @@ Options.ROWS = {
     generations = { [1] = true },
     description = "Tints the outdoors by your device's time of day: morning (4-10), afternoon (the game's own look, 10-17), evening (17-20) and night (20-4). It changes when you enter an area. Indoors, caves, battles and menus are never tinted.",
   },
+  {
+    key = "big_pc",
+    label = "Bigger PC",
+    type = "toggle",
+    default = true,
+    description = "40 PC boxes (800 Pokemon) instead of 12. Turning it off hides boxes 13-40; the Pokemon in them are kept in your save and come back when you turn it on again.",
+    byGeneration = { [2] = {
+      description = "40 PC boxes (800 Pokemon) instead of 14. Turning it off hides boxes 15-40; the Pokemon in them are kept in your save and come back when you turn it on again.",
+    } },
+  },
+  {
+    key = "type_badges",
+    label = "Type Badges",
+    type = "toggle",
+    default = true,
+    description = "Show each Pokemon's types as small badges by its HP box in battle: under a foe's box and above yours. They follow the battle: a Pokemon that used Conversion or Transform shows its new type.",
+  },
 }
 
 function Options.forGeneration(gen)
@@ -35,7 +53,10 @@ function Options.forGeneration(gen)
   for _, row in ipairs(Options.ROWS) do
     if not row.generations or row.generations[gen] then
       local copy = {}
-      for k, v in pairs(row) do if k ~= "generations" then copy[k] = v end end
+      for k, v in pairs(row) do
+        if k ~= "generations" and k ~= "byGeneration" then copy[k] = v end
+      end
+      for k, v in pairs(row.byGeneration and row.byGeneration[gen] or {}) do copy[k] = v end
       out[#out + 1] = copy
     end
   end

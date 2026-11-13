@@ -145,6 +145,11 @@ local function body(game, log, dir)
       local b = screen.battle
       local move = party[1].moves[1].id
       local hp = b.enemy.hp
+      for _ = 1, 30 do
+        if screen.showPlayerHud then break end
+        U.tap(game, "a"); U.wait(8)
+      end
+      U.wait(20); shot("battle_huds")
       b:useMove(b.player, b.enemy, move)
       log("Lucario used " .. tostring(move) .. ": Garchomp HP " .. hp .. " -> " .. tostring(b.enemy.hp))
       for _ = 1, 400 do
@@ -238,7 +243,114 @@ local function body(game, log, dir)
     popTo(base)
   end)
 
+  -- the Gen 3 extras of phase B: an Exp. Candy through the real Bag, a TM's party screen, the
+  -- TM pocket (Gold), the PC's box list
+  local Bag = require("src.inventory.Bag")
+  local function onlyItems(list)
+    local saved = { inv = game.save.inventory, order = game.save.bagOrder }
+    game.save.inventory, game.save.bagOrder = {}, nil
+    for _, it in ipairs(list) do Bag.add(game.save, it[1], it[2], data) end
+    return function() game.save.inventory, game.save.bagOrder = saved.inv, saved.order end
+  end
+  local function openBag()
+    if gen == 1 then Screens.push(game, "BagMenu", { onClose = function() end })
+    else
+      Screens.push(game, "Gen2PackMenu", { onClose = function() game.stack:pop() end,
+        onChoose = function(itemId) game:useFieldItem(itemId) end })
+    end
+  end
+
+  section("exp candy", function()
+    local restore = onlyItems({ { "EXP_CANDY_L", 1 } })
+    local mon = game.save.party[1]
+    local before = mon.level
+    openBag()
+    U.wait(30); shot("bag_candy")
+    if gen == 2 then
+      -- Gold: the pack's own USE hands the item to Game2:usePartyItem (the party menu, the Rare
+      -- Candy's text, every move gained, the evolution check); start from there
+      popTo(base)
+      game:usePartyItem("EXP_CANDY_L")
+      U.wait(30)
+    end
+    for i = 1, 70 do
+      U.tap(game, "a"); U.wait(10)
+      if i == 4 then shot("candy_used") end
+      if i == 6 then shot("candy_stats") end
+      if depth() <= base then break end
+    end
+    log("Lucario Lv " .. before .. " -> " .. tostring(mon.level) .. " with an Exp. Candy L")
+    check(mon.level > before, "the Exp. Candy L raised Lucario's level through the Bag")
+    popTo(base)
+    restore()
+  end)
+
+  section("tm", function()
+    local restore = onlyItems(gen == 1 and { { "TM74", 1 } }
+      or { { "TM_DYNAMICPUNCH", 1 }, { "TM74", 1 }, { "TM98", 1 }, { "HM_CUT", 1 } })
+    openBag()
+    U.wait(30)
+    if gen == 2 then
+      for _ = 1, 3 do U.tap(game, "right"); U.wait(12) end
+      shot("tm_pocket")
+      -- Gold: USE on a TM opens the pack's own teach party (ABLE / NOT ABLE)
+      local pack = game.stack:top()
+      if pack and pack.openTeachParty then
+        pack:openTeachParty({ id = "TM74", count = 1 })
+        U.wait(40); shot("tm_party")
+      end
+      popTo(base)
+      restore()
+      return
+    else
+      shot("bag_tm")
+    end
+    -- USE, then the "Booted up a TM!" lines and YES, up to the party screen with ABLE / NOT ABLE
+    for _ = 1, 40 do
+      local top = game.stack:top()
+      if top and (top.tmhm or top.prompt == "teach" or top.teach) then break end
+      U.tap(game, "a"); U.wait(20)
+    end
+    U.wait(20); shot("tm_party")
+    popTo(base)
+    restore()
+  end)
+
+  section("pc boxes", function()
+    if gen == 1 then
+      local Boxes = require("src.pokemon.Boxes")
+      check(Boxes.COUNT == 40, "Red's PC has 40 boxes")
+      Screens.push(game, "BoxMenu")
+      U.wait(20)
+      for _ = 1, 3 do U.tap(game, "down"); U.wait(8) end
+      for _ = 1, 30 do
+        local top = game.stack:top()
+        if top and top.items and #top.items == 40 then break end
+        U.tap(game, "a"); U.wait(20)
+      end
+      U.wait(10); shot("pc_change_box")
+      U.tap(game, "up"); U.wait(12)
+      shot("pc_change_box_40")
+    else
+      local Boxes = require("src.core.gen2.Boxes")
+      check(Boxes.NUM_BOXES == 40, "Gold's PC has 40 boxes")
+      Screens.push(game, "Gen2PcMenu", { save = game.save, bills = true,
+        onClose = function() game.stack:pop() end })
+      U.wait(30); shot("pc_menu")
+      for _ = 1, 2 do U.tap(game, "down"); U.wait(8) end
+      U.tap(game, "a"); U.wait(30)
+      shot("pc_change_box")
+      U.tap(game, "up"); U.wait(12)
+      shot("pc_change_box_40")
+    end
+    popTo(base)
+  end)
+
   section("save and reload", function()
+    -- a Pokemon in box 30: the file keeps it in the mod's save data, the live save in box 30
+    local Boxes = require(gen == 1 and "src.pokemon.Boxes" or "src.core.gen2.Boxes")
+    local box30 = gen == 1 and Boxes.ensure(game.save)[30] or Boxes.box(game.save, 30)
+    box30[#box30 + 1] = make("ZORUA", 12)
     local first = game.save.party[1]
     if gen == 1 then
       local bag = first.extra and first.extra.national_dex_gen3
@@ -260,6 +372,16 @@ local function body(game, log, dir)
       log("party after reload: " .. table.concat(species, ", "))
       check(species[1] == "LUCARIO" and species[3] == "TOGEKISS", "the new species saved and loaded back")
     end
+    local back = gen == 1 and require("src.core.SaveData").load(version) or require("src.core.gen2.Save").load(version)
+    local n = 0
+    for _ in pairs(back and back.boxes or {}) do n = n + 1 end
+    local pc = back and back.modData and back.modData.national_dex_gen3 and back.modData.national_dex_gen3.pc
+    local kept = pc and pc.boxes and (pc.boxes[30] or pc.boxes["30"])
+    log("the file: " .. n .. " boxes; box 30 in the mod's save data: " .. tostring(kept and #kept))
+    check(n <= (gen == 1 and 12 or 14) and kept and kept[#kept] and kept[#kept].species == "ZORUA",
+      "the file is a cart-shaped save, box 30 kept in the mod's save data")
+    check(box30[#box30].species == "ZORUA" and (gen == 1 and Boxes.ensure(game.save)[30] or Boxes.box(game.save, 30)) == box30,
+      "the live save still has box 30")
   end)
 
   log(("%d failures"):format(fails))

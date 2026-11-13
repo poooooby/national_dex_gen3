@@ -701,13 +701,70 @@ The owner asked for the Gen 3 extras on Gen 1/2 (2026-11-12). Phase A is the fou
   and Red's house is not. Gold loads no Day & Night. A saved `day_night = false` turns it off on
   Red too (the shared bucket), so the probe's options switch it on for the run.
 
+### Gen 3 extras on Gen 1/2 (Phase B: `tms.lua`, `exp_candies.lua`, `type_badges.lua`, `big_pc.lua`, `shops.lua`)
+
+- **New TMs** (`src/gen12/tms.lua`): `data/tms.lua` (the Gen 3 list) filtered to moves that run
+  natively here (`row[gen1|gen2]`, resolved through `directMove`): 43 on both games, same ids and
+  numbers (TM51+). Both engines teach from data alone: Red's item `machine = { kind, move,
+  number }` (`ItemEffects.use` -> `"learn"`, BagMenu's TM flow, PartyMenu's ABLE column), Gold's
+  `teaches` in the `TM_HM` pocket (`PackMenu:openTeachParty`, `PartyMenu:tmhmAble`); both read
+  the species' `tmhm`, which gets `{ __append = moves }` patches (cart species via `cartIdOf`,
+  ours and forms via the species state). Gold's `tmNumber` only sorts the pocket and is
+  `50 + number / 1000`, because `Gen2Save`'s `tmNumbers` maps whole numbers 1-57 (TM57 would
+  become HM07 on import/export). Two process-wide wraps act on our ids only: `Bag.capacity`
+  (`TM_HM` + each of our TMs in `data.items`) and Red's `GenSave.crosswalks` (drops our ids: a
+  machine with no index exports as 200 + number, which passes 255 from TM55). Shops:
+  `src/gen12/shops.lua` (Red: deep `text_pointers` patch of Celadon 2F clerk 2; Gold: every
+  `marts` list that STARTS with the store's stock, so Goldenrod 5F's four lists and a list another
+  addition already grew).
+- **Exp. Candies** (`src/gen12/exp_candies.lua`, ids and Gold indices 950-954 as on Gen 3):
+  Red: one `item_effects` record the five items name; `use` adds the Exp. (`Growth.levelForExp`,
+  `Stats.calc`, HP by the max's rise, Pikachu's happiness, our friendship via
+  `evoState.leveledUp`) and returns `"consumed", text, { leveledTo }`, which BagMenu turns into the
+  Rare Candy's text, StatBox, moves and evolution. `Experience.movesLearnedAt` is wrapped
+  (process-wide, one-shot `pending = { def, from, to }`) so every level gained is offered;
+  `keepsPartyMenuOpen` / `usesMedicineMenu` / `notTimeInBattle` answer true for our ids. Gold: a
+  record per item with `action = "candy"` over `Mon.gainExperience` (stats, `pokemon.level_up`
+  per level, every move in `(from, to]`); `Game2:afterRareCandy` does the moves and
+  `Evolution.checkMon`. Sold with the vitamins (Celadon 5F clerk 2 / Goldenrod 4F).
+- **Type badges** (`src/gen12/type_badges.lua`): `src/type_badges.lua`'s `COLORS` / `GLYPHS`
+  (loaded as it is), 10 x 10 (rim + 8 x 8 glyph), Gen 3 badge ids by type name (`_TYPE` stripped,
+  `BIRD` = Flying, `CURSE` = ???). The only clear block is x 64-96, rows 28-56: a foe's row
+  right-aligned at x 88, y 29 (under its underline), yours from x 72, y 46 (on your name's line).
+  Red: `mod.hooks:wrap("battle.overlay")` (drawn after the whole frame), gated by the same tests
+  as `BattleState:drawHUDs` / WideBattle's; the wide layout uses `Badges.WIDE1` (panels at
+  (0,0) and (184,56)). Gold: `BattleState.drawEnemyHud` / `drawPlayerHud` wrapped once per process
+  (`GS.__ndxBadges` hub, the last install's state; badges only in the battle of the game whose
+  data that install got at game.ready), gated by `showEnemyHud` / `showPlayerHud`,
+  `statusHUDVisible`, `hudCleared`; types from `battle:battlerTypes(activeMon)`.
+- **Bigger PC** (`src/gen12/big_pc.lua`): `Boxes.COUNT` (Red) / `Boxes.NUM_BOXES` (Gold) = 40.
+  The save writers (Red `SaveData.save`, which Gen 3 shares, so only for a save of this
+  generation; Gold `Save.save`) are wrapped once per process: for the write only,
+  `BigPc.split` moves boxes (and Gold names) past 12 / 14 into
+  `save.modData.national_dex_gen3.pc = { boxes, names, currentBox }` and sets the current box to
+  1, then `unsplit` restores the live save exactly. `save.writing` was not enough: it hands over
+  the live save and some writes skip it. `save.loading` (raw) merges them back; the option moves
+  them live. Red only: `Boxes.ensure` is wrapped to fill boxes 13-40 of an older save, and
+  `BoxMenu.new` to hand the CHANGE BOX row to our scrolling copy of the cart's list (`Menu`
+  `maxVisible = 12`, wraps; our own CPU-drawn ball, since modkit lint bans the cart's tile).
+  Gold's list already scrolls.
+- **Tests:** `tests/gen12_extras_test.lua` (218 checks over Red, Yellow, Gold, Crystal: the save
+  writers are stubbed before the mod loads, so nothing is written).
+- **In game** (2026-11-12, probe 0 failures on Red and Gold): an Exp. Candy L took Lucario from
+  30 to 33 through Red's Bag and Gold's party-item flow; TM74's party screen shows ABLE / NOT
+  ABLE; Gold's TM pocket reads 01, 74, 98, H1; both box lists reach BOX40; a Pokemon in box 30
+  saves into the mod's data with a 12 / 14-box file and stays in the live save. The driver
+  can't open Gold's pack submenu with A (it never reacts), so it starts the candy at
+  `Game2:usePartyItem` and the TM at `PackMenu:openTeachParty`, the calls the pack makes.
+
 ### In the real engine (`tests/drivers/gen12_probe.lua`)
 
 One driver for both games: a party of new species (long names, #1000), the party and summary
 screens, our own and a borrowed cry, a wild battle against a new species (Night Slash, then a
-catch), the Pokédex list near #1025 and Gholdengo's entry (it waits for the cry, which plays in
-real time while the driver runs faster), a stone and a level evolution through each game's own
-screens, and a save and reload (Red: the hidden friendship survives).
+catch, with the type badges up), the Pokédex list near #1025 and Gholdengo's entry (it waits for
+the cry, which plays in real time while the driver runs faster), a stone and a level evolution
+through each game's own screens, an Exp. Candy, a new TM's party screen, the PC's box list, and a
+save and reload (Red: the hidden friendship survives; box 30 lands in the mod's save data).
 
 ```bash
 # from the gen1recomp root; SHOT_DIR gets the shots and driver.log

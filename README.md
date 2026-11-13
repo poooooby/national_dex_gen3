@@ -145,12 +145,23 @@ Crystal have their own section after them.
   morning, evening and night looks as in the Generation 3 games. Gold, Silver and Crystal keep
   their own day and night.
 - 📋 **Register Owned:** opening the Pokédex counts every Pokémon in your party and PC.
+- 💿 **43 new TMs:** the newer TMs whose move works in these games (Zen Headbutt, Dazzling
+  Gleam, Flash Cannon, Drain Punch, Earth Power, Scald...), sold at the TM counter: Celadon Dept.
+  Store 2F in Red, Blue and Yellow, Goldenrod Dept. Store 5F in Gold, Silver and Crystal. They
+  teach like the game's own TMs, with ABLE / NOT ABLE on the party screen, and in Gold, Silver
+  and Crystal they sit in the TM pocket between TM50 and the HMs.
+- 🍬 **Exp. Candies XS to XL:** 100 to 30,000 Exp. Points from the Bag, sold with the vitamins
+  (Celadon Dept. Store 5F; Goldenrod Dept. Store 4F). Like a Rare Candy, each level shows its
+  stats, offers every move learned on the way and can set off an evolution.
+- 🏷️ **Type badges:** small badges by each HP box in battle show the Pokémon's types: a foe's
+  under its box, yours above your name.
+- 📦 **Bigger PC:** 40 boxes (800 Pokémon) instead of 12 or 14.
 
 ## ⚙️ Options
 
 Open **OPTIONS → MODS → WoobleDex**. Each option is one setting for every game it appears in.
-Red to Crystal show Modern Moves and Register Owned, and Red, Blue and Yellow also Day & Night;
-the rest are for FireRed to Emerald.
+Red to Crystal show Modern Moves, Register Owned, Bigger PC and Type Badges, and Red, Blue and
+Yellow also Day & Night; the rest are for FireRed to Emerald.
 
 | Option | Choices | Default | What it does |
 |---|---|---|---|
@@ -158,9 +169,9 @@ the rest are for FireRed to Emerald.
 | **National Dex** | On / Off | Off | Turns the National Pokédex on from the start, instead of earning it in the story. Nothing is written to your save. |
 | **Day & Night** | On / Off | On | Tints the outdoors for morning, evening and night; the afternoon is the game's own look. Changes when you enter an area. Indoors, caves, battles and menus are never tinted. Red, Blue and Yellow use the device's clock; Gold, Silver and Crystal have their own day and night instead. |
 | **Modern Moves** | On / Off | On | The game's own Pokémon also learn the newer moves they learn today, at the same levels (Clefairy learns Moonblast at 44), plus newer egg moves. Their own moves stay, and moves they already know are kept if you turn it off. On Red to Crystal only moves the game can do are added. The save editor follows this setting. |
-| **Bigger PC** | On / Off | On | 40 PC boxes (1,200 Pokémon) instead of 14. Turning it off hides boxes 15–40; the Pokémon in them stay in your save and come back when you turn it on again. |
+| **Bigger PC** | On / Off | On | 40 PC boxes instead of the game's own: 14 in FireRed to Emerald (1,200 Pokémon), 12 in Red, Blue and Yellow and 14 in Gold, Silver and Crystal (800 Pokémon). Turning it off hides the extra boxes; the Pokémon in them stay in your save and come back when you turn it on again. |
 | **Register Owned** | On / Off | On | Opening the Pokédex counts every Pokémon in your party and PC as seen and caught, handy for Pokémon added with a save editor. |
-| **Type Badges** | On / Off | On | Shows each Pokémon's types as small badges beside its HP box in battle. |
+| **Type Badges** | On / Off | On | Shows each Pokémon's types as small badges by its HP box in battle. |
 
 ## 💾 Installation
 
@@ -231,19 +242,24 @@ the game's own Pokémon keep their original data, so its event gifts arrive as u
 
 - **It takes the place of the original National Dex mod** there: the two can't be on together.
   With both on, WoobleDex steps aside, so turn National Dex off for those games.
-- **Red to Crystal's options** are Modern Moves, Register Owned and (Red, Blue, Yellow) Day &
-  Night, shared with the Generation 3 games: turning one off turns it off everywhere.
+- **Red to Crystal's options** are Modern Moves, Register Owned, Bigger PC, Type Badges and (Red,
+  Blue, Yellow) Day & Night, shared with the Generation 3 games: turning one off turns it off
+  everywhere.
+- **The new TMs keep their Generation 3 numbers,** so a number is the same TM in every game (TM74
+  is Zen Headbutt); the numbers in between are TMs whose move these games can't do.
 - **Keep the mod installed on a Gold, Silver or Crystal save** that holds its Pokémon: those
   games have nowhere to set aside a Pokémon they don't know.
 - **Exporting to a cartridge .sav** can't store the new Pokémon, and a newer move comes out as an
   empty move slot. In Red, Blue and Yellow, which have no Steel or Fairy, a Magnemite's Steel
-  half comes out as Normal.
+  half comes out as Normal. Red, Blue and Yellow leave the new items out of the export; Gold,
+  Silver and Crystal can't export a save that carries any (the new TMs are left out). Boxes past
+  the game's own 12 or 14 stay behind in the mod's part of the save.
 - **Some evolutions are adapted:** there is no rain, so Sliggoo evolves at level 50; no battle
   ground, so a female Burmy becomes Plant Wormadam; recoil isn't counted, so White-Striped
   Basculin evolves at level 36; and an evolution that needs a move the game doesn't have happens
   at its level instead.
-- **Friendship in Red, Blue and Yellow** grows only with level-ups in battle and walking, not
-  with vitamins or Rare Candies.
+- **Friendship in Red, Blue and Yellow** grows only with level-ups in battle or from Exp.
+  Candies and with walking, not with vitamins or Rare Candies.
 - **Gold, Silver and Crystal's summary** prints a number from #1000 on right against the level
   ("No.1000:L50").
 

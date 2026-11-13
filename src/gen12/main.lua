@@ -184,12 +184,83 @@ return function(mod, loadSibling)
     end)
   end
 
+  -- new TMs (Gen 3's TM51+ for the moves that run here) and Exp. Candies, sold at the game's TM
+  -- counter and with the vitamins (src/gen12/tms.lua, exp_candies.lua, shops.lua)
+  local Shops = loadSibling(mod, "src/gen12/shops.lua")
+  local function sell(where, ids, what)
+    if not Shops then return nil end
+    local ok, n = pcall(Shops.add, mod, generation, where, ids)
+    if not ok then mod.log:warn("%s are not sold: %s", what, tostring(n)) end
+    return ok and n or nil
+  end
+  local Tms = loadSibling(mod, "src/gen12/tms.lua")
+  local tmRows = loadSibling(mod, "data/tms.lua")
+  local tmState
+  if Tms and tmRows and moveRows and speciesState and directMove then
+    local list = Tms.select(tmRows, moveRows, generation, directMove)
+    tmState = Tms.register({ mod = mod, generation = generation, list = list,
+      species = speciesState, log = mod.log })
+    Tms.install(require, tmState.ids)
+    local stores = sell(generation == 1 and Tms.GEN1_SHOP or Tms.GEN2_SHOP, tmState.registered, "new TMs")
+    mod.log:info("TMs: %d new (%d species can learn them), in %s store(s)", #tmState.registered,
+      tmState.compatible, tostring(stores or 0))
+  end
+  local Candies = loadSibling(mod, "src/gen12/exp_candies.lua")
+  local candyState
+  if Candies then
+    candyState = Candies.register({ mod = mod, generation = generation, require = require,
+      onLevels = evoState and evoState.leveledUp, log = mod.log })
+    sell(generation == 1 and Candies.GEN1_SHOP or Candies.GEN2_SHOP, candyState.registered, "Exp. Candies")
+    mod.log:info("Exp. Candies: %d", #candyState.registered)
+  end
+
+  -- Type Badges (src/gen12/type_badges.lua, the Gen 3 badges' colours and symbols)
+  local Badges = loadSibling(mod, "src/gen12/type_badges.lua")
+  local Glyphs = Badges and loadSibling(mod, "src/type_badges.lua")
+  if Badges and Glyphs then
+    local function badgeOpts(data)
+      return { require = require, generation = generation, glyphs = Glyphs, data = data,
+        enabled = function() return option("type_badges") end, log = mod.log }
+    end
+    if generation == 1 then
+      local badges = Badges.install(badgeOpts(nil))
+      if badges then pcall(function() mod.hooks:wrap("battle.overlay", Badges.overlayHook(badges)) end) end
+    else
+      mod.events:on("game.ready", function(ev)
+        local game = ev and ev.game or mod.game
+        pcall(Badges.install, badgeOpts(game and game.data))
+      end, 1)
+    end
+  end
+
+  -- Bigger PC: 40 boxes; those past the cart's count are kept in this mod's save data on disk
+  local BigPc = loadSibling(mod, "src/gen12/big_pc.lua")
+  local pc = BigPc and BigPc.install({ require = require, generation = generation,
+    enabled = function() return option("big_pc") end, log = mod.log })
+  if pc then
+    local pcGame                         -- the game game.ready handed over: the live one
+    mod.events:on("game.ready", function(ev) pcGame = ev and ev.game or mod.game end, 1)
+    mod.events:on("save.loading", function(ev) pcall(pc.loading, ev and ev.raw) end)
+    mod.events:on("mod.options_changed", function(ev)
+      if type(ev) == "table" and ev.mod == mod.id and ev.key == "big_pc" then
+        local g = pcGame or mod.game
+        pcall(pc.toggle, g and g.save)
+      end
+    end)
+  end
+
   -- mod.exports: src/api.lua (the Gen 3 path's, as it is) over this path's species
   local Api = loadSibling(mod, "src/api.lua")
   local GenApi = loadSibling(mod, "src/gen12/api.lua")
   if Api and GenApi and speciesState then
     GenApi(mod, { api = Api, species = speciesState, evolutions = evoState, generation = generation,
       art = pictures })
+    -- the candies' ids, as on Gen 3 (a reward mod can give them)
+    if candyState and #candyState.registered > 0 then
+      local ids = {}
+      for k, v in pairs(Candies.ids) do ids[k] = v end
+      mod.exports.expCandies = ids
+    end
   else
     -- the bare minimum, so a caller can still tell the mod is here
     local exports = mod.exports

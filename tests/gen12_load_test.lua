@@ -26,11 +26,11 @@ for _, version in ipairs(H.versions()) do
   T.check(type(schema) == "table", version .. ": declares its own options")
   local keys = {}
   for _, row in ipairs(schema or {}) do keys[row.key] = true end
-  -- Modern Moves and Register Owned everywhere, Day & Night on Red / Blue / Yellow only (Gold has
-  -- its own); none of the Gen 3-only rows
-  T.check(keys.modern_moves and keys.register_owned and (keys.day_night == (gen == 1 or nil)),
-    version .. ": its own rows (Day & Night on Gen 1 only)")
-  T.check(not (keys.big_pc or keys.type_badges or keys.unlock_national or keys.clock_source),
+  -- Modern Moves, Register Owned, Bigger PC and Type Badges everywhere, Day & Night on Red / Blue /
+  -- Yellow only (Gold has its own); none of the Gen 3-only rows
+  T.check(keys.modern_moves and keys.register_owned and keys.big_pc and keys.type_badges
+    and (keys.day_night == (gen == 1 or nil)), version .. ": its own rows (Day & Night on Gen 1 only)")
+  T.check(not (keys.unlock_national or keys.clock_source or keys.modern_learnsets),
     version .. ": none of the Gen 3-only rows")
   run.release()
 

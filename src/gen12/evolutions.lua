@@ -401,13 +401,19 @@ function Evolutions.install(opts)
       end
     end
   end)
+  -- Red: friendship grows on every level gained (pokemon.level_up; an Exp. Candy, which raises
+  -- no event, calls state.leveledUp itself)
+  function state.leveledUp(mon, levels)
+    if gen ~= 1 or not (mon and mon.species) then return end
+    local base = state.baseFriendship[mon.species]
+    for _ = 1, levels or 1 do
+      Evolutions.addFriendship(mon, base, Evolutions.levelUpGain(Evolutions.friendship(mon, base)))
+    end
+  end
   if gen == 1 then
     events:on("pokemon.level_up", function(ev)
       local mon = ev and ev.mon
-      if mon and mon.species then
-        local base = state.baseFriendship[mon.species]
-        Evolutions.addFriendship(mon, base, Evolutions.levelUpGain(Evolutions.friendship(mon, base)))
-      end
+      if mon and mon.species then state.leveledUp(mon, 1) end
     end)
   end
   local function partyMon(battler)

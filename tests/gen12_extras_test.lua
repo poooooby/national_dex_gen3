@@ -7,6 +7,13 @@
 --   Modern Moves: the cart's own species learn their newer moves while the option is on, and get
 --     their own lists back when it is off
 --   Day & Night: installed on Red / Blue / Yellow (the shared renderer hub), never on Gold
+--   New TMs: taught through the game's own TM code to the species data/tms.lua names, sold at the
+--     TM counter, kept out of Red's .sav export and Gold's TM / HM numbers; Gold's TM pocket grows
+--   Exp. Candies: the Rare Candy's flow (Red: leveledTo + every move of the levels gained; Gold:
+--     the "candy" action over Mon.gainExperience), sold with the vitamins
+--   Type Badges: which badges, where, and only while the game draws the box
+--   Bigger PC: 40 boxes; the save writer writes a cart-shaped save (the extra boxes in the mod's
+--     save data) and puts the live save back; save.loading and the option move them back
 package.path = "./?.lua;./?/init.lua;" .. package.path
 if not _G.love then _G.love = require("tests.love_stub") end
 
@@ -14,6 +21,21 @@ local T = require("tests.modkit")
 local H = dofile((arg[0]:gsub("\\", "/"):match("^(.*)/") or ".") .. "/_gen12.lua")
 local Runtime = require("src.mods.Runtime")
 local modernRows = H.module("data/gen12/modern.lua")
+local Badges = H.module("src/gen12/type_badges.lua")
+local Glyphs = H.module("src/type_badges.lua")
+
+-- the save writers, stubbed before the mod wraps them: what a write would put on disk
+local written
+local function snapshot(save)
+  local n = 0
+  for _ in pairs(save.boxes or {}) do n = n + 1 end
+  local bucket = save.modData and save.modData.national_dex_gen3
+  written = { boxes = n, currentBox = save.currentBox, pc = bucket and bucket.pc,
+    names = save.boxNames and save.boxNames[20] }
+  return true
+end
+require("src.core.SaveData").save = snapshot
+require("src.core.gen2.Save").save = snapshot
 
 local function setOption(run, key, value)
   local o = run.loader.modOptions.national_dex_gen3 or {}
@@ -161,6 +183,195 @@ for _, version in ipairs(H.versions()) do
       T.check(hub == nil or hub.impl == nil or true, version .. ": (Gold: the Day & Night copy is never loaded)")
     end
   end
+  -- ------- New TMs
+  local tm = data.items.TM74
+  T.check(tm ~= nil, version .. ": TM74 is an item")
+  local zen = gen == 1 and tm and tm.machine and tm.machine.move or (tm and tm.teaches)
+  T.eq(zen and data.moves[zen] and data.moves[zen].name, "ZEN HEADBUTT", version .. ": TM74 teaches Zen Headbutt")
+  local function knows(id, move)
+    for _, m in ipairs(data.pokemon[id].tmhm or {}) do if m == move then return true end end
+    return false
+  end
+  T.check(knows("ALAKAZAM", zen) and knows("LUCARIO", zen) and not knows("MAGIKARP", zen),
+    version .. ": Alakazam and Lucario can learn it, Magikarp not")
+  if gen == 1 then
+    T.eq(tm.machine.number, 74, version .. ": machine number 74")
+    local ItemEffects = require("src.inventory.ItemEffects")
+    local save = require("src.core.SaveData").newGame()
+    local r, move = ItemEffects.use(data, save, "TM74", make("ALAKAZAM", 40))
+    T.eq(r, "learn", version .. ": the game's own TM code teaches it")
+    T.eq(move, zen, version .. ": the move")
+    T.check(ItemEffects.use(data, save, "TM74", make("MAGIKARP", 40)) ~= "learn", version .. ": not to Magikarp")
+    local clerk = data.text_pointers.CeladonMart2F.TEXT_CELADONMART2F_CLERK2.mart
+    local sold = false
+    for _, id in ipairs(clerk) do if id == "TM74" then sold = true end end
+    T.check(sold, version .. ": sold at Celadon 2F's TM counter")
+    local cw = require("src.save_convert.GenSave").crosswalks(data)
+    T.check(cw.itemsIndex.TM74 == nil and cw.itemsIndex.TM_SUBSTITUTE == 250,
+      version .. ": left out of .sav export (the cart's TMs kept)")
+  else
+    T.check(tm.pocket == "TM_HM" and tm.tmNumber > 50 and tm.tmNumber < 51,
+      version .. ": in the TM pocket, sorted between TM50 and HM01")
+    local Bag = require("src.inventory.Bag")
+    T.eq(Bag.capacity(data, "TM_HM"), 57 + 43, version .. ": the TM pocket holds the new TMs too")
+    T.eq(Bag.capacity(data, "ITEM"), 20, version .. ": the item pocket as it was")
+    local stores = 0
+    for _, list in ipairs(data.gen2Marts.lists) do
+      for _, id in ipairs(list) do if id == "TM74" then stores = stores + 1 end end
+    end
+    T.eq(stores, 4, version .. ": sold in Goldenrod 5F's four stocks")
+  end
+
+  -- ------- Exp. Candies
+  T.check(data.items.EXP_CANDY_XL ~= nil, version .. ": the candies are items")
+  if gen == 1 then
+    local Exp = require("src.battle.Experience")
+    local ItemEffects = require("src.inventory.ItemEffects")
+    local save = require("src.core.SaveData").newGame()
+    local pidgey = make("PIDGEY", 5)
+    local def = data.pokemon.PIDGEY
+    local r, _, extra = ItemEffects.use(data, save, "EXP_CANDY_L", pidgey)
+    T.eq(r, "consumed", version .. ": a candy is used")
+    T.check(extra and extra.leveledTo and extra.leveledTo > 15 and pidgey.level == extra.leveledTo,
+      version .. ": 10,000 Exp. takes Pidgey from Lv 5 to " .. tostring(extra and extra.leveledTo))
+    local Stats = require("src.pokemon.Stats")
+    T.eq(pidgey.stats.attack, Stats.calc(def, pidgey.level, pidgey.dvs, pidgey.statExp).attack,
+      version .. ": its stats follow")
+    local want, exact = 0, 0
+    for _, row in ipairs(def.learnset) do
+      if row.level > 5 and row.level <= pidgey.level then want = want + 1 end
+      if row.level == pidgey.level then exact = exact + 1 end
+    end
+    T.eq(#Exp.movesLearnedAt(def, pidgey.level), want,
+      version .. ": the moves of every level gained are offered (" .. want .. ")")
+    T.eq(#Exp.movesLearnedAt(def, pidgey.level), exact, version .. ": once: then only that level's again")
+    local old = make("PIDGEY", 50)
+    local exp = old.exp
+    r, _, extra = ItemEffects.use(data, save, "EXP_CANDY_XS", old)
+    T.check(r == "consumed" and not (extra and extra.leveledTo) and old.exp == exp + 100,
+      version .. ": a candy short of a level still gives its Exp.")
+    T.eq(ItemEffects.use(data, save, "EXP_CANDY_XS", make("PIDGEY", 100)), "failed", version .. ": nothing at Lv 100")
+    T.check(ItemEffects.keepsPartyMenuOpen("EXP_CANDY_S") and ItemEffects.notTimeInBattle("EXP_CANDY_S"),
+      version .. ": the Rare Candy's menu rules")
+    local clerk = data.text_pointers.CeladonMart5F.TEXT_CELADONMART5F_CLERK2.mart
+    local sold = false
+    for _, id in ipairs(clerk) do if id == "EXP_CANDY_XS" then sold = true end end
+    T.check(sold, version .. ": sold with the vitamins (Celadon 5F)")
+  else
+    local Items = require("src.core.gen2.ItemEffects")
+    local rec = Items.recordFor("EXP_CANDY_L", data)
+    T.eq(rec and rec.action, "candy", version .. ": the Rare Candy's action")
+    local pidgey = make("PIDGEY", 5)
+    local out = rec.use({ mon = pidgey, item = "EXP_CANDY_L", data = data })
+    T.check(out.used and out.level == pidgey.level and pidgey.level > 15,
+      version .. ": Pidgey Lv 5 -> " .. tostring(pidgey.level))
+    T.check(#(out.learned or {}) >= 2, version .. ": the moves of every level gained (" .. #(out.learned or {}) .. ")")
+    T.check(not rec.use({ mon = make("PIDGEY", 100), item = "EXP_CANDY_L", data = data }).used,
+      version .. ": nothing at Lv 100")
+    T.check(not rec.use({ mon = make("PIDGEY", 5), item = "EXP_CANDY_L", data = data, battle = {} }).used,
+      version .. ": not in battle")
+    local both = false
+    for _, list in ipairs(data.gen2Marts.lists) do
+      local c, l = false, false
+      for _, id in ipairs(list) do
+        if id == "EXP_CANDY_XS" then c = true end
+        if id == "LINKING_CORD" then l = true end
+      end
+      if c and l then both = true end
+    end
+    T.check(both, version .. ": sold with the vitamins and the evolution items (Goldenrod 4F)")
+  end
+  T.eq(run.loader.exports.national_dex_gen3.expCandies.EXP_CANDY_XL, 954, version .. ": exports.expCandies")
+
+  -- ------- Type Badges
+  local function same(a, b) return table.concat(a, ",") == table.concat(b, ",") end
+  T.check(same(Badges.ids({ "PSYCHIC_TYPE" }), { 14 }) and same(Badges.ids({ "FIRE", "FIRE" }), { 10 })
+    and same(Badges.ids({ "CURSE_TYPE", "NORMAL" }), { 0 }) and same(Badges.ids({ "BIRD" }), { 2 }),
+    version .. ": badge ids (each once, ??? only alone)")
+  local drawn = {}
+  local function stub(state)
+    state.drawBadge = function(t, x, y) drawn[#drawn + 1] = t .. "@" .. x .. "," .. y end
+  end
+  local yes, no = function() return true end, function() return false end
+  if gen == 1 then
+    T.check(Runtime.wantsHook("battle.overlay"), version .. ": the badges are on the battle overlay")
+    local state = Badges.install({ require = require, generation = 1, glyphs = Glyphs })
+    stub(state)
+    local b = { drawHUDs = yes, statusHUDVisible = yes, growInScale = no, wideLayout = no,
+      enemy = { curTypes = { "FIRE", "FLYING" } }, player = { curTypes = { "PSYCHIC_TYPE" } } }
+    state.overlay(b)
+    T.eq(table.concat(drawn, " "), "10@67,29 2@78,29 14@72,46",
+      version .. ": a foe's under its box, right-aligned; yours on your box")
+    drawn = {}
+    b.enemy.fainted, b.showPlayerBack = true, true
+    state.overlay(b)
+    T.eq(#drawn, 0, version .. ": none while the boxes are not drawn")
+  else
+    local hub = require("src.ui.gen2.BattleState").__ndxBadges
+    T.check(hub and hub.after, version .. ": the HP boxes are wrapped")
+    stub(hub.state)
+    local foe, mine = { types = { "STEEL", "FAIRY" } }, { types = { "DARK" } }
+    local self = { data = data, showEnemyHud = true, showPlayerHud = true, statusHUDVisible = yes,
+      hudCleared = no, activeMon = function(_, side) return side == "enemy" and foe or mine end,
+      battle = { battlerTypes = function(_, m) return m.types end } }
+    hub.after(self, "enemy")
+    hub.after(self, "player")
+    T.eq(table.concat(drawn, " "), "8@67,29 18@78,29 17@72,46", version .. ": the foe's and yours")
+    drawn = {}
+    self.showEnemyHud = false
+    hub.after(self, "enemy")
+    T.eq(#drawn, 0, version .. ": none while the box is hidden")
+    local other = setmetatable({ data = {}, showEnemyHud = true }, { __index = self })
+    hub.after(other, "enemy")
+    T.eq(#drawn, 0, version .. ": none in another game's battle")
+    setOption(run, "type_badges", false)
+    self.showEnemyHud = true
+    hub.after(self, "enemy")
+    T.eq(#drawn, 0, version .. ": none with the option off")
+    setOption(run, "type_badges", true)
+  end
+
+  -- ------- Bigger PC
+  local Boxes = require(gen == 1 and "src.pokemon.Boxes" or "src.core.gen2.Boxes")
+  local field, base = gen == 1 and "COUNT" or "NUM_BOXES", gen == 1 and 12 or 14
+  T.eq(Boxes[field], 40, version .. ": 40 boxes")
+  local pcSave = { version = version, boxes = {}, currentBox = 1, boxNames = {} }
+  if gen == 1 then Boxes.ensure(pcSave) end
+  local box20 = gen == 1 and pcSave.boxes[20] or Boxes.box(pcSave, 20)
+  T.check(type(box20) == "table", version .. ": box 20 is there")
+  box20[1] = make("ZORUA", 12)
+  pcSave.currentBox = 20
+  if gen == 2 then pcSave.boxNames[20] = "FAVES" end
+  local writer = require(gen == 1 and "src.core.SaveData" or "src.core.gen2.Save")
+  writer.save(pcSave)
+  T.check(written and written.boxes <= base and written.currentBox == 1,
+    version .. ": the file holds the cart's boxes only (current box 1)")
+  local pc = written and written.pc
+  T.check(pc and pc.boxes[20] and pc.boxes[20][1] and pc.boxes[20][1].species == "ZORUA" and pc.currentBox == 20,
+    version .. ": box 20 and the current box in the mod's save data")
+  if gen == 2 then
+    T.check(written.names == nil and pc and pc.names[20] == "FAVES", version .. ": box 20's name too")
+  end
+  T.eq(pcSave.currentBox, 20, version .. ": the live save as it was")
+  T.check(pcSave.boxes[20] == box20 and (pcSave.modData == nil or pcSave.modData.national_dex_gen3 == nil),
+    version .. ": its box 20, no save data left behind")
+  local raw = { version = version, boxes = {}, currentBox = 1, boxNames = {},
+    modData = { national_dex_gen3 = { pc = pc } } }
+  if gen == 1 then for i = 1, 12 do raw.boxes[i] = {} end end
+  Runtime.emit("save.loading", { raw = raw })
+  T.check(raw.boxes[20] and raw.boxes[20][1] and raw.currentBox == 20 and raw.modData.national_dex_gen3.pc == nil,
+    version .. ": loading puts box 20 back")
+  if gen == 1 then T.eq(#raw.boxes, 40, version .. ": every box, 1-40") end
+  if gen == 2 then T.eq(raw.boxNames[20], "FAVES", version .. ": with its name") end
+  game.save = pcSave
+  setOption(run, "big_pc", false)
+  T.eq(Boxes[field], base, version .. ": off: the cart's count")
+  T.check(pcSave.boxes[20] == nil and pcSave.modData.national_dex_gen3.pc.boxes[20] == box20,
+    version .. ": box 20 kept in the save data")
+  setOption(run, "big_pc", true)
+  T.check(Boxes[field] == 40 and pcSave.boxes[20] == box20 and pcSave.currentBox == 20,
+    version .. ": on: box 20 back")
+
   run.release()
 end
 

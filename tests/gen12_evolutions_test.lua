@@ -185,7 +185,9 @@ local function gen2(version)
   T.eq(check(budew, { timeOfDay = "DAY" }), "ROSELIA", version .. ": a happy Budew by day")
   T.eq(check(budew, { timeOfDay = "NITE" }), nil, version .. ": not at night")
   local rockruff = mon("ROCKRUFF", 25)
-  T.eq(check(rockruff, { timeOfDay = "NITE" }), "LYCANROC_MIDNIGHT", version .. ": Rockruff at night -> Midnight")
+  -- the dusk hour (19:00-20:00, the device's, as Gold's own time of day is) outranks night
+  T.eq(check(rockruff, { timeOfDay = "NITE" }), Clock.isDusk(nil, "device") and "LYCANROC_DUSK"
+    or "LYCANROC_MIDNIGHT", version .. ": Rockruff at night -> Midnight")
   T.eq(check(rockruff, { timeOfDay = "DAY" }), Clock.isDusk(nil, "device") and "LYCANROC_DUSK" or "LYCANROC",
     version .. ": by day -> Midday")
   T.eq(check(mon("COMBEE", 21, lowDvs(0, 0))), "VESPIQUEN", version .. ": a female Combee")
