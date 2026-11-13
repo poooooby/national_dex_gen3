@@ -121,19 +121,15 @@ local function gen1(version)
   T.eq(levelUp(gimmighoul), "GHOLDENGO", version .. ": with 999")
   Evolution.apply(game, gimmighoul, "GHOLDENGO", "LEVEL")
   T.eq(game.save.coins, 201, version .. ": the 999 coins are spent")
-  -- Primeape: Rage Fist or Rage 20 times, from level 35
+  -- Primeape: Rage Fist 20 times, from level 35 (Rage does not count)
   local primeape = mon("PRIMEAPE", 35)
-  for _ = 1, 19 do Runtime.emit("battle.move_used", { user = { mon = primeape }, moveId = "RAGE" }) end
+  for _ = 1, 30 do Runtime.emit("battle.move_used", { user = { mon = primeape }, moveId = "RAGE" }) end
+  T.eq(levelUp(primeape), nil, version .. ": Primeape after Rage x 30")
+  for _ = 1, 19 do Runtime.emit("battle.move_used", { user = { mon = primeape }, moveId = "RAGE_FIST" }) end
   Runtime.emit("battle.move_used", { user = { mon = primeape }, moveId = "KARATE_CHOP" })
-  T.eq(levelUp(primeape), nil, version .. ": Primeape after Rage x 19 (and another move)")
-  Runtime.emit("battle.move_used", { user = { mon = primeape }, moveId = "RAGE" })
-  T.eq(levelUp(primeape), "ANNIHILAPE", version .. ": after Rage x 20")
-  -- Rage Fist is real here too, and counts together with Rage
-  local primeape2 = mon("PRIMEAPE", 35)
-  for i = 1, 20 do
-    Runtime.emit("battle.move_used", { user = { mon = primeape2 }, moveId = i % 2 == 0 and "RAGE_FIST" or "RAGE" })
-  end
-  T.eq(levelUp(primeape2), "ANNIHILAPE", version .. ": after Rage Fist x 10 and Rage x 10")
+  T.eq(levelUp(primeape), nil, version .. ": after Rage Fist x 19 (and another move)")
+  Runtime.emit("battle.move_used", { user = { mon = primeape }, moveId = "RAGE_FIST" })
+  T.eq(levelUp(primeape), "ANNIHILAPE", version .. ": after Rage Fist x 20")
 
   -- on sale: the EVO EXPRESS machine (Celadon 4F)
   local sells = machineStock(run, data)
@@ -223,10 +219,12 @@ local function gen2(version)
   tyrogue.stats.attack, tyrogue.stats.defense = 30, 40
   T.eq(check(tyrogue), "HITMONCHAN", version .. ": Gold's own Tyrogue")
   local primeape = mon("PRIMEAPE", 35)
-  for _ = 1, 19 do Runtime.emit("battle.move_used", { user = { mon = primeape }, moveId = "RAGE" }) end
-  T.eq(check(primeape), nil, version .. ": Primeape after Rage x 19")
-  Runtime.emit("battle.move_used", { user = { mon = primeape }, moveId = "RAGE" })
-  T.eq(check(primeape), "ANNIHILAPE", version .. ": after Rage x 20")
+  for _ = 1, 30 do Runtime.emit("battle.move_used", { user = { mon = primeape }, moveId = "RAGE" }) end
+  T.eq(check(primeape), nil, version .. ": Primeape after Rage x 30")
+  for _ = 1, 19 do Runtime.emit("battle.move_used", { user = { mon = primeape }, moveId = "RAGE_FIST" }) end
+  T.eq(check(primeape), nil, version .. ": after Rage Fist x 19")
+  Runtime.emit("battle.move_used", { user = { mon = primeape }, moveId = "RAGE_FIST" })
+  T.eq(check(primeape), "ANNIHILAPE", version .. ": after Rage Fist x 20")
 
   -- the items are held (hold / trade) or used (stone), and sold by the EVO EXPRESS machine
   local sells = machineStock(run, data)

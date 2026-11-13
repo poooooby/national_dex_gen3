@@ -2,8 +2,7 @@
 -- (src/conditional_evos.lua reads them as `when` conditions):
 --
 --   recoilTaken  the recoil damage it has taken in battle, in total (Basculin: 294)
---   moveUses     how often it has used a move, by move id (Primeape: Rage Fist and Rage, 20 times
---                together)
+--   moveUses     how often it has used a move, by move id (Primeape: Rage Fist, 20 times)
 --   stepsAsLead  steps walked while it was first in the party (Pawmo, Bramblin, Rellor: 1000)
 --   critsThisBattle  critical hits it landed in its current (or last) battle (Galarian
 --                Farfetch'd: 3), set back to 0 when a battle starts

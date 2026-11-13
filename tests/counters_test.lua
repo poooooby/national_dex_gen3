@@ -24,34 +24,8 @@ Evolution.nationalAllows = function() return true end
 local function slot(name) return api.slotOf(name) or Pokemon.speciesFromName(name) end
 local function emit(name, payload) run.loader.events:emit(name, payload) end
 
--- ------- Rage Fist / Rage x 20 (Primeape -> Annihilape)
+-- ------- Rage Fist x 20 (Primeape -> Annihilape); Rage does not count
 
-local primeape = { species = slot("PRIMEAPE"), level = 40, personality = 0, moves = { 99 } }
-local party = { primeape }
-local st = { playerParty = party }
-Battle._leveledUp = {}
-local function rage(n, move)
-  for _ = 1, n do
-    emit("battle.move_used", { battle = st, user = { side = "player", partyIndex = 1 },
-      moveNum = move or 99, isCalled = false })
-  end
-end
-rage(19)
-T.eq(primeape.moveUses and primeape.moveUses[99], 19, "19 uses of Rage are counted")
-T.eq(Evolution.levelTarget(primeape, {}), nil, "19 is not enough")
-T.check(not Battle._leveledUp[1], "and it is not yet marked for the end-of-battle scan")
-rage(1)
-T.eq(Evolution.levelTarget(primeape, {}), slot("ANNIHILAPE"), "the 20th use lets it evolve")
-T.check(Battle._leveledUp[1] == true, "and marks it for the end-of-battle scan")
-rage(3, 33)
-T.eq(primeape.moveUses[99], 20, "another move is not counted")
-emit("battle.move_used", { battle = st, user = { side = "enemy", partyIndex = 1 }, moveNum = 99 })
-T.eq(primeape.moveUses[99], 20, "nor is the enemy's Rage")
-emit("battle.move_used", { battle = st, user = { side = "player", partyIndex = 1 }, moveNum = 99, isCalled = true })
-T.eq(primeape.moveUses[99], 20, "nor a move called by another (Metronome)")
-Battle._leveledUp = nil
-
--- Rage Fist (this mod's move 677) is the move that counts; Rage still adds to the same total
 local RAGE_FIST = 677
 local function moveIndex(id)
   for _, m in ipairs(dofile("mods/national_dex_gen3/data/moves.lua")) do
@@ -59,22 +33,33 @@ local function moveIndex(id)
   end
 end
 T.eq(moveIndex("RAGE_FIST"), RAGE_FIST, "Rage Fist is move 677")
-local fist = { species = slot("PRIMEAPE"), level = 40, personality = 0, moves = { RAGE_FIST } }
-st.playerParty = { fist }
+local primeape = { species = slot("PRIMEAPE"), level = 40, personality = 0, moves = { RAGE_FIST, 99 } }
+local party = { primeape }
+local st = { playerParty = party }
 Battle._leveledUp = {}
-rage(19, RAGE_FIST)
-T.eq(fist.moveUses and fist.moveUses[RAGE_FIST], 19, "19 uses of Rage Fist are counted")
-T.eq(Evolution.levelTarget(fist, {}), nil, "19 is not enough")
-rage(1, RAGE_FIST)
-T.eq(Evolution.levelTarget(fist, {}), slot("ANNIHILAPE"), "the 20th use of Rage Fist lets it evolve")
+local function rage(n, move)
+  for _ = 1, n do
+    emit("battle.move_used", { battle = st, user = { side = "player", partyIndex = 1 },
+      moveNum = move or RAGE_FIST, isCalled = false })
+  end
+end
+rage(30, 99)
+T.eq(primeape.moveUses and primeape.moveUses[99], nil, "uses of Rage are not counted")
+T.eq(Evolution.levelTarget(primeape, {}), nil, "30 Rage is no evolution")
+rage(19)
+T.eq(primeape.moveUses and primeape.moveUses[RAGE_FIST], 19, "19 uses of Rage Fist are counted")
+T.eq(Evolution.levelTarget(primeape, {}), nil, "19 is not enough")
+T.check(not Battle._leveledUp[1], "and it is not yet marked for the end-of-battle scan")
+rage(1)
+T.eq(Evolution.levelTarget(primeape, {}), slot("ANNIHILAPE"), "the 20th use of Rage Fist lets it evolve")
 T.check(Battle._leveledUp[1] == true, "and marks it for the end-of-battle scan")
-local mixed = { species = slot("PRIMEAPE"), level = 40, personality = 0, moves = { RAGE_FIST, 99 } }
-st.playerParty = { mixed }
-Battle._leveledUp = {}
-rage(12, RAGE_FIST); rage(7, 99)
-T.eq(Evolution.levelTarget(mixed, {}), nil, "12 Rage Fist + 7 Rage is not enough")
-rage(1, 99)
-T.eq(Evolution.levelTarget(mixed, {}), slot("ANNIHILAPE"), "12 Rage Fist + 8 Rage is 20 together")
+rage(3, 33)
+T.eq(primeape.moveUses[RAGE_FIST], 20, "another move is not counted")
+emit("battle.move_used", { battle = st, user = { side = "enemy", partyIndex = 1 }, moveNum = RAGE_FIST })
+T.eq(primeape.moveUses[RAGE_FIST], 20, "nor is the enemy's Rage Fist")
+emit("battle.move_used", { battle = st, user = { side = "player", partyIndex = 1 }, moveNum = RAGE_FIST, isCalled = true })
+T.eq(primeape.moveUses[RAGE_FIST], 20, "nor a move called by another (Metronome)")
+Battle._leveledUp = nil
 local young = { species = slot("PRIMEAPE"), level = 34, personality = 0, moveUses = { [RAGE_FIST] = 20 } }
 T.eq(Evolution.levelTarget(young, {}), nil, "not below level 35")
 st.playerParty = party

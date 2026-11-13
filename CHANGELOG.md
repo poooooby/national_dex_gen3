@@ -25,7 +25,8 @@ All notable changes to this mod are documented here, in
 ### Changed
 
 - Red to Crystal have all 114 new TMs (TM51-TM164), the same as the Generation 3 games.
-- Primeape's Rage Fist uses count on Red to Crystal too (Rage still counts).
+- **Only Rage Fist evolves Primeape** into Annihilape, on every game: uses of Rage no longer
+  count towards the 20 (Red to Crystal have Rage Fist too now).
 - Gold, Silver and Crystal's summary has a line for every newer move: a short description
   where one fits, else its type.
 
