@@ -11,6 +11,8 @@
 local Held = {}
 
 local function norm(s) return (tostring(s or ""):upper():gsub("[^%w]", "")) end
+-- held items this mod registers as evolution items (src/gen12/items.lua) before these
+Held.ALSO = { RAZOR_CLAW = true, RAZOR_FANG = true }
 
 -- opts: { mod, generation, rows, log }
 function Held.register(opts)
@@ -27,7 +29,9 @@ function Held.register(opts)
   end)
   local firstError
   for _, row in ipairs(opts.rows or {}) do
-    if items:get(row.id) == nil and not names[norm(row.name)] and not names[norm(row.id)] then
+    if Held.ALSO[row.id] then
+      state.byId[row.id] = row               -- registered as an evolution item (after this): the held effect too
+    elseif items:get(row.id) == nil and not names[norm(row.name)] and not names[norm(row.id)] then
       local rec = { id = row.id, name = row.name, price = row.price }
       if gen == 2 then
         rec.pocket, rec.canToss, rec.canSelect = "ITEM", true, false

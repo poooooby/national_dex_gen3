@@ -20,7 +20,7 @@ return {
     eggMoves = "92711d7a",
     evolutions = "755f8686",
     evolutionsOf = "f7d20458",
-    exports = "9a62523f",
+    exports = "d03ff449",
     forms = "40589ee8",
     learnsets = "5494d21d",
     meta = "96ed466e",

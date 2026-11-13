@@ -125,6 +125,9 @@ return function(mod)
   local MoveField = loadSibling(mod, "src/move_field.lua")
   if MoveField then MoveField.hooks(mod) end
   if RealAbilities then RealAbilities.hooks(mod) end
+  -- optional: without it the newer held items are not in the game (src/held/gen3.lua)
+  local HeldItems = loadSibling(mod, "src/held/gen3.lua")
+  if HeldItems then HeldItems.hooks(mod) end
   -- optional: without it the overworld keeps the game's own look at every hour
   local DayNight = loadSibling(mod, "src/day_night.lua")
   -- optional: without it the PC keeps the game's 14 boxes
@@ -178,6 +181,12 @@ return function(mod)
   local moveRowById, moveNumById = {}, {}
   for _, r in ipairs(registeredMoves) do moveRowById[r.id], moveNumById[r.id] = r, r.index end
   local registeredTms = (Tms and NewMoves) and Tms.register(mod, read("data/tms.lua") or {}, moveRowById, require) or {}
+  -- the held items newer than this game (src/held/gen3.lua): registered now, their effects on game.ready
+  local heldState
+  if HeldItems then
+    local okHe, st = pcall(HeldItems.register, { mod = mod, rows = read("data/held_items.lua") or {}, log = mod.log })
+    if okHe then heldState = st else mod.log:warn("held items are off: %s", tostring(st)) end
+  end
 
   local crossgen = Species.loadCrossGeneration(read)
   local forms = Species.loadForms(read)
@@ -374,6 +383,14 @@ return function(mod)
       local okFi, fiErr = pcall(MoveField.install, { moves = registeredMoves, require = require, log = mod.log,
         abilities = RealAbilities })
       if not okFi then mod.log:warn("field moves are off: %s", tostring(fiErr)) end
+    end
+    -- the newer held items' effects (src/held/effects.lua through src/held/gen3.lua)
+    if HeldItems and heldState then
+      local okHe, heErr = pcall(HeldItems.install, { mod = mod, require = require, log = mod.log,
+        state = heldState, effects = read("src/held/effects.lua"), Core = read("src/gen12/mech/core.lua"),
+        flags = read("data/move_flags.lua"), abilities = RealAbilities })
+      if not okHe then mod.log:warn("held items have no effects: %s", tostring(heErr)) end
+      mod.exports._held = { module = HeldItems, state = heldState }
     end
     -- the Fairy type (src/types.lua): after the repairs, so National numbers resolve to this
     -- mod's slots and its reload hook runs after theirs

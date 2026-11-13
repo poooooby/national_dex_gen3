@@ -56,6 +56,37 @@ local function loadAtlas(mod, load)
   return { quadFor = quadFor, size = size }
 end
 
+-- the newer held items' icons (assets/items/held_icons.png, 16 cells a row, by each row's `icon`
+-- in data/held_items.lua, keyed by the item's index), asked after the evolution items' atlas
+local function loadHeldAtlas(mod, load)
+  local rows = load("data/held_items.lua")
+  if type(rows) ~= "table" then return nil end
+  local cellOf = {}
+  for _, r in ipairs(rows) do
+    if r.icon and r.index then cellOf[r.index] = r.icon end
+  end
+  local size, cols = 24, 16
+  local page, failed
+  local quads = {}
+  local function quadFor(index)
+    local cell = index and cellOf[index]
+    if not cell then return nil end
+    if not page and not failed then
+      local ok, img = pcall(love.graphics.newImage, mod.path .. "/assets/items/held_icons.png")
+      if ok and img then pcall(img.setFilter, img, "nearest", "nearest"); page = img else failed = true end
+    end
+    if not page then return nil end
+    local q = quads[index]
+    if not q then
+      q = love.graphics.newQuad((cell % cols) * size, math.floor(cell / cols) * size, size, size, page:getDimensions())
+      quads[index] = q
+    end
+    return page, q
+  end
+  return { quadFor = quadFor, size = size }
+end
+ItemArt.loadHeldAtlas = loadHeldAtlas
+
 -- Wraps FireRed/LeafGreen's src.ui.game3.bag_chrome: drawItemIcon(itemId, px, py, scale)
 local function installFrlg(atlas)
   local ok, BagChrome = pcall(require, "src.ui.game3.bag_chrome")
@@ -106,6 +137,19 @@ end
 -- Candies'), asked first; made on the first icon drawn (CPU pixels, no canvas)
 function ItemArt.install(mod, load, extra)
   local atlas = loadAtlas(mod, load)
+  local held = loadHeldAtlas(mod, load)
+  if held then
+    local first = atlas
+    atlas = {
+      size = 24,
+      quadFor = function(index)
+        local img, q
+        if first then img, q = first.quadFor(index) end
+        if img then return img, q end
+        return held.quadFor(index)
+      end,
+    }
+  end
   if not atlas and not extra then return 0 end
   if extra then
     local base = atlas
