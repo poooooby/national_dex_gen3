@@ -363,7 +363,7 @@ no way to make a battler act out of turn or repeat a move mid-turn, and nothing 
 two battlers' positions or hand an item over with the Bag's bookkeeping: After You, Quash,
 Instruct, Me First, Ally Switch, Bestow, Teatime.
 
-## Gen 1 and Gen 2 (work in progress, branch `gen12`)
+## Gen 1 and Gen 2
 
 Red/Blue/Yellow and Gold/Silver/Crystal get their own path. `main.lua` hands over to
 `src/gen12/main.lua` when `mod.generation` is 1 or 2, before any Gen 3 module loads. A host that
@@ -480,11 +480,11 @@ Registered at load, first, so every record after can name them.
   - Gold: one `battle_anims:patch("moves", { [id] = <look's script pointer> })`.
 - **The resolver:** `Moves.resolver(state, cartMoves)` returns `resolve(n, taken)`. It gives the
   cart's move for #1-165 (Red) or #1-251 (Gold), else the registered move, else the first
-  stand-in the game has that is not in `taken`. Every learnset goes through it (stage 5).
+  stand-in the game has that is not in `taken`. Every learnset goes through it (`project.lua`).
 - **No index on Red:** Red's battle, Metronome and saves work by move id, so a registered move
   needs no `index` there. A `.sav` export writes a move it has no number for as 0, an empty slot
   (`GenSave.lua`, `movesIndex[id] or 0`). Gold's #252+ do not fit the cart's move byte either.
-  Stage 9 documents both.
+  The README says so.
 - **Tests:**
   - `tests/gen12_moves_test.lua`: every row registered as the data says, animations, Gold's
     index and high-crit list, and the resolver over every number.
@@ -499,7 +499,7 @@ Registered at load, first, so every record after can name them.
 - **`project.lua`** is pure: data record + what the game supplies -> the engine's own record.
   - **Both games:**
     - types through `Types.forCart`, growth through `Types.growthId`;
-    - evolutions left empty (stage 6 fills them);
+    - evolutions left empty (`evolutions.lua` fills them);
     - extra top-level fields: `slot` (the Gen 3 slot, the stable key), `legendary`/`mythical`,
       and `spAttack`/`spDefense` (modern_spawns reads them on Gen 1);
     - forms carry `baseSpecies` (the running game's own id for that dex: Gold spells
@@ -631,7 +631,7 @@ Registered at load, first, so every record after can name them.
   cart icon and a cry that resolves; the provider through the engine's own `Sprites.pic` (and
   the cart's species untouched); Red's list (#1-1025 once each, no form); Gold's after
   `game.ready`; and the form-to-base marking. Audio cannot be decoded headless, so the pak's
-  cries are heard only in game (stage 9).
+  cries are heard only in game (the probe below).
 
 ### Exports and modern_spawns (`src/gen12/api.lua`)
 
@@ -657,6 +657,35 @@ Registered at load, first, so every record after can name them.
   ways, a cart species' bridge, the clock, no Gen 3 extras). It then loads `mods/modern_spawns`
   beside the mod and checks the candidate count, Turtwig's family and stages, a bridge in one
   family, and Red's Route 1 rolling only species the game has.
+
+### In the real engine (`tests/drivers/gen12_probe.lua`)
+
+One driver for both games: a party of new species (long names, #1000), the party and summary
+screens, our own and a borrowed cry, a wild battle against a new species (Night Slash, then a
+catch), the Pokédex list near #1025 and Gholdengo's entry (it waits for the cry, which plays in
+real time while the driver runs faster), a stone and a level evolution through each game's own
+screens, and a save and reload (Red: the hidden friendship survives).
+
+```bash
+# from the gen1recomp root; SHOT_DIR gets the shots and driver.log
+SHOT_DIR=/tmp/ndx-red  POKEPORT_VERSION=red  POKEPORT_DRIVER=mods/national_dex_gen3/tests/drivers/gen12_probe.lua love .
+SHOT_DIR=/tmp/ndx-gold POKEPORT_VERSION=gold POKEPORT_DRIVER=mods/national_dex_gen3/tests/drivers/gen12_probe.lua love .
+```
+
+- **Portable mode:** a checkout with `portable.txt` keeps its saves and `options.lua` in the
+  checkout itself, and `POKEPORT_IDENTITY` does not move them. The probe starts a new game in the
+  active slot and saves it, and the game rewrites `options.lua`, up to about 10 seconds after
+  the driver's last line while it shuts down. Copy `options.lua` first, wait until no
+  `love`/`lovec` process is left, then put it back and check its md5. The headless tests read
+  `options.lua` too (their filesystem root is the checkout), so a probe's mod switches left in
+  it make `tests/gen12_load_test.lua` fail.
+- **Which mods load** comes from `options.lua`'s `modsByVersion[<version>]`, not the Mod
+  Manager's `modProfiles`. For a clean run, set `red` and `gold` there to every mod off but
+  this one. The original `national_dex` blocks this mod on these games (a manifest conflict).
+- **Checked 2026-11-12 on Red and Gold: 0 failures.** Night Slash took Garchomp from 105 to 60
+  HP. The entry pages show ft/in and pounds as the carts do: a Red record that carries
+  `heightM` is drawn metric, so the projector only writes metres on a metric cart. Gold's
+  summary prints `No.1000:L50` with no gap (the engine's layout), which the README notes.
 
 Engine facts the design rests on (checked against the source, 2026-11-11):
 

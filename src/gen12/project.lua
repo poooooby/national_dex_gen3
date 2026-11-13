@@ -9,6 +9,7 @@
 --     pictures   = { front = path, back = path }: the placeholder pictures
 --     dexText    = function(id) -> the Gen 1 text label of that species' entry (Gen 1 only)
 --     cartIdOf   = { [dex] = id } for the cart's own species (a form's base keeps that spelling)
+--     metric     = Red's own entries are in metres and kilograms (a European cart)
 --   }
 --
 -- Gen 1 (Red/Blue/Yellow): one Special (the Special Attack; it matches Red's own 149 most
@@ -123,8 +124,9 @@ local function gen1(r, ctx, dex)
     local m, kg = d.height / 10, d.weight / 10
     local ft, inch = Project.feetInches(m)
     rec.dexEntry = { kind = d.kind, heightFt = ft, heightIn = inch,
-      weight = Project.tenthsOfPound(kg), heightM = m, weightKg = kg,
-      text = ctx.dexText(r.id) }
+      weight = Project.tenthsOfPound(kg), text = ctx.dexText(r.id) }
+    -- metres and kilograms only on a metric cart: Red's entry screen reads a heightM as one
+    if ctx.metric then rec.dexEntry.heightM, rec.dexEntry.weightKg = m, kg end
   end
   return rec
 end
@@ -153,7 +155,8 @@ local function gen2(r, ctx, dex, index)
     local ft, inch = Project.feetInches(m)
     rec.dexEntry = { kind = d.kind, text = (d.text[1] or ""):gsub("\n", "<NEXT>"),
       text2 = d.text[2] and d.text[2]:gsub("\n", "<NEXT>") or nil,
-      height = ft * 100 + inch, weight = Project.tenthsOfPound(kg), heightM = m, weightKg = kg }
+      height = ft * 100 + inch, weight = Project.tenthsOfPound(kg) }
+    -- ft/in and pounds only: Gold's Pokedex works metres out itself on a metric cart
   end
   return rec
 end

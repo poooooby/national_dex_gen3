@@ -2,16 +2,20 @@
 
 # WoobleDex 📖
 
-*All 1025 Pokémon in FireRed, LeafGreen, Ruby, Sapphire and Emerald. Catch, train, evolve and
-battle with every species from Turtwig to Pecharunt.*
+*All 1025 Pokémon in FireRed, LeafGreen, Ruby, Sapphire and Emerald, and in Red, Blue, Yellow,
+Gold, Silver and Crystal. Catch, train, evolve and battle with every species up to Pecharunt.*
 
 </div>
 
-A mod for [Gen1Recomp](https://github.com/bryanthaboi/gen1recomp)'s Generation 3 games. Those
-games know 386 Pokémon; this mod adds the other 639, so Sinnoh, Unova, Kalos, Alola, Galar and
-Paldea Pokémon can live in Kanto and Hoenn.
+A mod for [Gen1Recomp](https://github.com/bryanthaboi/gen1recomp). The Generation 3 games know
+386 Pokémon; this mod adds the other 639, so Sinnoh, Unova, Kalos, Alola, Galar and Paldea
+Pokémon can live in Kanto and Hoenn. It does the same for the Generation 1 and 2 games, which
+know 151 and 251 (see [On Red, Blue, Yellow, Gold, Silver and Crystal](#-on-red-blue-yellow-gold-silver-and-crystal)).
 
 ## ✨ Features
+
+Core Mechanics and Fits the Game are FireRed, LeafGreen, Ruby, Sapphire and Emerald; Red to
+Crystal have their own section after them.
 
 ### Core Mechanics
 
@@ -109,6 +113,30 @@ Paldea Pokémon can live in Kanto and Hoenn.
 - 📖 **A bigger Pokédex:** The new Pokémon join the National Pokédex, with a FORMS page for
   species with alternate forms, and fast scrolling when you hold a direction.
 
+### 🕹️ On Red, Blue, Yellow, Gold, Silver and Crystal
+
+- 🆕 **Every Pokémon the game doesn't have:** #152–1025 in Red, Blue and Yellow, #252–1025 in
+  Gold, Silver and Crystal, plus the 128 alternate forms. Each has its stats, modern typing,
+  level-up moves, TM moves, Pokédex entry (fitted to the game's own page) and a party icon.
+- 🧚 **Modern types:** Fairy joins both games, and Dark and Steel join Red, Blue and Yellow,
+  with today's matchups. The originals get their modern typing too: Magnemite is Electric /
+  Steel, Clefairy is Fairy, Bite is a Dark move.
+- ⚔️ **Newer moves in the game's own battles:** 182 newer moves work for real in Red, Blue and
+  Yellow and 172 in Gold, Silver and Crystal (Night Slash, Iron Head, Aqua Jet, Play Rough,
+  Dazzling Gleam...), each with the look of a similar move. A move the game can't do is swapped
+  for the closest one it can.
+- 🔄 **Evolutions:** by level, stone, trade, friendship, time of day, held item, gender, a known
+  move, a party member, steps walked and more, and the originals' newer evolutions too (Golbat
+  into Crobat in Red, Eevee into Leafeon, Glaceon and Sylveon). Red, Blue and Yellow keep a
+  hidden friendship for every Pokémon, which grows as it levels up in battle and walks with you.
+- 💎 **The items to do it:** the evolution items each game lacks, sold at the Celadon Dept.
+  Store 4F in Red, Blue and Yellow and the Goldenrod Dept. Store 4F in Gold, Silver and Crystal.
+  In Red, Blue and Yellow, which have no held items, a trade item or a held item is used on the
+  Pokémon like a stone (a Metal Coat turns Onix into Steelix).
+- 🔊 **Cries:** #387–1025 and their forms have their own cry; the rest borrow a similar
+  Pokémon's.
+- 📖 **The Pokédex** runs to #1025, with four-digit numbers.
+
 ## ⚙️ Options
 
 Open **OPTIONS → MODS → WoobleDex**.
@@ -125,9 +153,9 @@ Open **OPTIONS → MODS → WoobleDex**.
 
 ## 💾 Installation
 
-1. Import your own FireRed, LeafGreen, Ruby, Sapphire or Emerald into
-   [Gen1Recomp](https://github.com/bryanthaboi/gen1recomp) **0.3.95 or newer** (older versions
-   can't hold this many Pokémon; on those, keep version 1.1.4).
+1. Import your own FireRed, LeafGreen, Ruby, Sapphire or Emerald (or Red, Blue, Yellow, Gold,
+   Silver or Crystal) into [Gen1Recomp](https://github.com/bryanthaboi/gen1recomp) **0.3.95 or
+   newer** (older versions can't hold this many Pokémon; on those, keep version 1.1.4).
 2. Download the latest `national_dex_gen3-….zip` from the
    [Releases](https://github.com/poooooby/national_dex_gen3/releases/latest) page.
 3. In the game, go to **MODS → Import mod .zip** and choose the file.
@@ -139,10 +167,11 @@ This mod adds the Pokémon. Two companions bring them to life:
 
 - 🎞️ [WoobleSpritePack](https://github.com/poooooby/g9-battle-sprites-gen3): **the
   pictures.** Animated battle sprites, summary and Pokédex pictures and party icons. Without it,
-  new Pokémon show a blank or garbled picture.
+  new Pokémon show a blank or garbled picture. On Red to Crystal the new Pokémon show a grey "?"
+  ball instead, until a sprite mod draws them.
 - 🗺️ [WoobleSpawns](https://github.com/poooooby/g1r_modern_spawns): **the wild.** Fills every
-  area with Pokémon from all generations. With it, the Pokédex can even show where to find a
-  species you haven't seen yet.
+  area with Pokémon from all generations, on every game. With it, the Pokédex can even show where
+  to find a species you haven't seen yet.
 - 🌿 [Wilds of Hoenn](https://github.com/poooooby/wilds-of-hoenn): see them roaming the overworld,
   each with its own sprite.
 
@@ -187,6 +216,25 @@ the game's own Pokémon keep their original data, so its event gifts arrive as u
 - **Link play** expects both players to have the same type chart; trade and battle with
   players who use this mod too.
 
+### On Red, Blue, Yellow, Gold, Silver and Crystal
+
+- **It takes the place of the original National Dex mod** there: the two can't be on together.
+  With both on, WoobleDex steps aside, so turn National Dex off for those games.
+- **The options above are for FireRed to Emerald;** Red to Crystal have none to set.
+- **Keep the mod installed on a Gold, Silver or Crystal save** that holds its Pokémon: those
+  games have nowhere to set aside a Pokémon they don't know.
+- **Exporting to a cartridge .sav** can't store the new Pokémon, and a newer move comes out as an
+  empty move slot. In Red, Blue and Yellow, which have no Steel or Fairy, a Magnemite's Steel
+  half comes out as Normal.
+- **Some evolutions are adapted:** there is no rain, so Sliggoo evolves at level 50; no battle
+  ground, so a female Burmy becomes Plant Wormadam; recoil isn't counted, so White-Striped
+  Basculin evolves at level 36; and an evolution that needs a move the game doesn't have happens
+  at its level instead.
+- **Friendship in Red, Blue and Yellow** grows only with level-ups in battle and walking, not
+  with vitamins or Rare Candies.
+- **Gold, Silver and Crystal's summary** prints a number from #1000 on right against the level
+  ("No.1000:L50").
+
 ## 📚 Player Guides
 
 - [Added items](docs/items.md): every item's price, where to buy it, and which Pokémon evolve
@@ -196,7 +244,7 @@ the game's own Pokémon keep their original data, so its event gifts arrive as u
   moves.
 - [Alternate forms](docs/pokemon/forms.md): the 128 forms.
 - [Evolutions and forms](docs/evolutions-and-forms.md): special evolutions, which ones don't
-  work, and how to get each form.
+  work, how to get each form, and how evolution works on Red to Crystal.
 
 ## 🪪 Credits
 

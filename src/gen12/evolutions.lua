@@ -314,7 +314,16 @@ function Evolutions.install(opts)
       end
     end
     local night
-    if opt.timeOfDay then night = opt.timeOfDay == "NITE" or opt.timeOfDay == "NITE_F"
+    local tod = opt.timeOfDay
+    if not tod and gen == 2 then
+      -- Gold's own clock when the check carries none (a stone's use)
+      local okP, Palettes = pcall(req, "src.world.gen2.Palettes")
+      if okP and type(Palettes) == "table" and Palettes.clockDaytime then
+        local okD, now = pcall(Palettes.clockDaytime)
+        if okD then tod = now end
+      end
+    end
+    if tod then night = tod == "NITE" or tod == "NITE_F"
     else night = Clock.isNight(nil, "device") end
     local bag = Evolutions.bag(mon, false) or {}
     local stats = mon.stats or {}

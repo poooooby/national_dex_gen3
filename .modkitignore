@@ -90,6 +90,7 @@ tests/type_badges_test.lua
 tests/drivers/vending_probe.lua
 tests/drivers/fx_anims_probe.lua
 tests/drivers/type_badges_probe.lua
+tests/drivers/gen12_probe.lua
 tests/_gen12.lua
 tests/gen12_load_test.lua
 tests/gen3_fork_test.lua

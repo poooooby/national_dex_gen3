@@ -3,6 +3,31 @@
 All notable changes to this mod are documented here, in
 [keep a changelog](https://keepachangelog.com/en/1.1.0/) format.
 
+## [Unreleased]
+
+### Added
+
+- **Red, Blue, Yellow, Gold, Silver and Crystal.** WoobleDex now runs on the Generation 1 and 2
+  games too, with every Pokémon the game lacks (#152–1025 on Red / Blue / Yellow, #252–1025 on
+  Gold / Silver / Crystal) and the 128 alternate forms:
+  - their stats, modern typing, level-up and TM moves, Pokédex entries fitted to each game's
+    page, party icons and cries (their own for #387 on, a similar Pokémon's for the rest), and a
+    grey "?" picture until a sprite mod draws them (`setArtProvider` works there as on Gen 3);
+  - Fairy on both games and Dark and Steel on Red / Blue / Yellow, with today's matchups, and
+    the originals' modern typing (Magnemite Electric / Steel, Clefairy Fairy, Bite Dark);
+  - 182 (Red) and 172 (Gold) newer moves that run on the game's own battle code, each with the
+    animation of a similar move; the rest are swapped for the closest move the game has;
+  - evolutions of every kind, including the originals' newer ones (Golbat into Crobat on Red,
+    Eevee into Leafeon / Glaceon / Sylveon), a hidden friendship on Red / Blue / Yellow, and the
+    evolution items each game lacks, sold at the Celadon Dept. Store 4F (Red / Blue / Yellow)
+    and the Goldenrod Dept. Store 4F (Gold / Silver / Crystal); with no held items in Red /
+    Blue / Yellow, trade and held items are used like stones there;
+  - the Pokédex to #1025 in four digits, forms counting their base;
+  - the same exports as on Gen 3 (listSpecies, evolutionsOf, setArtProvider, ...), so
+    WoobleSpawns spawns them there.
+  The original National Dex mod and WoobleDex can't run together on these games; with both on,
+  WoobleDex steps aside.
+
 ## [1.8.1] - 2026-11-09
 
 ### Changed

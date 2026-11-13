@@ -23,6 +23,7 @@ the forms that appear in the wild, or to evolve them.
 - [Original Pokémon with new evolutions](#original-pokémon-with-new-evolutions)
 - [Other evolutions worth knowing](#other-evolutions-worth-knowing)
 - [Evolutions adapted for Gen 3](#evolutions-adapted-for-gen-3)
+- [On Red, Blue, Yellow, Gold, Silver and Crystal](#on-red-blue-yellow-gold-silver-and-crystal)
 - [Regional forms of the original Pokémon](#regional-forms-of-the-original-pokémon)
 - [Alternate forms](#alternate-forms)
 
@@ -254,6 +255,37 @@ Family of Three are not modelled). Karrablast and Shelmet no longer need a trade
 
 **Phione and Manaphy.** Phione never evolves. A bred Manaphy (with a Ditto too) lays a Phione egg,
 as in the real games.
+
+## On Red, Blue, Yellow, Gold, Silver and Crystal
+
+The same Pokémon and forms evolve on the Generation 1 and 2 games, in each game's own way.
+
+- **The clock.** Red, Blue and Yellow have no clock, so they use your **device's** (night 8 pm
+  to 4 am). Gold, Silver and Crystal use **their own** clock and their own idea of night, as
+  their own Espeon and Umbreon do. Dusk (Dusk Lycanroc, Rainbow Swirl Alcremie) is 7 pm to 8 pm
+  on your device in all six.
+- **The items** each game lacks are sold at the **Celadon Dept. Store 4F** (Red, Blue, Yellow)
+  and the **Goldenrod Dept. Store 4F** (Gold, Silver, Crystal).
+- **No held items in Red, Blue and Yellow.** An evolution that needs a Pokémon to hold an item
+  (traded holding it, or levelling up holding it) works by **using** the item on it instead,
+  like a stone: a Metal Coat on Onix makes Steelix, a Razor Claw on Sneasel at night makes
+  Weavile, an Oval Stone on Happiny by day makes Chansey. Where the held item needs a level
+  (Milcery's sweets, from level 25), it waits for that level. In Gold, Silver and Crystal they
+  are held, as usual, and used up by the evolution.
+- **Friendship in Red, Blue and Yellow** is kept for every Pokémon behind the scenes. It
+  starts where the species' does (70 for most), grows by 5, 3 or 2 with each level-up in battle
+  (less as it gets higher) and by 1 for the whole party every 256 steps, and evolves a Pokémon
+  at 220 (Golbat into Crobat, Pichu into Pikachu). Vitamins and Rare Candies don't raise it.
+- **Gender** comes from the Pokémon's stats (its DVs) by Gold's own rule, in all six games, so a
+  female Combee or Salandit is female everywhere.
+- **Trade evolutions** need a real trade (there is no Linking Cord on these games).
+- **Adapted:**
+  - These games have no rain, so Sliggoo evolves at level 50.
+  - They have no battle ground, so a female Burmy always becomes Plant Wormadam.
+  - Recoil isn't counted, so White-Striped Basculin evolves at level 36.
+  - An evolution that needs a move the game doesn't have happens at its level instead.
+- **Forms** are the same 128. They don't have their own Pokédex entry; seeing or catching one
+  counts its base Pokémon.
 
 ## Regional forms of the original Pokémon
 

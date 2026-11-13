@@ -40,9 +40,20 @@ function Species.register(opts)
     end
   end
   state.cartIdOf = cartIdOf
+  -- a European Red's own entries carry metres (its entry screen shows them when one is there);
+  -- Gold's Pokedex works metres out from ft/in itself on such a cart (PokedexText.apply)
+  local metric = false
+  for _, rec in pokemon:each() do
+    if type(rec) == "table" and type(rec.dexEntry) == "table" and rec.dexEntry.heightM then
+      metric = true
+      break
+    end
+  end
+  state.metric = metric
   local ctx = {
     generation = gen, types = opts.types, resolve = opts.resolve, direct = opts.direct,
     machines = machineMoves(pokemon), pictures = opts.pictures, cartIdOf = cartIdOf,
+    metric = metric,
     dexText = function(id) return Species.TEXT_PREFIX .. id end,
   }
 
