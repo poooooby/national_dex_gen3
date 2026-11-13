@@ -100,7 +100,9 @@ local function weather(ad)
 end
 
 -- Protosynthesis in sun, Quark Drive on Electric Terrain (src/move_field.lua keeps the terrain)
-local function boosterOn(ad, ab)
+-- b: the battler (Booster Energy, src/held/gen3.lua, sets b.__ndxBooster while it is in)
+local function boosterOn(ad, ab, b)
+  if (ab == "PROTOSYNTHESIS" or ab == "QUARK_DRIVE") and b and b.__ndxBooster then return true end
   if ab == "PROTOSYNTHESIS" then return weather(ad) == "SUN" end
   if ab ~= "QUARK_DRIVE" then return false end
   local f = ad and ad._st and ad._st.__ndxField
@@ -154,7 +156,7 @@ function RealAbilities.hooks(mod)
         if mtype == 10 then d = d * 2 end                     -- FIRE
       end
       if (ta == "FILTER" or ta == "SOLID_ROCK" or ta == "PRISM_ARMOR") and eff > 1 then d = d * 0.75 end
-      if boosterOn(ad, ta) then
+      if boosterOn(ad, ta, c.target) then
         local best = bestStat(c.target)
         if (info.physical and best == "defense") or (not info.physical and best == "spDef") then d = d / 1.3 end
       end
@@ -208,6 +210,7 @@ end
 -- Speed as the turn order sees it: stages, paralysis, the weather-speed abilities, plus any
 -- modifier another module registered (src/move_field.lua: Tailwind). Returns the speed and
 -- whether anything of ours changed it.
+RealAbilities.boosterOn = function(ad, ab, b) return boosterOn(ad, ab, b) end
 RealAbilities.speedModifiers = {}                -- key -> fn(ad, b) -> multiplier (1 = none)
 RealAbilities.reverseSpeed = nil                 -- fn(st) -> true while slower goes first
 function RealAbilities.effectiveSpeed(ad, b)
@@ -216,7 +219,7 @@ function RealAbilities.effectiveSpeed(ad, b)
   local okD, Damage = pcall(require, "src.core.game3.battle.damage")
   if okD and Damage.applyStage then s = Damage.applyStage(s, b.stages and b.stages.speed or 0) end
   local ab, w, modified = abilityOf(ad, b), weather(ad), over ~= nil
-  if boosterOn(ad, ab) and bestStat(b) == "speed" then s, modified = s * 1.5, true
+  if boosterOn(ad, ab, b) and bestStat(b) == "speed" then s, modified = s * 1.5, true
   elseif (ab == "SAND_RUSH" and w == "SAND") or (ab == "SLUSH_RUSH" and w == "HAIL") then s, modified = s * 2, true end
   for _, fn in pairs(RealAbilities.speedModifiers) do
     local okM, m = pcall(fn, ad, b)
@@ -416,7 +419,7 @@ function RealAbilities.install(opts)
           local ga, gd = gender(attacker), gender(defender)
           if ga and gd then m = m * (ga == gd and 1.25 or 0.75) end
         end
-        if boosterOn(ad, aa) then
+        if boosterOn(ad, aa, attacker) then
           local best = bestStat(attacker)
           local phys = okT and Types.isPhysical(mtype)
           if (phys and best == "attack") or (not phys and best == "spAtk") then m = m * 1.3 end

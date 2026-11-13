@@ -428,6 +428,13 @@ function Held.install(opts)
     if up == down then return nil end
     return ({ "attack", "defense", "speed", "spAtk", "spDef" })[down]
   end
+  -- Booster Energy: an ability that would boost, not boosting yet
+  core.boosterReady = function(A, b)
+    local RA = opts.abilities
+    local ab = core.abilityOf(A, b)
+    if not (ab == "PROTOSYNTHESIS" or ab == "QUARK_DRIVE") or b.__ndxBooster then return false end
+    return not (RA and RA.boosterOn and RA.boosterOn(A.ad, ab, nil))
+  end
   core.terrain = function(A)
     local f = A.ad._st and A.ad._st.__ndxField
     return f and (f.terrainTurns or 0) > 0 and f.terrain or nil

@@ -14,8 +14,9 @@
 -- afterMove missed damageDealt switchedIn endTurn beforeMove statusInflicted battleEnded.
 --
 -- Left to the game or not modelled: Exp. Share / Macho Brace / Power items' growth, Soothe Bell,
--- Luck Incense, Pure Incense and Destiny Knot outside battle, Booster Energy (Protosynthesis and
--- Quark Drive are not abilities everywhere), Loaded Dice on a game's own multi-strike moves.
+-- Luck Incense, Pure Incense and Destiny Knot outside battle, Binding Band, Loaded Dice on a
+-- game's own multi-strike moves, Grip Claw on Red (Gen 1's Wrap), Booster Energy on Red and
+-- Gold (no Protosynthesis or Quark Drive there).
 
 return function(core, opts)
   local byId = opts.byId or {}
@@ -204,6 +205,7 @@ return function(core, opts)
   core:on("ignoresWeather", function(A, b) if kind(A, b, "utilityUmbrella") then return true end end)
   core:on("noContact", function(A, u) if kind(A, u, "protectivePads") then return true end end)
   core:on("abilityLocked", function(A, b) if kind(A, b, "abilityShield") then return true end end)
+  core:on("loadedDice", function(A, u) if kind(A, u, "loadedDice") then return true end end)
   -- Shed Shell: free to switch, whatever holds it (asked before the trapping moves)
   local trappedList = core.hooks.trapped or {}
   core.hooks.trapped = trappedList
@@ -306,6 +308,15 @@ return function(core, opts)
       end
     end
     vu.lifeOrbHit = nil
+    -- Grip Claw: a bind lasts 7 turns (Gold's wrap count, Gen 3's trap turns)
+    if t and t ~= u and A:hp(t) > 0 and kind(A, u, "gripClaw") then
+      if A.gen == 2 and A.battle.volatile then
+        local tv = A.battle:volatile(t)
+        if (tv.wrapCount or 0) > 0 and not tv.__ndxGrip then tv.wrapCount, tv.__ndxGrip = 7, true end
+      elseif A.gen == 3 and (t.expTrapTurns or 0) > 0 and not t.__ndxGrip then
+        t.expTrapTurns, t.__ndxGrip = 7, true
+      end
+    end
     -- Metronome: the same move again and again
     if moveId == vu.lastHeldMove then vu.metronomeRun = (vu.metronomeRun or 0) + 1
     else vu.metronomeRun = 0 end
@@ -525,6 +536,14 @@ return function(core, opts)
       A:stages(foe, { speed = 1 })
     end
     A:vol(b).choiceLock = nil
+    -- Booster Energy: Protosynthesis / Quark Drive without the sun or Electric Terrain
+    local be, beid = kind(A, b, "boosterEnergy")
+    if be and core.boosterReady and core.boosterReady(A, b) then
+      use(A, b, beid)
+      b.__ndxBooster = true
+      say(A, "%s used its %s to activate its %s!", A:name(b), named(A, beid),
+        (core.abilityOf(A, b) == "QUARK_DRIVE") and "Quark Drive" or "Protosynthesis")
+    end
   end)
 
   -- ------------------------------------------------------------------ the end of the turn

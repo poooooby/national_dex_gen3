@@ -19,7 +19,8 @@ return function(core)
   for _, c in ipairs(HITS) do isHit[c] = true end
 
   -- 2-5 strikes: 35% / 35% / 15% / 15% (Gen 5 on)
-  local function twoToFive(A)
+  local function twoToFive(A, u)
+    if u and core:ask("loadedDice", A, u) then return 4 + A:rng(2) end   -- Loaded Dice: 4 or 5
     local r = A:rng(100)
     if r < 35 then return 2 elseif r < 70 then return 3 elseif r < 85 then return 4 end
     return 5

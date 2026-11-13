@@ -103,6 +103,19 @@ st.player.item = byId.BLACK_SLUDGE.index
 held.module._core:fire("endTurn", held.module.adapter(ad, held.module._env))
 T.eq(st.player.mon.hp, 150 - math.floor(150 / 8), "Black Sludge hurts a holder that is not Poison")
 
+-- Booster Energy: Quark Drive on without Electric Terrain, the item used up
+st, ad = battle()
+st.player.item = byId.BOOSTER_ENERGY.index
+ad.abilityOf = function(_, b) return b == st.player and "QUARK_DRIVE" or nil end
+require("src.core.game3.battle.engine").switchInEffects(st, ad, st.player, { spikes = true })
+T.check(st.player.__ndxBooster == true and st.player.item == 0, "Booster Energy activates Quark Drive")
+-- Grip Claw: a bind lasts 7 turns
+st, ad = battle()
+st.player.item = byId.GRIP_CLAW.index
+st.enemy.expTrapTurns = 3
+Hit.run(ctx(328, st, ad, st.player, st.enemy))
+T.eq(st.enemy.expTrapTurns, 7, "Grip Claw: the bind lasts 7 turns")
+
 Battle._adapter = nil
 run.release()
 T.finish("national_dex_gen3 held items (" .. GAME .. ")")
