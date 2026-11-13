@@ -34,8 +34,11 @@ for id, n in pairs(TYPE_NAME) do TYPE_ID[n] = id end
 local CHOICE_BAND = 29
 
 local function norm(s) return (tostring(s or ""):upper():gsub("[^%w]", "")) end
--- held items this mod registers as evolution items (src/items.lua): they keep their number
-Held.ALSO = { RAZOR_CLAW = true, RAZOR_FANG = true }
+-- held items this mod registers as evolution items (src/items.lua): they keep their number and get
+-- the cart's own hold effect of the same kind (Scope Lens's, King's Rock's)
+Held.ALSO = { RAZOR_CLAW = { holdEffect = 41 }, RAZOR_FANG = { holdEffect = 30, holdEffectParam = 10 } }
+-- items whose effect the cart already has under another name: they carry its hold effect
+Held.NATIVE = { money = 32, encounters = 33, powerItem = 24 }   -- Amulet Coin, Cleanse Tag, Macho Brace
 
 -- ------------------------------------------------------------------ registration (at load)
 -- opts: { mod, rows, log } -> { byId, byIndex, registered }
@@ -53,15 +56,15 @@ function Held.register(opts)
   local firstError
   for _, row in ipairs(opts.rows or {}) do
     local mine = Held.ALSO[row.id] and items:get(row.id)
-    if type(mine) == "table" and tonumber(mine.index) then
-      -- this mod's own item already (an evolution item): it gets the held effect too
-      state.byId[row.id] = row
-      state.byIndex[tonumber(mine.index)] = row
+    if type(mine) == "table" then
+      -- this mod's own item already (an evolution item): the cart's hold effect of its kind
+      pcall(items.patch, items, row.id, Held.ALSO[row.id])
     elseif items:get(row.id) == nil and not names[norm(row.name)] and not names[norm(row.id)] then
       local e = row.effect or {}
       local rec = { id = row.id, name = row.name, index = row.index, price = row.price or 0,
         pocket = "ITEMS", description = row.desc }
       if e.kind == "choice" then rec.holdEffect = CHOICE_BAND end
+      if Held.NATIVE[e.kind] then rec.holdEffect = Held.NATIVE[e.kind] end
       local ok, err = pcall(items.register, items, row.id, rec)
       if ok then
         state.byId[row.id] = row

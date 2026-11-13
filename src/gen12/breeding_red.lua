@@ -127,7 +127,22 @@ function Breeding.install(opts)
             if want[mv.id] and #moves < 4 then moves[#moves + 1] = mv.id; want[mv.id] = nil end
           end
         end
-        st.egg = { dex = dex, stepsLeft = (facts.eggCycles and facts.eggCycles[dex] or 20) * 256, moves = moves }
+        -- a Destiny Knot on either parent: three of the four DVs come from the parents
+        local dvs
+        local function knot(m) local bag = m.extra and m.extra.national_dex_gen3; return bag and bag.item == "DESTINY_KNOT" end
+        if knot(a.mon) or knot(b.mon) then
+          local keys = { "attack", "defense", "speed", "special" }
+          local skip = love.math.random(4)
+          dvs = {}
+          for i, k in ipairs(keys) do
+            if i ~= skip then
+              local from = love.math.random(2) == 1 and a.mon or b.mon
+              dvs[k] = (from.dvs or {})[k]
+            end
+          end
+        end
+        st.egg = { dex = dex, stepsLeft = (facts.eggCycles and facts.eggCycles[dex] or 20) * 256, moves = moves,
+          dvs = dvs }
         st.eggReady = nil
         say(game, Strings("You received\nthe EGG!\fTake good care\nof it."))
       end)
@@ -179,6 +194,18 @@ function Breeding.install(opts)
     if not id then return end
     local Pokemon = require("src.pokemon.Pokemon")
     local mon = Pokemon.new(game.data, id, 1)
+    -- the DVs a Destiny Knot passed down, the stats worked out again from them
+    if type(egg.dvs) == "table" and mon.dvs then
+      for k, v in pairs(egg.dvs) do mon.dvs[k] = v end
+      local d = mon.dvs
+      d.hp = ((d.attack or 0) % 2) * 8 + ((d.defense or 0) % 2) * 4 + ((d.speed or 0) % 2) * 2 + ((d.special or 0) % 2)
+      local okS, Stats = pcall(require, "src.pokemon.Stats")
+      local def = game.data.pokemon[id]
+      if okS and def then
+        mon.stats = Stats.calc(def, mon.level or 1, mon.dvs, mon.statExp)
+        mon.hp = mon.stats.hp
+      end
+    end
     for _, mid in ipairs(egg.moves or {}) do
       local known = false
       for _, mv in ipairs(mon.moves) do if mv.id == mid then known = true end end

@@ -71,6 +71,8 @@ return function(mod, loadSibling)
             flags = loadSibling(mod, "data/move_flags.lua") })
           if not okE then mod.log:warn("held items have no effects: %s", tostring(errE)) end
           mod.exports._heldModern = held
+          local Outside = loadSibling(mod, "src/held/outside.lua")
+          if Outside then pcall(Outside.install, { mod = mod, generation = generation, log = mod.log }) end
           mod.log:info("held items: %d newer ones registered", #held.registered)
         else
           mod.log:warn("held items are off: %s", tostring(held))

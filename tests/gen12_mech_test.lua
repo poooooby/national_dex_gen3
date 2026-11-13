@@ -425,7 +425,7 @@ for _, version in ipairs(H.versions()) do
   hp = snor.hp
   w.use("WATER_GUN")
   T.check(w.A:item(w.battler("enemy")) == nil and w.hp("enemy") > hp - 20, version .. ": Sitrus Berry heals once at half HP")
-  w = sim.fresh({ mine = "SQUIRTLE", foe = "CHARMANDER", level = 30 })
+  w = sim.fresh({ mine = "SQUIRTLE", foe = "CHARMANDER", level = 20, foeLevel = 45 })
   give(w, "enemy", "WEAKNESS_POLICY")
   w.use("WATER_GUN")
   T.eq(w.stage("enemy", "attack"), 2, version .. ": Weakness Policy: +2 Attack after a super-effective hit")
@@ -443,6 +443,31 @@ for _, version in ipairs(H.versions()) do
   hp = w.hp("enemy")
   w.use("WATER_GUN")
   T.check(hp - w.hp("enemy") < d1 and w.A:item(w.battler("enemy")) == nil, version .. ": Passho Berry halves a super-effective Water hit")
+
+  -- outside the moves (src/held/outside.lua): experience, stat experience, encounters, friendship
+  do
+    local Runtime = require("src.mods.Runtime")
+    local Outside = H.module("src/held/outside.lua")
+    local m = sim.fresh({ mine = "PIKACHU" }).mon("player")
+    local function hold(mon, id) if gen == 1 then mon.extra = { national_dex_gen3 = { item = id } } else mon.item = id end end
+    local base = { baseStats = { hp = 50, attack = 60, defense = 70, speed = 80, special = 90, specialAttack = 90 } }
+    hold(m, "MACHO_BRACE")
+    m.statExp = { attack = 0 }
+    Runtime.call("exp.gain", function() return 100 end, { mon = m, defeatedDef = base, participants = 1 })
+    T.eq(m.statExp.attack, 60, version .. ": Macho Brace: the win's stat experience again")
+    hold(m, "POWER_BRACER")
+    Runtime.call("exp.gain", function() return 100 end, { mon = m, defeatedDef = base, participants = 1 })
+    T.eq(m.statExp.attack, 60 + Outside.POWER_GAIN, version .. ": Power Bracer: Attack's stat experience grows")
+    if gen == 1 then
+      hold(m, "LUCKY_EGG")
+      T.eq(Runtime.call("exp.gain", function() return 100 end, { mon = m, defeatedDef = base, participants = 1 }), 150,
+        version .. ": Lucky Egg: 1.5x Exp.")
+      local Evolutions = H.module("src/gen12/evolutions.lua")
+      hold(m, "SOOTHE_BELL")
+      m.extra.national_dex_gen3.friendship = 70
+      T.eq(Evolutions.addFriendship(m, 70, 2), 73, version .. ": Soothe Bell: friendship rises half again")
+    end
+  end
 
   -- Red's Sp. Def (src/gen12/mech/traits.lua Traits.spDef, src/gen12/battle/red.lua)
   if gen == 1 then

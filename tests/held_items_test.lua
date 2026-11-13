@@ -38,7 +38,13 @@ local items = run.loader.content and run.loader.content.items
 local state = held and held.state or { byId = {}, byIndex = {} }
 T.check(state.byId.LIFE_ORB and state.byId.CHOICE_SCARF and state.byId.FAIRY_GEM, "Gen 4-9 items are registered")
 T.check(state.byId.CHOICE_BAND == nil and state.byId.LEFTOVERS == nil, "the game's own (Choice Band) stay its own")
-T.check(state.byId.RAZOR_CLAW ~= nil, "Razor Claw (this mod's evolution item) gets its held effect")
+local evoIndex = {}
+for _, r in ipairs(dofile("mods/national_dex_gen3/data/items.lua")) do evoIndex[r.id] = r.index end
+local function holdOf(id) local i = ItemsData.info(evoIndex[id]); return i and i.holdEffect end
+T.eq(holdOf("RAZOR_CLAW"), 41, "Razor Claw (this mod's evolution item) raises critical hits as the Scope Lens does")
+T.eq(holdOf("RAZOR_FANG"), 30, "Razor Fang flinches as the King's Rock does")
+T.eq(ItemsData.info(byId.LUCK_INCENSE.index).holdEffect, 32, "Luck Incense doubles prize money as the Amulet Coin does")
+T.eq(ItemsData.info(byId.PURE_INCENSE.index).holdEffect, 33, "Pure Incense keeps wild Pokemon away as the Cleanse Tag does")
 T.eq(ItemsData.info(byId.LIFE_ORB.index) and ItemsData.info(byId.LIFE_ORB.index).name, "LIFE ORB", "Life Orb at its number")
 T.eq(ItemsData.info(byId.CHOICE_SCARF.index) and ItemsData.info(byId.CHOICE_SCARF.index).holdEffect, 29,
   "Choice Scarf carries the Choice Band's lock")

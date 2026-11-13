@@ -149,6 +149,8 @@ return function(core, opts)
     if not r then return s end
     local e = r.effect
     if e.kind == "choice" and e.stat == "speed" then return s * 1.5 end
+    -- (on Gen 3 the Power items carry the Macho Brace's hold effect, which halves Speed itself)
+    if e.kind == "powerItem" and A.gen == 3 then return s end
     if e.kind == "ironBall" or e.kind == "halfSpeed" or e.kind == "powerItem" then return s * 0.5 end
     if e.kind == "speciesStat" and e.stat == "speed" and speciesIn(A, b, e.species) then return s * e.mult end
     return s
@@ -293,6 +295,8 @@ return function(core, opts)
         A:damage(u, math.max(1, math.floor(A:maxHp(u) / 10)), { text = A:text("%s lost some of its HP!", A:name(u)) })
       elseif e.kind == "shellBell" and dealt > 0 and A:hp(u) < A:maxHp(u) then
         A:heal(u, math.max(1, math.floor(dealt / 8)), { text = A:text("%s restored a little HP using its %s!", A:name(u), named(A, id)) })
+      elseif e.kind == "flinch" and dealt > 0 and t and t ~= u and A:hp(t) > 0 and A:rng(100) < (e.chance or 10) then
+        A:flinch(t)
       elseif e.kind == "throatSpray" and flag("sound", m) then
         use(A, u, id)
         A:stages(u, { spAtk = 1 })
@@ -316,6 +320,11 @@ return function(core, opts)
       elseif A.gen == 3 and (t.expTrapTurns or 0) > 0 and not t.__ndxGrip then
         t.expTrapTurns, t.__ndxGrip = 7, true
       end
+    end
+    -- Destiny Knot: the one who infatuated its holder falls in love too (Red's Attract)
+    if t and t ~= u and kind(A, t, "destinyKnot") and A:vol(t).attract == u and not A:vol(u).attract then
+      A:vol(u).attract = t
+      say(A, "%s fell in love from the %s!", A:name(u), named(A, A:item(t)))
     end
     -- Metronome: the same move again and again
     if moveId == vu.lastHeldMove then vu.metronomeRun = (vu.metronomeRun or 0) + 1
@@ -536,6 +545,8 @@ return function(core, opts)
       A:stages(foe, { speed = 1 })
     end
     A:vol(b).choiceLock = nil
+    -- Luck Incense (Gold): the prize money doubles, as its own Amulet Coin does once sent out
+    if A.gen == 2 and A:sideName(b) == "player" and kind(A, b, "money") then A.battle.amuletCoin = true end
     -- Booster Energy: Protosynthesis / Quark Drive without the sun or Electric Terrain
     local be, beid = kind(A, b, "boosterEnergy")
     if be and core.boosterReady and core.boosterReady(A, b) then

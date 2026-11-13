@@ -163,6 +163,8 @@ end
 
 function Evolutions.addFriendship(mon, base, amount)
   local bag = Evolutions.bag(mon, true)
+  -- a Soothe Bell held (Red keeps the held item in the same bag): a rise is half again
+  if (amount or 0) > 0 and bag.item == "SOOTHE_BELL" then amount = amount + math.max(1, math.floor(amount / 2)) end
   local value = (bag.friendship or base or 70) + amount
   bag.friendship = math.max(0, math.min(255, value))
   return bag.friendship
