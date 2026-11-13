@@ -7,9 +7,9 @@
 --     physical/special category is what the game splits damage by. Steel physical and Dark
 --     special as Gold has them; Fairy special, as on the Gen 3 path. Gen 2 also needs an
 --     `index` (Present and Conversion2 read it).
---   * the matchup rows from data/gen12/cart.lua (tools/build_gen12.py): every pair with Dark,
---     Steel or Fairy as today's chart has it, Gold's two Gen 2-only rows (Steel resisting Ghost
---     and Dark) removed. The cart's own rows between its old types stay as the game has them.
+--   * the matchup rows from data/gen12/cart.lua (tools/build_gen12.py): the whole chart as today's
+--     has it: the new types' rows, Red's Ghost-vs-Psychic, Bug-vs-Poison and Ice-vs-Fire, Gold's two
+--     Gen 2-only rows (Steel resisting Ghost and Dark) removed.
 --   * the cart species and moves whose typing is different today are patched to it (Magnemite
 --     Electric/Steel, Clefairy Fairy, Bite Dark...).
 -- The `growth_rates` registry gets the two curves newer species use, ERRATIC and FLUCTUATING

@@ -895,15 +895,17 @@ def cart_retypes(api: bs.API, carts: dict[int, dict[str, Any]],
 # Types each game lacks: Red has neither Dark nor Steel, and no cart has Fairy.
 NEW_TYPES = {1: ["DARK", "STEEL", "FAIRY"], 2: ["FAIRY"]}
 MODERN_TYPES = ("dark", "steel", "fairy")      # every row that touches one is today's chart
+ALL_TYPES = ("normal", "fighting", "flying", "poison", "ground", "rock", "bug", "ghost", "steel", "fire",
+             "water", "grass", "electric", "psychic", "ice", "dragon", "dark", "fairy")
 RELATIONS = (("double_damage_to", 20, False), ("half_damage_to", 5, False), ("no_damage_to", 0, False),
              ("double_damage_from", 20, True), ("half_damage_from", 5, True), ("no_damage_from", 0, True))
 
 
 def modern_rows(api: bs.API) -> dict[tuple[str, str], int]:
-    """(attacker, defender) -> tenths for every non-neutral pair that involves Dark, Steel
-    or Fairy, from PokéAPI's current damage relations."""
+    """(attacker, defender) -> tenths for every non-neutral pair of today's 18 types, from
+    PokéAPI's current damage relations."""
     rows: dict[tuple[str, str], int] = {}
-    for t in MODERN_TYPES:
+    for t in ALL_TYPES:
         rel = api.get(f"/type/{t}")["damage_relations"]
         for key, mult, incoming in RELATIONS:
             for other in rel[key]:
@@ -914,9 +916,10 @@ def modern_rows(api: bs.API) -> dict[tuple[str, str], int]:
 
 def chart_changes(api: bs.API, carts: dict[int, dict[str, Any]], gen: int) -> dict[str, Any]:
     """The types the game gains and the matchup rows to add or take out so every pair
-    involving Dark, Steel or Fairy reads as today's chart. Type names are the modern
-    spellings (PSYCHIC); the mod turns them into the cart's ids. The cart's other rows
-    (Gen 1's Ghost vs Psychic, Bug vs Poison...) stay as the game has them."""
+    reads as today's chart: the new types' rows, and the cart's own rows where they differ
+    (Gen 1's Ghost vs Psychic, Bug vs Poison, Ice vs Fire; Gen 2's Steel resisting Ghost and
+    Dark). Type names are the modern spellings (PSYCHIC); the mod turns them into the cart's
+    ids."""
     modern = modern_rows(api)
     cart_rows = {(type_name(a), type_name(d)): m for a, d, m in carts[gen]["matchups"]}
     cart_types = {t for pair in cart_rows for t in pair}
@@ -926,11 +929,10 @@ def chart_changes(api: bs.API, carts: dict[int, dict[str, Any]], gen: int) -> di
                  if (a in new or d in new) and a in present and d in present)
     remove, change = [], []
     for (a, d), m in sorted(cart_rows.items()):
-        if a.lower() in MODERN_TYPES or d.lower() in MODERN_TYPES:
-            if (a, d) not in modern:
-                remove.append(f"{a}>{d}")
-            elif modern[(a, d)] != m:
-                change.append([a, d, modern[(a, d)]])
+        if (a, d) not in modern:
+            remove.append(f"{a}>{d}")
+        elif modern[(a, d)] != m:
+            change.append([a, d, modern[(a, d)]])
     for (a, d), m in sorted(modern.items()):
         if a in cart_types and d in cart_types and (a, d) not in cart_rows:
             add.append([a, d, m])
