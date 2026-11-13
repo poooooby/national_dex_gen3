@@ -140,6 +140,33 @@ return function(mod, loadSibling)
       log = mod.log })
     mod.log:info("species: %d registered (%d forms), %d left to another mod",
       speciesState.registered, #speciesState.forms, speciesState.kept)
+
+    -- Red: breeding by Gold's rules (src/gen12/breeding_red.lua), a second Day Care slot and eggs
+    if generation == 1 and directMove then
+      local Breeding = loadSibling(mod, "src/gen12/breeding_red.lua")
+      local facts = loadSibling(mod, "data/gen12/battle.lua")
+      local modernRows = loadSibling(mod, "data/gen12/modern.lua") or {}
+      if Breeding and facts then
+        local eggByDex = {}
+        for _, r in ipairs(modernRows) do eggByDex[r.dex] = r.eggMoves end
+        for _, r in ipairs(records) do if r.dex then eggByDex[r.dex] = r.eggMoves end end
+        local function genderOf(record, dvs)
+          local dex = record and (record.baseDex or record.dex)
+          local rate = dex and facts.genderRates and facts.genderRates[dex]
+          local ratio = (rate == nil or rate < 0) and 255 or (rate == 0 and 0) or (rate == 8 and 254)
+            or rate * 32 - 1
+          if ratio == 255 then return nil end
+          if ratio == 0 then return "M" end
+          if ratio == 254 then return "F" end
+          return ((dvs.attack or 0) * 16 + (dvs.speed or 0)) <= ratio and "F" or "M"
+        end
+        local okB, errB = pcall(Breeding.install, { mod = mod, require = require, facts = facts,
+          gender = genderOf, direct = directMove, eggMoves = function(dex) return eggByDex[dex] end,
+          log = mod.log })
+        if okB then mod.exports._breeding = Breeding
+        else mod.log:warn("breeding is off: %s", tostring(errB)) end
+      end
+    end
   end
 
   -- the evolution items the cart lacks (sold in one shop), then every evolution: this mod's

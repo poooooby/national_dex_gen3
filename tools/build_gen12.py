@@ -528,6 +528,19 @@ def build(api: bs.API, workers: int, engine: Path) -> dict[str, Any]:
     for item in bs.fetch_forms(api, fetched, 12):
         battle["formAbilities"][item["id"]] = ability_list(item["pokemon"])
     battle["split"] = split
+    # breeding (src/gen12/breeding_red.lua): egg groups, egg cycles and the species an egg of this
+    # one hatches into (its chain's first stage; an incense baby's parent lays the next stage, there
+    # being no incense here; Manaphy lays Phione)
+    incense = {298: 183, 360: 202, 406: 315, 433: 358, 438: 185, 439: 122, 440: 113, 446: 143, 458: 226}
+    babies = []
+    for d in range(1, max(by_dex) + 1):
+        chain = by_dex[d].get("chain")
+        root = bs.id_from_url(chain["chain"]["species"]["url"]) if chain else d
+        babies.append(489 if d == 490 else incense.get(root, root))
+    battle["eggGroups"] = [[g["name"] for g in by_dex[d]["species"].get("egg_groups", [])]
+                           for d in range(1, max(by_dex) + 1)]
+    battle["eggCycles"] = [by_dex[d]["species"].get("hatch_counter") or 20 for d in range(1, max(by_dex) + 1)]
+    battle["baby"] = babies
     return {"records": records, "forms": forms, "crossgen": crossgen, "moves": moves,
             "cart": cart, "items": items, "modern": modern, "battle": battle, "report": report}
 

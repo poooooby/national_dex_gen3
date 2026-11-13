@@ -352,6 +352,29 @@ for _, version in ipairs(H.versions()) do
   x.use("FIRE_PUNCH")
   T.check(x.hp("enemy") < hp, version .. ": a physical Fire Punch still hits")
   opts.national_dex_gen3.move_split = nil
+
+  -- breeding on Red (src/gen12/breeding_red.lua)
+  if gen == 1 then
+    local Breeding = H.module("src/gen12/breeding_red.lua")
+    local facts = H.module("data/gen12/battle.lua")
+    local pikaF = { dex = 25, groups = facts.eggGroups[25], gender = "F" }
+    local pikaM = { dex = 25, groups = facts.eggGroups[25], gender = "M" }
+    local ditto = { dex = 132, groups = facts.eggGroups[132] }
+    T.eq(Breeding.chance(pikaF, pikaM), 70, version .. ": two Pikachu get along very well")
+    T.eq(Breeding.chance(pikaF, pikaF), 0, version .. ": not two of one gender")
+    T.eq(Breeding.chance(pikaM, ditto), 20, version .. ": anything with Ditto")
+    T.eq(Breeding.babyOf(facts, pikaF, pikaM), 172, version .. ": a Pikachu EGG hatches into Pichu")
+    T.eq(Breeding.babyOf(facts, { dex = 143, groups = facts.eggGroups[143], gender = "F" }, ditto), 143,
+      version .. ": a Snorlax EGG hatches into Snorlax (no Full Incense here)")
+    local Game = require("src.core.Game")
+    local st = Breeding.stateOf(Game.save)
+    local before = #Game.save.party
+    st.egg = { dex = 172, stepsLeft = 1, moves = {} }
+    require("src.mods.Runtime").emit("world.stepped", {})
+    T.check(#Game.save.party == before + 1 and Game.save.party[#Game.save.party].species == "PICHU",
+      version .. ": the carried EGG hatches into the party")
+    T.check(st.egg == nil, version .. ": and is gone")
+  end
   sim.release()
 end
 
