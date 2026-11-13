@@ -39,6 +39,35 @@ return function(mod, loadSibling)
   if Types and Moves and moveRows then
     moveState = Moves.register({ mod = mod, rows = moveRows, generation = generation, types = Types,
       log = mod.log })
+    -- the newer moves described completely as data (src/gen12/move_fx.lua): real moves too
+    local MoveFx = loadSibling(mod, "src/gen12/move_fx.lua")
+    local gen3Moves = MoveFx and loadSibling(mod, "data/moves.lua")
+    if MoveFx and gen3Moves then
+      local fx = MoveFx.register({ mod = mod, generation = generation, rows = moveRows, gen3 = gen3Moves,
+        types = Types, state = moveState, require = require, log = mod.log })
+      moveState.registered = moveState.registered + fx.registered
+      moveState.mechanics = fx.registered
+      moveState.looks = fx.looks
+    end
+    -- the pixelfx move animations (src/gen12/fx_anims.lua), over the borrowed ones
+    local FxAnims = loadSibling(mod, "src/gen12/fx_anims.lua")
+    local fxData = FxAnims and loadSibling(mod, "data/fx.lua")
+    if FxAnims and fxData then
+      local looks = {}
+      for _, row in ipairs(moveRows) do
+        if row.look and row.look["gen" .. generation] then looks[row.id] = row.look["gen" .. generation] end
+      end
+      for id, look in pairs(moveState.looks or {}) do looks[id] = look end
+      local okF, fxState = pcall(FxAnims.register, { mod = mod, generation = generation, data = fxData,
+        looks = looks, log = mod.log })
+      if okF and fxState.count > 0 then
+        local hook = FxAnims.overlay({ generation = generation, data = fxData, lines = fxState.lines,
+          root = mod.path, log = mod.log })
+        pcall(function() mod.hooks:wrap("battle.overlay", hook) end)
+        mod.exports._fx = fxState
+        mod.log:info("move animations: %d drawn with pixelfx", fxState.count)
+      end
+    end
     local cartMoves = {}
     for id, rec in mod.content.moves:each() do cartMoves[id] = rec end
     resolveMove, directMove = Moves.resolver(moveState, cartMoves)
@@ -82,9 +111,15 @@ return function(mod, loadSibling)
   local crossgen = loadSibling(mod, "data/gen12/crossgen.lua")
   local Conditional = loadSibling(mod, "src/conditional_evos.lua")
   local Clock = loadSibling(mod, "src/clock.lua")
-  local evoState
+  local evoState, itemState
+  -- the vending machines (src/gen12/vending.lua over src/vending_screen.lua and data/vending.lua):
+  -- when they are here, they sell the evolution items and the new TMs instead of the Marts
+  local Vending = loadSibling(mod, "src/gen12/vending.lua")
+  local vendingData = Vending and loadSibling(mod, "data/vending.lua")
+  local vendingScreen = vendingData and loadSibling(mod, "src/vending_screen.lua")
+  local vendingOn = (Vending and vendingData and vendingScreen and mod.content.sprites) and true or false
   if speciesState and Items and Evolutions and itemRows and crossgen and Conditional and Clock then
-    local itemState = Items.register({ mod = mod, generation = generation, rows = itemRows,
+    itemState = Items.register({ mod = mod, generation = generation, rows = itemRows,
       log = mod.log, use = function(c)
         if not evoState then return nil end
         if generation == 1 then return evoState.useGen1(c) end
@@ -94,7 +129,7 @@ return function(mod, loadSibling)
       conditional = Conditional, clock = Clock, species = speciesState, crossgen = crossgen,
       cartIdOf = speciesState.cartIdOf, itemId = itemState.id, direct = directMove,
       log = mod.log })
-    local shop = Items.stock(mod, generation, itemState, mod.log)
+    local shop = vendingOn and "the EVO EXPRESS machine" or Items.stock(mod, generation, itemState, mod.log)
     mod.log:info("evolutions: %d rows (%d steps not possible here); %d items, sold at %s",
       evoState.added, evoState.dropped, #itemState.registered, tostring(shop))
   end
@@ -117,6 +152,18 @@ return function(mod, loadSibling)
       mod.log:warn("the Pokedex stays at the cart's size")
     end
     Dex.install(mod, generation, speciesState.forms)
+  end
+
+  -- the Pokedex FORMS page (src/gen12/dex_forms.lua; the form names from src/dex_forms.lua)
+  local DexForms = loadSibling(mod, "src/gen12/dex_forms.lua")
+  local Labels = DexForms and loadSibling(mod, "src/dex_forms.lua")
+  if DexForms and Labels and speciesState and #speciesState.forms > 0 then
+    mod.events:on("game.ready", function(ev)
+      local game = ev and ev.game or mod.game
+      local ok, err = pcall(DexForms.install, { require = require, generation = generation,
+        forms = speciesState.forms, label = Labels.label, data = game and game.data })
+      if not ok then mod.log:warn("the Pokedex FORMS page is off: %s", tostring(err)) end
+    end, 1)
   end
 
   -- Register Owned: opening the Pokedex counts the party and the PC (src/gen12/dex_sync.lua)
@@ -201,8 +248,10 @@ return function(mod, loadSibling)
     tmState = Tms.register({ mod = mod, generation = generation, list = list,
       species = speciesState, log = mod.log })
     Tms.install(require, tmState.ids)
-    local stores = sell(generation == 1 and Tms.GEN1_SHOP or Tms.GEN2_SHOP, tmState.registered, "new TMs")
-    mod.log:info("TMs: %d new (%d species can learn them), in %s store(s)", #tmState.registered,
+    local stores = vendingOn and "the TM EXPRESS machine"
+      or ((sell(generation == 1 and Tms.GEN1_SHOP or Tms.GEN2_SHOP, tmState.registered, "new TMs") or 0)
+        .. " store(s)")
+    mod.log:info("TMs: %d new (%d species can learn them), sold at %s", #tmState.registered,
       tmState.compatible, tostring(stores or 0))
   end
   local Candies = loadSibling(mod, "src/gen12/exp_candies.lua")
@@ -212,6 +261,22 @@ return function(mod, loadSibling)
       onLevels = evoState and evoState.leveledUp, log = mod.log })
     sell(generation == 1 and Candies.GEN1_SHOP or Candies.GEN2_SHOP, candyState.registered, "Exp. Candies")
     mod.log:info("Exp. Candies: %d", #candyState.registered)
+  end
+
+  if vendingOn and itemState then
+    local okV, err = pcall(function()
+      local BadgeIds = loadSibling(mod, "src/gen12/type_badges.lua")
+      local V = Vending.new({ mod = mod, generation = generation, require = require, log = mod.log,
+        machines = vendingData, screen = vendingScreen, items = itemRows, itemId = itemState.id,
+        tms = tmState and tmRows or {}, moves = loadSibling(mod, "data/moves.lua"),
+        gen3Items = loadSibling(mod, "data/items.lua"), icons = loadSibling(mod, "data/item_icons.lua"),
+        typeId = BadgeIds and BadgeIds.idOf })
+      V.registerSprites()
+      V.install()
+      mod.exports._vending = V
+      mod.log:info("vending machines: %d", #V.machines)
+    end)
+    if not okV then mod.log:warn("the vending machines are off: %s", tostring(err)) end
   end
 
   -- Type Badges (src/gen12/type_badges.lua, the Gen 3 badges' colours and symbols)

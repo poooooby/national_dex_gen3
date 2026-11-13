@@ -19,6 +19,8 @@ local function lowDvs(attack, speed)
   return { attack = attack or 0, defense = 8, speed = speed or 0, special = 8 }
 end
 
+local machineStock
+
 local function gen1(version)
   local run = H.load(version)
   for i = 1, math.min(5, #run.errors) do print("load error: " .. tostring(run.errors[i])) end
@@ -120,16 +122,28 @@ local function gen1(version)
   Evolution.apply(game, gimmighoul, "GHOLDENGO", "LEVEL")
   T.eq(game.save.coins, 201, version .. ": the 999 coins are spent")
 
-  -- on sale at Celadon 4F, after the cart's own stock
-  local clerk = data.text_pointers.CeladonMart4F.TEXT_CELADONMART4F_CLERK.mart
-  local sells = {}
-  for _, id in ipairs(clerk) do sells[id] = true end
+  -- on sale: the EVO EXPRESS machine (Celadon 4F)
+  local sells = machineStock(run, data)
   local missing
   for _, r in ipairs(itemRows) do
     if not r.carts.gen1 and not sells[r.id] then missing = missing or r.id end
   end
-  T.check(clerk[1] == "POKE_DOLL" and missing == nil, version .. ": every new item at Celadon 4F (" .. tostring(missing) .. ")")
+  T.check(missing == nil, version .. ": every new item in the EVO EXPRESS machine (" .. tostring(missing) .. ")")
   run.release()
+end
+
+-- what the EVO EXPRESS machine sells here (src/gen12/vending.lua): id -> true
+machineStock = function(run, data)
+  local V = run.loader.exports.national_dex_gen3._vending
+  local out = {}
+  for _, e in ipairs(V and V.machines or {}) do
+    if e.m.id == "evo" then
+      for _, tab in ipairs(V.stock(e.m, data)) do
+        for _, x in ipairs(tab.entries) do out[x.id] = true end
+      end
+    end
+  end
+  return out
 end
 
 local function gen2(version)
@@ -196,18 +210,13 @@ local function gen2(version)
   tyrogue.stats.attack, tyrogue.stats.defense = 30, 40
   T.eq(check(tyrogue), "HITMONCHAN", version .. ": Gold's own Tyrogue")
 
-  -- the items are held (hold / trade) or used (stone), and sold at Goldenrod 4F
-  local martList
-  for _, list in ipairs(data.gen2Marts.lists) do
-    if list[1] == "PROTEIN" and list[5] == "HP_UP" then martList = list end
-  end
-  local sells = {}
-  for _, id in ipairs(martList or {}) do sells[id] = true end
+  -- the items are held (hold / trade) or used (stone), and sold by the EVO EXPRESS machine
+  local sells = machineStock(run, data)
   local missing
   for _, r in ipairs(itemRows) do
     if not r.carts.gen2 and not sells[r.id] then missing = missing or r.id end
   end
-  T.check(martList and missing == nil, version .. ": every new item at Goldenrod 4F (" .. tostring(missing) .. ")")
+  T.check(missing == nil, version .. ": every new item in the EVO EXPRESS machine (" .. tostring(missing) .. ")")
   T.eq(data.items.RAZOR_CLAW and data.items.RAZOR_CLAW.pocket, "ITEM", version .. ": a Razor Claw is an item to hold")
   run.release()
 end

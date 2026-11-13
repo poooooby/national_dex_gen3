@@ -51,11 +51,12 @@ for _, version in ipairs(H.versions()) do
     T.check(ns and ns.highCrit == true, version .. ": Night Slash crits often")
     T.eq(aj and aj.priority, 1, version .. ": Aqua Jet moves first")
     T.check(Damage.isSpecial("DARK"), version .. ": Night Slash hits with Special")
-    local look = byId.NIGHT_SLASH.look.gen1
+    -- (Aqua Jet: Night Slash has a pixelfx effect of its own, tests/gen12_fx_test.lua)
+    local look = byId.AQUA_JET.look.gen1
     local anims = data.battle_anims and data.battle_anims.moveAnims or {}
-    T.check(anims.NIGHT_SLASH ~= nil and #anims.NIGHT_SLASH.seq == #anims[look].seq,
-      version .. ": Night Slash plays " .. look .. "'s animation")
-    T.eq(ns and ns.anim and ns.anim.sound, moves[look].anim.sound, version .. ": and its sound")
+    T.check(anims.AQUA_JET ~= nil and #anims.AQUA_JET.seq == #anims[look].seq,
+      version .. ": Aqua Jet plays " .. look .. "'s animation")
+    T.eq(aj and aj.anim and aj.anim.sound, moves[look].anim.sound, version .. ": and its sound")
     local noAnim = 0
     for _, r in ipairs(rows) do
       if r[key] and moves[r.id] and not anims[r.id] then noAnim = noAnim + 1 end
@@ -67,8 +68,8 @@ for _, version in ipairs(H.versions()) do
     T.eq(Battle.PRIORITY and Battle.PRIORITY.EFFECT_PRIORITY_HIT, 1, version .. ": that effect is priority 1")
     T.eq(ns and ns.index, 400, version .. ": Night Slash keeps #400 as its index")
     local scripts = data.gen2BattleAnims.moves
-    local look = byId.NIGHT_SLASH.look.gen2
-    T.eq(scripts.NIGHT_SLASH, scripts[look], version .. ": Night Slash plays " .. look .. "'s animation")
+    local look = byId.AQUA_JET.look.gen2
+    T.eq(scripts.AQUA_JET, scripts[look], version .. ": Aqua Jet plays " .. look .. "'s animation")
     local noAnim = 0
     for _, r in ipairs(rows) do
       if r[key] and moves[r.id] and not scripts[r.id] then noAnim = noAnim + 1 end

@@ -757,6 +757,62 @@ The owner asked for the Gen 3 extras on Gen 1/2 (2026-11-12). Phase A is the fou
   can't open Gold's pack submenu with A (it never reacts), so it starts the candy at
   `Game2:usePartyItem` and the TM at `PackMenu:openTeachParty`, the calls the pack makes.
 
+### Gen 3 extras on Gen 1/2 (Phase C: `move_fx.lua`, `fx_anims.lua`, `dex_forms.lua`, `vending.lua`)
+
+- **Move mechanics** (`src/gen12/move_fx.lua`): every `data/gen12/moves.lua` row that has no
+  native effect here but a Gen 3 `extra` (data/moves.lua) becomes a real move, registered right
+  after `Moves.register` and before the species (it fills `moveState.byNumber`, so the resolver
+  and learnsets name it): 88 on both games. Red: one `move_effects` record per move
+  (`NDX_FX_<id>`): status kind = `"primary"` (`accuracyChecked` when it aims at the foe; returns
+  the messages, `failed`, `hpBarFirst`), hit kind = `"full"` with `afterDamage` (user stats,
+  drain via `drainNext` + `_SuckedHealthText`, recoil via `applyRecoil`) and `run` (foe stats,
+  `ctx.inflict` with `secondary`, flinch; skipped behind a Substitute). Red's single SPECIAL
+  takes Sp. Atk's change, else Sp. Def's (`MoveFx.changes`). Gold: an attack is
+  `EFFECT_NORMAL_HIT` and `Battle.useMove` is wrapped once per process (`Battle.__ndxMoveFx`,
+  specs by move id): after the hit's own events, if the foe's HP or Substitute went down, the
+  extra runs with `changeStage` / `changeStageAgainstMist`, `applyStatus(..., {secondary})`,
+  `flinch`, `heal` and the cart's "energy was drained" / "is hit with recoil" texts. A status
+  move gets a `move_effects` record (`run(self, a, d, def, id, sureHit)`, its own accuracy roll
+  when aimed); self-only ones join `Effects.NO_CHECKHIT` (Protect lets them through, as Gold's
+  stat-ups). Chances roll 0-255 on the battle's RNG. Animation: the first stand-in that is a cart
+  move. Hex and Mystical Fire (Gen 3 rules) stay stand-ins.
+- **Animations** (`src/gen12/fx_anims.lua`): no mod code can run inside either game's move
+  animation, so `data/fx.lua`'s labels are read as timelines (`Fx.timeline`: NdxFx tasks, delays,
+  waits) and each move gets a timing-only animation: Red a `battle_anims` record of
+  `SE_DELAY_ANIMATION_10` rows (the first with `sound = <move>`, its own record's borrowed sound;
+  an `override` of the borrowed record), Gold a script `ndx:<id>` (the borrowed script's first
+  `sound` row, `wait`, `ret`) that `moves` names. The effect is drawn from the `battle.overlay`
+  hook while it plays (Red: `animPlaying` / `animName` / `animPlayer.elapsed`, classic layout
+  only; Gold: `anim.animId` / `anim.frames` / `env.battleTurn`), at 0.75 scale, from the
+  battlers' picture centres, clipped above the text box (the clip goes through `transformPoint`:
+  Gold draws the battle through a scaled transform in window space). Same shader and ramps as
+  Gen 3. 18 moves on both games.
+- **FORMS page** (`src/gen12/dex_forms.lua`): Red wraps `DexEntryMenu.update`: on the last page
+  with the cry done, A pushes our page (one form at a time: picture via `Sprites.path`, the form's
+  words via `src/dex_forms.lua`'s `label`, types, "FORM n/m"; `sgbPalettes` colours the picture),
+  only when the state under the entry is the Pokédex list (`getmetatable == PokedexMenu`), never
+  after a catch. Gold wraps `PokedexMenu.update` (PAGE on page 2 -> page 3; Up / Down step) and
+  `drawEntryBody` (page 1 drawn, then the form's picture in its own or its base's colours, height /
+  weight and text blanked, the form, types and count written); not in `newEntry` mode.
+- **Vending** (`src/gen12/vending.lua`): `data/vending.lua`'s machines and `src/vending_screen.lua`
+  as they are, with Gen 1/2 places (`Vending.PLACES`: Red CELADON_MART_4F / _2F (19,2), Gold
+  GOLDENROD_DEPT_STORE_4F (10,1) / _5F (4,1)). api 2's `mod.world` is the generation's own
+  WorldAPI; a spawned object stays in its map for the run, so `input.step` asks
+  `mod.world:npc(map, name)` before `spawnNpc` (and retries while the map loads). Talk: Red's
+  `world.talk` hook, Gold's `world.interacted` event (no talk hook there). The screen's deps: a
+  session proxy (Red `save.money`, Gold `save.player.money`), `Bag.add` (a refusal tried on a copy
+  first), badges (Red `Badges.count`, Gold Johto + Kanto), each game's sounds, item icons from
+  `assets/items/icons.png` by the slug's Gen 3 index. A state of ours on `game.stack` takes the
+  buttons; `render.hud` draws the screen; `input.pointer` / `input.wheel` while open; the touch
+  pad's `active` off. With the machines on, `Items.stock` and the TM Mart stock are skipped.
+- **Tests:** `tests/gen12_mechanics_test.lua`, `gen12_forms_page_test.lua`, `gen12_fx_test.lua`,
+  `gen12_vending_test.lua`.
+- **In game** (2026-11-12, probe 0 failures on Red and Gold): Night Slash plays its slash (57
+  frames on Red, 76 on Gold), Close Combat lowers the user's defences by one each, Alcremie's
+  FORMS page shows 8 creams, the machines stand in the stores, open, and lock gated items with no
+  badges. Gold shows the new species grey during ANY move animation (it colours pictures from
+  `gen2Palettes` there, and they have none): a separate fix, noted in the README.
+
 ### In the real engine (`tests/drivers/gen12_probe.lua`)
 
 One driver for both games: a party of new species (long names, #1000), the party and summary

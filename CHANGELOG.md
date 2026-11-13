@@ -42,6 +42,17 @@ All notable changes to this mod are documented here, in
   - Type Badges by the battle HP boxes (a foe's under its box, yours over your name);
   - Bigger PC: 40 boxes; the boxes past the game's 12 / 14 are written to the mod's part of the
     save, so the save stays a normal one without the mod or the option.
+- **The last Gen 3 extras on Red to Crystal:**
+  - new move mechanics: the 88 newer moves described completely as data (stat changes on either
+    side, a status or flinch chance, drain, recoil, healing: Close Combat, Fire Fang, Nasty Plot,
+    Shell Smash, Draining Kiss, Flare Blitz...) are real moves there too, on each game's own
+    effect helpers and texts, instead of stand-ins (270 newer moves on Red, 260 on Gold);
+  - 18 of them play their own pixelfx effects (Aura Sphere, Night Slash, Flash Cannon...), timed
+    by an animation of the game's own;
+  - the Pokédex FORMS page: after an entry's last page on Red, the third PAGE on Gold;
+  - the EVO EXPRESS and TM EXPRESS vending machines in the Celadon / Goldenrod Dept. Stores, the
+    Gen 3 machines' screen, which now sell the evolution items and the new TMs instead of the
+    Marts.
 
 ### Fixed
 

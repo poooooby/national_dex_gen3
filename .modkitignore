@@ -110,3 +110,7 @@ tests/gen12_art_test.lua
 tests/gen12_api_test.lua
 tests/gen12_extras_test.lua
 tools/build_placeholder.py
+tests/gen12_mechanics_test.lua
+tests/gen12_forms_page_test.lua
+tests/gen12_fx_test.lua
+tests/gen12_vending_test.lua

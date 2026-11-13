@@ -37,6 +37,20 @@ end
 require("src.core.SaveData").save = snapshot
 require("src.core.gen2.Save").save = snapshot
 
+-- whether a vending machine (src/gen12/vending.lua) has an item in its stock
+local function machineSells(run, data, which, id)
+  local V = run.loader.exports.national_dex_gen3._vending
+  if not V then return false end
+  for _, e in ipairs(V.machines) do
+    if e.m.id == which then
+      for _, tab in ipairs(V.stock(e.m, data)) do
+        for _, entry in ipairs(tab.entries) do if entry.id == id then return true end end
+      end
+    end
+  end
+  return false
+end
+
 local function setOption(run, key, value)
   local o = run.loader.modOptions.national_dex_gen3 or {}
   o[key] = value
@@ -67,10 +81,7 @@ for _, version in ipairs(H.versions()) do
     T.eq(cord(make("BOLDORE", 30)), "GIGALITH", version .. ": a newer one too (Boldore -> Gigalith)")
     T.eq(cord(make("PIDGEY", 20)), nil, version .. ": no effect on Pidgey")
     T.eq(cord(make("ONIX", 20)), nil, version .. ": Onix needs its Metal Coat (used, on Red), not the cord")
-    local clerk = data.text_pointers.CeladonMart4F.TEXT_CELADONMART4F_CLERK.mart
-    local sold = false
-    for _, id in ipairs(clerk) do if id == "LINKING_CORD" then sold = true end end
-    T.check(sold, version .. ": sold at Celadon 4F")
+    T.check(machineSells(run, data, "evo", "LINKING_CORD"), version .. ": sold by the EVO EXPRESS machine")
   else
     local Items = require("src.core.gen2.ItemEffects")
     local Evolution = require("src.core.gen2.Evolution")
@@ -92,11 +103,7 @@ for _, version in ipairs(H.versions()) do
     local everstone = make("KADABRA", 20)
     everstone.item = "EVERSTONE"
     T.eq(cord(everstone), nil, version .. ": an Everstone stops it")
-    local sold = false
-    for _, list in ipairs(data.gen2Marts.lists) do
-      for _, id in ipairs(list) do if id == "LINKING_CORD" then sold = true end end
-    end
-    T.check(sold, version .. ": sold with the evolution items")
+    T.check(machineSells(run, data, "evo", "LINKING_CORD"), version .. ": sold by the EVO EXPRESS machine")
   end
 
   -- ------- Register Owned
@@ -202,10 +209,7 @@ for _, version in ipairs(H.versions()) do
     T.eq(r, "learn", version .. ": the game's own TM code teaches it")
     T.eq(move, zen, version .. ": the move")
     T.check(ItemEffects.use(data, save, "TM74", make("MAGIKARP", 40)) ~= "learn", version .. ": not to Magikarp")
-    local clerk = data.text_pointers.CeladonMart2F.TEXT_CELADONMART2F_CLERK2.mart
-    local sold = false
-    for _, id in ipairs(clerk) do if id == "TM74" then sold = true end end
-    T.check(sold, version .. ": sold at Celadon 2F's TM counter")
+    T.check(machineSells(run, data, "tm", "TM74"), version .. ": sold by the TM EXPRESS machine")
     local cw = require("src.save_convert.GenSave").crosswalks(data)
     T.check(cw.itemsIndex.TM74 == nil and cw.itemsIndex.TM_SUBSTITUTE == 250,
       version .. ": left out of .sav export (the cart's TMs kept)")
@@ -215,11 +219,7 @@ for _, version in ipairs(H.versions()) do
     local Bag = require("src.inventory.Bag")
     T.eq(Bag.capacity(data, "TM_HM"), 57 + 43, version .. ": the TM pocket holds the new TMs too")
     T.eq(Bag.capacity(data, "ITEM"), 20, version .. ": the item pocket as it was")
-    local stores = 0
-    for _, list in ipairs(data.gen2Marts.lists) do
-      for _, id in ipairs(list) do if id == "TM74" then stores = stores + 1 end end
-    end
-    T.eq(stores, 4, version .. ": sold in Goldenrod 5F's four stocks")
+    T.check(machineSells(run, data, "tm", "TM74"), version .. ": sold by the TM EXPRESS machine")
   end
 
   -- ------- Exp. Candies
@@ -270,16 +270,16 @@ for _, version in ipairs(H.versions()) do
       version .. ": nothing at Lv 100")
     T.check(not rec.use({ mon = make("PIDGEY", 5), item = "EXP_CANDY_L", data = data, battle = {} }).used,
       version .. ": not in battle")
-    local both = false
+    local sold = false
     for _, list in ipairs(data.gen2Marts.lists) do
-      local c, l = false, false
+      local c, v = false, false
       for _, id in ipairs(list) do
         if id == "EXP_CANDY_XS" then c = true end
-        if id == "LINKING_CORD" then l = true end
+        if id == "PROTEIN" then v = true end
       end
-      if c and l then both = true end
+      if c and v then sold = true end
     end
-    T.check(both, version .. ": sold with the vitamins and the evolution items (Goldenrod 4F)")
+    T.check(sold, version .. ": sold with the vitamins (Goldenrod 4F)")
   end
   T.eq(run.loader.exports.national_dex_gen3.expCandies.EXP_CANDY_XL, 954, version .. ": exports.expCandies")
 

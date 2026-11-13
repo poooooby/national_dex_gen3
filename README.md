@@ -121,24 +121,37 @@ Crystal have their own section after them.
 - 🧚 **Modern types:** Fairy joins both games, and Dark and Steel join Red, Blue and Yellow,
   with today's matchups. The originals get their modern typing too: Magnemite is Electric /
   Steel, Clefairy is Fairy, Bite is a Dark move.
-- ⚔️ **Newer moves in the game's own battles:** 182 newer moves work for real in Red, Blue and
-  Yellow and 172 in Gold, Silver and Crystal (Night Slash, Iron Head, Aqua Jet, Play Rough,
-  Dazzling Gleam...), each with the look of a similar move. A move the game can't do is swapped
-  for the closest one it can.
+- ⚔️ **Newer moves in the game's own battles:** 270 newer moves work for real in Red, Blue and
+  Yellow and 260 in Gold, Silver and Crystal (Night Slash, Iron Head, Aqua Jet, Play Rough,
+  Dazzling Gleam...), each with the look of a similar move. That includes 88 with effects these
+  games never had: Close Combat lowers your defences, Fire Fang can burn and flinch, Nasty Plot
+  and Shell Smash power you up, Draining Kiss heals, Flare Blitz costs recoil. A move the game
+  can't do is swapped for the closest one it can.
+- ✨ **Their own animations:** Aura Sphere, Dark Pulse, Dragon Pulse, Flash Cannon, Focus Blast,
+  Night Slash, Stone Edge and more (18 in all) play effects of their own instead of an older
+  move's.
 - 🔄 **Evolutions:** by level, stone, trade, friendship, time of day, held item, gender, a known
   move, a party member, steps walked and more, and the originals' newer evolutions too (Golbat
   into Crobat in Red, Eevee into Leafeon, Glaceon and Sylveon). Red, Blue and Yellow keep a
   hidden friendship for every Pokémon, which grows as it levels up in battle and walks with you.
-- 💎 **The items to do it:** the evolution items each game lacks, sold at the Celadon Dept.
-  Store 4F in Red, Blue and Yellow and the Goldenrod Dept. Store 4F in Gold, Silver and Crystal.
-  In Red, Blue and Yellow, which have no held items, a trade item or a held item is used on the
-  Pokémon like a stone (a Metal Coat turns Onix into Steelix).
+- 💎 **The items to do it:** the evolution items each game lacks, sold by the EVO EXPRESS
+  vending machine (below). In Red, Blue and Yellow, which have no held items, a trade item or a
+  held item is used on the Pokémon like a stone (a Metal Coat turns Onix into Steelix).
+- 🏪 **Vending machines:** the same touch-screen machines as in the Generation 3 games: EVO
+  EXPRESS for the evolution items and TM EXPRESS for the new TMs, in the Celadon Dept. Store
+  (EVO EXPRESS on 4F, TM EXPRESS on 2F) in Red, Blue and Yellow and the Goldenrod Dept. Store
+  (EVO EXPRESS on 4F, TM EXPRESS on 5F) in Gold, Silver and Crystal. Browse by tab, see each
+  TM's move, type and power, buy several at once; some items wait until you have enough Gym
+  Badges.
 - 🔊 **Cries:** #387–1025 and their forms have their own cry; the rest borrow a similar
   Pokémon's.
-- 📖 **The Pokédex** runs to #1025, with four-digit numbers.
+- 📖 **The Pokédex** runs to #1025, with four-digit numbers, and a FORMS page for a species
+  with alternate forms (Vulpix's Alolan form, Alcremie's creams...): in Red, Blue and Yellow, A
+  on an entry's last page; in Gold, Silver and Crystal, the third PAGE. Up and Down step through
+  the forms.
 - 🔗 **Linking Cord:** use it on a Pokémon that evolves by trading and it evolves on the spot
   (Kadabra, Machoke, Boldore...). In Gold, Silver and Crystal, one that trades holding an item
-  must hold it, and uses it up, just as in a trade. Sold with the evolution items.
+  must hold it, and uses it up, just as in a trade. Sold by EVO EXPRESS.
 - 🆙 **Modern Moves:** the game's own Pokémon also learn the newer moves they learn today, at the
   same levels, plus newer egg moves in Gold, Silver and Crystal (only moves the game can do).
 - 🌅 **Day and night in Red, Blue and Yellow:** the outdoors follows your device's clock, the same
@@ -146,10 +159,9 @@ Crystal have their own section after them.
   their own day and night.
 - 📋 **Register Owned:** opening the Pokédex counts every Pokémon in your party and PC.
 - 💿 **43 new TMs:** the newer TMs whose move works in these games (Zen Headbutt, Dazzling
-  Gleam, Flash Cannon, Drain Punch, Earth Power, Scald...), sold at the TM counter: Celadon Dept.
-  Store 2F in Red, Blue and Yellow, Goldenrod Dept. Store 5F in Gold, Silver and Crystal. They
-  teach like the game's own TMs, with ABLE / NOT ABLE on the party screen, and in Gold, Silver
-  and Crystal they sit in the TM pocket between TM50 and the HMs.
+  Gleam, Flash Cannon, Drain Punch, Earth Power, Scald...), sold by TM EXPRESS. They teach like
+  the game's own TMs, with ABLE / NOT ABLE on the party screen, and in Gold, Silver and Crystal
+  they sit in the TM pocket between TM50 and the HMs.
 - 🍬 **Exp. Candies XS to XL:** 100 to 30,000 Exp. Points from the Bag, sold with the vitamins
   (Celadon Dept. Store 5F; Goldenrod Dept. Store 4F). Like a Rare Candy, each level shows its
   stats, offers every move learned on the way and can set off an evolution.
@@ -262,6 +274,9 @@ the game's own Pokémon keep their original data, so its event gifts arrive as u
   Candies and with walking, not with vitamins or Rare Candies.
 - **Gold, Silver and Crystal's summary** prints a number from #1000 on right against the level
   ("No.1000:L50").
+- **In Gold, Silver and Crystal, the new Pokémon turn grey while a move animation plays,** and
+  get their colours back when it ends: the game colours a Pokémon during an animation from its
+  own palette list, which they aren't in.
 
 ## 📚 Player Guides
 

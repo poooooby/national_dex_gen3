@@ -116,10 +116,30 @@ local function body(game, log, dir)
       local hp = battle.enemy.mon.hp
       battle.phase = "messages"; battle.afterQueue = "menu"
       battle:performMove(battle.player, battle.enemy, party[1].moves[1], false)
-      U.wait(30); shot("battle_move")
+      local played = 0
+      for i = 1, 400 do
+        if battle.animPlaying and battle.animName == "NIGHT_SLASH" then
+          played = played + 1
+          if played == 10 then shot("battle_fx_1") elseif played == 25 then shot("battle_fx_2") end
+          if played == 40 then shot("battle_fx_3") end
+        elseif played > 0 then break
+        elseif i % 6 == 0 then U.tap(game, "a") end
+        U.wait(1)
+      end
+      log("Night Slash's effect played " .. played .. " frames")
+      check(played > 20, "Night Slash plays its own effect")
+      shot("battle_move")
       toMenu()
       log("Lucario used " .. tostring(party[1].moves[1].id) .. ": Garchomp HP " .. hp .. " -> " .. battle.enemy.mon.hp)
       check(battle.enemy.mon.hp < hp, "Night Slash hurt Garchomp")
+      battle.phase = "messages"; battle.afterQueue = "menu"
+      battle.enemy.mon.hp = 999                     -- (it stands up to Close Combat, for the catch)
+      battle:performMove(battle.player, battle.enemy, { id = "CLOSE_COMBAT", pp = 5 }, false)
+      toMenu()
+      log("after Close Combat: DEFENSE " .. tostring(battle.player.stages.defense) .. ", SPECIAL "
+        .. tostring(battle.player.stages.special))
+      check(battle.player.stages.defense == -1, "Close Combat lowered Lucario's DEFENSE")
+      battle.enemy.mon.hp = battle.enemy.mon.stats.hp
       battle.phase = "messages"; battle.afterQueue = "menu"
       battle:throwBall("MASTER_BALL")
       for i = 1, 120 do
@@ -152,6 +172,47 @@ local function body(game, log, dir)
       U.wait(20); shot("battle_huds")
       b:useMove(b.player, b.enemy, move)
       log("Lucario used " .. tostring(move) .. ": Garchomp HP " .. hp .. " -> " .. tostring(b.enemy.hp))
+      local played = 0
+      for i = 1, 400 do
+        local a = screen.anim
+        if a and a.animId == move then
+          played = played + 1
+          if played == 10 then shot("battle_fx_1") elseif played == 25 then shot("battle_fx_2") end
+          if played == 40 then shot("battle_fx_3") end
+        elseif played > 0 then break
+        elseif i % 6 == 0 then U.tap(game, "a") end
+        U.wait(1)
+      end
+      log("Night Slash's effect played " .. played .. " frames")
+      check(played > 20, "Night Slash plays its own effect")
+      local live = b.stages[b:sideOf(b.player)]
+      local st0 = { defense = live.defense or 0, specialDefense = live.specialDefense or 0,
+        specialAttack = live.specialAttack or 0 }
+      log("before Close Combat: Defense " .. tostring(st0.defense) .. ", Sp. Def " .. tostring(st0.specialDefense)
+        .. ", Sp. Atk " .. tostring(st0.specialAttack))
+      local calls = 0
+      local Battle = require("src.battle.gen2.Battle")
+      local hub = Battle.__ndxMoveFx
+      b:useMove(b.player, b.enemy, "TACKLE")
+      local seenTackle = 0
+      for i = 1, 300 do
+        local a = screen.anim
+        if a and a.animId == "TACKLE" then
+          seenTackle = seenTackle + 1
+          if seenTackle == 12 then shot("battle_tackle") end
+        elseif seenTackle > 0 then break
+        elseif i % 6 == 0 then U.tap(game, "a") end
+        U.wait(1)
+      end
+      b:useMove(b.player, b.enemy, "CLOSE_COMBAT")
+      local st = b.stages[b:sideOf(b.player)]
+      for _, ev in ipairs(b.events or {}) do
+        if ev.kind == "stage" then calls = calls + 1 end
+      end
+      log("stage events: " .. calls .. "; hub specs: " .. tostring(hub and hub.specs and hub.specs.CLOSE_COMBAT ~= nil))
+      log("after Close Combat: Defense " .. tostring(st.defense) .. ", Sp. Def " .. tostring(st.specialDefense))
+      check(st.defense == st0.defense - 1 and st.specialDefense == st0.specialDefense - 1,
+        "Close Combat lowered Lucario's defences by one each")
       for _ = 1, 400 do
         if not (game.stack:top() or {}).battle then break end
         U.tap(game, "b"); U.wait(2)
@@ -344,6 +405,71 @@ local function body(game, log, dir)
       shot("pc_change_box_40")
     end
     popTo(base)
+  end)
+
+  -- phase C: the Pokedex FORMS page, a vending machine
+  section("forms page", function()
+    if gen == 1 then
+      Screens.push(game, "PokedexMenu")
+      U.wait(10)
+      Screens.push(game, "DexEntryMenu", "ALCREMIE")
+      local page
+      for _ = 1, 60 do
+        local top = game.stack:top()
+        if top and top.list then page = top break end
+        U.tap(game, "a"); U.wait(15)
+      end
+      check(page ~= nil, "A on Alcremie's last page opens its forms (" .. tostring(page and #page.list) .. ")")
+      U.wait(10); shot("dex_forms")
+      U.tap(game, "down"); U.wait(10); shot("dex_forms_2")
+    else
+      local dex = game.save.pokedex
+      for _, k in ipairs({ "seen", "caught", "owned" }) do
+        if type(dex[k]) == "table" then dex[k].ALCREMIE = true end
+      end
+      Screens.push(game, "Gen2PokedexMenu", { entrySpecies = "ALCREMIE", onClose = function() game.stack:pop() end })
+      U.wait(60)
+      local m = game.stack:top()
+      if m and m.view == "entry" then
+        m.page = 2
+        U.tap(game, "a"); U.wait(20)
+        check(m.page == 3, "PAGE goes on to the forms (page " .. tostring(m.page) .. ")")
+        shot("dex_forms")
+        U.tap(game, "down"); U.wait(15); shot("dex_forms_2")
+      else
+        check(false, "Gold's Pokedex opened on Alcremie's entry (" .. tostring(m and m.view) .. ")")
+      end
+    end
+    popTo(base)
+  end)
+
+  section("vending", function()
+    local ex = game.mods and game.mods.exports and game.mods.exports.national_dex_gen3
+    local V = ex and ex._vending
+    check(V ~= nil, "the vending machines are installed")
+    if not V then return end
+    if gen == 1 then
+      U.teleport(game, "CELADON_MART_4F", 18, 2, "right")
+    else
+      game.world:warpToMapId("GOLDENROD_DEPT_STORE_4F", 10, 2, "up")
+    end
+    for _ = 1, 120 do
+      U.wait(1)
+      if not V.pending then break end
+    end
+    U.wait(30); shot("vending_floor")
+    log("placed: " .. tostring(not V.pending) .. " " .. tostring(V.lastError))
+    U.tap(game, "a")
+    for _ = 1, 30 do U.wait(2); if V.screen.isOpen() then break end end
+    check(V.screen.isOpen(), "A on the machine opens its screen")
+    U.wait(150); shot("vending_screen")
+    U.tap(game, "right"); U.wait(8); U.tap(game, "down"); U.wait(8)
+    U.tap(game, "a"); U.wait(20); shot("vending_card")
+    for _ = 1, 6 do U.tap(game, "b"); U.wait(10) end
+    U.wait(20)
+    check(not V.screen.isOpen(), "B closes it")
+    if gen == 1 then U.teleport(game, "ROUTE_1", 5, 5, "down") end
+    base = depth()
   end)
 
   section("save and reload", function()
