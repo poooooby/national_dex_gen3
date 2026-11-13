@@ -52,7 +52,7 @@ return function(mod, loadSibling)
       for _, path in ipairs(Core.FAMILIES or {}) do
         local family = loadSibling(mod, path)
         if type(family) == "function" then
-          local okF, errF = pcall(family, core, { generation = generation, require = require })
+          local okF, errF = pcall(family, core, { generation = generation, require = require, mod = mod })
           if not okF then mod.log:warn("move mechanics %s failed to load: %s", path, tostring(errF)) end
         end
       end

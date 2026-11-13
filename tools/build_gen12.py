@@ -494,7 +494,9 @@ def build(api: bs.API, workers: int, engine: Path) -> dict[str, Any]:
     # battle facts every species needs in a battle (src/gen12/mech/): weights in hectograms
     # (Low Kick, Heavy Slam), by dex number and by form id
     battle = {"weights": [by_dex[d]["pokemon"].get("weight") or 0 for d in range(1, max(by_dex) + 1)],
-              "formWeights": {f["id"]: f["weight"] for f in forms}}
+              "formWeights": {f["id"]: f["weight"] for f in forms},
+              # PokéAPI's gender rate (-1 genderless, else eighths female), for Red's genders
+              "genderRates": [by_dex[d]["species"].get("gender_rate", -1) for d in range(1, max(by_dex) + 1)]}
     return {"records": records, "forms": forms, "crossgen": crossgen, "moves": moves,
             "cart": cart, "items": items, "modern": modern, "battle": battle, "report": report}
 

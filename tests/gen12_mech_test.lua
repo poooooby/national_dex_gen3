@@ -257,6 +257,26 @@ for _, version in ipairs(H.versions()) do
   w.use("NO_RETREAT")
   T.check(gen == 1 and core:ask("trapped", w.A, w.battler("player")) ~= nil or (gen == 2 and w.battle:switchLocked()),
     version .. ": No Retreat keeps the user in")
+
+  -- natures and gender (src/gen12/mech/traits.lua)
+  local Traits = core.traits
+  local modest = { attack = 0, defense = 0, speed = 0, special = 15 }      -- index 15: MODEST
+  T.eq(Traits.nature(modest), "MODEST", version .. ": a nature from the DVs")
+  local base = { hp = 100, attack = 100, defense = 100, speed = 100, special = 100,
+    specialAttack = 100, specialDefense = 100 }
+  local function copyStats() local c = {} for k, v in pairs(base) do c[k] = v end return c end
+  local applied = Traits.apply(copyStats(), modest, gen)
+  T.eq(applied.attack, 90, version .. ": Modest lowers Attack")
+  if gen == 1 then
+    T.eq(applied.special, 110, version .. ": and raises Red's SPECIAL")
+  else
+    T.eq(applied.specialAttack, 110, version .. ": and raises Sp. Atk")
+  end
+  w = sim.fresh({ mine = "NIDORAN_F", foe = "NIDORAN_M" })
+  T.eq(core:ask("gender", w.A, w.battler("player")), "F", version .. ": Nidoran F is female")
+  T.eq(core:ask("gender", w.A, w.battler("enemy")), "M", version .. ": Nidoran M is male")
+  w.use("ATTRACT")
+  T.check(gen == 2 or w.A:vol(w.battler("enemy")).attract ~= nil, version .. ": Attract (Red's ours)")
   sim.release()
 end
 
