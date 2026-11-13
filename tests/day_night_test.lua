@@ -97,6 +97,8 @@ local stubs = {
   ["src.render.Renderer"] = Renderer,
   ["src.core.game3.map"] = { currentDef = function() return { mapType = mapType } end },
 }
+local GameVersion = require("src.core.GameVersion")
+GameVersion.set("emerald")
 local DayNight = dofile("mods/national_dex_gen3/src/day_night.lua")
 local function frame()
   log = {}
@@ -123,6 +125,21 @@ Renderer.worldActive = false
 f = frame()
 T.check(not f:find("scratch", 1, true) and not f:find("rect", 1, true), "a battle or full-screen menu (no world pass) is never graded")
 Renderer.worldActive = true
+
+-- another game in the same run: the wraps stay on the Renderer, but grade nothing there
+for _, other in ipairs({ "red", "yellow", "gold", "crystal" }) do
+  GameVersion.set(other)
+  f = frame()
+  T.check(not f:find("scratch", 1, true) and not f:find("shaded", 1, true) and f:find("draw world plain screen", 1, true),
+    "switched to " .. other .. " without restarting: its world is drawn as it is")
+end
+Renderer.tilted = true
+f = frame()
+T.check(not f:find("blend multiply", 1, true), "nor overlaid in tilt")
+Renderer.tilted = nil
+GameVersion.set("emerald")
+f = frame()
+T.check(f:find("draw scratch shaded screen", 1, true), "back on Emerald: graded again")
 
 -- another mod (gen3-hd-sprites) wraps blitCanvas after us: we go back on the outside
 local inner = Renderer.blitCanvas

@@ -16,6 +16,9 @@
 -- the Bag, the Pokedex and other full-screen menus have no world pass, so they are never graded.
 -- Tilt mode draws the world without blitCanvas: there (and if the shader cannot compile) the
 -- grade is a multiply + add overlay on the view, painted just before the UI blit.
+-- The wraps live on the Renderer for the whole run (it is never reloaded, and the player can
+-- switch games without restarting), so they grade only while a Gen 3 game is running: Red's
+-- overworld draws through the same world blit, and it must keep its own look.
 local DayNight = {}
 
 -- gain: per channel; sat: 1 = unchanged; lift: the shadow floor (black becomes this colour)
@@ -58,6 +61,14 @@ local shader, shaderFailed = nil, false
 local scratch, scratchW, scratchH, scratchDpi = nil, 0, 0, 0
 local disabled = false
 local graded = false                         -- the world blit was graded this frame
+local GameVersion                            -- src.core.GameVersion, found at install
+
+-- a Gen 3 game is running (nothing else is ever graded)
+local function onGen3()
+  if not GameVersion then return false end
+  local ok, gen = pcall(GameVersion.generation)
+  return ok and gen == 3
+end
 local busy = false                           -- inside our own grade (an inner copy of the wrap passes through)
 local ourBlit, ourEndFrame
 
@@ -221,7 +232,9 @@ end
 
 local function makeBlit(Renderer, orig)
   return function(self, canvas, ...)
-    if busy or disabled or identity(cur) or not (love and love.graphics) then return orig(self, canvas, ...) end
+    if busy or disabled or identity(cur) or not (love and love.graphics) or not onGen3() then
+      return orig(self, canvas, ...)
+    end
     if canvas == self.worldCanvas and self.worldActive and not self.worldOverride then
       local ok, done = pcall(gradeBlit, orig, self, canvas, ...)
       if ok and done then graded = true return end
@@ -249,6 +262,8 @@ end
 -- opts: { require, log, enabled = fn() -> bool, phase = fn() -> phase name }
 function DayNight.install(o)
   opts = o or {}
+  local okV, GV = pcall(opts.require or require, "src.core.GameVersion")
+  GameVersion = okV and type(GV) == "table" and type(GV.generation) == "function" and GV or nil
   local okR, Renderer = pcall(opts.require or require, "src.render.Renderer")
   if not (okR and type(Renderer) == "table" and type(Renderer.blitCanvas) == "function"
       and type(Renderer.endFrame) == "function") then
@@ -261,7 +276,7 @@ function DayNight.install(o)
     local endFrame = Renderer.endFrame
     ourEndFrame = function(self, ...)
       graded = false
-      if not disabled then
+      if not disabled and onGen3() then
         ensureOutermost(Renderer)
         DayNight.step()
       end
