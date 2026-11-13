@@ -528,6 +528,15 @@ def build(api: bs.API, workers: int, engine: Path) -> dict[str, Any]:
     for item in bs.fetch_forms(api, fetched, 12):
         battle["formAbilities"][item["id"]] = ability_list(item["pokemon"])
     battle["split"] = split
+    # base Sp. Def by dex number and form id: Red's single SPECIAL is its Sp. Atk, and the Sp. Def it
+    # defends with is worked out from this (src/gen12/special_split.lua)
+    def sp_def(pokemon: dict[str, Any]) -> int:
+        for st in pokemon.get("stats", []):
+            if st["stat"]["name"] == "special-defense":
+                return st["base_stat"]
+        return 0
+    battle["spDef"] = [sp_def(by_dex[d]["pokemon"]) for d in range(1, max(by_dex) + 1)]
+    battle["formSpDef"] = {item["id"]: sp_def(item["pokemon"]) for item in bs.fetch_forms(api, fetched, 12)}
     # breeding (src/gen12/breeding_red.lua): egg groups, egg cycles and the species an egg of this
     # one hatches into (its chain's first stage; an incense baby's parent lays the next stage, there
     # being no incense here; Manaphy lays Phione)

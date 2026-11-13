@@ -22,7 +22,7 @@ T.eq(Red.wrap("Enemy PIDGEOTTO's attack was blocked by the barrier"),
   "Red text breaks at 18 columns")
 
 local function gen1(version)
-  local run = H.load(version)
+  local run, api = H.load(version)
   local data = run.data
   for _, id in ipairs(described) do
     if not (data.moves[id] and tostring(data.moves[id].effect):find("^NDX_M_")) then
@@ -64,8 +64,10 @@ local function gen1(version)
     return tb, hpFoe
   end
   local tb, hp = use("CLOSE_COMBAT")
-  T.check(tb.enemy.mon.hp < hp and tb.player.stages.defense == -1 and tb.player.stages.special == -1,
-    version .. ": Close Combat hits and lowers the user's DEFENSE and SPECIAL")
+  local A = api._mech.adapter.adapter(tb, api._mech.deps)
+  T.check(tb.enemy.mon.hp < hp and tb.player.stages.defense == -1 and (tb.player.stages.special or 0) == 0
+      and A:stage(tb.player, "spDef") == -1,
+    version .. ": Close Combat hits and lowers the user's DEFENSE and Sp. Def (not its SPECIAL)")
   tb = use("NASTY_PLOT")
   T.eq(tb.player.stages.special, 2, version .. ": Nasty Plot: SPECIAL +2")
   tb = use("SHELL_SMASH")

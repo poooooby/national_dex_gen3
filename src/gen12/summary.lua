@@ -1,8 +1,9 @@
 -- What the summary screens show of the parity systems (src/gen12/mech/traits.lua, abilities.lua,
 -- held_red.lua):
 --   Red   a third page after the moves: the first page's header (picture, name, level, HP),
---         then NATURE, ABILITY, ITEM (held) and gender in place of the stats box. A and B step
---         through it as through the other two (SummaryMenu.update / draw wrapped once a process).
+--         then NATURE, ABILITY, ITEM (held), SP.DEF and gender in place of the stats box. A and B
+--         step through it as through the other two (SummaryMenu.update / draw wrapped once a
+--         process). The first page's SPECIAL is labelled SP.ATK, which it is now.
 --   Gold  the nature and ability under OT on the third page (the stats page), whose left column
 --         has four free rows (SummaryMenu.drawPanel wrapped once a process).
 
@@ -49,6 +50,11 @@ function Summary.install(opts)
         return update(self, dt, ...)
       end
       SummaryMenu.draw = function(self, ...)
+        if self.page == 1 and hub.on and hub.relabel then
+          local a, b = draw(self, ...)
+          pcall(hub.relabel, self)
+          return a, b
+        end
         if self.page ~= 3 or not hub.on then return draw(self, ...) end
         self.page = 1
         local ok, err = pcall(draw, self, ...)
@@ -87,6 +93,13 @@ function Summary.install(opts)
       end
     end
     hub.on = true
+    hub.relabel = core.spDefOf and function(self)
+      local g = love.graphics
+      g.setColor(1, 1, 1, 1)
+      g.rectangle("fill", 8, 120, 56, 8)
+      g.setColor(0, 0, 0, 1)
+      Font.draw(Strings("SP.ATK"), 8, 120)
+    end or nil
     hub.drawInfo = function(self)
       local mon, data = self.mon, self.game.data
       local g = love.graphics
@@ -97,11 +110,16 @@ function Summary.install(opts)
       local itemDef = held and data.items[held]
       local gender = genderOf(data, mon)
       Font.draw(Strings("NATURE/"), 8, 72)
-      Font.draw(natureOf(mon) or "-", 24, 80)
-      Font.draw(Strings("ABILITY/"), 8, 96)
-      Font.draw(abilityOf(data, mon) or "-", 24, 104)
-      Font.draw(Strings("ITEM/"), 8, 120)
-      Font.draw(itemDef and itemDef.name or (held and tostring(held)) or Strings("NONE"), 24, 128)
+      Font.draw(natureOf(mon) or "-", 72, 72)
+      Font.draw(Strings("ABILITY/"), 8, 88)
+      Font.draw(abilityOf(data, mon) or "-", 24, 96)
+      Font.draw(Strings("ITEM/"), 8, 112)
+      Font.draw(itemDef and itemDef.name or (held and tostring(held)) or Strings("NONE"), 24, 120)
+      local spd = core.traits and core.traits.spDef and core.traits.spDef(mon, data)
+      if spd then
+        Font.draw(Strings("SP.DEF"), 8, 136)
+        Font.draw(("%3d"):format(spd), 72, 136)
+      end
       if gender then Font.draw(gender == "F" and "♀" or "♂", 144, 72) end
     end
     return hub

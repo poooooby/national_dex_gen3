@@ -2,10 +2,12 @@
 --
 -- Natures (both games): each Pokemon's nature comes from its DVs (a stable pick of the 25, so a
 -- Pokemon keeps it for good and nothing new is saved), and raises one stat 10% and lowers another
--- 10% where the game works its stats out (Red Stats.calc, Gold Mon.stats). Red has one SPECIAL:
--- it takes Sp. Atk's factor times Sp. Def's, so Modest raises it and Rash / Gentle leave it
--- about even. The party's stats are worked out again when a save loads, so Pokemon from before
--- this get theirs at once.
+-- 10% where the game works its stats out (Red Stats.calc, Gold Mon.stats). Red's one SPECIAL is
+-- its Sp. Atk (Sp. Atk's factor); its Sp. Def is worked out here, never saved (Traits.spDef: the
+-- species' base Sp. Def from data/gen12/battle.lua, the Special DV and stat experience, Gen 1's
+-- formula, Sp. Def's factor), and the battle defends with it against special moves
+-- (src/gen12/battle/red.lua). The party's stats are worked out again when a save loads, so
+-- Pokemon from before this get theirs at once.
 --
 -- Gender: Gold's rule on both games (its Attack and Speed DVs against the species' ratio), Red
 -- reading the ratios from data/gen12/battle.lua. core "gender" answers it (Attract, Captivate).
@@ -41,13 +43,41 @@ return function(core, opts)
     scale("defense", m.defense)
     scale("speed", m.speed)
     if generation == 1 then
-      local k = (m.spAtk or 1) * (m.spDef or 1)
-      if k ~= 1 then scale("special", k) end
+      scale("special", m.spAtk)
     else
       scale("specialAttack", m.spAtk)
       scale("specialDefense", m.spDef)
     end
     return stats
+  end
+
+  -- Red: the Sp. Def a Pokemon defends with (nil when its species is unknown)
+  function Traits.spDef(mon, data)
+    if gen ~= 1 or type(mon) ~= "table" then return nil end
+    local facts = core.facts or {}
+    local r = data and data.pokemon and data.pokemon[mon.species]
+    if not r then return nil end
+    local base = r.baseSpecies and facts.formSpDef and facts.formSpDef[mon.species]
+    base = base or (facts.spDef and facts.spDef[r.baseDex or r.dex or 0])
+    if not base then return nil end
+    local dvs, exp = mon.dvs or {}, mon.statExp or {}
+    local ev = math.floor(math.min(255, math.ceil(math.sqrt(exp.special or 0))) / 4)
+    local v = math.floor(((base + (dvs.special or 0)) * 2 + ev) * (mon.level or 1) / 100) + 5
+    local k = Traits.mods(dvs).spDef
+    if k then v = math.floor(v * k) end
+    return v
+  end
+  core.spDefOf = gen == 1 and function(A, b) return Traits.spDef(A:mon(b), A.battle and A.battle.data) end or nil
+  -- Haze resets every stage, Sp. Def's too
+  if gen == 1 then
+    core:on("moveUsed", function(A, ev)
+      local id = ev.moveId or (ev.move and ev.move.id)
+      if id ~= "HAZE" then return end
+      for _, side in ipairs({ "player", "enemy" }) do
+        local b = A.battle and A.battle[side]
+        if b then A:vol(b).spDefStage = nil end
+      end
+    end)
   end
 
   -- once per process (games switch in-process); applies only on the version this install is for

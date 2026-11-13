@@ -82,13 +82,26 @@ function RedA:maxHp(b) return (b.mon.stats and b.mon.stats.hp) or b.mon.hp or 1 
 function RedA:level(b) return b.mon.level or 1 end
 function RedA:species(b) return b.mon.species end
 function RedA:mon(b) return b.mon end
--- a battle stat before stages: attack / defense / speed / spAtk / spDef (both are SPECIAL)
+-- a battle stat before stages: attack / defense / speed / spAtk (the SPECIAL) / spDef (worked out
+-- from the species' Sp. Def: core.spDefOf, src/gen12/mech/traits.lua; its stage is ours, kept on
+-- the battler, so the SPECIAL's stage is Sp. Atk's)
 function RedA:stat(b, s)
+  if s == "spDef" and self.core.spDefOf then
+    local v = self.core.spDefOf(self, b)
+    if v then return v end
+  end
   local cur = b.curStats or b.mon.stats or {}
   return cur[STAGE[s] or s] or 1
 end
-function RedA:stage(b, s) return (b.stages and b.stages[STAGE[s] or s]) or 0 end
+function RedA:stage(b, s)
+  if s == "spDef" and self.core.spDefOf then return self:vol(b).spDefStage or 0 end
+  return (b.stages and b.stages[STAGE[s] or s]) or 0
+end
 function RedA:setStage(b, s, v)
+  if s == "spDef" and self.core.spDefOf then
+    self:vol(b).spDefStage = math.max(-6, math.min(6, v))
+    return
+  end
   b.stages[STAGE[s] or s] = math.max(-6, math.min(6, v))
 end
 -- the battler's types now, in modern names (PSYCHIC_TYPE -> PSYCHIC, BIRD -> FLYING)
@@ -303,24 +316,42 @@ function RedA:failText() return self.romText(self.battle.data, "_ButItFailedText
 function RedA:stages(b, t, opts)
   opts = opts or {}
   local list = {}
-  local special = (t.spAtk and t.spAtk ~= 0) and t.spAtk or t.spDef
+  local split = self.core.spDefOf ~= nil
+  local special = (t.spAtk and t.spAtk ~= 0) and t.spAtk or (not split and t.spDef) or nil
   for _, s in ipairs({ "attack", "defense", "speed" }) do
     if t[s] and t[s] ~= 0 then list[#list + 1] = { s, t[s] } end
   end
   if special and special ~= 0 then list[#list + 1] = { "special", special } end
+  if split and t.spDef and t.spDef ~= 0 then list[#list + 1] = { "spDef", t.spDef } end
   for _, s in ipairs({ "accuracy", "evasion" }) do
     if t[s] and t[s] ~= 0 then list[#list + 1] = { s, t[s] } end
   end
   local fromFoe = opts.from ~= nil and opts.from ~= b
   local any = false
   for _, c in ipairs(list) do
-    local msgs = self.MoveEffects.changeStage(self.battle, b, c[1], c[2], fromFoe) or {}
+    local msgs = c[1] == "spDef" and self:spDefStage(b, c[2], fromFoe)
+      or self.MoveEffects.changeStage(self.battle, b, c[1], c[2], fromFoe) or {}
     if not msgs.failed then any = true end
     if not (opts.secondary and msgs.failed) then
       for _, m in ipairs(msgs) do self:say(m) end
     end
   end
   return any
+end
+
+-- Sp. Def's own stage (Red's MoveEffects.changeStage knows only the SPECIAL): its lines as the
+-- game words a stat change, Mist and a Substitute stopping a foe's drop
+function RedA:spDefStage(b, delta, fromFoe)
+  local v = self:vol(b)
+  local now = v.spDefStage or 0
+  local name = self:name(b)
+  if fromFoe and delta < 0 and (b.substituteHP or b.mist) then return { failed = true } end
+  if (delta > 0 and now >= 6) or (delta < 0 and now <= -6) then
+    return { self.Strings("Nothing happened!"), failed = true }
+  end
+  v.spDefStage = math.max(-6, math.min(6, now + delta))
+  local how = delta >= 2 and "greatly rose!" or delta > 0 and "rose!" or delta <= -2 and "greatly fell!" or "fell!"
+  return { self.Strings("%s's\nSP. DEF " .. how, name) }
 end
 
 -- a status in the `extra` names (BURN, PARALYSIS, POISON, TOXIC, SLEEP, FREEZE, CONFUSION);
@@ -744,6 +775,15 @@ function Red.installSeams(mod, deps)
       end
     end
     local ok, a, b = pcall(function()
+      -- a special move meets the target's Sp. Def and Sp. Def stage, not its SPECIAL
+      if defSlot == "special" and core.spDefOf then
+        local v = core.spDefOf(A, target)
+        if v then
+          saved[#saved + 1] = { target, "special", target.curStats.special, target.stages.special }
+          target.curStats.special = v
+          target.stages.special = A:stage(target, "spDef")
+        end
+      end
       over(user, atkSlot, atkSlot == "special" and "spAtk" or "attack")
       over(target, defSlot, defSlot == "special" and "spDef" or "defense")
       if want then

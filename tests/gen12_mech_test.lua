@@ -384,6 +384,30 @@ for _, version in ipairs(H.versions()) do
   T.check(x.hp("enemy") < hp, version .. ": a physical Fire Punch still hits")
   opts.national_dex_gen3.move_split = nil
 
+  -- Red's Sp. Def (src/gen12/mech/traits.lua Traits.spDef, src/gen12/battle/red.lua)
+  if gen == 1 then
+    w = sim.fresh({ mine = "MEWTWO", foe = "ALAKAZAM", level = 50 })
+    local Traits = core.traits
+    local mew = w.mon("player")
+    mew.dvs = { attack = 0, defense = 0, speed = 0, special = 0, hp = 0 }  -- Hardy: no nature change
+    T.eq(Traits.nature(mew.dvs), "HARDY", version .. ": a neutral nature for the numbers")
+    T.eq(Traits.spDef(mew, data), math.floor(90 * 2 * 50 / 100) + 5, version .. ": Mewtwo's Sp. Def from its base 90")
+    local chansey = w.battler("enemy")
+    local spd = w.A:stat(chansey, "spDef")
+    T.check(spd < w.A:stat(chansey, "spAtk"), version .. ": Alakazam defends with its Sp. Def (base 95), below its SPECIAL (135)")
+    local psy = data.moves.PSYCHIC_M or data.moves.PSYCHIC
+    local tb = w.battle
+    local before = tb:computeDamage(tb.player, chansey, psy, { rng = tb.rng, forceCrit = false })
+    w.A:stages(chansey, { spDef = -2 })
+    T.eq(w.A:stage(chansey, "spDef"), -2, version .. ": Sp. Def has its own stage")
+    T.eq(chansey.stages.special or 0, 0, version .. ": the SPECIAL (Sp. Atk) stage is untouched")
+    local after = tb:computeDamage(tb.player, chansey, psy, { rng = tb.rng, forceCrit = false })
+    T.check(after > before, version .. ": a lowered Sp. Def lets a special move hit harder")
+    T.eq(chansey.curStats.special, chansey.mon.stats.special, version .. ": the SPECIAL is put back after the hit")
+    w.A:stages(w.battler("player"), { spAtk = 1 })
+    T.eq(w.A:stage(w.battler("player"), "spAtk"), 1, version .. ": Sp. Atk changes are the SPECIAL's")
+  end
+
   -- Modern Rules on Red (src/gen12/modern_rules.lua, option modern_rules, on by default)
   if gen == 1 then
     local MR = sim.api and sim.api._modernRules
