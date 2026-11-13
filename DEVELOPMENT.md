@@ -799,11 +799,23 @@ The owner asked for the Gen 3 extras on Gen 1/2 (2026-11-12). Phase A is the fou
   `Evolution.checkMon`. Sold with the vitamins (Celadon 5F clerk 2 / Goldenrod 4F).
 - **Type badges** (`src/gen12/type_badges.lua`): `src/type_badges.lua`'s `COLORS` / `GLYPHS`
   (loaded as it is), 10 x 10 (rim + 8 x 8 glyph), Gen 3 badge ids by type name (`_TYPE` stripped,
-  `BIRD` = Flying, `CURSE` = ???). The only clear block is x 64-96, rows 28-56: a foe's row
-  right-aligned at x 88, y 29 (under its underline), yours from x 72, y 46 (on your name's line).
-  Red: `mod.hooks:wrap("battle.overlay")` (drawn after the whole frame), gated by the same tests
-  as `BattleState:drawHUDs` / WideBattle's; the wide layout uses `Badges.WIDE1` (panels at
-  (0,0) and (184,56)). Gold: `BattleState.drawEnemyHud` / `drawPlayerHud` wrapped once per process
+  `BIRD` = Flying, `CURSE` = ???). Placed as on Gen 3 (owner, 2026-11-13): beside each box, level
+  with its name and HP lines. The foe's at x 89, y 2: its name and HP bar end at x 87 and its
+  picture starts at x 96. Yours at x 69, y 57: your name and HP bar start at x 80 and the back
+  picture ends at x 64. The same on Red and Gold. A second type sits 11 rows under the first.
+  Gen 3's diagonal step would cover the Pokemon in these 8 px gutters.
+  Red, classic layout: drawn WITH the boxes, never from `battle.overlay`. gen3-hd-sprites' Battle
+  Fit draws the field (pictures, animations, the overlay hook) zoomed to the window and the boxes
+  plus text box on a canvas of its own at another scale. Badges drawn from the overlay drifted
+  off the boxes (seen in Red 2026-11-13). So `BattleState.drawHUDs` and `drawZonePass` are wrapped
+  once per process (`BattleState.__ndxBadges` hub, the last install's state). On the flat path the
+  badges are drawn right after drawHUDs. On the coloured path drawHUDs only marks the battle, and
+  the next `drawZonePass` (the one that composites the boxes' gray canvas) draws them after itself,
+  so the shade shader never recolours them and they follow the window shake. A drawHUDs shadowed
+  on the instance (Battle Fit's field pass) never reaches the wrap, so that frame's field gets
+  none. The enemy row follows `fx.hudShakeX`. The tests are the same as drawHUDs'. The wide layout
+  (WideBattle's local panels, no seam) stays on `mod.hooks:wrap("battle.overlay")` with
+  `Badges.WIDE1` (panels at (0,0) and (184,56)). Gold: `BattleState.drawEnemyHud` / `drawPlayerHud` wrapped once per process
   (`GS.__ndxBadges` hub, the last install's state; badges only in the battle of the game whose
   data that install got at game.ready), gated by `showEnemyHud` / `showPlayerHud`,
   `statusHUDVisible`, `hudCleared`; types from `battle:battlerTypes(activeMon)`.

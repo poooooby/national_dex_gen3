@@ -23,7 +23,8 @@
 --   knows       a list of move ids: the Pokemon knows any one of them
 --   party       { species = "REMORAID" } or { type = "DARK" }: another Pokemon in the party
 --   weather     "rain": the overworld weather is rain, a thunderstorm or a downpour
---   uses        { move = 99, count = 20 }: it has used that move that many times in battle
+--   uses        { move = { 677, 99 }, count = 20 }: it has used those moves that many times in
+--               battle, all of them together (`move` may also be one id)
 --   steps       steps walked while it was first in the party (src/counters.lua)
 --   coins       Coin Case coins needed; they are spent when it evolves (src/counters.lua)
 --   terrain     "plant", "sandy" or "trash": where the last battle was fought (below)
@@ -91,6 +92,20 @@ local TYPE_IDS = {
   DRAGON = 16, DARK = 17,
 }
 
+-- the move ids a `uses` condition counts: { 677, 99 } or a single id
+function ConditionalEvos.usesMoves(move)
+  if type(move) == "table" then return move end
+  return { move }
+end
+
+-- how often a Pokemon has used any of those moves, together (uses: move id -> count)
+function ConditionalEvos.usesOf(uses, move)
+  local total = 0
+  if type(uses) ~= "table" then return 0 end
+  for _, id in ipairs(ConditionalEvos.usesMoves(move)) do total = total + (tonumber(uses[id]) or 0) end
+  return total
+end
+
 -- Do a step's conditions hold? facts: { held, night, friendship, personality, gender,
 -- terrain, recoil, moves (set of move ids), partySpecies (set of slots), partyTypes (set of
 -- type ids), speciesSlot(name), rain, uses, steps, coins }
@@ -115,7 +130,7 @@ function ConditionalEvos.qualifies(step, facts, itemIndex)
     end
   end
   if when.weather == "rain" and not facts.rain then return false end
-  if when.uses and ((facts.uses and facts.uses[when.uses.move]) or 0) < when.uses.count then return false end
+  if when.uses and ConditionalEvos.usesOf(facts.uses, when.uses.move) < when.uses.count then return false end
   if when.steps and (facts.steps or 0) < when.steps then return false end
   if when.coins and (facts.coins or 0) < when.coins then return false end
   if when.hold and not holds(when.hold, facts.held, itemIndex) then return false end

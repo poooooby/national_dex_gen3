@@ -2,7 +2,8 @@
 -- (src/conditional_evos.lua reads them as `when` conditions):
 --
 --   recoilTaken  the recoil damage it has taken in battle, in total (Basculin: 294)
---   moveUses     how often it has used a move (Primeape: Rage 20 times, for Rage Fist)
+--   moveUses     how often it has used a move, by move id (Primeape: Rage Fist and Rage, 20 times
+--                together)
 --   stepsAsLead  steps walked while it was first in the party (Pawmo, Bramblin, Rellor: 1000)
 --   critsThisBattle  critical hits it landed in its current (or last) battle (Galarian
 --                Farfetch'd: 3), set back to 0 when a battle starts
@@ -31,15 +32,26 @@ function Counters.recoil(effect, damage)
   return math.max(1, math.floor((tonumber(damage) or 0) / share))
 end
 
+-- the move ids a `uses` need counts (a list, or one id)
+local function usesMoves(move)
+  if type(move) == "table" then return move end
+  return { move }
+end
+
+-- how often it has used any of those moves, together
+function Counters.uses(mon, move)
+  local uses = type(mon) == "table" and type(mon.moveUses) == "table" and mon.moveUses or {}
+  local total = 0
+  for _, id in ipairs(usesMoves(move)) do total = total + (tonumber(uses[id]) or 0) end
+  return total
+end
+
 -- Is every counter this Pokemon's evolution asks for met?
--- need: { recoil = n, uses = { move, count }, steps = n }
+-- need: { recoil = n, uses = { move = id or { ids }, count }, steps = n }
 function Counters.met(mon, need)
   if type(mon) ~= "table" or type(need) ~= "table" then return false end
   if need.recoil and (tonumber(mon.recoilTaken) or 0) < need.recoil then return false end
-  if need.uses then
-    local uses = type(mon.moveUses) == "table" and mon.moveUses or {}
-    if (tonumber(uses[need.uses.move]) or 0) < need.uses.count then return false end
-  end
+  if need.uses and Counters.uses(mon, need.uses.move) < need.uses.count then return false end
   if need.steps and (tonumber(mon.stepsAsLead) or 0) < need.steps then return false end
   if need.crits and (tonumber(mon.critsThisBattle) or 0) < need.crits then return false end
   return true
@@ -84,9 +96,14 @@ function Counters.install(mod, needs)
 
   mod.events:on("battle.move_used", function(ev)
     local mon, need, index = ours(ev)
-    if not (need and need.uses) or ev.isCalled or tonumber(ev.moveNum) ~= need.uses.move then return end
+    if not (need and need.uses) or ev.isCalled then return end
+    local num, counted = tonumber(ev.moveNum), false
+    for _, id in ipairs(usesMoves(need.uses.move)) do
+      if num == id then counted = true end
+    end
+    if not counted then return end
     mon.moveUses = type(mon.moveUses) == "table" and mon.moveUses or {}
-    mon.moveUses[need.uses.move] = (tonumber(mon.moveUses[need.uses.move]) or 0) + 1
+    mon.moveUses[num] = (tonumber(mon.moveUses[num]) or 0) + 1
     if Counters.met(mon, need) then mark(index) end
   end)
 

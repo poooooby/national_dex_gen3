@@ -26,7 +26,7 @@ return {
   { method = "EVO_LEVEL", level = 32, target = 424, when = { knows = { 154 } }, source = 190 },
   { method = "EVO_LEVEL", level = 32, target = 981, when = { knows = { 60 } }, source = 203 },
   { method = "EVO_LEVEL", level = 32, target = 982, when = { knows = { 36 } }, source = 206 },
-  { method = "EVO_LEVEL", level = 35, target = 979, when = { uses = { move = 99, count = 20 } }, source = 57 },
+  { method = "EVO_LEVEL", level = 35, target = 979, when = { uses = { move = { 677, 99 }, count = 20 } }, source = 57 },
   { method = "EVO_FRIENDSHIP", target = 700, source = 133, when = { knows = { 204, 186 } } },
   { method = "EVO_LEVEL", level = 1, target = 461, when = { hold = "razor-claw", time = "night" }, source = 215 },
   { method = "EVO_LEVEL", level = 1, target = 472, when = { hold = "razor-fang", time = "night" }, source = 207 },

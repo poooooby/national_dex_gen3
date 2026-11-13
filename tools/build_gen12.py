@@ -268,7 +268,7 @@ def egg(pokemon: dict[str, Any]) -> list[int]:
 # ---------------------------------------------------------------- evolutions
 
 def gen3_move_numbers() -> dict[int, int]:
-    """This mod's Gen 3 move index (355+) -> National move number, for `knows` lists."""
+    """This mod's Gen 3 move index (355+) -> National move number, for `knows` / `uses` lists."""
     return {index: api for api, index in bs.real_moves().items()}
 
 
@@ -279,6 +279,10 @@ def national_knows(steps: list[dict[str, Any]], index_to_api: dict[int, int]) ->
         when = step.get("when")
         if when and "knows" in when:
             when["knows"] = [index_to_api.get(m, m) for m in when["knows"]]
+        if when and "uses" in when:
+            moves = when["uses"]["move"]
+            moves = moves if isinstance(moves, list) else [moves]
+            when["uses"]["move"] = [index_to_api.get(m, m) for m in moves]
         out.append(step)
     return out
 

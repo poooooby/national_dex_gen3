@@ -233,7 +233,7 @@ stand-in is a TM or a level-up move the Pokémon already has, so no learnset is 
 | Mantyke | Mantine | Level up with a Remoraid in the party |
 | Pancham (level 32+) | Pangoro | Level up with a Dark-type Pokémon in the party |
 | Sliggoo (level 50+) | Goodra | Level up while it is raining (rain, thunderstorm or downpour) |
-| Primeape (level 35+) | Annihilape | Use Rage 20 times in battle, for Rage Fist |
+| Primeape (level 35+) | Annihilape | Use Rage Fist 20 times in battle, then level up (uses of Rage count too) |
 | Pawmo, Bramblin, Rellor | Pawmot, Brambleghast, Rabsca | Walk 1000 steps while first in the party |
 | Gimmighoul | Gholdengo | Level up with 999 coins in the Coin Case; the 999 are spent |
 | Sneasel | Weavile | Level up holding a Razor Claw, at night |
@@ -283,6 +283,8 @@ The same Pokémon and forms evolve on the Generation 1 and 2 games, in each game
   - These games have no rain, so Sliggoo evolves at level 50.
   - They have no battle ground, so a female Burmy always becomes Plant Wormadam.
   - Recoil isn't counted, so White-Striped Basculin evolves at level 36.
+  - There is no Rage Fist, so Primeape (level 35+) evolves into Annihilape after using **Rage**
+    20 times in battle.
   - An evolution that needs a move the game doesn't have happens at its level instead.
 - **Forms** are the same 128. They don't have their own Pokédex entry; seeing or catching one
   counts its base Pokémon.

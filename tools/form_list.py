@@ -212,7 +212,8 @@ FORM_EVOLUTIONS = [
 #   knows       a list of move ids: the Pokemon knows any one of them
 #   party       { species = "REMORAID" } or { type = "DARK" }: another Pokemon in the party
 #   weather     "rain": the overworld weather (rain, thunderstorm, downpour)
-#   uses        { move = 99, count = 20 }: it has used that move that many times in battle
+#   uses        { move = [677, 99], count = 20 }: it has used those moves (Gen 3 move indices;
+#               this mod's own from 355) that many times in battle, all of them together
 #   steps       steps walked while it was first in the party
 #   coins       Coin Case coins needed (and spent on evolving)
 #   crits       critical hits it landed in its current (or last) battle (src/counters.lua)
@@ -359,7 +360,9 @@ CONDITIONAL_CROSSGEN = [
     dict(_when(32, 424, knows=[154]), source=190),        # Aipom -> Ambipom (Fury Swipes)
     dict(_when(32, 981, knows=[60]), source=203),         # Girafarig -> Farigiraf (Psybeam)
     dict(_when(32, 982, knows=[36]), source=206),         # Dunsparce -> Dudunsparce (Take Down)
-    dict(_when(35, 979, uses={"move": 99, "count": 20}), source=57),   # Primeape -> Annihilape (Rage x20)
+    # Primeape -> Annihilape: Rage Fist (677, this mod's) and Rage, 20 uses together. Rage counts
+    # too: Red to Crystal have no Rage Fist, and Gen 3 saves counted Rage before Rage Fist existed.
+    dict(_when(35, 979, uses={"move": [677, 99], "count": 20}), source=57),
     {"method": "EVO_FRIENDSHIP", "target": 700, "source": 133,         # Eevee -> Sylveon
      "when": {"knows": [204, 186]}},                                    # (Charm or Sweet Kiss)
     dict(_when(1, 461, hold="razor-claw", time="night"), source=215),  # Sneasel -> Weavile

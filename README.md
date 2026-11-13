@@ -165,8 +165,9 @@ Crystal have their own section after them.
 - 🍬 **Exp. Candies XS to XL:** 100 to 30,000 Exp. Points from the Bag, sold with the vitamins
   (Celadon Dept. Store 5F; Goldenrod Dept. Store 4F). Like a Rare Candy, each level shows its
   stats, offers every move learned on the way and can set off an evolution.
-- 🏷️ **Type badges:** small badges by each HP box in battle show the Pokémon's types: a foe's
-  under its box, yours above your name.
+- 🏷️ **Type badges:** small badges beside each HP box in battle show the Pokémon's types, as on
+  the Gen 3 games: to the right of the foe's name and HP bar, to the left of yours. They stay
+  beside their box when the battle fills the window.
 - 📦 **Bigger PC:** 40 boxes (800 Pokémon) instead of 12 or 14.
 
 ## ⚙️ Options

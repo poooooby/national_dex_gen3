@@ -106,8 +106,13 @@ function Evolutions.convert(step, ctx)
         row.method, row.item, row.level = "ITEM", ids[1], nil
       end
     elseif k == "uses" then
-      local id = ctx.direct(v.move)
-      if id then cond.uses = { move = id, count = v.count } end
+      -- the moves this game has (Rage Fist is swapped for a cart move here: Rage alone counts)
+      local ids = {}
+      for _, n in ipairs(type(v.move) == "table" and v.move or { v.move }) do
+        local id = ctx.direct(n)
+        if id then ids[#ids + 1] = id end
+      end
+      if #ids > 0 then cond.uses = { move = ids, count = v.count } end
     elseif k == "terrain" then
       if v ~= "plant" then return nil end             -- no battle ground here: the Plant cloak
     elseif k == "recoil" then
@@ -218,7 +223,11 @@ function Evolutions.install(opts)
         state.conds[Evolutions.key(source, e.row)] = e.cond
         state.byPair[source .. ">" .. (e.row.species or e.row.into)] = e.cond
         if e.cond.steps then state.watch.steps[source] = true end
-        if e.cond.uses then state.watch.uses[source] = e.cond.uses.move end
+        if e.cond.uses then
+          local set = state.watch.uses[source] or {}
+          for _, id in ipairs(e.cond.uses.move) do set[id] = true end
+          state.watch.uses[source] = set
+        end
         if e.cond.crits then state.watch.crits[source] = true end
       end
     end
@@ -430,7 +439,7 @@ function Evolutions.install(opts)
     local mon = partyMon(ev and ev.user)
     local want = mon and mon.species and state.watch.uses[mon.species]
     local id = ev and (ev.moveId or (ev.move and ev.move.id))
-    if want and id == want then
+    if want and id and want[id] then
       local bag = Evolutions.bag(mon, true)
       bag.moveUses = bag.moveUses or {}
       bag.moveUses[id] = (bag.moveUses[id] or 0) + 1

@@ -297,14 +297,38 @@ for _, version in ipairs(H.versions()) do
     T.check(Runtime.wantsHook("battle.overlay"), version .. ": the badges are on the battle overlay")
     local state = Badges.install({ require = require, generation = 1, glyphs = Glyphs })
     stub(state)
+    T.check(state.classicWithBoxes and require("src.battle.BattleState").__ndxBadges ~= nil,
+      version .. ": the classic layout's badges go with the boxes")
     local b = { drawHUDs = yes, statusHUDVisible = yes, growInScale = no, wideLayout = no,
-      enemy = { curTypes = { "FIRE", "FLYING" } }, player = { curTypes = { "PSYCHIC_TYPE" } } }
+      colorMode = no, enemy = { curTypes = { "FIRE", "FLYING" } }, player = { curTypes = { "PSYCHIC_TYPE" } } }
     state.overlay(b)
-    T.eq(table.concat(drawn, " "), "10@67,29 2@78,29 14@72,46",
-      version .. ": a foe's under its box, right-aligned; yours on your box")
+    T.eq(#drawn, 0, version .. ": the classic layout's are not drawn from the overlay")
+    state.hud(b, 0)
+    T.eq(table.concat(drawn, " "), "10@89,2 2@89,13 14@69,57",
+      version .. ": a foe's right of its name and HP bar, yours left of yours, a second type under the first (flat path: with the boxes)")
+    drawn = {}
+    b.colorMode = yes
+    state.zone(b, 0, 0)
+    T.eq(#drawn, 0, version .. ": coloured path: no zone pass draws them before the boxes were drawn")
+    state.hud(b, 0)
+    T.eq(#drawn, 0, version .. ": coloured path: not into the gray canvas the boxes go to")
+    state.zone(b, 0, 0)
+    T.eq(table.concat(drawn, " "), "10@89,2 2@89,13 14@69,57",
+      version .. ": coloured path: drawn after the zone pass that puts the boxes on screen")
+    drawn = {}
+    state.zone(b, 0, 0)
+    T.eq(#drawn, 0, version .. ": once per drawing of the boxes")
+    state.hud(b, 4)
+    state.zone(b, 0, 0)
+    T.eq(#drawn, 0, version .. ": none while the intro slides in")
+    b.wideLayout = yes
+    state.overlay(b)
+    T.eq(table.concat(drawn, " "), "10@130,2 2@130,13 14@173,58", version .. ": the wide layout's from the overlay")
     drawn = {}
     b.enemy.fainted, b.showPlayerBack = true, true
     state.overlay(b)
+    b.wideLayout = no
+    state.hud(b, 0); state.zone(b, 0, 0)
     T.eq(#drawn, 0, version .. ": none while the boxes are not drawn")
   else
     local hub = require("src.ui.gen2.BattleState").__ndxBadges
@@ -316,7 +340,7 @@ for _, version in ipairs(H.versions()) do
       battle = { battlerTypes = function(_, m) return m.types end } }
     hub.after(self, "enemy")
     hub.after(self, "player")
-    T.eq(table.concat(drawn, " "), "8@67,29 18@78,29 17@72,46", version .. ": the foe's and yours")
+    T.eq(table.concat(drawn, " "), "8@89,2 18@89,13 17@69,57", version .. ": the foe's and yours")
     drawn = {}
     self.showEnemyHud = false
     hub.after(self, "enemy")

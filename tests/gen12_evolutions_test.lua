@@ -3,7 +3,7 @@
 -- src/gen12/evolutions.lua + items.lua through each game's own evolution code (Red:
 -- Evolution.pendingFor and the Bag's item use; Gold: Evolution.checkMon and its stone records):
 -- every row points at real species, items and methods; level, friendship, stat, 1-in-n,
--- gender, known-move, party, steps and coins conditions; the new items evolve (Red: used, also
+-- gender, known-move, party, steps, move-use and coins conditions; the new items evolve (Red: used, also
 -- trade and held items; Gold: stones used, trade and held items held); a held item is used up
 -- and coins are spent; the items are on sale.
 package.path = "./?.lua;./?/init.lua;" .. package.path
@@ -121,6 +121,13 @@ local function gen1(version)
   T.eq(levelUp(gimmighoul), "GHOLDENGO", version .. ": with 999")
   Evolution.apply(game, gimmighoul, "GHOLDENGO", "LEVEL")
   T.eq(game.save.coins, 201, version .. ": the 999 coins are spent")
+  -- Primeape: Rage 20 times (no Rage Fist on these games), from level 35
+  local primeape = mon("PRIMEAPE", 35)
+  for _ = 1, 19 do Runtime.emit("battle.move_used", { user = { mon = primeape }, moveId = "RAGE" }) end
+  Runtime.emit("battle.move_used", { user = { mon = primeape }, moveId = "KARATE_CHOP" })
+  T.eq(levelUp(primeape), nil, version .. ": Primeape after Rage x 19 (and another move)")
+  Runtime.emit("battle.move_used", { user = { mon = primeape }, moveId = "RAGE" })
+  T.eq(levelUp(primeape), "ANNIHILAPE", version .. ": after Rage x 20")
 
   -- on sale: the EVO EXPRESS machine (Celadon 4F)
   local sells = machineStock(run, data)
@@ -209,6 +216,11 @@ local function gen2(version)
   local tyrogue = mon("TYROGUE", 20)
   tyrogue.stats.attack, tyrogue.stats.defense = 30, 40
   T.eq(check(tyrogue), "HITMONCHAN", version .. ": Gold's own Tyrogue")
+  local primeape = mon("PRIMEAPE", 35)
+  for _ = 1, 19 do Runtime.emit("battle.move_used", { user = { mon = primeape }, moveId = "RAGE" }) end
+  T.eq(check(primeape), nil, version .. ": Primeape after Rage x 19")
+  Runtime.emit("battle.move_used", { user = { mon = primeape }, moveId = "RAGE" })
+  T.eq(check(primeape), "ANNIHILAPE", version .. ": after Rage x 20 (no Rage Fist on these games)")
 
   -- the items are held (hold / trade) or used (stone), and sold by the EVO EXPRESS machine
   local sells = machineStock(run, data)

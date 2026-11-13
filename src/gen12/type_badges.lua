@@ -3,27 +3,31 @@
 -- suit a 160 x 144 screen whose boxes leave little room. They show the battler's types as they are
 -- now (Conversion, Transform).
 --
--- Where: the one clear block between the two boxes (x 64-96, rows 28-56 on both games): a foe's
--- badges hang just under the underline at the right end of its box, yours sit on your name's line,
--- at the left end of your box; seven clear rows between the two.
---   Red   drawn from the battle.overlay hook (after the whole battle screen), only while the
---         game draws that box (the same tests as BattleState:drawHUDs); the wide layout puts
---         its panels elsewhere, and the badges follow them.
+-- Where (as on Gen 3: beside each box, level with its name and HP lines): a foe's just right of
+-- its name / HP bar (they end at x 87; its picture starts at x 96), yours just left of your name /
+-- HP bar (they start at x 80; your Pokemon's back picture ends at x 64). Same on both games. A
+-- second type goes straight under the first: the gaps are 8 px wide, so Gen 3's diagonal step
+-- would cover the Pokemon.
+--   Red   classic layout: drawn with the boxes (BattleState.drawHUDs, and on the coloured path
+--         right after the drawZonePass that puts them on screen), so they stay on the boxes'
+--         layer when a mod draws the field and the boxes apart (gen3-hd-sprites' Battle Fit);
+--         only while the game draws that box (the same tests as drawHUDs). The wide layout
+--         (WideBattle's panels, elsewhere) from the battle.overlay hook.
 --   Gold  BattleState.drawEnemyHud / drawPlayerHud are wrapped (the game calls them through the
 --         module, in every layout), and the badges are drawn right after the box when it was
 --         drawn; what is drawn later (menus) covers them as it covers the boxes.
 local Badges = {}
 
 Badges.SIZE = 10
-Badges.STEP = 11          -- one badge to the next, left to right
--- top left of the badges, and which way a row of them grows from it
+Badges.STEP = 11          -- one badge to the next, top to bottom
+-- the first badge's top left; the next go under it
 Badges.CLASSIC = {
-  enemy = { right = 88, y = 29 },     -- under the foe's box (x 8-88; its underline is row 27)
-  player = { left = 72, y = 46 },     -- over your box (x 72-160, rows 56-96)
+  enemy = { x = 89, y = 2 },          -- right of the foe's name (row 0) / HP bar (row 16, to x 87)
+  player = { x = 69, y = 57 },        -- left of your name (row 56) / HP bar (row 72, from x 80)
 }
 Badges.WIDE1 = {                      -- Red's wide layout (src/battle/WideBattle.lua panels)
-  enemy = { right = 128, y = 33 },    -- the foe's panel: x 0-128, rows 0-32
-  player = { left = 184, y = 46 },    -- yours: x 184-304, rows 56-96
+  enemy = { x = 130, y = 2 },         -- right of the foe's panel: x 0-128, rows 0-32
+  player = { x = 173, y = 58 },       -- left of yours: x 184-304, rows 56-96
 }
 
 -- type names of both games -> the Gen 3 badge ids (src/type_badges.lua COLORS / GLYPHS)
@@ -49,14 +53,6 @@ function Badges.ids(types)
     for i = #out, 1, -1 do if out[i] == 9 then table.remove(out, i) end end
   end
   return out
-end
-
--- the x of each badge in a row of n
-function Badges.layout(spot, n)
-  local xs = {}
-  local x0 = spot.left or (spot.right - n * Badges.SIZE - (n - 1) * (Badges.STEP - Badges.SIZE))
-  for i = 1, n do xs[i] = x0 + (i - 1) * Badges.STEP end
-  return xs
 end
 
 function Badges.imageData(G, typeId)
@@ -131,7 +127,9 @@ function Badges.install(opts)
     local shader = g and g.getShader and g.getShader()
     if shader then g.setShader() end
     if g and g.setColor then g.setColor(1, 1, 1, 1) end
-    for i, x in ipairs(Badges.layout(spot, #ids)) do state.drawBadge(ids[i], x, spot.y) end
+    for i = 1, #ids do
+      state.drawBadge(ids[i], spot.x, spot.y + (i - 1) * Badges.STEP)
+    end
     if shader then g.setShader(shader) end
   end
   local function safely(fn, ...)
@@ -160,14 +158,78 @@ function Badges.install(opts)
       return battler.curTypes or (battler.def and battler.def.types)
         or (battler.mon and battler.mon.types)
     end
-    function state.overlay(b)
-      if type(b) ~= "table" or type(b.drawHUDs) ~= "function" or b.blankForAskName
-        or b.blackoutBlank or not on() then return end
-      if state.data and b.data and b.data ~= state.data then return end
-      local wide = type(b.wideLayout) == "function" and b:wideLayout()
-      local spots = wide and Badges.WIDE1 or Badges.CLASSIC
-      if enemyShown(b, wide) then drawRow(typesOf(b.enemy), spots.enemy) end
+    local function drawSides(b, spots, wide)
+      if enemyShown(b, wide) then
+        -- AnimationShakeEnemyHUD nudges the foe's box sideways; its badges go with it
+        local shake = not wide and b.fx and b.fx.hudShakeX or 0
+        if shake ~= 0 then love.graphics.push(); love.graphics.translate(shake, 0) end
+        local ok, err = pcall(drawRow, typesOf(b.enemy), spots.enemy)
+        if shake ~= 0 then love.graphics.pop() end
+        if not ok then error(err, 0) end
+      end
       if playerShown(b) then drawRow(typesOf(b.player), spots.player) end
+    end
+    local function ours(b)
+      if type(b) ~= "table" or b.blankForAskName or b.blackoutBlank or not on() then return false end
+      return not (state.data and b.data and b.data ~= state.data)
+    end
+
+    -- The classic layout: drawn with the boxes themselves, not from battle.overlay. A mod may
+    -- draw the battle's field and its boxes on two layers of different scales (gen3-hd-sprites'
+    -- Battle Fit: the field zoomed to the window, the boxes and the text box on a canvas of their
+    -- own); the overlay hook belongs to the field, so badges drawn from it drift off the boxes.
+    -- BattleState:drawHUDs draws the boxes: straight onto the screen on the flat path, else
+    -- into a gray canvas that drawZonePass then colours and puts on the layer the boxes show
+    -- on. Drawn after that pass, the badges keep their own colours and sit on that layer (and
+    -- shake with it). A frame whose boxes were held back (a drawHUDs shadowed on the battle)
+    -- draws none.
+    local okB, BS = pcall(require, "src.battle.BattleState")
+    if okB and type(BS) == "table" and type(BS.drawHUDs) == "function"
+      and type(BS.drawZonePass) == "function" then
+      local hub = BS.__ndxBadges
+      if not hub then
+        hub = {}
+        BS.__ndxBadges = hub
+        local drawHUDs, drawZonePass = BS.drawHUDs, BS.drawZonePass
+        BS.drawHUDs = function(self, slide, ...)
+          local a, b = drawHUDs(self, slide, ...)
+          if hub.hud then hub.safely(hub.hud, self, slide) end
+          return a, b
+        end
+        BS.drawZonePass = function(self, src, sx, sy, ...)
+          local a, b = drawZonePass(self, src, sx, sy, ...)
+          if hub.zone then hub.safely(hub.zone, self, sx, sy) end
+          return a, b
+        end
+      end
+      function state.hud(b, slide)
+        state.pending = nil
+        if (slide or 0) ~= 0 or not ours(b) then return end
+        local colour = type(b.colorMode) == "function" and b:colorMode()
+        if colour then state.pending = b; return end
+        drawSides(b, Badges.CLASSIC, false)
+      end
+      function state.zone(b, sx, sy)
+        if state.pending ~= b then return end
+        state.pending = nil
+        local g = love.graphics
+        local moved = (sx or 0) ~= 0 or (sy or 0) ~= 0
+        if moved then g.push(); g.translate(sx or 0, sy or 0) end
+        local ok, err = pcall(drawSides, b, Badges.CLASSIC, false)
+        if moved then g.pop() end
+        if not ok then error(err, 0) end
+      end
+      hub.hud, hub.zone, hub.safely, hub.state = state.hud, state.zone, safely, state
+      state.classicWithBoxes = true
+    end
+
+    -- the wide layout (its boxes are WideBattle's own locals: no seam but the overlay), and the
+    -- classic one when the boxes could not be wrapped
+    function state.overlay(b)
+      if not ours(b) or type(b.drawHUDs) ~= "function" then return end
+      local wide = type(b.wideLayout) == "function" and b:wideLayout()
+      if not wide and state.classicWithBoxes then return end
+      drawSides(b, wide and Badges.WIDE1 or Badges.CLASSIC, wide)
     end
     return state
   end

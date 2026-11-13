@@ -3,6 +3,23 @@
 All notable changes to this mod are documented here, in
 [keep a changelog](https://keepachangelog.com/en/1.1.0/) format.
 
+## [1.10.1] - 2026-11-13
+
+### Changed
+
+- On Red to Crystal the type badges sit beside each HP box, as on the Gen 3 games: to the right
+  of the foe's name and HP bar, to the left of yours, a second type under the first. They used
+  to sit in the gap between the two boxes.
+
+### Fixed
+
+- **Primeape evolves into Annihilape after using Rage Fist 20 times** (from level 35, on its
+  next level-up). Only Rage was counted, a stand-in from before WoobleDex had Rage Fist; uses of
+  Rage still count towards the 20. On Red to Crystal, which have no Rage Fist, Rage is the move.
+- On Red, Blue and Yellow the type badges stay beside the HP boxes when the battle is scaled to
+  fill the window (gen3-hd-sprites' Battle Fit). They used to drift up, over the foe's HP bar and
+  above your box.
+
 ## [1.10.0] - 2026-11-13
 
 ### Added
