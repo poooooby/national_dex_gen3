@@ -70,6 +70,12 @@ return function(mod, loadSibling)
       moveState.core, moveState.missingMechanics = core, fx.missing
       mod.exports._mech = { core = core, adapter = Adapter, deps = seams, missing = fx.missing,
         specs = fx.specs }
+      -- the summary screens: nature, ability, held item (src/gen12/summary.lua)
+      local Summary = loadSibling(mod, "src/gen12/summary.lua")
+      if Summary then
+        local okY, errY = pcall(Summary.install, { require = require, generation = generation, core = core })
+        if not okY then mod.log:warn("summary additions are off: %s", tostring(errY)) end
+      end
       mod.log:info("move mechanics: %d moves run on them, %d without one yet (stand-ins)", fx.registered,
         #fx.missing)
     end

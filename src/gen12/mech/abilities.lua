@@ -50,6 +50,18 @@ return function(core, opts)
     return first ~= false and first or nil
   end
   core.abilityOf = abilityOf
+  -- outside battle (the summary): a party Pokemon's ability from its species record and DVs
+  function core.abilityForMon(record, dvs)
+    if not record then return nil end
+    local list = record.form and facts.formAbilities and facts.formAbilities[record.id]
+    if not list then
+      local dex = record.baseDex or record.dex
+      list = dex and facts.abilities and facts.abilities[dex]
+    end
+    if not list then return nil end
+    if list[2] and list[2] ~= false and ((dvs and dvs.defense) or 0) % 2 == 1 then return list[2] end
+    return list[1] ~= false and list[1] or nil
+  end
   core:on("ability", function(A, b) return abilityOf(A, b) end)
   local function nameOf(id) local a = ABILITIES[id]; return a and a.name or (id and tostring(id)) or "" end
   core.abilityName = nameOf
