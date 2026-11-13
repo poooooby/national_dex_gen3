@@ -53,7 +53,8 @@ return function(mod, loadSibling)
         local family = loadSibling(mod, path)
         if type(family) == "function" then
           local okF, errF = pcall(family, core, { generation = generation, require = require, mod = mod,
-            load = function(p) return loadSibling(mod, p) end })
+            load = function(p) return loadSibling(mod, p) end,
+            option = function(key) return mod.options:get(key) end })
           if not okF then mod.log:warn("move mechanics %s failed to load: %s", path, tostring(errF)) end
         end
       end

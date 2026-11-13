@@ -180,6 +180,8 @@ function RedA:effectiveness(typeName, b)
 end
 -- "physical" / "special" (Red: by the move's own category, else its type's)
 function RedA:category(move)
+  local by = self.core.moveCategory and self.core.moveCategory(move)
+  if by then return by end
   local c = move.category or self.TypeChart.category(move.type)
   return c == "special" and "special" or "physical"
 end
@@ -708,6 +710,14 @@ function Red.installSeams(mod, deps)
     local A = Red.adapter(c.battle, deps)
     if core.hooks.immune and core:ask("immune", A, user, target, c.move) then
       return 0, { crit = false, typeMult = 0 }
+    end
+    -- physical / special by the move (option move_split): Red reads the move's own category
+    local by = core.moveCategory and core.moveCategory(c.move)
+    if by and c.move.category ~= by then
+      local m = {}
+      for k, v in pairs(c.move) do m[k] = v end
+      m.category = by
+      c.move = m
     end
     if core.hooks.moveType then
       local t = core:ask("moveType", A, user, c.move)

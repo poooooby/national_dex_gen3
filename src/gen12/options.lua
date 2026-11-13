@@ -44,7 +44,14 @@ Options.ROWS = {
     label = "Type Badges",
     type = "toggle",
     default = true,
-    description = "Show each Pokemon's types as small badges by its HP box in battle: under a foe's box and above yours. They follow the battle: a Pokemon that used Conversion or Transform shows its new type.",
+    description = "Show each Pokemon's types as small badges beside its HP box in battle: right of a foe's name and HP bar, left of yours. They follow the battle: a Pokemon that used Conversion or Transform shows its new type.",
+  },
+  {
+    key = "move_split",
+    label = "Move Split",
+    type = "toggle",
+    default = false,
+    description = "Decide whether a move is physical or special by the move itself, as in today's games (Shadow Ball special, Crunch and Fire Punch physical), instead of by its type as these games do. It changes how the game's own moves hit too.",
   },
 }
 

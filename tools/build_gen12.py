@@ -482,6 +482,22 @@ def build(api: bs.API, workers: int, engine: Path) -> dict[str, Any]:
     as_records = [{"learnset": m["learnset"], "eggMoves": m["eggMoves"], "teach": [], "evolutions": []}
                   for m in modern]
     moves, report = build_moves(api, workers, carts, records + forms + as_records, engine)
+    # every move's modern damage class by id, for the physical / special by move option
+    split = {}
+    for n in list(range(1, 252)) + [m["n"] for m in moves]:
+        a = api.get(f"/move/{n}")
+        cls = a["damage_class"]["name"]
+        if cls == "status":
+            continue
+        letter = "p" if cls == "physical" else "s"
+        for gen in GENS:
+            m = carts[gen]["moves"].get(n)
+            if m:
+                split[m["id"]] = letter
+    for m in moves:
+        a = api.get(f"/move/{m['n']}")
+        if a["damage_class"]["name"] != "status":
+            split[m["id"]] = "p" if a["damage_class"]["name"] == "physical" else "s"
     cart = cart_retypes(api, carts, by_dex)
     items = build_items(api, carts, records + forms, crossgen)
     # each species' party icon on each game: its proxy's (Red an icon kind, Gold an ICON_ sheet)
@@ -511,6 +527,7 @@ def build(api: bs.API, workers: int, engine: Path) -> dict[str, Any]:
     battle["formAbilities"] = {}
     for item in bs.fetch_forms(api, fetched, 12):
         battle["formAbilities"][item["id"]] = ability_list(item["pokemon"])
+    battle["split"] = split
     return {"records": records, "forms": forms, "crossgen": crossgen, "moves": moves,
             "cart": cart, "items": items, "modern": modern, "battle": battle, "report": report}
 

@@ -43,6 +43,7 @@ Core.STATS = { "attack", "defense", "spAtk", "spDef", "speed", "accuracy", "evas
 -- the mechanic families, each a file returning function(core, opts) that defines its mechanics
 -- (loaded by src/gen12/main.lua in this order)
 Core.FAMILIES = {
+  "src/gen12/mech/split.lua",
   "src/gen12/mech/track.lua",
   "src/gen12/mech/meta.lua",
   "src/gen12/mech/power.lua",

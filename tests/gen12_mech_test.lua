@@ -337,6 +337,21 @@ for _, version in ipairs(H.versions()) do
   first(w, "player"); first(w, "enemy")
   w.use("SKILL_SWAP")
   T.eq(core.abilityOf(w.A, w.battler("player")), "STATIC", version .. ": Skill Swap")
+
+  -- physical / special by the move (option move_split, src/gen12/mech/split.lua)
+  local opts = sim.run.loader.modOptions
+  opts.national_dex_gen3 = opts.national_dex_gen3 or {}
+  w = sim.fresh()
+  T.eq(w.A:category(data.moves.FIRE_PUNCH), "special", version .. ": off: Fire Punch is special by its type")
+  opts.national_dex_gen3.move_split = true
+  T.eq(w.A:category(data.moves.FIRE_PUNCH), "physical", version .. ": on: Fire Punch is physical")
+  T.eq(w.A:category(data.moves.SHADOW_BALL or data.moves.NIGHT_SHADE), (data.moves.SHADOW_BALL and "special") or w.A:category(data.moves.NIGHT_SHADE),
+    version .. ": on: Shadow Ball is special")
+  local x = sim.fresh({ mine = "MACHAMP", foe = "SNORLAX", level = 50, foeLevel = 50 })
+  hp = x.hp("enemy")
+  x.use("FIRE_PUNCH")
+  T.check(x.hp("enemy") < hp, version .. ": a physical Fire Punch still hits")
+  opts.national_dex_gen3.move_split = nil
   sim.release()
 end
 

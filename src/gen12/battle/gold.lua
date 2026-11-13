@@ -178,6 +178,8 @@ function GoldA:effectiveness(typeName, b)
   return self.Damage.typeMultiplier(t, self.battle:battlerTypes(b), self.battle:matchupsAgainst(b))
 end
 function GoldA:category(move)
+  local by = self.core.moveCategory and self.core.moveCategory(move)
+  if by then return by end
   local chart = self.battle.data.type_chart
   return self.Damage.isPhysical(move.type, chart and chart.types) and "physical" or "special"
 end
@@ -499,6 +501,24 @@ function Gold.installSeams(mod, deps)
     end
     over(c.user, o.attacker, { attack = "attack", spAtk = "specialAttack" })
     over(c.target, o.defender, { defense = "defense", spDef = "specialDefense" })
+    -- physical / special by the move (option move_split): Gold picks by type, so the class's
+    -- stats go where the type's formula looks
+    local by = core.moveCategory and core.moveCategory(c.move)
+    if by and o.attacker and o.defender then
+      local typePhysical = A.Damage.isPhysical(o.moveType or c.move.type, o.types)
+      if (by == "physical") ~= typePhysical then
+        local function swapped(stages, a, b)
+          local copy = {}
+          for k, v in pairs(stages or {}) do copy[k] = v end
+          copy[a], copy[b] = (stages or {})[b] or 0, (stages or {})[a] or 0
+          return copy
+        end
+        o.attacker.attack, o.attacker.specialAttack = o.attacker.specialAttack, o.attacker.attack
+        o.attacker.stages = swapped(o.attacker.stages, "attack", "specialAttack")
+        o.defender.defense, o.defender.specialDefense = o.defender.specialDefense, o.defender.defense
+        o.defender.stages = swapped(o.defender.stages, "defense", "specialDefense")
+      end
+    end
     return nextFn(c)
   end)
   mod.hooks:wrap("battle.damage", function(nextFn, c)
