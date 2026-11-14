@@ -269,6 +269,7 @@ crops it to 64×64), or nil to let the next provider answer.
 | `slotOf(idOrDex)` | the running game's slot |
 | `idOfSlot(slot)` / `listForms()` | (apiVersion 2) a slot's species id, and the registered forms (a form has `baseSpecies`) |
 | `evolutionsOf(idOrDex)` | `{ id, dex, evolvesFrom = { id, methods }, evolvesInto = { … } }`, also for a cart species that gains a step into a new one, e.g. `evolutionsOf("RHYDON")` |
+| `registerOwned(session)` / `formLabel(slot)` | (apiVersion 3) Register Owned's step as the game's Pokédex runs it on opening (every party and PC Pokémon marked caught; `0` while the option is off), and a form's name as the FORMS page shows it (`"GALARIAN"`, `"RUBY CREAM"`; `nil` for a base species). For a Pokédex that opens in the game's place (WoobOS) |
 | `setArtProvider(fn)` | registers an art provider |
 | `setDexPeek(fn)` | `fn(speciesSlot) -> true` lets that unseen species open in the Pokédex in a limited view (number shown, name dashed, "?" picture, no cry, only the AREA page). `nil` turns it off. Modern Spawns uses it |
 
@@ -673,8 +674,9 @@ Registered at load, first, so every record after can name them.
     with `evolutions` as `{ species, method, level }` from the rows `evolutions.lua` wrote;
   - `bridges`: the steps added to cart species, recorded by `Evolutions.install`, so
     `evolutionsOf("GOLBAT")` finds Crobat on Red.
-- **What is published:** `apiVersion` 2 (9 with the read API below), `isActive`, `provider`, `listSpecies`, `slotOf`,
-  `listForms`, `formsOf`, `baseDexOf`, `idOfSlot`, `evolutionsOf`, `setArtProvider`, and
+- **What is published:** `apiVersion` 3 (9 with the read API below), `isActive`, `provider`, `listSpecies`, `slotOf`,
+  `listForms`, `formsOf`, `baseDexOf`, `idOfSlot`, `evolutionsOf`, `setArtProvider`,
+  `registerOwned` / `formLabel` (Gen 3 only: `0` / `nil` here), and
   `clockSource` (Red `"device"`, Gold `"game"`: the clocks the time-of-day evolutions read), plus
   `generation`.
   - The slot is the Gen 3 slot (dex + 64, forms 1090+), the key shared by every game.

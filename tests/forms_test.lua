@@ -76,7 +76,10 @@ T.eq(api.baseDexOf(1105), 479, "baseDexOf a form slot is its base's")
 T.eq(api.baseDexOf("ROTOM_HEAT"), 479, "and by id")
 T.eq(#api.formsOf("ROTOM"), 5, "ROTOM has five forms")
 T.eq(#api.formsOf(479), 5, "by dex number too")
-T.check(api.apiVersion >= 2, "apiVersion is 2 or more")
+T.check(api.apiVersion >= 3, "apiVersion is 3 or more")
+T.eq(api.formLabel(1105), "HEAT", "formLabel: a form's name as the FORMS page shows it")
+T.eq(api.formLabel(rotomBase), nil, "and none for a base species")
+T.check(type(api.registerOwned) == "function" and api.registerOwned(nil) == 0, "registerOwned: nothing without a session")
 
 -- ------- abilities and moves: the cart's, or a real newer ability this mod installs
 

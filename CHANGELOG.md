@@ -3,6 +3,14 @@
 All notable changes to this mod are documented here, in
 [keep a changelog](https://keepachangelog.com/en/1.1.0/) format.
 
+## [1.11.2] - 2026-11-14
+
+### Added
+
+- **For other mods (API 3):** `registerOwned(session)` runs Register Owned as the game's Pokedex does
+  when it opens, and `formLabel(slot)` gives a form's name as the FORMS page shows it, for a mod
+  whose Pokedex opens in the game's place (WoobOS).
+
 ## [1.11.1] - 2026-11-13
 
 ### Changed

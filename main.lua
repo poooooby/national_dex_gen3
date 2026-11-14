@@ -657,7 +657,15 @@ return function(mod)
     end)
   end
   Api(mod, { species = registered, forms = registeredForms, bridges = bridges, art = art, dexPatch = DexPatch,
-    moves = registeredMoves, dynamax = Dynamax })
+    moves = registeredMoves, dynamax = Dynamax,
+    -- (for a Pokedex of another mod's that opens in place of the game's: Register Owned as before the
+    -- game's, and the FORMS page's names)
+    registerOwned = function(session)
+      local okGet, value = pcall(function() return mod.options:get("register_owned") end)
+      if okGet and value == false then return 0 end
+      return DexSync.sync(session)
+    end,
+    formLabel = DexForms and DexForms.label or nil })
   -- the Exp. Candies' item indexes, for a mod that gives them (Dynamax Raids): { EXP_CANDY_XS = 950, ... }
   if ExpCandies then mod.exports.expCandies = ExpCandies.ids end
   -- the CLOCK SOURCE option, "game" | "device", for a mod whose days follow the same clock (Galar

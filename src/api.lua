@@ -60,7 +60,9 @@ return function(mod, state)
 
   -- 2: adds listForms, formsOf, baseDexOf, idOfSlot (alternate forms). Nothing
   -- in version 1 changed meaning.
-  exports.apiVersion = 2
+  -- 3: adds registerOwned and formLabel (for a Pokedex that opens in the game's place). Nothing in
+  -- version 2 changed meaning.
+  exports.apiVersion = 3
 
   -- Both are constants now, kept so a caller written against version 1 keeps working.
   exports.isActive = function() return true end
@@ -219,6 +221,22 @@ return function(mod, state)
       raidStartLevel = function(stars, rng) return Dx.raidStartLevel(stars, rng) end,
       ids = copy(Dx.ids),
     }
+  end
+
+  -- registerOwned(session) -> how many it looked at: the "Register Owned" option's step (every party
+  -- and PC Pokemon marked caught), as it runs when the game's Pokedex opens; nothing while the option's
+  -- off. For a mod whose Pokedex opens in the game's place (WoobOS).
+  exports.registerOwned = function(session)
+    if not state.registerOwned then return 0 end
+    local ok, n = pcall(state.registerOwned, session)
+    return ok and n or 0
+  end
+  -- formLabel(slot) -> a form's name as the FORMS page shows it ("GALARIAN", "RUBY CREAM") | nil
+  exports.formLabel = function(slot)
+    local r = bySlot[tonumber(slot) or -1]
+    if not (r and r.baseSpecies and state.formLabel) then return nil end
+    local ok, label = pcall(state.formLabel, r)
+    return ok and label or nil
   end
 
   -- Art seam (src/art.lua): fn(speciesId, side, slot) -> PNG path | nil.
