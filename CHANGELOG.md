@@ -3,6 +3,13 @@
 All notable changes to this mod are documented here, in
 [keep a changelog](https://keepachangelog.com/en/1.1.0/) format.
 
+## [1.11.1] - 2026-11-13
+
+### Changed
+
+- **Day & Night:** nights are a little darker (about 15% dimmer, with deeper shadows), on the
+  Generation 3 games and in Red, Blue and Yellow.
+
 ## [1.11.0] - 2026-11-13
 
 ### Added

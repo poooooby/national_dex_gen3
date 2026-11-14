@@ -31,7 +31,7 @@ DayNight.PHASES = {
   morning = { gain = { 1.00, 0.96, 0.92 }, sat = 0.95, lift = { 0.02, 0.02, 0.03 } },
   afternoon = { gain = { 1, 1, 1 }, sat = 1, lift = { 0, 0, 0 } },
   evening = { gain = { 1.00, 0.86, 0.72 }, sat = 1.05, lift = { 0.03, 0.01, 0.02 } },
-  night = { gain = { 0.62, 0.70, 0.92 }, sat = 0.70, lift = { 0.06, 0.07, 0.12 } },
+  night = { gain = { 0.52, 0.60, 0.80 }, sat = 0.65, lift = { 0.04, 0.05, 0.09 } },
 }
 -- map types that are outdoors: TOWN, CITY, ROUTE, UNDERWATER, OCEAN_ROUTE (field_moves.lua
 -- MAP_TYPES); caves, indoors, secret bases and UNKNOWN keep the game's look
