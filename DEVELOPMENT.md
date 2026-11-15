@@ -273,6 +273,32 @@ crops it to 64×64), or nil to let the next provider answer.
 | `setArtProvider(fn)` | registers an art provider |
 | `setDexPeek(fn)` | `fn(speciesSlot) -> true` lets that unseen species open in the Pokédex in a limited view (number shown, name dashed, "?" picture, no cry, only the AREA page). `nil` turns it off. Modern Spawns uses it |
 
+## Achievements (`src/achievements.lua`, `data/achievements.lua`)
+
+33 achievements in Recomp Achievements (its provider API 1.x, `docs/PROVIDER_API.md` in that mod;
+`optional_dependencies` keeps it loading first). Without that mod, `mod.find` returns nil and
+nothing runs. Ids are saved by that mod (`mod:national_dex_gen3:<id>`): never change or reuse one.
+
+- **Every one is a progress achievement counted from the Pokédex**, never from our own
+  counters: nothing of ours is saved, a save from before this is credited when it loads, and
+  catching, evolving, hatching, trading and Register Owned all count the same way.
+- **The definitions** in `data/achievements.lua` combine `range`, `dex` (a group name or a list),
+  `flag` (legendary / mythical: the cart's 386 from `groups`, the newer species from their own
+  flags), `forms` (`"all"`, or `"regional"` with an optional `region`: a form whose `form` starts
+  with ALOLA / GALAR / HISUI / PALDEA), `family` (a base species id plus its forms) and `goal`
+  (a milestone). `Achievements.build` turns them into National numbers plus form ids; the goal
+  is the group's size, worked out at load.
+- **The reader** each path hands over: Gen 3 reads the session's Pokédex by species slot
+  (`P.speciesFromNational`, a form's own slot; fixups' form wrap marks the base too), Red and Gold
+  read `save.pokedex` (Red `owned`, Gold `caught`) by species id, a form by its own id, the
+  National number from `data.pokemon[id].dex`.
+- **Progress is written only when it changed**, on the achievements mod's `ready` event,
+  `save.loaded` (both reset the cache), and after a catch, evolution, trade, battle, map change or
+  closed screen. A refresh is one pass over 1025 numbers and 128 forms. Reaching the goal unlocks
+  it; the record then keeps no count.
+- Test: `tests/achievements_test.lua [game ...]` loads the real Recomp Achievements beside this
+  mod (FireRed, Red and Crystal by default) and attaches a save through `save.loaded`.
+
 ## Abilities (Gen 3)
 
 - `tools/build_abilities.py` `IMPLEMENTED` (append-only: a Pokemon's ability pair is by id) writes

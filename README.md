@@ -120,6 +120,25 @@ Crystal have their own section after them.
 - 📖 **A bigger Pokédex:** The new Pokémon join the National Pokédex, with a FORMS page for
   species with alternate forms, and fast scrolling when you hold a direction.
 
+### 🏆 Achievements
+
+With **Recomp Achievements** installed, WoobleDex adds 33 achievements of its own on every game,
+from Red to Emerald. Each one shows your progress (say, 312 of 1025) and unlocks the moment your
+Pokédex reaches it:
+
+- 📚 **The National Dex:** catch all 1025, see all 1025, and the Master Collector for all 1025
+  plus every alternate form. Milestones along the way at 100, 250, 500 and 750 species.
+- 🗾 **Each generation:** catch every Pokémon first found in Kanto, Johto, Hoenn, Sinnoh, Unova,
+  Kalos, Alola, Galar and Hisui, or Paldea.
+- ⭐ **Collections:** all 27 starters, every Legendary, every Mythical, the Ultra Beasts, the
+  Paradox Pokémon, the fossil Pokémon and the baby Pokémon.
+- 🌍 **Variants:** the Alolan, Galarian, Hisuian and Paldean forms (and all 57 together),
+  Eevee's eight evolutions, Alcremie's nine creams, Rotom's appliances, the three Lycanroc and
+  Oricorio's four dance styles.
+
+Anything your Pokédex marks as caught counts: catching, evolving, hatching and trading. A save
+you've been playing is credited for what it already has the first time it loads.
+
 ### 🕹️ On Red, Blue, Yellow, Gold, Silver and Crystal
 
 - 🆕 **Every Pokémon the game doesn't have:** #152–1025 in Red, Blue and Yellow, #252–1025 in
@@ -253,6 +272,8 @@ This mod adds the Pokémon. Two companions bring them to life:
   to find a species you haven't seen yet.
 - 🌿 [Wilds of Hoenn](https://github.com/poooooby/wilds-of-hoenn): see them roaming the overworld,
   each with its own sprite.
+- 🏆 **Recomp Achievements:** WoobleDex's 33 achievements show up in its list, beside each
+  game's own.
 
 It also plays well with [Event Distributions](https://github.com/CapnJames95/gen1recomp-event-distributions):
 the game's own Pokémon keep their original data, so its event gifts arrive as usual.

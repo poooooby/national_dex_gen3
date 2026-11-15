@@ -468,5 +468,48 @@ return function(mod, loadSibling)
     exports.generation = function() return generation end
   end
 
+  -- optional: WoobleDex's achievements in Recomp Achievements (src/achievements.lua), counted from
+  -- save.pokedex (Red seen / owned, Gold seen / caught, keyed by species id; a form by its own id)
+  local Achievements = loadSibling(mod, "src/achievements.lua")
+  local achievementRows = Achievements and loadSibling(mod, "data/achievements.lua")
+  if Achievements and achievementRows and speciesState then
+    local liveGame                       -- the game game.ready handed over: the live one
+    mod.events:on("game.ready", function(ev) liveGame = ev and ev.game or mod.game end)
+    local idsFor, idByDex = nil, {}
+    local function reader()
+      local game = liveGame or mod.game
+      local save = type(game) == "table" and game.save or nil
+      local p = type(save) == "table" and save.pokedex or nil
+      if type(p) ~= "table" then return nil end
+      local owned = (generation == 1 and p.owned or p.caught) or {}
+      local seen = p.seen or {}
+      local data = game.data
+      if idsFor ~= data then           -- National number -> species id, once per dataset
+        idsFor, idByDex = data, {}
+        for id, def in pairs(type(data) == "table" and data.pokemon or {}) do
+          local n = type(def) == "table" and tonumber(def.dex) or nil
+          if n and n >= 1 and n <= Achievements.NATIONAL_MAX then idByDex[n] = id end
+        end
+      end
+      return {
+        caught = function(n) local id = idByDex[n]; return id ~= nil and owned[id] and true or false end,
+        seen = function(n) local id = idByDex[n]; return id ~= nil and seen[id] and true or false end,
+        formCaught = function(id) return owned[id] and true or false end,
+      }
+    end
+    local species, forms = {}, {}
+    for dex, entry in pairs(speciesState.byDex) do
+      species[#species + 1] = { dex = dex, legendary = entry.data.legendary, mythical = entry.data.mythical }
+    end
+    for _, entry in ipairs(speciesState.forms) do
+      local r = entry.data
+      forms[#forms + 1] = { id = entry.id, form = r.form, baseSpecies = entry.base or r.baseSpecies,
+        baseDex = r.baseDex }
+    end
+    local okA, errA = pcall(Achievements.install, mod, { data = achievementRows, species = species,
+      forms = forms, reader = reader, log = mod.log })
+    if not okA then mod.log:warn("achievements are off: %s", tostring(errA)) end
+  end
+
   mod.log:info("Gen %d path loaded", generation)
 end

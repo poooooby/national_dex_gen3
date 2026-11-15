@@ -666,6 +666,31 @@ return function(mod)
       return DexSync.sync(session)
     end,
     formLabel = DexForms and DexForms.label or nil })
+  -- optional: WoobleDex's achievements in Recomp Achievements (src/achievements.lua), counted from
+  -- the session's Pokedex (keyed by species slot; a form has a slot of its own)
+  local Achievements = not inEditor and loadSibling(mod, "src/achievements.lua") or nil
+  local achievementRows = Achievements and read("data/achievements.lua")
+  if Achievements and achievementRows then
+    local formSlot = {}
+    for _, f in ipairs(registeredForms or {}) do formSlot[f.id] = f.slot end
+    local function reader()
+      local okR, Runtime = pcall(require, "src.core.game3.runtime")
+      local session = okR and Runtime.getSession and Runtime.getSession() or nil
+      local dex = type(session) == "table" and session.dex or nil
+      if type(dex) ~= "table" then return nil end
+      local Dex = require("src.core.game3.dex")
+      local P = require("src.core.game3.pokemon")
+      local function slotOf(n) return P.speciesFromNational(n) end
+      return {
+        caught = function(n) local s = slotOf(n); return s ~= nil and Dex.isCaught(dex, s) end,
+        seen = function(n) local s = slotOf(n); return s ~= nil and Dex.isSeen(dex, s) end,
+        formCaught = function(id) local s = formSlot[id]; return s ~= nil and Dex.isCaught(dex, s) end,
+      }
+    end
+    local okA, errA = pcall(Achievements.install, mod, { data = achievementRows, species = registered,
+      forms = registeredForms, reader = reader, log = mod.log })
+    if not okA then mod.log:warn("achievements are off: %s", tostring(errA)) end
+  end
   -- the Exp. Candies' item indexes, for a mod that gives them (Dynamax Raids): { EXP_CANDY_XS = 950, ... }
   if ExpCandies then mod.exports.expCandies = ExpCandies.ids end
   -- the CLOCK SOURCE option, "game" | "device", for a mod whose days follow the same clock (Galar

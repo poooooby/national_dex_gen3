@@ -3,6 +3,18 @@
 All notable changes to this mod are documented here, in
 [keep a changelog](https://keepachangelog.com/en/1.1.0/) format.
 
+## [Unreleased]
+
+### Added
+
+- **Achievements, with Recomp Achievements installed:** 33 of WoobleDex's own on every game,
+  each with its progress shown. Catch all 1025, see all 1025, or catch all 1025 and every form;
+  catch 100, 250, 500 and 750 species; complete each generation; collect the 27 starters, the
+  Legendaries, the Mythicals, the Ultra Beasts, the Paradox, fossil and baby Pokémon; catch the
+  Alolan, Galarian, Hisuian and Paldean forms (and all 57); Eevee's evolutions, Alcremie's
+  creams, Rotom's appliances, the Lycanroc and Oricorio forms. Counted from the Pokédex, so a
+  save's earlier catches are credited when it loads.
+
 ## [1.11.2] - 2026-11-14
 
 ### Added

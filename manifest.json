@@ -18,7 +18,8 @@
   ],
   "dependencies": [],
   "optional_dependencies": [
-    "g9-battle-sprites-gen3"
+    "g9-battle-sprites-gen3",
+    "recomp_achievements@>=0.1.0"
   ],
   "conflicts": [
     "1025dex",
