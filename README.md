@@ -315,7 +315,8 @@ the game's own Pokémon keep their original data, so its event gifts arrive as u
   against it as a special hit), and contest data for the newest moves is basic.
   They are learned by level-up and as egg moves; TMs and tutors are the original ones.
 - **The save editor** that comes with gen1recomp knows everything this mod adds: every Pokémon
-  and form, their items and moves, Fairy typing and the newer abilities.
+  and form (each form listed by name, like Vulpix (Alolan)), their items and moves, Fairy typing
+  and the newer abilities.
 - **Removing this mod** from a save whose Pokémon know its moves or are its species breaks those
   Pokémon; keep the mod installed for that save.
 - **Link play** expects both players to have the same type chart; trade and battle with

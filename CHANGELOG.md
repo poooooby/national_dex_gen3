@@ -3,6 +3,14 @@
 All notable changes to this mod are documented here, in
 [keep a changelog](https://keepachangelog.com/en/1.1.0/) format.
 
+## [1.12.1] - 2026-11-14
+
+### Fixed
+
+- **Save editor on Red to Crystal:** forms are listed by name with their base's number
+  ("VULPIX (ALOLAN) #037"), as on the Gen 3 games, instead of looking like a second Vulpix with
+  a number in the twenty-thousands.
+
 ## [1.12.0] - 2026-11-14
 
 ### Added

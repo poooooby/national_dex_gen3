@@ -276,6 +276,14 @@ return function(mod, loadSibling)
     end, 1)
   end
 
+  -- the save editor's species list: a form as "VULPIX (ALOLAN)" with its base's number (src/gen12/editor.lua)
+  local Editor12 = Labels and speciesState and #speciesState.forms > 0
+    and loadSibling(mod, "src/gen12/editor.lua")
+  if Editor12 then
+    Editor12.install({ mod = mod, require = require, forms = speciesState.forms, label = Labels.label,
+      log = mod.log })
+  end
+
   -- Register Owned: opening the Pokedex counts the party and the PC (src/gen12/dex_sync.lua)
   local DexSync = loadSibling(mod, "src/gen12/dex_sync.lua")
   if DexSync and Dex and speciesState then

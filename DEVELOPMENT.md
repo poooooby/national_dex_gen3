@@ -589,6 +589,15 @@ Registered at load, first, so every record after can name them.
       255, never shared. On a collision the engine picks one.
   - **Forms** get dex `20000 + n` (n = place in `forms.lua`): Red's Pokédex lists species with
     `pairs`, so a form sharing its base's number would randomly stand in for it.
+- **Save editor** (`src/gen12/editor.lua`): the stock editor lists `data.pokemon` as it is, so a
+  form read "VULPIX #20091". While the editor loads mods (`Gen` and `App` requirable,
+  `App.getState()` a session with no `mods`/`cat` yet; a Gen 1 `mod.game` is never nil, so the
+  Gen 3 check can't be used), a `mods.loaded` listener at priority -1000 relabels every form
+  "VULPIX (ALOLAN)" (`src/dex_forms.lua` `label`) with its base's number, as the Gen 3 editor
+  does. Nothing reaches a game: none runs there, Gold rewrites a mon's copied `name` on every
+  save load (`Mon.syncSaveIdentity`), and a game after the editor closes builds fresh records
+  (`App.unload` drops the session). Test: `tests/gen12_editor_test.lua` (the real Gen / App /
+  Catalog modules, only the session faked).
 - **Placeholder pictures** (`assets/gen12/`, drawn by `tools/build_placeholder.py`, our own art):
   a grey ball with a "?" (front 56x56, `frontSize`/`picSize` 7) and the ball from behind (32x32
   on Red, 48x48 on Gold). They use the carts' four shades on transparent white, so each game
