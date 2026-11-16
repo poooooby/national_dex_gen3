@@ -108,6 +108,12 @@ Crystal have their own section after them.
   foe's and to the left of yours, so you can read a matchup at a glance. They follow the battle:
   a Pokémon hit by Soak, or using Roost or Transform, shows its new types. They stay beside their
   box in singles and doubles, and with WoobleView's Fill Screen.
+- 📊 **Stat Hints in battle:** small tags by each HP box show every stat a Pokémon has raised or
+  lowered and what it multiplies by: "ATK 2x" in green, "SPA 0.5x" in red, "ACC 1.33x". They
+  update the moment a move lands, so two Swords Dances read ATK 3x, and a Growl after brings it
+  back to ATK 2.5x. The foe's sit under its box, yours beside your box, and in doubles each
+  Pokémon's stay by its own box without covering another. With WoobleView they're drawn sharp at
+  your screen's full resolution in a smooth font.
 - 📦 **A bigger PC:** 40 boxes, room for 1,200 Pokémon, so every species and form fits with
   space to spare. The extra boxes use the game's own wallpapers and work everywhere the first
   14 do: switching boxes, depositing, catching straight into the PC and the save editor.
@@ -229,12 +235,14 @@ you've been playing is credited for what it already has the first time it loads.
 - 🏷️ **Type badges:** small badges beside each HP box in battle show the Pokémon's types, as on
   the Gen 3 games: to the right of the foe's name and HP bar, to the left of yours. They stay
   beside their box when the battle fills the window.
+- 📊 **Stat Hints:** small tags by each HP box show every raised or lowered stat and what it
+  multiplies by ("ATK 2x" in green, "DEF 0.67x" in red), updated after every move.
 - 📦 **Bigger PC:** 40 boxes (800 Pokémon) instead of 12 or 14.
 
 ## ⚙️ Options
 
 Open **OPTIONS → MODS → WoobleDex**. Each option is one setting for every game it appears in.
-Red to Crystal show Modern Moves, Register Owned, Bigger PC, Type Badges and Move Split, and
+Red to Crystal show Modern Moves, Register Owned, Bigger PC, Type Badges, Stat Hints and Move Split, and
 Red, Blue and Yellow also Day & Night and Modern Rules; the rest are for FireRed to Emerald.
 
 | Option | Choices | Default | What it does |
@@ -246,6 +254,7 @@ Red, Blue and Yellow also Day & Night and Modern Rules; the rest are for FireRed
 | **Bigger PC** | On / Off | On | 40 PC boxes instead of the game's own: 14 in FireRed to Emerald (1,200 Pokémon), 12 in Red, Blue and Yellow and 14 in Gold, Silver and Crystal (800 Pokémon). Turning it off hides the extra boxes; the Pokémon in them stay in your save and come back when you turn it on again. |
 | **Register Owned** | On / Off | On | Opening the Pokédex counts every Pokémon in your party and PC as seen and caught, handy for Pokémon added with a save editor. |
 | **Type Badges** | On / Off | On | Shows each Pokémon's types as small badges by its HP box in battle. |
+| **Stat Hints** | On / Off | On | Shows each raised or lowered stat by its HP box in battle, with what it multiplies by ("ATK 2x", "SPA 0.5x"). |
 | **Modern Rules** | On / Off | On | Red, Blue and Yellow: battles by today's rules: no 1-in-256 misses, Focus Energy works, Hyper Beam always needs its rest, foes use up PP, and critical hits come 1 in 24 (more with Focus Energy or a high-critical move) for 1.5x damage. Off: the game's own Gen 1 rules, quirks and all. |
 | **Move Split** | On / Off | Off | Red to Crystal: a move is physical or special by the move itself, as in today's games (Shadow Ball special; Crunch and Fire Punch physical), instead of by its type. It changes how the game's own moves hit too. |
 
@@ -274,6 +283,9 @@ This mod adds the Pokémon. Two companions bring them to life:
   each with its own sprite.
 - 🏆 **Recomp Achievements:** WoobleDex's 33 achievements show up in its list, beside each
   game's own.
+- 🔍 [WoobleView](https://github.com/poooooby/gen3-hd-sprites) (0.8.6 or later): on FireRed to
+  Emerald, Stat Hints are drawn at your screen's full resolution, and they follow the battle when
+  Fill Screen rearranges it.
 
 It also plays well with [Event Distributions](https://github.com/CapnJames95/gen1recomp-event-distributions):
 the game's own Pokémon keep their original data, so its event gifts arrive as usual.
@@ -327,8 +339,9 @@ the game's own Pokémon keep their original data, so its event gifts arrive as u
 - **Battle mods made for the original National Dex** (the g9 battle mods, Battle Forms) ask for
   it by name, so for now they don't run beside WoobleDex. WoobleDex already answers everything
   they ask of a National Dex, so they can run on it once they also accept WoobleDex.
-- **Red to Crystal's options** are Modern Moves, Register Owned, Bigger PC, Type Badges, Move
-  Split and (Red, Blue, Yellow) Day & Night and Modern Rules, shared with the Generation 3 games:
+- **Red to Crystal's options** are Modern Moves, Register Owned, Bigger PC, Type Badges, Stat
+  Hints, Move Split and (Red, Blue, Yellow) Day & Night and Modern Rules, shared with the
+  Generation 3 games:
   turning one off turns it off everywhere.
 - **A few abilities work in part on Red to Crystal:** Rock Head, Magic Guard, Liquid Ooze,
   Serene Grace and Air Lock / Cloud Nine cover the newer moves and items, not every one of the

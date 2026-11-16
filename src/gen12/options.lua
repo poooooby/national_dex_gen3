@@ -47,6 +47,13 @@ Options.ROWS = {
     description = "Show each Pokemon's types as small badges beside its HP box in battle: right of a foe's name and HP bar, left of yours. They follow the battle: a Pokemon that used Conversion or Transform shows its new type.",
   },
   {
+    key = "stat_hints",
+    label = "Stat Hints",
+    type = "toggle",
+    default = true,
+    description = "Show every stat a Pokemon has raised or lowered in battle by its HP box, with what it multiplies by: ATK 2x after Swords Dance, SPA 1/2 after two drops. They update after every move. Red for a rise, blue for a drop.",
+  },
+  {
     key = "modern_rules",
     label = "Modern Rules",
     type = "toggle",

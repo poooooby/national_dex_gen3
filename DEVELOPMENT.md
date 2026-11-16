@@ -241,6 +241,46 @@ Tests: `tests/type_badges_test.lua [game]` (a stand-in `Healthbox.draw`: placeme
 hidden box, doubles, types, option), driver `tests/drivers/type_badges_probe.lua` (a real battle:
 the badges' positions from the cart's box pictures, shots, garbage).
 
+## Stat Hints (option `stat_hints`)
+
+`src/stat_hints.lua` puts a chip per raised or lowered stat by each battle HP box: the label and the
+stage's multiplier as a decimal rounded to hundredths (`(2+n)/2` or `2/(2-n)`; accuracy and evasion
+`(3+n)/3` or `3/(3-n)`), green for a rise, red for a drop, in a rounded outline on white at 75%.
+Every chip's text is built once (`TEXT[label][stage]`); a frame makes no string, table or closure.
+It wraps `Healthbox.draw` and the three `BattleChrome` box draws the same way the type badges do
+(process-wide on `Healthbox.__ndxStatHints`; `state.drawChip(text, up, x, y, w, h)` is the test
+seam) and reads the battler's `stages` each draw, so the chips follow every move.
+
+- Placement (`state.spot`, `StatHints.layout`, game pixels): a foe's in rows under its box, from its
+  left, 120 wide (`FRAME.enemy.rows`); yours in columns left of your box, past its type badges
+  (`BADGES`), from y + 3 (a foe's third row ends on y + 2) to the text box (`TEXT_TOP` 112).
+  Doubles: each box takes the band of rows whose top is nearest its own
+  (`FRAME.doubles.bands`: the foes' at 0 and 29, 29 tall; yours at 66 and 89, 23 tall), columns
+  outward of its badges, held on the screen (`spot.right`). No chip crosses `SPLIT` (row 66),
+  where WoobleView's Battle Fit splits the UI in singles; in doubles its split is row 58, between
+  the foes' bands and yours.
+- Two ways to draw. With WoobleView (gen3-hd-sprites 0.8.6+, `exports.features.uiMap`, found with
+  `mod.find` in main.lua) the chips are measured in LOVE's own font (`StatHints.HI`: 6 tall, size
+  5, pad 1), queued while the boxes draw (`StatHints.enqueue`, slots reused), and drawn from
+  `render.hud` (main.lua's hook, `state.hud`) at window resolution: where `exports.uiMap()` says
+  WoobleView put the UI canvas this frame (banded: a chip above `map.split` goes with the top
+  band, clipped to `topBox`), else by the Renderer's own UI canvas blits, noted by a
+  `Renderer:blitCanvas` wrap (`Renderer.__ndxStatHintsBlit`). Fonts are cached by pixel size.
+  Without WoobleView: a 3 x 5 font of our own, each chip an image made on the CPU once per text
+  (`StatHints.PIXEL`: 9 tall), drawn on the UI canvas.
+- Red to Crystal (`src/gen12/stat_hints.lua`) use the pixel chips by their HUDs (`CLASSIC`,
+  `WIDE1`): a foe's under its HUD from (8, 33), yours in rows ending at x 152 above your HUD
+  (row 47), 64 wide (clear of the foe's chips), further rows above. Stages come from the
+  mechanics layer's `A:stage` (Red's Sp. Def is ours). Red draws with the HUDs (`drawHUDs` +
+  `drawZonePass` hub `BS.__ndxStatHints`) or from `battle.overlay` in the wide layout; Gold after
+  `drawEnemyHud` / `drawPlayerHud` (`GS.__ndxStatHints`).
+
+Tests: `tests/stat_hints_test.lua [game]` (text, every move redrawn, singles and doubles placement,
+seven changes on all four doubles boxes, the split row, the window-resolution path through a stub
+WoobleView, the option, garbage), drivers `tests/drivers/stat_hints_probe.lua` (Emerald: Swords
+Dance twice through the battle's menu, singles and doubles, every chip clear of every box) and
+`tests/drivers/gen12_stat_hints_probe.lua` (Red / Gold: Shell Smash, then Swords Dance).
+
 ## Art
 
 Pictures (battle, summary and Pokédex) come from a sprite mod:

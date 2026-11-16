@@ -108,6 +108,7 @@ return function(mod)
   local TypeIcons = loadSibling(mod, "src/type_icons.lua")
   -- optional: the type badges beside the battle's HP boxes
   local TypeBadges = loadSibling(mod, "src/type_badges.lua")
+  local StatHints = loadSibling(mod, "src/stat_hints.lua")
   -- optional: without it every new move plays the cart animation named in data/moves.lua
   local MoveAnims = loadSibling(mod, "src/anims.lua")
   -- optional: without it the moves data/fx.lua draws with pixelfx keep their cart look
@@ -553,6 +554,36 @@ return function(mod)
         if type(ev) == "table" and ev.mod == mod.id and ev.key == "type_badges" then readBadges() end
       end)
       pcall(TypeBadges.install, { require = require, log = mod.log, enabled = function() return badgesOn end })
+    end
+    -- the stat chips by the battle's HP boxes (src/stat_hints.lua), option stat_hints
+    if StatHints then
+      local hintsOn = true
+      local function readHints()
+        local okGet, value = pcall(function() return mod.options:get("stat_hints") end)
+        hintsOn = not (okGet and value == false)
+      end
+      readHints()
+      mod.events:on("mod.options_changed", function(ev)
+        if type(ev) == "table" and ev.mod == mod.id and ev.key == "stat_hints" then readHints() end
+      end)
+      -- WoobleView (gen3-hd-sprites): with its uiMap export the chips are drawn at window
+      -- resolution from render.hud; without it on the game's pixels
+      local view
+      local function wooble()
+        if view == nil then
+          local okF, found = pcall(function() return type(mod.find) == "function" and mod.find("gen3-hd-sprites") or nil end)
+          view = okF and type(found) == "table" and type(found.exports) == "table" and found.exports or false
+        end
+        return view or nil
+      end
+      local okI, hints = pcall(StatHints.install, { require = require, log = mod.log,
+        enabled = function() return hintsOn end, view = wooble })
+      if okI and type(hints) == "table" and type(hints.hud) == "function" then
+        mod.hooks:wrap("render.hud", function(nxt, game, viewport)
+          pcall(hints.hud)
+          return nxt(game, viewport)
+        end)
+      end
     end
   end, 1)
 

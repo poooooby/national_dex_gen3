@@ -55,4 +55,11 @@ return {
     default = true,
     description = "Show each Pokemon's types as small badges beside its HP box in battle, to the right of a foe's and to the left of yours. They follow the battle: a Pokemon soaked to Water or using Roost shows its new type.",
   },
+  {
+    key = "stat_hints",
+    label = "Stat Hints",
+    type = "toggle",
+    default = true,
+    description = "Show every stat a Pokemon has raised or lowered in battle by its HP box, with what it multiplies by: ATK 2x after Swords Dance, SPA 1/2 after two drops. They update after every move. Red for a rise, blue for a drop. In doubles they sit beside each box so they never cover the other Pokemon's.",
+  },
 }

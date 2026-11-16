@@ -3,6 +3,20 @@
 All notable changes to this mod are documented here, in
 [keep a changelog](https://keepachangelog.com/en/1.1.0/) format.
 
+## [1.14.0] - 2026-11-16
+
+### Added
+
+- **Stat Hints, every game** (option **Stat Hints**, on by default): small tags by each battle HP
+  box name every stat a Pokémon has raised or lowered and what it multiplies by, as a decimal
+  ("ATK 2x", "SPA 0.5x", "ACC 1.33x"), green for a rise and red for a drop. They are read from the
+  battle each time the box is drawn, so they follow every move: two Swords Dances read ATK 3x, a
+  Growl after it ATK 2.5x. The foe's sit under its box, yours beside your box; in doubles each
+  Pokémon's keep to its own box's rows and never cover another box or tag, even with seven
+  changes. On FireRed to Emerald with WoobleView 0.8.6 or later they are drawn at the window's
+  full resolution in a smooth font and follow Fill Screen's layout (portrait included); without
+  it, and on Red to Crystal, they are drawn on the game's own pixels.
+
 ## [1.13.0] - 2026-11-16
 
 ### Fixed

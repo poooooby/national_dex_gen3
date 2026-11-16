@@ -430,6 +430,34 @@ return function(mod, loadSibling)
     end
   end
 
+  -- Stat Hints (src/gen12/stat_hints.lua, src/stat_hints.lua's chips): the stages as the mechanics
+  -- layer keeps them (its adapter is cached on the battle)
+  local Hints = loadSibling(mod, "src/gen12/stat_hints.lua")
+  local HintCore = Hints and loadSibling(mod, "src/stat_hints.lua")
+  if Hints and HintCore then
+    local function stage(battle, battler, key)
+      local mech = mod.exports._mech
+      if not (mech and mech.adapter and battle and battler) then return 0 end
+      local A = mech.adapter.adapter(battle, mech.deps)
+      -- Red with one Special (no Sp. Def of ours): it shows once, as SPA
+      if generation == 1 and key == "spDef" and not (mech.core and mech.core.spDefOf) then return 0 end
+      return A:stage(battler, key)
+    end
+    local function hintOpts(data)
+      return { require = require, generation = generation, core = HintCore, stage = stage, data = data,
+        enabled = function() return option("stat_hints") end, log = mod.log }
+    end
+    if generation == 1 then
+      local hints = Hints.install(hintOpts(nil))
+      if hints then pcall(function() mod.hooks:wrap("battle.overlay", Hints.overlayHook(hints)) end) end
+    else
+      mod.events:on("game.ready", function(ev)
+        local game = ev and ev.game or mod.game
+        pcall(Hints.install, hintOpts(game and game.data))
+      end, 1)
+    end
+  end
+
   -- Bigger PC: 40 boxes; those past the cart's count are kept in this mod's save data on disk
   local BigPc = loadSibling(mod, "src/gen12/big_pc.lua")
   local pc = BigPc and BigPc.install({ require = require, generation = generation,
