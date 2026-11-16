@@ -373,6 +373,17 @@ for _, version in ipairs(H.versions()) do
     c.use("TACKLE")
     T.eq(c.hp("enemy"), h, v("(the Substitute takes it otherwise)"))
   end
+  -- ------- Red's own Wrap turns: Sturdy holds at 1 HP
+  if sim.gen == 1 then
+    local w = sim.fresh({ foe = "GEODUDE" })
+    as(w, "enemy", "STURDY")
+    local foe = w.battler("enemy")
+    local max = w.maxHp("enemy")
+    local user = w.battler("player")
+    user.trappingTurns, user.trapDamage, user.trapMove = 3, max * 2, "WRAP"
+    w.battle:continueTrapping(user, foe)
+    T.eq(w.hp("enemy"), 1, v("Sturdy holds against Wrap's follow-up hit at full HP"))
+  end
   -- ------- Gold's own Reflect with Light Clay
   if sim.gen == 2 then
     local w = sim.fresh({ foe = "SNORLAX" })

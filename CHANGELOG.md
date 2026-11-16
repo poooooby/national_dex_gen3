@@ -43,7 +43,8 @@ All notable changes to this mod are documented here, in
   Unseen Fist punches through Gold's own Protect and Detect, and Infiltrator gets past a
   Substitute and Gold's own Reflect and Light Screen. Suction Cups, Guard Dog and Ingrain hold on
   against Gold's own Roar and Whirlwind, and Light Clay stretches Gold's own Reflect and Light
-  Screen to 8 turns.
+  Screen to 8 turns. On Red, Blue and Yellow, Wrap's follow-up hits and Bide's release meet
+  Sturdy, Focus Sash, Disguise and Rocky Helmet.
 - **Held items on FireRed to Emerald:** Light Clay, the weather rocks, Safety Goggles in a
   sandstorm or hail, Ring Target, Iron Ball against Ground moves, Covert Cloak, Protective Pads,
   Big Root, Float Stone and Loaded Dice now work, and Utility Umbrella in rain or sun. The

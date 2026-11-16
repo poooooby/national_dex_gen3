@@ -715,6 +715,46 @@ function Red.installSeams(mod, deps)
     end
   end
   hub.log = core.log
+  -- Red's own follow-up hits (Wrap's turns, Bide's release) go straight to applyDamage: capped
+  -- through "damageCap" (Sturdy, Focus Sash, Disguise) and told as "damageDealt" (Rocky Helmet,
+  -- the berries), as a move's own hit is
+  if not BattleState.__ndxMechFollow then
+    BattleState.__ndxMechFollow = true
+    for _, name in ipairs({ "continueTrapping", "continueBide" }) do
+      local orig = BattleState[name]
+      if type(orig) == "function" then
+        BattleState[name] = function(self, user, target, ...)
+          if not (hub.followUp and type(target) == "table" and target.mon) then return orig(self, user, target, ...) end
+          local moveId = name == "continueBide" and "BIDE" or user.trapMove
+          local had = rawget(self, "applyDamage")
+          local hp0 = target.mon.hp
+          self.applyDamage = function(s, t, dmg, ...)
+            if t == target then
+              local ok, d = pcall(hub.followUp, s, user, target, moveId, dmg)
+              if ok and tonumber(d) then dmg = d end
+            end
+            return BattleState.applyDamage(s, t, dmg, ...)
+          end
+          local r = { pcall(orig, self, user, target, ...) }
+          self.applyDamage = had
+          if not r[1] then error(r[2], 0) end
+          local dealt = hp0 - (target.mon.hp or 0)
+          if dealt > 0 and core.hooks.damageDealt then
+            local A = Red.adapter(self, deps)
+            local m = self.data.moves[moveId] or { id = moveId }
+            pcall(core.fire, core, "damageDealt", A, { user = user, target = target, move = m, damage = dealt })
+          end
+          return (unpack or table.unpack)(r, 2)
+        end
+      end
+    end
+  end
+  hub.followUp = function(battle, user, target, moveId, dmg)
+    if not core.hooks.damageCap then return nil end
+    local A = Red.adapter(battle, deps)
+    local m = battle.data.moves[moveId] or { id = moveId }
+    return core:ask("damageCap", A, user, target, m, dmg)
+  end
   hub.multiHit = function(battle, user)
     local A = Red.adapter(battle, deps)
     if core.hooks.skillLink and core:ask("skillLink", A, user) then return 5 end
