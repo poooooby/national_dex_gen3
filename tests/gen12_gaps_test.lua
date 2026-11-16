@@ -247,6 +247,31 @@ for _, version in ipairs(H.versions()) do
       T.eq(w.stage("enemy", "speed"), 1, v("Steadfast: a flinch raises Speed"))
     end
   end
+  -- ------- the games' draining moves: Liquid Ooze, Big Root
+  do
+    local function drained(ability, item)
+      local w = sim.fresh({ foe = "RATTATA" })
+      if ability then as(w, "enemy", ability) end
+      if item then w.A:setItem(w.battler("player"), item) end
+      w.A:damage(w.battler("player"), 40)
+      local hp = w.hp("player")
+      w.use("MEGA_DRAIN")
+      return w.hp("player") - hp
+    end
+    local plain = drained()
+    T.check(plain > 0, v("(Mega Drain heals " .. plain .. ")"))
+    T.check(drained("LIQUIDOOZE") < 0, v("Liquid Ooze: Mega Drain hurts instead"))
+    -- Big Root, within one battle: the game heals half of what it took, Big Root 1.3x that
+    local w = sim.fresh({ foe = "RATTATA" })
+    w.A:setItem(w.battler("player"), "BIG_ROOT")
+    w.A:damage(w.battler("player"), 60)
+    local hp, foe = w.hp("player"), w.hp("enemy")
+    w.use("MEGA_DRAIN")
+    local took, gained = foe - w.hp("enemy"), w.hp("player") - hp
+    local base = math.max(1, math.floor(took / 2))
+    T.check(took > 0 and gained == math.floor(base * 1.3),
+      v("Big Root: Mega Drain heals 1.3x (" .. gained .. " from " .. base .. ")"))
+  end
   sim.release()
 end
 T.finish("national_dex_gen3 Gen 1/2 gaps")

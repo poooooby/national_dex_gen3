@@ -33,7 +33,8 @@ All notable changes to this mod are documented here, in
   and Safeguard stop Confuse Ray, Supersonic and Thrash / Outrage's confusion, and Persim and Lum
   Berry cure confusion at once (on Gold they never did). Inner Focus, Shield Dust and Covert
   Cloak stop the flinch from Headbutt, Bite and King's Rock, and Steadfast's Speed rises when a
-  flinch stands.
+  flinch stands. Absorb, Mega Drain, Giga Drain, Leech Life and Dream Eater meet Liquid Ooze, Big
+  Root and Heal Block.
 - **Held items on FireRed to Emerald:** Light Clay, the weather rocks, Safety Goggles in a
   sandstorm or hail, Ring Target, Iron Ball against Ground moves, Covert Cloak, Protective Pads,
   Big Root, Float Stone and Loaded Dice now work, and Utility Umbrella in rain or sun. The

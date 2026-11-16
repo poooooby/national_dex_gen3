@@ -123,6 +123,8 @@ return function(core, opts)
   local EXPLODE = { SELFDESTRUCT = true, EXPLOSION = true, MINDBLOWN = true, MISTYEXPLOSION = true }
   local PRIORITY_BLOCK = { ARMORTAIL = true, DAZZLING = true, QUEENLYMAJESTY = true }
   local MENTAL = { TAUNT = true, TORMENT = true, ENCORE = true, DISABLE = true, HEALBLOCK = true, ATTRACT = true }
+  -- the games' own draining moves (their heal is the cart's, past the drain hooks)
+  local CART_DRAIN = { ABSORB = true, MEGA_DRAIN = true, GIGA_DRAIN = true, LEECH_LIFE = true, DREAM_EATER = true }
   -- confusion where each game keeps it (Red: the battler's turns; Gold: the volatile count)
   local function confusedOf(A, b)
     if b.confusedTurns then return true end
@@ -312,6 +314,21 @@ return function(core, opts)
         end
       end
       if b == t then break end
+    end
+    -- the games' own draining moves heal past the drain hooks: Liquid Ooze turns what was taken
+    -- into damage, Heal Block takes it back, Big Root adds to it
+    if CART_DRAIN[moveId] and t and t ~= u and s[u] and A:hp(u) > 0 then
+      local gained = A:hp(u) - s[u].hp
+      if gained > 0 then
+        if core.hooks.drainReversed and core:ask("drainReversed", A, u, t) then
+          A:damage(u, gained * 2, { text = A:text("%s sucked up the liquid ooze!", A:name(u)) })
+        elseif core.hooks.noHeal and core:ask("noHeal", A, u) then
+          A:damage(u, gained)
+        elseif core.hooks.drainHeal then
+          local more = math.floor(core:fold("drainHeal", gained, A, u)) - gained
+          if more > 0 then A:heal(u, more) end
+        end
+      end
     end
     -- a flinch this move gave (the games' Headbutt, Bite, King's Rock set it past noFlinch):
     -- taken back for Inner Focus, Shield Dust, Covert Cloak; Steadfast's Speed when it stays
