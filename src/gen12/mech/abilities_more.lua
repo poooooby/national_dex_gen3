@@ -141,9 +141,28 @@ return function(core, opts)
       if ok and type(v) == "table" then v.confuseCount = nil end
     end
   end
+  -- a flinch where each game keeps it (Red: the battler; Gold: the volatile state)
+  local function flinchedOf(A, b)
+    if b.flinched then return true end
+    local bt = A.battle
+    if type(bt) == "table" and type(bt.volatile) == "function" then
+      local ok, v = pcall(bt.volatile, bt, b)
+      if ok and type(v) == "table" and v.flinched then return true end
+    end
+    return false
+  end
+  local function unflinch(A, b)
+    b.flinched = nil
+    local bt = A.battle
+    if type(bt) == "table" and type(bt.volatile) == "function" then
+      local ok, v = pcall(bt.volatile, bt, b)
+      if ok and type(v) == "table" then v.flinched = nil end
+    end
+  end
   local function snap(A, b)
     if not b then return nil end
-    local s = { hp = A:hp(b), status = A:status(b), stages = {}, confused = confusedOf(A, b) }
+    local s = { hp = A:hp(b), status = A:status(b), stages = {}, confused = confusedOf(A, b),
+      flinched = flinchedOf(A, b) }
     for _, st in ipairs(STATS) do s.stages[st] = A:stage(b, st) end
     return s
   end
@@ -293,6 +312,16 @@ return function(core, opts)
         end
       end
       if b == t then break end
+    end
+    -- a flinch this move gave (the games' Headbutt, Bite, King's Rock set it past noFlinch):
+    -- taken back for Inner Focus, Shield Dust, Covert Cloak; Steadfast's Speed when it stays
+    if t and t ~= u and s[t] and not s[t].flinched and A:hp(t) > 0 and flinchedOf(A, t) then
+      if core.hooks.noFlinch and core:ask("noFlinch", A, t) then
+        unflinch(A, t)
+      elseif ab(A, t) == "STEADFAST" then
+        say(A, "%s's %s!", A:name(t), nameOf("STEADFAST"))
+        A:stages(t, { speed = 1 })
+      end
     end
     -- statuses this move gave
     if t and t ~= u and s[t] and not s[t].status and A:hp(t) > 0 then
@@ -616,7 +645,7 @@ return function(core, opts)
     return w
   end)
   core:on("chanceScale", function(p, A, u) if ab(A, u) == "SERENEGRACE" then return math.min(100, p * 2) end return p end)
-  core:on("noFlinch", function(A, b) if ab(A, b) == "SHIELDDUST" then return true end end)
+  core:on("noFlinch", function(A, b) local k = ab(A, b); if k == "SHIELDDUST" or k == "INNERFOCUS" then return true end end)
   core:on("blockStatus", function(A, b, s, o)
     local id = ab(A, b)
     if o and o.secondary and id == "SHIELDDUST" then return "" end

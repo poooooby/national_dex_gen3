@@ -220,6 +220,33 @@ for _, version in ipairs(H.versions()) do
     w.use("CONFUSE_RAY")
     T.check(not confused(w, "enemy"), v("a Persim Berry cures the confusion at once"))
   end
+  -- ------- a flinch the game sets itself: Inner Focus, Covert Cloak, Steadfast
+  do
+    local function flinched(w)
+      local b = w.battler("enemy")
+      if b.flinched then return true end
+      local ok, vv = pcall(function() return w.battle:volatile(b) end)
+      return ok and type(vv) == "table" and vv.flinched == true or false
+    end
+    local w = sim.fresh({ foe = "RATTATA" })
+    w.use("HEADBUTT")
+    local control = flinched(w)
+    T.check(control, v("(Headbutt flinches on a low roll)"))
+    if control then
+      w = sim.fresh({ foe = "RATTATA" })
+      as(w, "enemy", "INNERFOCUS")
+      w.use("HEADBUTT")
+      T.check(not flinched(w), v("Inner Focus: no flinch"))
+      w = sim.fresh({ foe = "RATTATA" })
+      w.A:setItem(w.battler("enemy"), "COVERT_CLOAK")
+      w.use("HEADBUTT")
+      T.check(not flinched(w), v("Covert Cloak: no flinch"))
+      w = sim.fresh({ foe = "RATTATA" })
+      as(w, "enemy", "STEADFAST")
+      w.use("HEADBUTT")
+      T.eq(w.stage("enemy", "speed"), 1, v("Steadfast: a flinch raises Speed"))
+    end
+  end
   sim.release()
 end
 T.finish("national_dex_gen3 Gen 1/2 gaps")

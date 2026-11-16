@@ -31,7 +31,9 @@ All notable changes to this mod are documented here, in
   Liquid Ooze, Big Root and Heal Block. Rest fails on Insomnia, Vital Spirit, Comatose and the
   like, and a held Chesto, Lum, Mint or MiracleBerry wakes the Pokémon right after it. Own Tempo
   and Safeguard stop Confuse Ray, Supersonic and Thrash / Outrage's confusion, and Persim and Lum
-  Berry cure confusion at once (on Gold they never did).
+  Berry cure confusion at once (on Gold they never did). Inner Focus, Shield Dust and Covert
+  Cloak stop the flinch from Headbutt, Bite and King's Rock, and Steadfast's Speed rises when a
+  flinch stands.
 - **Held items on FireRed to Emerald:** Light Clay, the weather rocks, Safety Goggles in a
   sandstorm or hail, Ring Target, Iron Ball against Ground moves, Covert Cloak, Protective Pads,
   Big Root, Float Stone and Loaded Dice now work, and Utility Umbrella in rain or sun. The

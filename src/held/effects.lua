@@ -212,6 +212,7 @@ return function(core, opts)
   core:on("blockStatus", function(A, b, s, o)
     if o and o.secondary and kind(A, b, "covertCloak") then return "" end
   end)
+  core:on("noFlinch", function(A, b) if kind(A, b, "covertCloak") then return true end end)
   core:on("hazardImmune", function(A, b) if kind(A, b, "heavyDutyBoots") then return true end end)
   core:on("weatherImmune", function(A, b) if kind(A, b, "safetyGoggles") then return true end end)
   core:on("ignoresWeather", function(A, b) if kind(A, b, "utilityUmbrella") then return true end end)
