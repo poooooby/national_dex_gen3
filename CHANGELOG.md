@@ -40,7 +40,10 @@ All notable changes to this mod are documented here, in
   stop a move's sure stat drop too (Icy Wind); Unburden works for the Pokémon that starts the
   battle; a busted Disguise or broken Ice Face stays that way after a switch; Triage and Gale
   Wings change who moves first; with Tailwind, Trick Room or a Speed item in play the turn order
-  keeps Swift Swim, Chlorophyll, badge boosts, Macho Brace and Quick Claw.
+  keeps Swift Swim, Chlorophyll, badge boosts, Macho Brace and Quick Claw; Sheer Force cancels
+  Life Orb's recoil and covers sure added effects (Flame Charge); Infiltrator goes through
+  Aurora Veil; Guard Dog can't be forced out by Roar, Whirlwind or Dragon Tail; Tailwind raises
+  Wind Rider's Attack and charges Wind Power; Bulletproof stops Rock Blast and Syrup Bomb.
 
 ## [1.12.1] - 2026-11-14
 

@@ -301,7 +301,7 @@ return function(core, opts)
     local r, id = row(A, u)
     if r and A:hp(u) > 0 then
       local e = r.effect
-      if e.kind == "lifeOrb" and vu.lifeOrbHit and dealt > 0 then
+      if e.kind == "lifeOrb" and vu.lifeOrbHit and dealt > 0 and not core:ask("sheerForced", A, u) then
         hurt(A, u, math.max(1, math.floor(A:maxHp(u) / 10)), { text = A:text("%s lost some of its HP!", A:name(u)) })
       elseif e.kind == "shellBell" and dealt > 0 and A:hp(u) < A:maxHp(u) then
         A:heal(u, math.max(1, math.floor(dealt / 8)), { text = A:text("%s restored a little HP using its %s!", A:name(u), named(A, id)) })

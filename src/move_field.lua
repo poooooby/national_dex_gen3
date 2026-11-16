@@ -277,7 +277,8 @@ local function dragOut(ad, st, M)
   local target = M.target
   if not (M.targetDamaged and not M.noEffect and not M.failed) then return end
   if ad:hp(target) <= 0 or M.hitSubstitute or ad:hp(M.user) <= 0 then return end
-  if abilityOf(ad, target) == "SUCTION_CUPS" or target.expIngrain then return end
+  local anchor = abilityOf(ad, target)
+  if anchor == "SUCTION_CUPS" or anchor == "GUARD_DOG" or target.expIngrain then return end
   local okE, Engine = pcall(require, "src.core.game3.battle.engine")
   if not okE then return end
   if st.wild then
@@ -463,6 +464,17 @@ local function statusRule(rule, ad, user, target, M)
     if target and target ~= user then changeStat(ad, target, "evasion", -1, { allowPtr = true }) end
   elseif rule == "TAILWIND" then
     sideTimer(own, "tailwind", 4, "The tailwind blew from\nbehind " .. teamName(ad, own) .. "!")
+    -- the wind on its side: Wind Rider's Attack, Wind Power's charge
+    for _, b in ipairs(ad:activeBattlers() or {}) do
+      if ad:ownSide(b) == own and ad:hp(b) > 0 then
+        local k = abilityOf(ad, b)
+        if k == "WIND_RIDER" then changeStat(ad, b, "attack", 1, { allowPtr = true })
+        elseif k == "WIND_POWER" then
+          b.expCharged, b.chargedUp = 2, true
+          ad:say(prefixed(ad, b) .. " was charged\nwith power!")
+        end
+      end
+    end
   elseif rule == "AURORA_VEIL" then
     local okR, Rules = pcall(require, "src.core.game3.battle.rules")
     local okW, w = pcall(function() return Rules.weather.effective(st, ad) end)
@@ -1142,6 +1154,7 @@ function MoveField.install(opts)
       local f = st.__ndxField or {}
       local dside = ad:ownSide(defender)
       local veil = dside and dside.__ndx and (dside.__ndx.auroraVeil or 0) > 0
+        and abilityOf(ad, attacker) ~= "INFILTRATOR"
       local num = type(moveId) == "table" and (tonumber(moveId.numId) or tonumber(moveId.id)) or tonumber(moveId)
       local rule = num and MoveField._rules[num]
       local move = type(moveId) == "table" and moveId or {}

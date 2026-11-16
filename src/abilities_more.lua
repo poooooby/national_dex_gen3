@@ -728,10 +728,12 @@ function More.install(opts)
     if spec and SHEER[spec.eff] and not spec.certain then return true end
     local extra = C.MoveEffects and C.MoveEffects._specs and C.MoveEffects._specs[tonumber(M.mnum) or -1]
     if extra and extra.kind == "hit" then
-      local ch = tonumber(extra.chance) or 100
-      if (extra.foe or extra.self) and ch < 100 then return true end
-      if extra.ailment and (tonumber(extra.ailmentChance) or 100) < 100 then return true end
-      if extra.flinch then return true end
+      -- every added effect, a sure one too (Flame Charge, Spirit Break); not a drawback (Close
+      -- Combat's own drops)
+      if extra.foe or extra.ailment or extra.flinch then return true end
+      for _, d in pairs(extra.self or {}) do
+        if (tonumber(d) or 0) > 0 then return true end
+      end
     end
     return false
   end
@@ -842,16 +844,21 @@ function More.install(opts)
       local st = ad._st
       local restore = {}
       pcall(function()
+        -- this move's Sheer Force, kept to its next move: Life Orb asks after the move ends
+        user.__ndxAbSheerUsed = nil
         if ua == "SHEER_FORCE" and sheerMove(M) then
-          user.__ndxAbSheer = true
+          user.__ndxAbSheer, user.__ndxAbSheerUsed = true, true
           local specs = X.MoveEffects and X.MoveEffects._specs
           local spec = specs and specs[num or -1]
           if spec then
             local copy = {}
             for k, v in pairs(spec) do copy[k] = v end
-            if (tonumber(copy.chance) or 100) < 100 then copy.foe, copy.self = nil, nil end
-            if (tonumber(copy.ailmentChance) or 100) < 100 then copy.ailment = nil end
-            copy.flinch = nil
+            copy.foe, copy.ailment, copy.flinch = nil, nil, nil
+            local keep = nil
+            for st, d in pairs(spec.self or {}) do
+              if (tonumber(d) or 0) < 0 then keep = keep or {}; keep[st] = d end
+            end
+            copy.self = keep
             specs[num] = copy
             restore[#restore + 1] = function() specs[num] = spec end
           end
@@ -983,6 +990,8 @@ function More.install(opts)
         if okB and pb then blocked = true
         elseif ta == "GOOD_AS_GOLD" and X.isStatusMove(mv) then
           say(ad, "It doesn't affect %s...", who(ad, target)); blocked = true
+        elseif ta == "GUARD_DOG" and id == "EXP_ROAR_EFFECT" then
+          say(ad, "%s anchors itself with %s!", who(ad, target), X.nameOf(ta)); blocked = true
         elseif ta == "AROMA_VEIL" and MENTAL[key] then
           say(ad, "%s is protected by an aromatic veil!", who(ad, target)); blocked = true
         elseif ta == "OVERCOAT" and X.flag("powder", mv, num) then

@@ -615,6 +615,8 @@ function Held.install(opts)
       return (unpack or table.unpack)(r, 2)
     end
   end
+  -- Sheer Force took this move's added effects (src/abilities_more.lua notes it): no Life Orb recoil
+  core:on("sheerForced", function(_, u) if type(u) == "table" and u.__ndxAbSheerUsed then return true end end)
   -- the kind of item a battler holds (nil: none of ours); other modules ask through the hub
   function hub.kindOf(b)
     local r = type(b) == "table" and hub.env and hub.env.byIndex[tonumber(b.item) or 0]

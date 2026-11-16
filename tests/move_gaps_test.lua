@@ -245,4 +245,43 @@ do
     "Swift Swim in the rain counts with Tailwind (50 x2 x2 beats 150)")
 end
 
+-- ------- Sheer Force, Infiltrator, Guard Dog, Wind Rider, Bulletproof
+do
+  local st, ad = battle()
+  withAbility(ad, st.player, "SHEER_FORCE")
+  st.player.item = ITEM.LIFE_ORB
+  local hp = st.player.mon.hp
+  use(st, ad, "FLAME_CHARGE")
+  T.eq(st.player.mon.hp, hp, "Sheer Force: no Life Orb recoil on a move it powered")
+  T.eq(st.player.stages.speed, 0, "and Flame Charge's sure Speed boost is gone")
+  use(st, ad, 33)                                                        -- TACKLE
+  T.check(st.player.mon.hp < hp, "but Life Orb still hurts after a plain move")
+  local function veiled(infiltrator)
+    local s2, a2 = battle()
+    if infiltrator then withAbility(a2, s2.player, "INFILTRATOR") end
+    s2.enemySide.__ndx = { auroraVeil = 5 }
+    local h = s2.enemy.mon.hp; use(s2, a2, 33); return h - s2.enemy.mon.hp
+  end
+  local s3, a3 = battle()
+  local h3 = s3.enemy.mon.hp; use(s3, a3, 33)
+  local plain, through, halved = h3 - s3.enemy.mon.hp, veiled(true), veiled(false)
+  T.check(math.abs(through - plain) <= 1 and halved < through,
+    "Infiltrator hits through Aurora Veil (" .. through .. " / " .. plain .. " / veiled " .. halved .. ")")
+  local s4, a4, said4 = battle()
+  withAbility(a4, s4.enemy, "GUARD_DOG")
+  use(s4, a4, 46)                                                        -- ROAR
+  local anchored = false
+  for _, line in ipairs(said4) do if line:find("anchors") then anchored = true end end
+  T.check(anchored, "Guard Dog anchors against Roar")
+  local s5, a5 = battle()
+  withAbility(a5, s5.player, "WIND_RIDER")
+  use(s5, a5, "TAILWIND", s5.player, s5.player)
+  T.eq(s5.player.stages.attack, 1, "Wind Rider: Tailwind raises its Attack")
+  local s6, a6 = battle()
+  withAbility(a6, s6.enemy, "BULLETPROOF")
+  local h6 = s6.enemy.mon.hp
+  use(s6, a6, 350)                                                       -- ROCK BLAST
+  T.eq(s6.enemy.mon.hp, h6, "Bulletproof stops Rock Blast")
+end
+
 T.finish("national_dex_gen3 move gaps (" .. GAME .. ")")
