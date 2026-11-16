@@ -994,8 +994,7 @@ function MoveField.install(opts)
       local gnum = tonumber(moveCtx and moveCtx.mnum) or tonumber(moveId)
       if gnum and MoveField._gravityBanned[gnum] and st and st.__ndxField and (st.__ndxField.gravity or 0) > 0 then
         if M then M.failed = true end
-        ad:say(prefixed(ad, user) .. " can't use the move
-because of gravity!")
+        ad:say(prefixed(ad, user) .. " can't use the move\nbecause of gravity!")
         return true
       end
       -- Yawn fails on a Pokemon that can't fall asleep (a terrain, an ability)
