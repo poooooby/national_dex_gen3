@@ -128,6 +128,57 @@ for _, version in ipairs(H.versions()) do
     w.endTurn()
     T.check(w.hp("player") < hp, v("Dry Skin hurts in the sun"))
   end
+  -- ------- the game's own end-of-turn damage: Magic Guard, Poison Heal, Heatproof, Liquid Ooze
+  -- (the game's ticks, run as its turn runs them: Red after each mover, Gold between turns)
+  local function tick(w, side)
+    local other = side == "enemy" and "player" or "enemy"
+    if sim.gen == 1 then
+      w.battle:residualFor(w.battler(side), w.battler(other))
+      w.flush()
+    else
+      w.battle:tickStatus(w.battler(side))
+      w.battle:tickSeedAndCurse(w.battler(side))
+    end
+    w.endTurn()
+  end
+  do
+    local function poisoned(ability)
+      local w = sim.fresh({ foe = "SLOWPOKE" })
+      if ability then as(w, "player", ability) end
+      w.A:ailment(w.battler("player"), "POISON", {})
+      w.A:damage(w.battler("player"), 10)
+      local hp = w.hp("player")
+      tick(w, "player")
+      return w.hp("player") - hp
+    end
+    local plain = poisoned(nil)
+    T.check(plain < 0, v("(poison hurts at the end of the turn: " .. plain .. ")"))
+    T.eq(poisoned("MAGICGUARD"), 0, v("Magic Guard takes no poison damage"))
+    T.check(poisoned("POISONHEAL") > 0, v("Poison Heal heals while poisoned"))
+    local w = sim.fresh({ foe = "SLOWPOKE" })
+    as(w, "player", "POISONHEAL")
+    w.A:damage(w.battler("player"), 10)
+    local hp = w.hp("player")
+    tick(w, "player")
+    T.eq(w.hp("player"), hp, v("and not otherwise"))
+    local function burned(ability)
+      local x = sim.fresh({ foe = "SLOWPOKE" })
+      if ability then as(x, "player", ability) end
+      x.A:ailment(x.battler("player"), "BURN", {})
+      local h = x.hp("player")
+      tick(x, "player")
+      return h - x.hp("player")
+    end
+    local full = burned(nil)
+    T.check(full > 0 and burned("HEATPROOF") == math.floor(full / 2), v("Heatproof halves the burn (" .. full .. ")"))
+    w = sim.fresh({ foe = "SLOWPOKE" })
+    as(w, "enemy", "LIQUIDOOZE")
+    w.use("LEECH_SEED")
+    w.A:damage(w.battler("player"), 20)
+    hp = w.hp("player")
+    tick(w, "enemy")
+    T.check(w.hp("player") < hp, v("Leech Seed into Liquid Ooze hurts the seeder"))
+  end
   sim.release()
 end
 T.finish("national_dex_gen3 Gen 1/2 gaps")

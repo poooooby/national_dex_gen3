@@ -761,6 +761,75 @@ function Gold.installSeams(mod, deps)
       core:fire("afterMove", Gold.adapter(battle, deps), attacker, defender, moveId)
     end
   end
+
+  -- the game's own end-of-turn damage, decided before it is dealt (it says and shows it as it
+  -- goes): Magic Guard and Poison Heal take none, Heatproof half a burn's (worked out against
+  -- half its HP); Leech Seed's drain meets Liquid Ooze, Heal Block and Big Root through the heal
+  -- it calls (core "noIndirect", "drainReversed", "noHeal", "drainHeal")
+  local gHub = Battle.__ndxMechResid
+  if not gHub then
+    gHub = {}
+    Battle.__ndxMechResid = gHub
+    local tickStatus, tickSeed = Battle.tickStatus, Battle.tickSeedAndCurse
+    Battle.tickStatus = function(self, mon, ...)
+      local ok, how = false, nil
+      if gHub.statusPlan then ok, how = pcall(gHub.statusPlan, self, mon) end
+      if ok and how == "skip" then return end
+      if ok and how == "half" then
+        local had = rawget(mon, "maxHp")
+        local max = mon.maxHp or (mon.stats and mon.stats.hp) or 1
+        mon.maxHp = math.max(1, math.floor(max / 2))
+        local r = { pcall(tickStatus, self, mon, ...) }
+        mon.maxHp = had
+        if not r[1] then error(r[2], 0) end
+        return (unpack or table.unpack)(r, 2)
+      end
+      return tickStatus(self, mon, ...)
+    end
+    Battle.tickSeedAndCurse = function(self, mon, ...)
+      local ok, plan = false, nil
+      if gHub.seedPlan then ok, plan = pcall(gHub.seedPlan, self, mon) end
+      if ok and plan == "skip" then return end
+      if ok and type(plan) == "function" then
+        local had = rawget(self, "heal")
+        self.heal = plan
+        local r = { pcall(tickSeed, self, mon, ...) }
+        self.heal = had
+        if not r[1] then error(r[2], 0) end
+        return (unpack or table.unpack)(r, 2)
+      end
+      return tickSeed(self, mon, ...)
+    end
+  end
+  gHub.statusPlan = function(battle, mon)
+    local A = Gold.adapter(battle, deps)
+    local s, id = A:status(mon), core.abilityOf and core.abilityOf(A, mon)
+    if (core.hooks.noIndirect and core:ask("noIndirect", A, mon)) or (id == "POISONHEAL" and (s == "PSN" or s == "TOX")) then
+      return "skip"
+    end
+    if id == "HEATPROOF" and s == "BRN" then return "half" end
+    return nil
+  end
+  gHub.seedPlan = function(battle, mon)
+    local A = Gold.adapter(battle, deps)
+    if core.hooks.noIndirect and core:ask("noIndirect", A, mon) then return "skip" end
+    if not battle:volatile(mon).leechSeed then return nil end
+    local other = mon == battle.player and battle.enemy or battle.player
+    local ooze = core.hooks.drainReversed and core:ask("drainReversed", A, other, mon)
+    local blocked = core.hooks.noHeal and core:ask("noHeal", A, other)
+    local classHeal = Battle.heal
+    return function(self, m, amount, ...)
+      if m == other then
+        if ooze then
+          A:damage(other, math.max(1, math.floor(amount)), { text = A:text("%s sucked up the liquid ooze!", A:name(other)) })
+          return 0
+        end
+        if blocked then return 0 end
+        if core.hooks.drainHeal then amount = math.floor(core:fold("drainHeal", amount, A, other)) end
+      end
+      return classHeal(self, m, amount, ...)
+    end
+  end
 end
 
 return Gold

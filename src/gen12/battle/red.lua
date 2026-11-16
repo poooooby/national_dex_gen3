@@ -911,6 +911,72 @@ function Red.installSeams(mod, deps)
     end
     return hit
   end)
+
+  -- the game's own end-of-turn damage, put right after it is dealt (it returns its lines, so they
+  -- can be taken back): Magic Guard and Poison Heal take none, Heatproof half a burn's; Leech
+  -- Seed's drain meets Liquid Ooze, Heal Block and Big Root (core "noIndirect", "drainReversed",
+  -- "noHeal", "drainHeal")
+  local Status = deps.require("src.battle.Status")
+  local rHub = Status.__ndxMech
+  if not rHub then
+    rHub = {}
+    Status.__ndxMech = rHub
+    local residualStatus, residualSeed = Status.residualStatus, Status.residualSeed
+    Status.residualStatus = function(b, opp, battle, ...)
+      local hp0 = type(b) == "table" and b.mon and b.mon.hp
+      local msgs = residualStatus(b, opp, battle, ...)
+      if rHub.afterStatus and hp0 then
+        local ok, r = pcall(rHub.afterStatus, battle, b, hp0)
+        if ok and r then return r end
+      end
+      return msgs
+    end
+    Status.residualSeed = function(b, opp, battle, ...)
+      local hp0 = type(b) == "table" and b.mon and b.mon.hp
+      local o0 = type(opp) == "table" and opp.mon and opp.mon.hp
+      local msgs = residualSeed(b, opp, battle, ...)
+      if rHub.afterSeed and hp0 and o0 then
+        local ok, r = pcall(rHub.afterSeed, battle, b, opp, hp0, o0, msgs)
+        if ok and r then return r end
+      end
+      return msgs
+    end
+  end
+  rHub.afterStatus = function(battle, b, hp0)
+    local lost = hp0 - (b.mon.hp or 0)
+    if lost <= 0 then return nil end
+    local A = Red.adapter(battle, deps)
+    local s, id = A:status(b), core.abilityOf and core.abilityOf(A, b)
+    if (core.hooks.noIndirect and core:ask("noIndirect", A, b)) or (id == "POISONHEAL" and (s == "PSN" or s == "TOX")) then
+      b.mon.hp = hp0
+      return {}
+    end
+    if id == "HEATPROOF" and s == "BRN" then b.mon.hp = hp0 - math.floor(lost / 2) end
+    return nil
+  end
+  rHub.afterSeed = function(battle, b, opp, hp0, o0, msgs)
+    local lost = hp0 - (b.mon.hp or 0)
+    if lost <= 0 then return nil end
+    local A = Red.adapter(battle, deps)
+    if core.hooks.noIndirect and core:ask("noIndirect", A, b) then
+      b.mon.hp, opp.mon.hp = hp0, o0
+      return {}
+    end
+    if core.hooks.drainReversed and core:ask("drainReversed", A, opp, b) then
+      opp.mon.hp = math.max(0, o0 - lost)
+      msgs[#msgs + 1] = A:text("%s sucked up the liquid ooze!", A:name(opp))
+      return msgs
+    end
+    if core.hooks.noHeal and core:ask("noHeal", A, opp) then
+      opp.mon.hp = o0
+      return msgs
+    end
+    if core.hooks.drainHeal then
+      local want = math.floor(core:fold("drainHeal", lost, A, opp))
+      if want > lost then opp.mon.hp = math.min(A:maxHp(opp), opp.mon.hp + (want - lost)) end
+    end
+    return nil
+  end
 end
 
 return Red

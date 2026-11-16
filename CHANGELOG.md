@@ -26,7 +26,9 @@ All notable changes to this mod are documented here, in
   Down slows the attacker, not its holder; Anger Point needs a critical hit; Weak Armor only
   physical hits; Stamina, Thermal Exchange, Seed Sower, Moxie, Simple, Stench, Poison Touch,
   Hydration, Dry Skin and Solar Power (in the sun) now act; Rivalry applies one factor by gender;
-  Fluffy halves only contact moves; Tangled Feet only when confused.
+  Fluffy halves only contact moves; Tangled Feet only when confused. Poison, burn and Leech Seed
+  damage now respect Magic Guard, Poison Heal (which heals only while poisoned), Heatproof,
+  Liquid Ooze, Big Root and Heal Block.
 - **Held items on FireRed to Emerald:** Light Clay, the weather rocks, Safety Goggles in a
   sandstorm or hail, Ring Target, Iron Ball against Ground moves, Covert Cloak, Protective Pads,
   Big Root, Float Stone and Loaded Dice now work, and Utility Umbrella in rain or sun. The

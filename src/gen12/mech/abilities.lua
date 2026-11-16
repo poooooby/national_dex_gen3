@@ -126,6 +126,9 @@ return function(core, opts)
       v.slowStartUntil = v.slowStartUntil or (A:turn() + 5)
       return A:turn() < v.slowStartUntil
     end,
+    -- Poison Heal: its heal only while poisoned (the poison's own damage is held off in the
+    -- adapters' end-of-turn wraps)
+    POISONHEAL = function(A, b) local s = A:status(b); return s == "PSN" or s == "TOX" end,
     TANGLEDFEET = function(A, b)
       if b.confusedTurns then return true end
       local ok, v = pcall(function() return A.battle:volatile(b) end)
