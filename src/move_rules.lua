@@ -838,6 +838,8 @@ function MoveRules.hooks(mod)
     user.__ndxGlaiveRush = nil                     -- Glaive Rush lasts until the user moves again
     local num = tonumber(ev.moveNum)
     st.__ndxMoveNow = num                          -- the move being used (its charge line asks)
+    -- the last move anyone used (Copycat copies it; not Copycat itself)
+    if num and num ~= MoveRules._copycat then st.__ndxLastUsed = num end
     if not num then return end
     user.__ndxLastMove = num
     local rule = MoveRules._rules[num]
@@ -929,6 +931,9 @@ function MoveRules.install(opts)
   MoveRules._weather = weather
   MoveRules._formWeight = opts.formWeight or {}
   MoveRules._formIds = opts.formIds or {}
+  for _, r in ipairs(opts.moves or {}) do
+    if r.id == "COPYCAT" and tonumber(r.index) then MoveRules._copycat = tonumber(r.index) end
+  end
   -- critical-hit ratio by move, past the cart's effect table: false (the borrowed Sky Attack's
   -- high ratio off: Freeze Shock, Ice Burn, Electro Shot), true (Snipe Shot, Dire Claw)
   local CRIT = { FREEZE_SHOCK = false, ICE_BURN = false, ELECTRO_SHOT = false, SNIPE_SHOT = true, DIRE_CLAW = true }

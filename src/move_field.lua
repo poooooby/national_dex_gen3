@@ -29,6 +29,7 @@ MoveField._rules = {}                             -- move number -> rule name (i
 MoveField._trapText = {}                          -- move number -> fn(ad, atk, def): its trap message
 MoveField._chargeLine = {}                        -- move number -> its charging line (after the name)
 MoveField._roost = nil                            -- Roost's move number
+MoveField._copycat = nil                          -- Copycat's move number
 -- the moves Gravity keeps off: the cart's Fly, Bounce, Jump Kick, Hi Jump Kick, Splash, and ours
 -- (install adds Flying Press, Telekinesis, Sky Drop by their rows)
 MoveField._gravityBanned = { [19] = true, [340] = true, [26] = true, [136] = true, [150] = true }
@@ -940,6 +941,7 @@ function MoveField.install(opts)
   MoveField._chargeLine = {}
   for _, r in ipairs(opts.moves or {}) do
     if r.id == "ROOST" and tonumber(r.index) then MoveField._roost = tonumber(r.index) end
+    if r.id == "COPYCAT" and tonumber(r.index) then MoveField._copycat = tonumber(r.index) end
     if CHARGE_LINE[r.id] and tonumber(r.index) then MoveField._chargeLine[tonumber(r.index)] = CHARGE_LINE[r.id] end
     if (r.id == "FLYING_PRESS" or r.id == "TELEKINESIS" or r.id == "SKY_DROP") and tonumber(r.index) then
       MoveField._gravityBanned[tonumber(r.index)] = true
@@ -1425,9 +1427,24 @@ function MoveField.install(opts)
     Engine.__ndxMoveNow = true
     local resolveMove = Engine.resolveMove
     Engine.resolveMove = function(user, target, moveId, slot, adapter, st, ...)
+      local n
       if type(st) == "table" then
-        local okN, n = pcall(Engine.moveNum, moveId)
-        st.__ndxMoveNow = okN and tonumber(n) or nil
+        local okN, v = pcall(Engine.moveNum, moveId)
+        n = okN and tonumber(v) or nil
+        st.__ndxMoveNow = n
+      end
+      -- Copycat: the cart's Mirror Move (its effect), handed the last move anyone used in place of
+      -- the last one aimed at its user, for this call
+      local copycat = MoveField._copycat
+      if n and copycat and n == copycat and type(user) == "table" then
+        local last = tonumber(st.__ndxLastUsed)
+        local forbidden = last and type(Engine.isForbiddenToCopy) == "function" and Engine.isForbiddenToCopy(last, false)
+        local saved = user.expLastTakenMove
+        user.expLastTakenMove = (last and last ~= copycat and not forbidden) and last or 0
+        local r = { pcall(resolveMove, user, target, moveId, slot, adapter, st, ...) }
+        user.expLastTakenMove = saved
+        if not r[1] then error(r[2], 0) end
+        return (unpack or table.unpack)(r, 2)
       end
       return resolveMove(user, target, moveId, slot, adapter, st, ...)
     end

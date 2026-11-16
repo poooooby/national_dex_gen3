@@ -457,4 +457,12 @@ do
   T.eq(st2.enemy.mon.hp, hp2, "(not otherwise)")
 end
 
+-- ------- Copycat copies the last move used, not only one aimed at its user
+do
+  local st, ad = battle()
+  use(st, ad, 14, st.enemy, st.player)                                   -- the foe's SWORDS DANCE
+  use(st, ad, "COPYCAT")
+  T.eq(st.player.stages.attack, 2, "Copycat copies the foe's Swords Dance")
+end
+
 T.finish("national_dex_gen3 move gaps (" .. GAME .. ")")
