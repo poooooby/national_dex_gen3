@@ -310,12 +310,32 @@ local function entryHazards(st, ad, b)
   local side = ad:ownSide(b)
   local d = side and side.__ndx
   if not d then return false end
+  -- Healing Wish / Lunar Dance: for the first Pokemon in that needs it (Gen 8 on: one that
+  -- doesn't leaves it waiting); Lunar Dance gives back PP too
   if d.healingWish then
-    d.healingWish = nil
-    if ad:hp(b) < ad:maxHp(b) or ad:status(b) then
+    local lunar = d.healingWish == "LUNAR_DANCE"
+    local mon = b.mon or b
+    local ppFull = {}
+    local okP, P = pcall(require, "src.core.game3.pokemon")
+    local short = false
+    if lunar and okP and type(mon.moves) == "table" and type(mon.pp) == "table" then
+      for i = 1, 4 do
+        local m = tonumber(mon.moves[i])
+        if m and m > 0 then
+          local base = tonumber(P.movePp(m)) or 5
+          local ups = type(mon.ppBonusesPacked) == "number" and math.floor(mon.ppBonusesPacked / 4 ^ (i - 1)) % 4 or 0
+          ppFull[i] = base + math.floor(base * 20 * ups / 100)
+          if (tonumber(mon.pp[i]) or 0) < ppFull[i] then short = true end
+        end
+      end
+    end
+    if ad:hp(b) < ad:maxHp(b) or ad:status(b) or short then
+      d.healingWish = nil
       ad:heal(b, ad:maxHp(b))
       ad:clearStatus(b)
-      ad:say("The healing wish came true\nfor " .. prefixed(ad, b) .. "!")
+      if short then for i, n in pairs(ppFull) do mon.pp[i] = n end end
+      ad:say(lunar and (prefixed(ad, b) .. " became cloaked\nin mystical moonlight!")
+        or ("The healing wish came true\nfor " .. prefixed(ad, b) .. "!"))
     end
   end
   local guarded = MoveField.noIndirect
@@ -584,7 +604,7 @@ local function statusRule(rule, ad, user, target, M)
     local okE, Engine = pcall(require, "src.core.game3.battle.engine")
     if not (okE and #Engine.switchCandidates(st, st.double and user.id or user.side) > 0) then return fail(ad, M) end
     anim()
-    sideData(own).healingWish = true
+    sideData(own).healingWish = rule                                   -- which wish (Lunar Dance: PP too)
     ad:setHp(user, 0)
     if M then M.checkUserFaint = true; if M.tryFaintUser then M:tryFaintUser() end end
   elseif rule == "SHED_TAIL" then

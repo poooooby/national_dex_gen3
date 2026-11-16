@@ -72,7 +72,8 @@ All notable changes to this mod are documented here, in
   Look, Confide, Eerie Impulse, Spicy Extract, the Split and Swap moves, Reflect Type and
   Electrify stop at Protect and can miss a Pokémon that flew or dug; Judgment takes its Plate's
   type, Raging Bull its Paldean Tauros breed's and Ivy Cudgel Ogerpon's mask's; Aurora Veil doesn't
-  stack with Reflect or Light Screen, and Brick Break, Psychic Fangs and Raging Bull shatter it.
+  stack with Reflect or Light Screen, and Brick Break, Psychic Fangs and Raging Bull shatter it;
+  Lunar Dance restores PP, and Healing Wish and Lunar Dance wait for a Pokémon that needs them.
 
 ## [1.12.1] - 2026-11-14
 

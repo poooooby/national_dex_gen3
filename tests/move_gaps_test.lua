@@ -391,4 +391,19 @@ do
   T.eq(st.enemySide.__ndx.auroraVeil, nil, "Brick Break shatters Aurora Veil")
 end
 
+-- ------- Healing Wish / Lunar Dance wait for a Pokemon that needs them; Lunar Dance restores PP
+do
+  local st, ad = battle({ party = { mon(), mon({ species = 1 }) } })
+  st.playerSide.__ndx = { healingWish = "LUNAR_DANCE" }
+  local b = st.player
+  b.mon.hp = b.mon.maxHp
+  Engine.switchInEffects(st, ad, b, { spikes = true })
+  T.eq(st.playerSide.__ndx.healingWish, "LUNAR_DANCE", "a healthy Pokemon leaves the wish waiting")
+  b.mon.hp = 10
+  b.mon.pp = { 1 }
+  Engine.switchInEffects(st, ad, b, { spikes = true })
+  T.check(b.mon.hp == b.mon.maxHp and (b.mon.pp[1] or 0) > 1 and st.playerSide.__ndx.healingWish == nil,
+    "then heals the next one, PP too")
+end
+
 T.finish("national_dex_gen3 move gaps (" .. GAME .. ")")
