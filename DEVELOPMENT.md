@@ -299,6 +299,43 @@ nothing runs. Ids are saved by that mod (`mod:national_dex_gen3:<id>`): never ch
 - Test: `tests/achievements_test.lua [game ...]` loads the real Recomp Achievements beside this
   mod (FireRed, Red and Crystal by default) and attaches a save through `save.loaded`.
 
+## The games' own paths (gap audit, 2026-11-16)
+
+An audit of moves, abilities and held items on both families found the same two causes behind
+most gaps; keep to these when adding a mechanic:
+
+- **A hook only counts where something asks it.** The shared held-item family
+  (`src/held/effects.lua`) registers hooks every game must consult. Gen 3's core asks them at its
+  seams in `src/held/gen3.lua` (`battle.damage` for `dropTypes`, `Effects.run` for
+  `screenTurns` / `weatherTurns` via `hub.lengthen`, `Secondary.set` for Covert Cloak, Hit.run /
+  `Engine.moveEndEffects` for Protective Pads, an `Adapter.new` heal wrap bracketed around the
+  drains for Big Root); `src/move_field.lua` asks `terrainTurns` / `ungrounded` through
+  `heldHook`. Other Gen 3 modules reach a battler's item through `HeldItems.__ndxHeldHub.kindOf`.
+  The Gen 3 adapter's `weather()` goes through `Rules.weather.kind` (Rain Dance's weather is
+  "RAINY").
+- **A guard on one seam misses the game's other paths.** Gen 3 forces statuses past
+  `canApplyStatus` (Rest, the drowsy turn, `Abilities.applyStatus`): `terrainGuard` and
+  `More.statusGuard` (which includes `RealAbilities.guarded`) are asked at each. On Red to
+  Crystal the games write confusion, flinches, Rest's sleep, drains, residual damage, multi-hit
+  counts, Protect, Roar and their own Spikes / sandstorm directly: the before-move snapshot
+  (`src/gen12/mech/abilities_more.lua` `snap`) notes confusion and flinches and the after-move
+  corrects them (blockStatus, noFlinch, statusInflicted, the drain hooks); the adapters wrap
+  `Status.residualStatus` / `residualSeed` (Red: corrected after, they return their lines) and
+  `Battle.tickStatus` / `tickSeedAndCurse` / `spikesDamage` / `tickWeather` (Gold: decided before,
+  they emit as they go), Red's `effectRecord` and Gold's `Effects.hitCount` (Skill Link),
+  `Battle.moveEffectRecordFor` (Gold's Roar: the battle runs the merged record), and the field
+  puts Protect / Substitute / Gold's screens aside for one move (Unseen Fist, Infiltrator).
+- **Data the runner can't act on is not an effect.** `src/gen12/mech/abilities.lua`'s `BY_HAND`
+  skips a kind for abilities written out (Flash Fire after absorbing, the charge abilities, Hadron
+  Engine / Orichalcum Pulse under their terrain / sun); `gen12_mech_test`'s coverage counts an
+  ability only when every effect's trigger and kind are ones the runner handles, or it is named
+  in the code.
+- **Tests that run whole moves.** `tests/move_gaps_test.lua [game]` resolves real moves through
+  `Engine.resolveMove` (the real accuracy check and hit; a text sink that fails on a nil id),
+  `tests/gen12_gaps_test.lua [version ...]` runs Red / Gold through `H.sim` and the games' own
+  residual ticks. Compare damage inside one battle or through `damageMult`: a fresh battle rolls
+  new stats and abilities, and Gold's simulator lifts every fourth roll.
+
 ## Abilities (Gen 3)
 
 - `tools/build_abilities.py` `IMPLEMENTED` (append-only: a Pokemon's ability pair is by id) writes
