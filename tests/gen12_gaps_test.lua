@@ -195,6 +195,31 @@ for _, version in ipairs(H.versions()) do
     w.use("REST")
     T.eq(w.status("player"), nil, v("a held Chesto Berry wakes it right after Rest"))
   end
+  -- ------- confusion the game writes itself: Own Tempo, Safeguard, a Persim Berry (Rattata:
+  -- Slowpoke may have Own Tempo)
+  do
+    local function confused(w, side)
+      local b = w.battler(side)
+      if b.confusedTurns then return true end
+      local ok, vv = pcall(function() return w.battle:volatile(b) end)
+      return ok and type(vv) == "table" and vv.confuseCount ~= nil or false
+    end
+    local w = sim.fresh({ foe = "RATTATA" })
+    as(w, "enemy", "OWNTEMPO")
+    w.use("CONFUSE_RAY")
+    T.check(not confused(w, "enemy"), v("Own Tempo stops Confuse Ray"))
+    w = sim.fresh({ foe = "RATTATA" })
+    w.use("CONFUSE_RAY")
+    T.check(confused(w, "enemy"), v("(which confuses otherwise)"))
+    w = sim.fresh({ foe = "RATTATA" })
+    w.use("SAFEGUARD", "enemy")
+    w.use("CONFUSE_RAY")
+    T.check(not confused(w, "enemy"), v("Safeguard stops Confuse Ray"))
+    w = sim.fresh({ foe = "RATTATA" })
+    w.A:setItem(w.battler("enemy"), "PERSIM_BERRY")
+    w.use("CONFUSE_RAY")
+    T.check(not confused(w, "enemy"), v("a Persim Berry cures the confusion at once"))
+  end
   sim.release()
 end
 T.finish("national_dex_gen3 Gen 1/2 gaps")

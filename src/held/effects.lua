@@ -490,7 +490,9 @@ return function(core, opts)
     if e.kind == "berryCure" then
       local s = A:status(b)
       local want = e.status
-      local conf = A:vol(b).confused or b.confusedTurns or (A.gen == 2 and A.battle.volatile and A.battle:volatile(b).confused)
+      -- confusion where each game keeps it: Red's battler, Gold's volatile confuseCount
+      local gv = A.gen == 2 and A.battle.volatile and A.battle:volatile(b) or nil
+      local conf = A:vol(b).confused or b.confusedTurns or (gv and (gv.confused or gv.confuseCount))
       local hitS = (want == "ALL" and s) or (CURE[want] and (s == want or (want == "PSN" and s == "TOX")))
       local hitC = (want == "ALL" or want == "CONFUSION") and conf
       if hitS or hitC then
@@ -499,7 +501,7 @@ return function(core, opts)
         if hitC then
           b.confusedTurns = nil
           A:vol(b).confused = nil
-          if A.gen == 2 and A.battle.volatile then A.battle:volatile(b).confused = nil end
+          if gv then gv.confused, gv.confuseCount = nil, nil end
         end
         say(A, "%s's %s cured it!", A:name(b), named(A, id))
       end

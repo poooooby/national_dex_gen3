@@ -123,9 +123,27 @@ return function(core, opts)
   local EXPLODE = { SELFDESTRUCT = true, EXPLOSION = true, MINDBLOWN = true, MISTYEXPLOSION = true }
   local PRIORITY_BLOCK = { ARMORTAIL = true, DAZZLING = true, QUEENLYMAJESTY = true }
   local MENTAL = { TAUNT = true, TORMENT = true, ENCORE = true, DISABLE = true, HEALBLOCK = true, ATTRACT = true }
+  -- confusion where each game keeps it (Red: the battler's turns; Gold: the volatile count)
+  local function confusedOf(A, b)
+    if b.confusedTurns then return true end
+    local bt = A.battle
+    if type(bt) == "table" and type(bt.volatile) == "function" then
+      local ok, v = pcall(bt.volatile, bt, b)
+      if ok and type(v) == "table" and v.confuseCount then return true end
+    end
+    return false
+  end
+  local function unconfuse(A, b)
+    b.confusedTurns = nil
+    local bt = A.battle
+    if type(bt) == "table" and type(bt.volatile) == "function" then
+      local ok, v = pcall(bt.volatile, bt, b)
+      if ok and type(v) == "table" then v.confuseCount = nil end
+    end
+  end
   local function snap(A, b)
     if not b then return nil end
-    local s = { hp = A:hp(b), status = A:status(b), stages = {} }
+    local s = { hp = A:hp(b), status = A:status(b), stages = {}, confused = confusedOf(A, b) }
     for _, st in ipairs(STATS) do s.stages[st] = A:stage(b, st) end
     return s
   end
@@ -259,6 +277,22 @@ return function(core, opts)
           A:stages(o, rose)
         end
       end
+    end
+    -- confusion this move gave (the games' Confuse Ray, Supersonic, Thrash / Outrage fatigue write
+    -- it past blockStatus): taken back where an ability or Safeguard stops it, else told as a
+    -- status given (Persim, Lum Berry)
+    for _, b in ipairs({ u, t }) do
+      local before = b and s[b]
+      if before and not before.confused and A:hp(b) > 0 and confusedOf(A, b) then
+        local r = core.hooks.blockStatus and core:ask("blockStatus", A, b, "CONFUSION", { from = b ~= u and u or nil })
+        if r then
+          unconfuse(A, b)
+          if type(r) == "string" and r ~= "" then A:say(r) end
+        else
+          core:fire("statusInflicted", A, { target = b, status = "CONFUSION" })
+        end
+      end
+      if b == t then break end
     end
     -- statuses this move gave
     if t and t ~= u and s[t] and not s[t].status and A:hp(t) > 0 then
