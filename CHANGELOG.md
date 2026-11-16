@@ -38,7 +38,9 @@ All notable changes to this mod are documented here, in
   Effect Spore off.
 - **More abilities on FireRed to Emerald:** Full Metal Body, Big Pecks, Mind's Eye and Flower Veil
   stop a move's sure stat drop too (Icy Wind); Unburden works for the Pokémon that starts the
-  battle; a busted Disguise or broken Ice Face stays that way after a switch.
+  battle; a busted Disguise or broken Ice Face stays that way after a switch; Triage and Gale
+  Wings change who moves first; with Tailwind, Trick Room or a Speed item in play the turn order
+  keeps Swift Swim, Chlorophyll, badge boosts, Macho Brace and Quick Claw.
 
 ## [1.12.1] - 2026-11-14
 

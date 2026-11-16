@@ -227,4 +227,22 @@ do
     "and stays busted after a switch: a plain hit (" .. (hp - again.mon.hp) .. " / " .. plain .. ")")
 end
 
+-- ------- the turn order: a priority of ours decides (Triage); our Speed starts from the cart's
+local function first(st, a, aMove, b, bMove)
+  return run.loader.hooks:call("battle.turn_order", function() return false end, a, aMove, b, bMove, { battle = st })
+end
+do
+  local st, ad = battle({ party = { mon({ speed = 50 }) }, foe = mon({ speed = 200 }) })
+  withAbility(ad, st.player, "TRIAGE")
+  local Moves3 = require("src.core.game3.battle.moves")
+  T.eq(first(st, st.player, Moves3.get(202), st.enemy, Moves3.get(98)), true,
+    "Triage: Giga Drain goes before a faster Quick Attack")
+  local st2, ad2 = battle({ party = { mon({ speed = 50 }) }, foe = mon({ speed = 150 }) })
+  withAbility(ad2, st2.player, "SWIFT_SWIM")
+  st2.weather, st2.weatherTurns = "RAINY", 5
+  st2.playerSide.__ndx = { tailwind = 3 }
+  T.eq(first(st2, st2.player, Moves3.get(33), st2.enemy, Moves3.get(33)), true,
+    "Swift Swim in the rain counts with Tailwind (50 x2 x2 beats 150)")
+end
+
 T.finish("national_dex_gen3 move gaps (" .. GAME .. ")")

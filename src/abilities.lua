@@ -192,7 +192,10 @@ function RealAbilities.hooks(mod)
       local ad = adapter()
       local aa, ba = abilityOf(ad, a), abilityOf(ad, b)
       local pa, pb = RealAbilities.priorityOf(ad, a, aMove), RealAbilities.priorityOf(ad, b, bMove)
-      if (aa == "PRANKSTER" or ba == "PRANKSTER") and pa ~= pb then return pa > pb end
+      -- a priority one of ours changed (Prankster, Triage, Gale Wings): it decides; the cart only
+      -- knows the moves' own
+      local rawA, rawB = tonumber(aMove.priority) or 0, tonumber(bMove.priority) or 0
+      if pa ~= pb and (pa ~= rawA or pb ~= rawB) then return pa > pb end
       if pa ~= pb then return nil end
       -- only decide when something of ours changes the speeds, so the cart keeps its own
       -- tie-break otherwise
@@ -216,9 +219,23 @@ RealAbilities.speedModifiers = {}                -- key -> fn(ad, b) -> multipli
 RealAbilities.reverseSpeed = nil                 -- fn(st) -> true while slower goes first
 function RealAbilities.effectiveSpeed(ad, b)
   local over = b.__ndxStat and tonumber(b.__ndxStat.speed)        -- Speed Swap (src/move_rules.lua)
-  local s = over or tonumber(b.mon and b.mon.speed) or 0
-  local okD, Damage = pcall(require, "src.core.game3.battle.damage")
-  if okD and Damage.applyStage then s = Damage.applyStage(s, b.stages and b.stages.speed or 0) end
+  local s
+  -- the cart's own Speed first (Transform, Swift Swim, Chlorophyll, stages, the badge, Macho Brace,
+  -- paralysis, a Quick Claw that came up), with Speed Swap's base in for the one call
+  local okE, Engine = pcall(require, "src.core.game3.battle.engine")
+  if okE and type(Engine.speedOf) == "function" and b.mon then
+    local mon, base = b.mon, b.mon.speed
+    if over then mon.speed = over end
+    local okS, v = pcall(Engine.speedOf, b, ad and ad._st, ad)
+    mon.speed = base
+    if okS then s = tonumber(v) end
+  end
+  local cart = s ~= nil
+  if not s then
+    s = over or tonumber(b.mon and b.mon.speed) or 0
+    local okD, Damage = pcall(require, "src.core.game3.battle.damage")
+    if okD and Damage.applyStage then s = Damage.applyStage(s, b.stages and b.stages.speed or 0) end
+  end
   local ab, w, modified = abilityOf(ad, b), weather(ad), over ~= nil
   if boosterOn(ad, ab, b) and bestStat(b) == "speed" then s, modified = s * 1.5, true
   elseif (ab == "SAND_RUSH" and w == "SAND") or (ab == "SLUSH_RUSH" and w == "HAIL") then s, modified = s * 2, true end
@@ -226,7 +243,7 @@ function RealAbilities.effectiveSpeed(ad, b)
     local okM, m = pcall(fn, ad, b)
     if okM and tonumber(m) and m ~= 1 then s, modified = s * m, true end
   end
-  if ad and ad:status(b) == "PAR" then s = s / 4 end
+  if not cart and ad and ad:status(b) == "PAR" then s = s / 4 end
   return s, modified
 end
 
