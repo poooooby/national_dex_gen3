@@ -52,7 +52,15 @@ return function(core)
   core:on("damageMult", function(k, A, u, t, m)
     local w = A:weather()
     local mt = A:moveType(m)
-    if (w == "rain" or w == "sun") and (core:ask("ignoresWeather", A, u) or core:ask("ignoresWeather", A, t)) then
+    local umbrella = core:ask("ignoresWeather", A, u) or core:ask("ignoresWeather", A, t)
+    -- Gold's own rain and sun are in its formula already: undone where they don't count (Cloud
+    -- Nine, Air Lock, a Utility Umbrella)
+    local native = A.gen == 2 and type(A.battle) == "table" and ({ rain = "rain", sun = "sun" })[A.battle.weather or ""]
+    if native and (umbrella or (core.hooks.noWeather and core:ask("noWeather", A))) then
+      if (native == "rain" and mt == "WATER") or (native == "sun" and mt == "FIRE") then k = k / 1.5
+      elseif (native == "rain" and mt == "FIRE") or (native == "sun" and mt == "WATER") then k = k * 2 end
+    end
+    if (w == "rain" or w == "sun") and umbrella then
       w = nil
     end
     if (w == "rain" or w == "sun") and not A:nativeWeather(w) then

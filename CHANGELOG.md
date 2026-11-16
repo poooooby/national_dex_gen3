@@ -38,7 +38,7 @@ All notable changes to this mod are documented here, in
   stop you running from a wild battle (Run Away and Ghost types still can). On Gold, Silver and
   Crystal, Spikes skip Levitate, Air Balloon, Magnet Rise, Heavy-Duty Boots and Magic Guard and
   stack to three layers, and the sandstorm spares Overcoat, Magic Guard, Safety Goggles and the
-  sand abilities.
+  sand abilities; Cloud Nine, Air Lock and Utility Umbrella take back their own rain and sun boosts.
 - **Held items on FireRed to Emerald:** Light Clay, the weather rocks, Safety Goggles in a
   sandstorm or hail, Ring Target, Iron Ball against Ground moves, Covert Cloak, Protective Pads,
   Big Root, Float Stone and Loaded Dice now work, and Utility Umbrella in rain or sun. The

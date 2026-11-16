@@ -322,6 +322,14 @@ for _, version in ipairs(H.versions()) do
     end
     T.check(sanded() > 0, v("(a sandstorm hurts a Normal type)"))
     T.eq(sanded("OVERCOAT"), 0, v("Overcoat keeps the sandstorm off"))
+    -- Cloud Nine undoes Gold's own rain boost (the formula's 1.5x, taken back)
+    local x = sim.fresh({ mine = "TOTODILE", foe = "RATTATA" })
+    x.battle.weather, x.battle.weatherTurns = "rain", 5
+    local water = sim.data.moves.WATER_GUN
+    local plain = core:fold("damageMult", 1, x.A, x.battler("player"), x.battler("enemy"), water, {})
+    as(x, "enemy", "CLOUDNINE")
+    local nine = core:fold("damageMult", 1, x.A, x.battler("player"), x.battler("enemy"), water, {})
+    T.check(math.abs(nine - plain / 1.5) < 1e-9, v("Cloud Nine undoes the rain's boost"))
   end
   sim.release()
 end
