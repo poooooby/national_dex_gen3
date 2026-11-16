@@ -108,6 +108,16 @@ end
 local function contact(move) return ((tonumber(move and move.flags) or 0) % 2) == 1 end
 -- the kind of held item a battler holds (src/held/gen3.lua's hub): Loaded Dice, Float Stone,
 -- Safety Goggles ride on the abilities' seams below
+-- what lasts for a Pokemon through the battle, past its switches (a battler is built anew each
+-- time it comes in): kept on the battle, by the party mon, never on the mon (it would be saved)
+local function monState(ad, b)
+  local st = ad and ad._st
+  if not (st and type(b) == "table") then return {} end
+  st.__ndxAbMonState = st.__ndxAbMonState or setmetatable({}, { __mode = "k" })
+  local mon = b.mon or b
+  st.__ndxAbMonState[mon] = st.__ndxAbMonState[mon] or {}
+  return st.__ndxAbMonState[mon]
+end
 local function heldKind(b)
   local ok, HI = pcall(require, "src.core.game3.battle.held_items")
   local h = ok and type(HI) == "table" and HI.__ndxHeldHub
@@ -404,12 +414,12 @@ function More.damage(C, ad, c, dmg, info)
   local num = tonumber(c.moveNum)
   -- Disguise / Ice Face: the first (physical) hit is taken by the disguise
   if dmg > 0 and t ~= u then
-    if ta == "DISGUISE" and not t.__ndxAbBusted and (tonumber(info.effectiveness) or 1) > 0 then
-      t.__ndxAbBusted, t.__ndxAbBustNow = true, true
+    if ta == "DISGUISE" and not monState(ad, t).busted and (tonumber(info.effectiveness) or 1) > 0 then
+      monState(ad, t).busted, t.__ndxAbBustNow = true, true
       return 0
     end
-    if ta == "ICE_FACE" and not t.__ndxAbNoice and info.physical and (tonumber(info.effectiveness) or 1) > 0 then
-      t.__ndxAbNoice, t.__ndxAbIceBreak = true, true
+    if ta == "ICE_FACE" and not monState(ad, t).noice and info.physical and (tonumber(info.effectiveness) or 1) > 0 then
+      monState(ad, t).noice, t.__ndxAbIceBreak = true, true
       return 0
     end
   end
@@ -927,7 +937,8 @@ function More.install(opts)
       local k = X.ab(ad, b)
       if k == "CONTRARY" then delta = -delta end
       if k == "SIMPLE" then delta = math.max(-6, math.min(6, delta * 2)) end
-      if delta < 0 and not flags.certain and not flags.user then
+      -- a foe's drop, a 100% added one (Icy Wind: the cart's "certain") included; not the user's own
+      if delta < 0 and not flags.user then
         if k == "FULL_METAL_BODY" or (k == "MINDS_EYE" and statName == "accuracy") then
           if flags.allowPtr then say(ad, "%s's %s prevents stat loss!", X.who(ad, b), X.nameOf(k)) end
           return "blocked"
@@ -1052,6 +1063,13 @@ function More.install(opts)
     Ab.__ndxAbMoreSwitchIn = true
     local switchIn = Ab.switchIn
     Ab.switchIn = function(ad, b, ...)
+      -- a lead comes in through the battle's start, not Engine.switchInEffects: its item on entry
+      -- (Unburden) is stamped here
+      if type(b) == "table" and b.__ndxAbItemAtEntry == nil then b.__ndxAbItemAtEntry = tonumber(b.item) or 0 end
+      -- Ice Face broken earlier in the battle: back in as Noice (hail on entry restores it)
+      if type(b) == "table" and hub.C and hub.C.ab(ad, b) == "ICE_FACE" and monState(ad, b).noice then
+        pcall(hub.C.setForm, b, FORM.NOICE)
+      end
       local r = switchIn(ad, b, ...)
       local X = hub.C
       if r or not X or not b or ad:isFainted(b) then return r end
@@ -1746,8 +1764,8 @@ function More.endOfTurn(C, ad, b)
   end
   if k == "SCHOOLING" or k == "SHIELDS_DOWN" then return More.formCheck(C, ad, b) end
   if k == "MIMICRY" then return More.mimicry(C, ad, b) end
-  if k == "ICE_FACE" and b.__ndxAbNoice and C.weather(ad) == "HAIL" then
-    b.__ndxAbNoice = nil
+  if k == "ICE_FACE" and monState(ad, b).noice and C.weather(ad) == "HAIL" then
+    monState(ad, b).noice = nil
     C.setForm(b, nil)
     say(ad, "%s's ICE FACE was restored!", who(ad, b))
     return true

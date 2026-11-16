@@ -187,4 +187,44 @@ do
   T.eq(ad3:status(st3.player), nil, "Overcoat keeps Effect Spore off")
 end
 
+-- ------- stat-drop guards against a 100% added drop (Icy Wind)
+do
+  local st, ad = battle()
+  withAbility(ad, st.enemy, "FULL_METAL_BODY")
+  use(st, ad, 196)                                                       -- ICY WIND
+  T.eq(st.enemy.stages.speed, 0, "Full Metal Body stops Icy Wind's Speed drop")
+  local st2, ad2 = battle()
+  use(st2, ad2, 196)
+  T.eq(st2.enemy.stages.speed, -1, "(which lowers it otherwise)")
+end
+
+-- ------- what an ability remembers: a lead's item for Unburden; a busted Disguise past a switch
+do
+  local Ab = require("src.core.game3.battle.abilities")
+  local st, ad = battle()
+  st.player.item = 139                                                   -- a held berry
+  Ab.switchIn(ad, st.player)                                             -- the battle's start
+  T.eq(st.player.__ndxAbItemAtEntry, 139, "Unburden: a lead's item is noted at the start")
+  local st2, ad2 = battle()
+  withAbility(ad2, st2.enemy, "DISGUISE")
+  local hp = st2.enemy.mon.hp
+  use(st2, ad2, 33)
+  T.eq(st2.enemy.mon.hp, hp - math.floor(300 / 8), "Disguise takes the first hit (an eighth of its HP, Gen 8 on)")
+  hp = st2.enemy.mon.hp
+  -- the same Pokemon back in: a new battler (the cart builds one on every switch)
+  local again = {}
+  for k, v in pairs(st2.enemy) do
+    if not (type(k) == "string" and k:find("^__ndx")) then again[k] = v end    -- none of ours carried
+  end
+  st2.enemy = again
+  withAbility(ad2, again, "DISGUISE")
+  use(st2, ad2, 33, st2.player, again)
+  local st3, ad3 = battle()
+  local plain = st3.enemy.mon.hp
+  use(st3, ad3, 33)
+  plain = plain - st3.enemy.mon.hp                                       -- Tackle, no Disguise
+  T.check(plain ~= math.floor(300 / 8) and hp - again.mon.hp == plain,
+    "and stays busted after a switch: a plain hit (" .. (hp - again.mon.hp) .. " / " .. plain .. ")")
+end
+
 T.finish("national_dex_gen3 move gaps (" .. GAME .. ")")

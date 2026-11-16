@@ -36,6 +36,9 @@ All notable changes to this mod are documented here, in
   (in the sun), Sweet Veil and Flower Veil also stop Yawn, Toxic Spikes, Flame and Toxic Orb and
   the statuses abilities pass on (Static, Effect Spore...); Overcoat and Safety Goggles keep
   Effect Spore off.
+- **More abilities on FireRed to Emerald:** Full Metal Body, Big Pecks, Mind's Eye and Flower Veil
+  stop a move's sure stat drop too (Icy Wind); Unburden works for the Pokémon that starts the
+  battle; a busted Disguise or broken Ice Face stays that way after a switch.
 
 ## [1.12.1] - 2026-11-14
 

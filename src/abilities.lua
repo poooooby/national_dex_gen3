@@ -653,7 +653,8 @@ function RealAbilities.install(opts)
       flags = flags or {}
       if not RealAbilities._on or busy or not battler then return changeStat(ad, battler, stat, delta, flags, ...) end
       local ab = abilityOf(ad, battler)
-      if delta < 0 and not flags.certain and not flags.user then
+      -- a foe's drop, a 100% added one (the cart's "certain") included; not the user's own
+      if delta < 0 and not flags.user then
         local blocks = (ab == "BIG_PECKS" and stat == "defense")
           or (ab == "FLOWER_VEIL" and hasType(battler, ID.GRASS))
         if blocks then
