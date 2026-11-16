@@ -465,4 +465,27 @@ do
   T.eq(st.player.stages.attack, 2, "Copycat copies the foe's Swords Dance")
 end
 
+-- ------- Chilly Reception from the last Pokemon: the weather still comes
+do
+  local st, ad = battle()
+  use(st, ad, "CHILLY_RECEPTION", st.player, st.player)
+  T.check(st.weather ~= nil and st.weather ~= "", "Chilly Reception sets the weather from the last Pokemon")
+end
+
+-- ------- Axe Kick's crash: half the user's max HP
+do
+  local st, ad = battle()
+  st.enemy.semiInvulnerable = "ON_AIR"                                    -- up in the air: it misses
+  use(st, ad, "AXE_KICK")
+  local lost = 300 - st.player.mon.hp
+  T.check(st.enemy.mon.hp == 300 and lost == 150, "Axe Kick's miss costs half the user's max HP (" .. lost .. ")")
+end
+
+-- ------- Double Iron Bash flinches (its double hit dropped the 30%)
+do
+  local st, ad = battle({ roll = function(_, lo) return lo end })       -- low rolls: the chance comes up
+  use(st, ad, "DOUBLE_IRON_BASH")
+  T.eq(st.enemy.flinched, true, "Double Iron Bash can flinch")
+end
+
 T.finish("national_dex_gen3 move gaps (" .. GAME .. ")")

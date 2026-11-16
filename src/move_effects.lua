@@ -22,8 +22,12 @@ local ORDER = { "attack", "defense", "spAtk", "spDef", "speed", "accuracy", "eva
 function MoveEffects.install(opts)
   local require, log = opts.require, opts.log
   local specs = {}
+  -- added effects a row's cart effect drops (Double Iron Bash: the double hit has no secondary,
+  -- so its 30% flinch never came)
+  local LATE = { DOUBLE_IRON_BASH = { kind = "hit", flinch = 30 } }
   for _, r in ipairs(opts.moves or {}) do
-    if type(r.extra) == "table" then specs[r.index] = r.extra end
+    if type(r.extra) == "table" then specs[r.index] = r.extra
+    elseif LATE[r.id] and tonumber(r.index) then specs[tonumber(r.index)] = LATE[r.id] end
   end
   MoveEffects._specs = specs                       -- a later install replaces what the wraps read
 

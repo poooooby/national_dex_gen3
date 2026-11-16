@@ -30,6 +30,7 @@ MoveField._trapText = {}                          -- move number -> fn(ad, atk, 
 MoveField._chargeLine = {}                        -- move number -> its charging line (after the name)
 MoveField._roost = nil                            -- Roost's move number
 MoveField._copycat = nil                          -- Copycat's move number
+MoveField._axeKick = nil                          -- Axe Kick's move number
 -- the moves Gravity keeps off: the cart's Fly, Bounce, Jump Kick, Hi Jump Kick, Splash, and ours
 -- (install adds Flying Press, Telekinesis, Sky Drop by their rows)
 MoveField._gravityBanned = { [19] = true, [340] = true, [26] = true, [136] = true, [150] = true }
@@ -621,13 +622,14 @@ local function statusRule(rule, ad, user, target, M)
     if okF then Effects.run("EXP_SUBSTITUTE_EFFECT", ad, user, target, M and M.move, M and M.moveId, M) end
     if (user.substituteHP or 0) > 0 and not (M and M.failed) then switchOut(ad, st, user, M, "shed_tail", "substitute") end
   elseif rule == "CHILLY_RECEPTION" then
+    -- the weather either way; the switch only when someone can come in (the last Pokemon stays)
     local okE, Engine = pcall(require, "src.core.game3.battle.engine")
-    if not (okE and #Engine.switchCandidates(st, st.double and user.id or user.side) > 0) then return fail(ad, M) end
+    local canSwitch = okE and #Engine.switchCandidates(st, st.double and user.id or user.side) > 0
     anim()
     ad:say(prefixed(ad, user) .. " is preparing\nto tell a chillingly bad joke!")
     ad:setWeather("HAIL", 5)
     ad:sayText("STRINGID_STARTEDHAIL")
-    switchOut(ad, st, user, M, "chilly_reception")
+    if canSwitch then switchOut(ad, st, user, M, "chilly_reception") end
   elseif rule == "REVIVAL_BLESSING" then
     local party = user.side == "player" and st.playerParty or st.foeParty
     local mon
@@ -942,6 +944,7 @@ function MoveField.install(opts)
   for _, r in ipairs(opts.moves or {}) do
     if r.id == "ROOST" and tonumber(r.index) then MoveField._roost = tonumber(r.index) end
     if r.id == "COPYCAT" and tonumber(r.index) then MoveField._copycat = tonumber(r.index) end
+    if r.id == "AXE_KICK" and tonumber(r.index) then MoveField._axeKick = tonumber(r.index) end
     if CHARGE_LINE[r.id] and tonumber(r.index) then MoveField._chargeLine[tonumber(r.index)] = CHARGE_LINE[r.id] end
     if (r.id == "FLYING_PRESS" or r.id == "TELEKINESIS" or r.id == "SKY_DROP") and tonumber(r.index) then
       MoveField._gravityBanned[tonumber(r.index)] = true
@@ -1066,7 +1069,19 @@ function MoveField.install(opts)
         end
         return
       end
-      local r = hitRun(M, ...)
+      -- Axe Kick's crash: half its user's max HP (Gen 5 on), not Gen 3 Hi Jump Kick's half the damage
+      local axe = MoveField._axeKick and tonumber(M.mnum) == MoveField._axeKick
+      local hadLoss = axe and rawget(ad, "applyHpLoss")
+      if axe then
+        local loss = ad.applyHpLoss
+        ad.applyHpLoss = function(self, b, amount, ...)
+          if b == M.user and M.noEffect then amount = math.max(1, math.floor(self:maxHp(b) / 2)) end
+          return loss(self, b, amount, ...)
+        end
+      end
+      local okRun, r = pcall(hitRun, M, ...)
+      if axe then ad.applyHpLoss = hadLoss or nil end
+      if not okRun then error(r, 0) end
       pcall(function()
         if M.missReason == "protected" then punish(ad, st, M) end
         if rule then afterHit(rule, ad, st, M) end

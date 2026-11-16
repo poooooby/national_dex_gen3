@@ -78,7 +78,8 @@ All notable changes to this mod are documented here, in
   Ice Burn and Electro Shot lose Sky Attack's high critical-hit ratio and charge with their own
   words (Solar Blade too), and Snipe Shot and Dire Claw land critical hits more often; Blood Moon
   can't be used twice in a row; Roost takes away the Flying type for the rest of the turn; Copycat
-  copies the last move anyone used (it acted as Mirror Move).
+  copies the last move anyone used (it acted as Mirror Move); Chilly Reception from the last Pokémon
+  still brings the weather; Double Iron Bash can flinch; Axe Kick's miss costs half the user's HP.
 
 ## [1.12.1] - 2026-11-14
 
