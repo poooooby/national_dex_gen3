@@ -836,6 +836,7 @@ function MoveRules.hooks(mod)
     user.__ndxMovedTurn = st.turn
     user.__ndxGlaiveRush = nil                     -- Glaive Rush lasts until the user moves again
     local num = tonumber(ev.moveNum)
+    st.__ndxMoveNow = num                          -- the move being used (its charge line asks)
     if not num then return end
     user.__ndxLastMove = num
     local rule = MoveRules._rules[num]
@@ -927,6 +928,27 @@ function MoveRules.install(opts)
   MoveRules._weather = weather
   MoveRules._formWeight = opts.formWeight or {}
   MoveRules._formIds = opts.formIds or {}
+  -- critical-hit ratio by move, past the cart's effect table: false (the borrowed Sky Attack's
+  -- high ratio off: Freeze Shock, Ice Burn, Electro Shot), true (Snipe Shot, Dire Claw)
+  local CRIT = { FREEZE_SHOCK = false, ICE_BURN = false, ELECTRO_SHOT = false, SNIPE_SHOT = true, DIRE_CLAW = true }
+  MoveRules._critBy = {}
+  for _, r in ipairs(opts.moves or {}) do
+    if CRIT[r.id] ~= nil and tonumber(r.index) then MoveRules._critBy[tonumber(r.index)] = CRIT[r.id] end
+  end
+  local okRu, Rules = pcall(require, "src.core.game3.battle.rules")
+  if okRu and type(Rules.crit) == "table" and type(Rules.crit.stage) == "function" and not Rules.crit.__ndxCrit then
+    Rules.crit.__ndxCrit = true
+    local stage = Rules.crit.stage
+    Rules.crit.stage = function(attacker, moveOrId, highCrit, ...)
+      if highCrit == nil then
+        local num = type(moveOrId) == "table" and tonumber(moveOrId.numId or moveOrId.id or moveOrId.index)
+          or tonumber(moveOrId)
+        local by = num and MoveRules._critBy[num]
+        if by ~= nil then highCrit = by end
+      end
+      return stage(attacker, moveOrId, highCrit, ...)
+    end
+  end
 
   local okD, Damage = pcall(require, "src.core.game3.battle.damage")
   local okH, Hit = pcall(require, "src.core.game3.battle.effects.hit")

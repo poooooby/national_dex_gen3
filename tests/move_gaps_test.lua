@@ -419,4 +419,19 @@ do
   T.check(st2.enemy.mon.hp < hp2, "(it hits otherwise)")
 end
 
+-- ------- the critical-hit ratio by move; Freeze Shock's own charge line
+do
+  local Rules = require("src.core.game3.battle.rules")
+  local Moves3 = require("src.core.game3.battle.moves")
+  local a = { mon = {} }
+  T.eq(Rules.crit.stage(a, Moves3.get(num("FREEZE_SHOCK"))), 0, "Freeze Shock: no high critical-hit ratio")
+  T.eq(Rules.crit.stage(a, Moves3.get(num("SNIPE_SHOT"))), 1, "Snipe Shot: a high one")
+  T.eq(Rules.crit.stage(a, Moves3.get(143)), 1, "(Sky Attack keeps its own)")
+  local st, ad, said = battle()
+  use(st, ad, "FREEZE_SHOCK")
+  local cloaked = false
+  for _, l in ipairs(said) do if l:find("freezing light") then cloaked = true end end
+  T.check(cloaked, "Freeze Shock charges with its own line")
+end
+
 T.finish("national_dex_gen3 move gaps (" .. GAME .. ")")

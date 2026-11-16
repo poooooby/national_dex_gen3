@@ -27,6 +27,7 @@ local MoveField = {}
 
 MoveField._rules = {}                             -- move number -> rule name (install fills it)
 MoveField._trapText = {}                          -- move number -> fn(ad, atk, def): its trap message
+MoveField._chargeLine = {}                        -- move number -> its charging line (after the name)
 -- the moves Gravity keeps off: the cart's Fly, Bounce, Jump Kick, Hi Jump Kick, Splash, and ours
 -- (install adds Flying Press, Telekinesis, Sky Drop by their rows)
 MoveField._gravityBanned = { [19] = true, [340] = true, [26] = true, [136] = true, [150] = true }
@@ -932,7 +933,11 @@ function MoveField.install(opts)
     MAGMA_STORM = function(ad, _, def) return prefixed(ad, def) .. " became trapped\nby swirling magma!" end,
   }
   MoveField._trapText = {}
+  local CHARGE_LINE = { FREEZE_SHOCK = " became cloaked\nin a freezing light!", ICE_BURN = " became cloaked\nin freezing air!",
+    ELECTRO_SHOT = " absorbed\nelectricity!", SOLAR_BLADE = " absorbed\nlight!" }
+  MoveField._chargeLine = {}
   for _, r in ipairs(opts.moves or {}) do
+    if CHARGE_LINE[r.id] and tonumber(r.index) then MoveField._chargeLine[tonumber(r.index)] = CHARGE_LINE[r.id] end
     if (r.id == "FLYING_PRESS" or r.id == "TELEKINESIS" or r.id == "SKY_DROP") and tonumber(r.index) then
       MoveField._gravityBanned[tonumber(r.index)] = true
     end
@@ -1296,6 +1301,15 @@ function MoveField.install(opts)
       if type(a.sayText) == "function" then
         local sayText = a.sayText
         a.sayText = function(self, id, fill, ...)
+          -- a charge line borrowed from Sky Attack / Razor Wind: the move's own
+          if (id == "STRINGID_PKMNISGLOWING" or id == "STRINGID_PKMNWHIPPEDWHIRLWIND") and type(fill) == "table" then
+            local now = self._st and tonumber(self._st.__ndxMoveNow)
+            local line = now and MoveField._chargeLine[now]
+            if line and fill.atk then
+              local ok = pcall(function() self:say(prefixed(self, fill.atk) .. line) end)
+              if ok then return nil end
+            end
+          end
           if id == nil then
             local d = type(fill) == "table" and fill.def
             local text = type(d) == "table" and MoveField._trapText[tonumber(d.expTrapMove) or -1]
@@ -1382,6 +1396,19 @@ function MoveField.install(opts)
     end
   end
 
+  -- the move being resolved, noted before anything is said (a charging turn says its line before
+  -- "X used Y!", and so before battle.move_used)
+  if type(Engine.resolveMove) == "function" and not Engine.__ndxMoveNow then
+    Engine.__ndxMoveNow = true
+    local resolveMove = Engine.resolveMove
+    Engine.resolveMove = function(user, target, moveId, slot, adapter, st, ...)
+      if type(st) == "table" then
+        local okN, n = pcall(Engine.moveNum, moveId)
+        st.__ndxMoveNow = okN and tonumber(n) or nil
+      end
+      return resolveMove(user, target, moveId, slot, adapter, st, ...)
+    end
+  end
   -- Nature Power on a terrain calls that terrain's move instead of the background's: the cart
   -- looks Engine.NATURE_POWER_MOVES up by background on every use, so the table answers through
   -- the running battle (Battle._adapter)
