@@ -862,6 +862,28 @@ function Gold.installSeams(mod, deps)
     end
     return out
   end
+  -- Gold's own 2-5 hit moves: Skill Link 5, Loaded Dice 4 or 5 (the count is rolled with no
+  -- attacker named: the one moving now, from the before-move hook)
+  local Effects2 = deps.require("src.battle.gen2.Effects")
+  if not Effects2.__ndxMechMulti then
+    Effects2.__ndxMechMulti = true
+    local hitCount = Effects2.hitCount
+    Effects2.hitCount = function(effect, random, ...)
+      if effect == "EFFECT_MULTI_HIT" and gHub.multiHit then
+        local ok, n = pcall(gHub.multiHit)
+        if ok and n then return n end
+      end
+      return hitCount(effect, random, ...)
+    end
+  end
+  gHub.multiHit = function()
+    local A = core.moverAdapter
+    local u = A and A.gen == 2 and A:field().mover
+    if not u then return nil end
+    if core.hooks.skillLink and core:ask("skillLink", A, u) then return 5 end
+    if core.hooks.loadedDice and core:ask("loadedDice", A, u) then return 4 + A:rng(2) end
+    return nil
+  end
   gHub.statusPlan = function(battle, mon)
     local A = Gold.adapter(battle, deps)
     local s, id = A:status(mon), core.abilityOf and core.abilityOf(A, mon)

@@ -331,6 +331,20 @@ for _, version in ipairs(H.versions()) do
     local nine = core:fold("damageMult", 1, x.A, x.battler("player"), x.battler("enemy"), water, {})
     T.check(math.abs(nine - plain / 1.5) < 1e-9, v("Cloud Nine undoes the rain's boost"))
   end
+  -- ------- Skill Link on the games' own 2-5 hit moves
+  do
+    local hits = 0
+    sim.run.loader.events:on("battle.damage_dealt", function() hits = hits + 1 end)
+    local w = sim.fresh({ foe = "SNORLAX", foeLevel = 80 })
+    as(w, "player", "SKILLLINK")
+    hits = 0
+    w.use("FURY_ATTACK")
+    T.eq(hits, 5, v("Skill Link: Fury Attack hits five times"))
+    w = sim.fresh({ foe = "SNORLAX", foeLevel = 80 })
+    hits = 0
+    w.use("FURY_ATTACK")
+    T.check(hits > 0 and hits < 5, v("(fewer on a low roll otherwise: " .. hits .. ")"))
+  end
   sim.release()
 end
 T.finish("national_dex_gen3 Gen 1/2 gaps")

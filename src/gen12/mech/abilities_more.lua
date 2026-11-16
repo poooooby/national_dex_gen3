@@ -171,6 +171,7 @@ return function(core, opts)
   core:on("beforeMove", function(A, u, t, m, isCalled)
     local f = A:field()
     f.mover = u
+    core.moverAdapter = A                -- the battle moving now (Gold's own hit count asks it)
     f.abSnap = { user = u, target = t, [u] = snap(A, u), [t or u] = snap(A, t or u) }
     local id = raw(A, u)
     if t and t ~= u and (MOLD[id] or (id == "MYCELIUMMIGHT" and m and isStatus(A, m))) then

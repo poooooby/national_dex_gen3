@@ -700,6 +700,11 @@ function Red.installSeams(mod, deps)
     BattleState.effectRecord = function(self, effect)
       local rec = effectRecord(self, effect)
       local cur = rawget(self, "__ndxCur")
+      -- Red's own 2-5 hit moves (Fury Attack, Pin Missile...): Skill Link 5, Loaded Dice 4 or 5
+      if effect == "TWO_TO_FIVE_ATTACKS_EFFECT" and hub.multiHit and cur and cur.user and rec ~= nil then
+        local ok, n = pcall(hub.multiHit, self, cur.user)
+        if ok and n then rec = setmetatable({ hitCount = function() return n end }, { __index = rec }) end
+      end
       if hub.block and cur and rec ~= nil then
         local ok, perform = pcall(hub.block, self, cur, rec)
         if ok and perform then
@@ -710,6 +715,12 @@ function Red.installSeams(mod, deps)
     end
   end
   hub.log = core.log
+  hub.multiHit = function(battle, user)
+    local A = Red.adapter(battle, deps)
+    if core.hooks.skillLink and core:ask("skillLink", A, user) then return 5 end
+    if core.hooks.loadedDice and core:ask("loadedDice", A, user) then return 4 + A:rng(2) end
+    return nil
+  end
   -- Red's own recoil (Take Down, Double-Edge, Submission): none for Rock Head / Magic Guard
   local rHub = BattleState.__ndxRecoil
   if not rHub then
