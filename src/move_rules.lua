@@ -18,7 +18,7 @@ local MoveRules = {}
 MoveRules._rules = {}                             -- move number -> rule name (install fills it)
 MoveRules._hits = {}                              -- move number -> hit count (true: 2-5)
 MoveRules._formWeight = {}                        -- form slot -> hectograms
-MoveRules._neverMiss = {}                         -- move number -> true: a damaging move that never misses
+MoveRules._neverMiss = {}                         -- move number -> true: a move that never misses (accuracy 0)
 MoveRules._weather = {}                           -- move number -> its id, for the weather rules below
 local ALWAYS_HIT = 17                             -- the cart's EFFECT_ALWAYS_HIT (Swift, Aerial Ace)
 
@@ -867,8 +867,9 @@ function MoveRules.install(opts)
     end
     if type(r.rule) == "string" and tonumber(r.index) then rules[tonumber(r.index)] = r.rule end
     if r.hits and tonumber(r.index) then hits[tonumber(r.index)] = r.hits end
-    if tonumber(r.index) and (tonumber(r.accuracy) or 0) == 0 and (tonumber(r.power) or 0) > 0
-        and tonumber(r.effect) ~= ALWAYS_HIT then
+    -- accuracy 0 is "can't miss" (Play Nice, Defog, Topsy-Turvy, the Splits...): the engine
+    -- would read it as a 0% chance; Protect and a vanished target still stop them
+    if tonumber(r.index) and (tonumber(r.accuracy) or 0) == 0 and tonumber(r.effect) ~= ALWAYS_HIT then
       neverMiss[tonumber(r.index)] = true
     end
   end

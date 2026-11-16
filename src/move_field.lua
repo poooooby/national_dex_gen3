@@ -26,6 +26,7 @@
 local MoveField = {}
 
 MoveField._rules = {}                             -- move number -> rule name (install fills it)
+MoveField._trapText = {}                          -- move number -> fn(ad, atk, def): its trap message
 MoveField._on = false
 MoveField._sound = {}                             -- move number -> true (Throat Chop)
 
@@ -870,6 +871,19 @@ function MoveField.install(opts)
     if type(r.rule) == "string" and tonumber(r.index) then rules[tonumber(r.index)] = r.rule end
   end
   MoveField._rules = rules
+  -- the trap messages of the newer binding moves (the cart's EFFECT_TRAP, by move number)
+  local TRAP_TEXT = {
+    INFESTATION = function(ad, atk, def)
+      return prefixed(ad, def) .. " has been afflicted\nwith an infestation by " .. prefixed(ad, atk) .. "!"
+    end,
+    SNAP_TRAP = function(ad, _, def) return prefixed(ad, def) .. " got trapped\nby a snap trap!" end,
+    THUNDER_CAGE = function(ad, atk, def) return prefixed(ad, atk) .. " trapped\n" .. prefixed(ad, def) .. "!" end,
+    MAGMA_STORM = function(ad, _, def) return prefixed(ad, def) .. " became trapped\nby swirling magma!" end,
+  }
+  MoveField._trapText = {}
+  for _, r in ipairs(opts.moves or {}) do
+    if TRAP_TEXT[r.id] and tonumber(r.index) then MoveField._trapText[tonumber(r.index)] = TRAP_TEXT[r.id] end
+  end
   MoveField._sound = {}
   do
     local okM, Moves = pcall(require, "src.core.game3.battle.moves")
@@ -1200,6 +1214,21 @@ function MoveField.install(opts)
     Adapter.new = function(...)
       local a = new(...)
       if type(a) ~= "table" then return a end
+      -- a message the cart has no string for: the trapping moves it never had (its wrap text is
+      -- looked up by move number in a table of its six), said here; any other nil id says nothing
+      -- instead of stopping the battle
+      if type(a.sayText) == "function" then
+        local sayText = a.sayText
+        a.sayText = function(self, id, fill, ...)
+          if id == nil then
+            local d = type(fill) == "table" and fill.def
+            local text = type(d) == "table" and MoveField._trapText[tonumber(d.expTrapMove) or -1]
+            if text then pcall(function() self:say(text(self, fill.atk, d)) end) end
+            return nil
+          end
+          return sayText(self, id, fill, ...)
+        end
+      end
       if type(a.canApplyStatus) == "function" then
         local can = a.canApplyStatus
         a.canApplyStatus = function(self, b, status, ...)
