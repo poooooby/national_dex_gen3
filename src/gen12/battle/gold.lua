@@ -884,6 +884,33 @@ function Gold.installSeams(mod, deps)
     if core.hooks.loadedDice and core:ask("loadedDice", A, u) then return 4 + A:rng(2) end
     return nil
   end
+  -- Gold's own Roar and Whirlwind: Suction Cups, Guard Dog, Ingrain hold on (core "noForceSwitch").
+  -- The battle runs the merged record (data.gen2MoveEffects) its lookup hands back
+  if not Battle.__ndxMechAnchor and type(Battle.moveEffectRecordFor) == "function" then
+    Battle.__ndxMechAnchor = true
+    local recordFor = Battle.moveEffectRecordFor
+    Battle.moveEffectRecordFor = function(data, effect, ...)
+      local rec = recordFor(data, effect, ...)
+      if effect == "EFFECT_FORCE_SWITCH" and type(rec) == "table" and type(rec.run) == "function" and gHub.anchored then
+        local run = rec.run
+        return setmetatable({ run = function(self, attacker, defender, ...)
+          if defender then
+            local ok, yes = pcall(gHub.anchored, self, defender)
+            if ok and yes then
+              if self.markMissed then self:markMissed() end
+              return
+            end
+          end
+          return run(self, attacker, defender, ...)
+        end }, { __index = rec })
+      end
+      return rec
+    end
+  end
+  gHub.anchored = function(battle, mon)
+    local A = Gold.adapter(battle, deps)
+    return core.hooks.noForceSwitch and core:ask("noForceSwitch", A, mon) or false
+  end
   gHub.statusPlan = function(battle, mon)
     local A = Gold.adapter(battle, deps)
     local s, id = A:status(mon), core.abilityOf and core.abilityOf(A, mon)

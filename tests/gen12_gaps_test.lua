@@ -373,6 +373,16 @@ for _, version in ipairs(H.versions()) do
     c.use("TACKLE")
     T.eq(c.hp("enemy"), h, v("(the Substitute takes it otherwise)"))
   end
+  -- ------- Gold's own Roar: Suction Cups holds on
+  if sim.gen == 2 then
+    local w = sim.fresh({ foe = "SNORLAX", foeLevel = 20 })
+    as(w, "enemy", "SUCTIONCUPS")
+    w.use("ROAR")
+    T.check(not w.battle.over, v("Suction Cups: Roar doesn't end the wild battle"))
+    local c = sim.fresh({ foe = "SNORLAX", foeLevel = 20 })
+    c.use("ROAR")
+    T.check(c.battle.over, v("(Roar sends a wild one off otherwise)"))
+  end
   sim.release()
 end
 T.finish("national_dex_gen3 Gen 1/2 gaps")

@@ -619,6 +619,10 @@ return function(core, opts)
       say(A, "%s anchors itself with %s!", A:name(t), nameOf(id))
       return true
     end
+    if A:vol(t).ingrain then
+      say(A, "%s anchored itself with its roots!", A:name(t))
+      return true
+    end
   end)
   core:on("itemLocked", function(A, b)
     if ab(A, b) == "STICKYHOLD" then

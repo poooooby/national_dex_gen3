@@ -41,7 +41,8 @@ All notable changes to this mod are documented here, in
   sand abilities; Cloud Nine, Air Lock and Utility Umbrella take back their own rain and sun boosts.
   Skill Link and Loaded Dice reach the games' own 2-5 hit moves (Fury Attack, Pin Missile...).
   Unseen Fist punches through Gold's own Protect and Detect, and Infiltrator gets past a
-  Substitute and Gold's own Reflect and Light Screen.
+  Substitute and Gold's own Reflect and Light Screen. Suction Cups, Guard Dog and Ingrain hold on
+  against Gold's own Roar and Whirlwind.
 - **Held items on FireRed to Emerald:** Light Clay, the weather rocks, Safety Goggles in a
   sandstorm or hail, Ring Target, Iron Ball against Ground moves, Covert Cloak, Protective Pads,
   Big Root, Float Stone and Loaded Dice now work, and Utility Umbrella in rain or sun. The
