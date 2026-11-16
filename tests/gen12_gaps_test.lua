@@ -228,20 +228,28 @@ for _, version in ipairs(H.versions()) do
       local ok, vv = pcall(function() return w.battle:volatile(b) end)
       return ok and type(vv) == "table" and vv.flinched == true or false
     end
-    local w = sim.fresh({ foe = "RATTATA" })
+    -- every roll low, so the flinch comes up (Gold's simulator lifts every fourth roll)
+    local function fresh()
+      local x = sim.fresh({ foe = "RATTATA", foeLevel = 70 })        -- Headbutt never knocks it out
+      if type(x.battle.random) == "function" then x.battle.random = function() return 0 end end
+      -- Gold: a flinch only lands on one that hasn't moved yet (firstMover is the attacker's side)
+      if x.battle.sideOf then x.battle.firstMover = x.battle:sideOf(x.battler("player")) end
+      return x
+    end
+    local w = fresh()
     w.use("HEADBUTT")
     local control = flinched(w)
     T.check(control, v("(Headbutt flinches on a low roll)"))
     if control then
-      w = sim.fresh({ foe = "RATTATA" })
+      w = fresh()
       as(w, "enemy", "INNERFOCUS")
       w.use("HEADBUTT")
       T.check(not flinched(w), v("Inner Focus: no flinch"))
-      w = sim.fresh({ foe = "RATTATA" })
+      w = fresh()
       w.A:setItem(w.battler("enemy"), "COVERT_CLOAK")
       w.use("HEADBUTT")
       T.check(not flinched(w), v("Covert Cloak: no flinch"))
-      w = sim.fresh({ foe = "RATTATA" })
+      w = fresh()
       as(w, "enemy", "STEADFAST")
       w.use("HEADBUTT")
       T.eq(w.stage("enemy", "speed"), 1, v("Steadfast: a flinch raises Speed"))
@@ -282,6 +290,38 @@ for _, version in ipairs(H.versions()) do
     w = sim.fresh({ foe = "RATTATA" })
     core.lastAdapter = w.A
     T.eq(w.battle:runRoll(999, 1), true, v("(a faster Pokemon runs otherwise)"))
+  end
+  -- ------- Gold's own Spikes and sandstorm: who they hit, Spikes' layers
+  if sim.gen == 2 then
+    local function spiked(ability)
+      local w = sim.fresh({ foe = "RATTATA" })
+      if ability then as(w, "enemy", ability) end
+      local bt, foe = w.battle, w.battler("enemy")
+      bt.spikes = bt.spikes or {}
+      bt.spikes[bt:sideOf(foe)] = true
+      local hp = w.hp("enemy")
+      bt:spikesDamage(foe)
+      return hp - w.hp("enemy"), w
+    end
+    T.check(spiked() > 0, v("(Spikes hurt on entry)"))
+    T.eq(spiked("LEVITATE"), 0, v("Levitate floats over Gold's Spikes"))
+    local w = sim.fresh({ foe = "RATTATA" })
+    for _ = 1, 3 do w.use("SPIKES") end
+    T.eq(w.A:side(w.battler("enemy")).goldSpikes, 3, v("Spikes stack to three layers"))
+    local bt, foe = w.battle, w.battler("enemy")
+    local hp, max = w.hp("enemy"), w.maxHp("enemy")
+    bt:spikesDamage(foe)
+    T.check(math.abs((hp - w.hp("enemy")) - math.floor(max / 4)) <= 1, v("three layers take a quarter"))
+    local function sanded(ability)
+      local x = sim.fresh({ foe = "RATTATA" })
+      if ability then as(x, "enemy", ability) end
+      x.battle.weather, x.battle.weatherTurns = "sandstorm", 5
+      local h = x.hp("enemy")
+      x.battle:tickWeather()
+      return h - x.hp("enemy")
+    end
+    T.check(sanded() > 0, v("(a sandstorm hurts a Normal type)"))
+    T.eq(sanded("OVERCOAT"), 0, v("Overcoat keeps the sandstorm off"))
   end
   sim.release()
 end

@@ -228,6 +228,20 @@ return function(core)
     end
   end
   core:effect("SPIKES", status({ run = lay("spikes", 3, "Spikes were scattered around %s's feet!") }))
+  -- Gold's own Spikes lay one layer and fail after: two more go on our side table (goldSpikes,
+  -- read by src/gen12/battle/gold.lua's spikesDamage wrap); Rapid Spin clearing Gold's clears ours
+  core:on("beforeMove", function(A, u, t, m, isCalled)
+    if A.gen ~= 2 or not m or m.id ~= "SPIKES" then return nil end
+    local bt, foe = A.battle, A:foe(u)
+    local side = bt and foe and bt:sideOf(foe)
+    local s = foe and A:side(foe)
+    if not (side and s and bt.spikes) then return nil end
+    if not bt.spikes[side] then s.goldSpikes = nil return nil end      -- the first: the game's own
+    local n = s.goldSpikes or 1
+    if n >= 3 then return A:failText() end
+    s.goldSpikes = n + 1
+    return A:text("Spikes were scattered around %s's feet!", A:name(foe))
+  end)
   core:rule("STEALTH_ROCK", status({ run = lay("rocks", 1, "Pointed stones float in the air around %s!") }))
   core:rule("TOXIC_SPIKES", status({ run = lay("toxic", 2, "Poison spikes were scattered around %s's feet!") }))
   core:rule("STICKY_WEB", status({ run = lay("web", 1, "A sticky web spreads out around %s!") }))

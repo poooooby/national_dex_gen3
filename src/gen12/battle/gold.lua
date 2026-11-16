@@ -801,6 +801,67 @@ function Gold.installSeams(mod, deps)
       return tickSeed(self, mon, ...)
     end
   end
+  -- Gold's own Spikes and sandstorm: a Pokemon off the ground or immune takes none (Levitate,
+  -- Air Balloon, Magnet Rise, Heavy-Duty Boots, Magic Guard; Overcoat, Safety Goggles, the sand
+  -- abilities), and the layers laid past Gold's one (src/gen12/mech/field.lua) hit harder
+  if not Battle.__ndxMechHazards then
+    Battle.__ndxMechHazards = true
+    local spikesDamage, tickWeather = Battle.spikesDamage, Battle.tickWeather
+    Battle.spikesDamage = function(self, mon, ...)
+      local ok, plan = false, nil
+      if gHub.spikesPlan then ok, plan = pcall(gHub.spikesPlan, self, mon) end
+      if ok and plan == "skip" then return end
+      if ok and tonumber(plan) and plan > 1 and type(mon) == "table" then
+        -- the game's eighth, worked out against a bigger max HP: a sixth, a quarter
+        local had = rawget(mon, "maxHp")
+        local max = mon.maxHp or (mon.stats and mon.stats.hp) or 8
+        mon.maxHp = math.floor(max * 8 / (plan == 2 and 6 or 4))
+        local r = { pcall(spikesDamage, self, mon, ...) }
+        mon.maxHp = had
+        if not r[1] then error(r[2], 0) end
+        return (unpack or table.unpack)(r, 2)
+      end
+      return spikesDamage(self, mon, ...)
+    end
+    Battle.tickWeather = function(self, ...)
+      local ok, immune = false, nil
+      if gHub.sandImmune and self.weather == "sandstorm" then ok, immune = pcall(gHub.sandImmune, self) end
+      if not (ok and immune and next(immune)) then return tickWeather(self, ...) end
+      -- the game asks the types: an immune Pokemon reads as a Rock type for the one call
+      local had = rawget(self, "battlerTypes")
+      self.battlerTypes = function(s, m, ...)
+        if immune[m] then return { "ROCK" } end
+        return Battle.battlerTypes(s, m, ...)
+      end
+      local r = { pcall(tickWeather, self, ...) }
+      self.battlerTypes = had
+      if not r[1] then error(r[2], 0) end
+      return (unpack or table.unpack)(r, 2)
+    end
+  end
+  gHub.spikesPlan = function(battle, mon)
+    local A = Gold.adapter(battle, deps)
+    if (core.grounded and not core.grounded(A, mon)) or (core.hooks.hazardImmune and core:ask("hazardImmune", A, mon))
+        or (core.hooks.noIndirect and core:ask("noIndirect", A, mon)) then
+      return "skip"
+    end
+    return A:side(mon).goldSpikes or 1
+  end
+  local SAND_PROOF = { SANDVEIL = true, SANDRUSH = true, SANDFORCE = true }
+  gHub.sandImmune = function(battle)
+    local A = Gold.adapter(battle, deps)
+    local out = {}
+    for _, mon in ipairs({ battle.player, battle.enemy }) do
+      if type(mon) == "table" then
+        local id = core.abilityOf and core.abilityOf(A, mon)
+        if SAND_PROOF[id or ""] or (core.hooks.weatherImmune and core:ask("weatherImmune", A, mon))
+            or (core.hooks.noIndirect and core:ask("noIndirect", A, mon)) then
+          out[mon] = true
+        end
+      end
+    end
+    return out
+  end
   gHub.statusPlan = function(battle, mon)
     local A = Gold.adapter(battle, deps)
     local s, id = A:status(mon), core.abilityOf and core.abilityOf(A, mon)

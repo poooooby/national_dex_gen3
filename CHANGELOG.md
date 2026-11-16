@@ -35,7 +35,10 @@ All notable changes to this mod are documented here, in
   Cloak stop the flinch from Headbutt, Bite and King's Rock, and Steadfast's Speed rises when a
   flinch stands. Absorb, Mega Drain, Giga Drain, Leech Life and Dream Eater meet Liquid Ooze, Big
   Root and Heal Block. Shadow Tag, Arena Trap, Magnet Pull, Ingrain, Block and the other traps
-  stop you running from a wild battle (Run Away and Ghost types still can).
+  stop you running from a wild battle (Run Away and Ghost types still can). On Gold, Silver and
+  Crystal, Spikes skip Levitate, Air Balloon, Magnet Rise, Heavy-Duty Boots and Magic Guard and
+  stack to three layers, and the sandstorm spares Overcoat, Magic Guard, Safety Goggles and the
+  sand abilities.
 - **Held items on FireRed to Emerald:** Light Clay, the weather rocks, Safety Goggles in a
   sandstorm or hail, Ring Target, Iron Ball against Ground moves, Covert Cloak, Protective Pads,
   Big Root, Float Stone and Loaded Dice now work, and Utility Umbrella in rain or sun. The
