@@ -79,7 +79,11 @@ All notable changes to this mod are documented here, in
   words (Solar Blade too), and Snipe Shot and Dire Claw land critical hits more often; Blood Moon
   can't be used twice in a row; Roost takes away the Flying type for the rest of the turn; Copycat
   copies the last move anyone used (it acted as Mirror Move); Chilly Reception from the last Pokémon
-  still brings the weather; Double Iron Bash can flinch; Axe Kick's miss costs half the user's HP.
+  still brings the weather; Double Iron Bash can flinch; Axe Kick's miss costs half the user's HP;
+  Obstruct and Silk Trap let status moves through; Octolock ends when its user leaves; Flare Blitz,
+  Scald and the other fiery moves thaw a frozen user; Sunsteel Strike, Moongeist Beam and Photon
+  Geyser ignore abilities, and Photon Geyser uses the higher of Attack and Sp. Atk; Avalanche
+  doubles after its user is hit.
 
 ## [1.12.1] - 2026-11-14
 

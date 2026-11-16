@@ -27,7 +27,8 @@ local ALWAYS_HIT = 17                             -- the cart's EFFECT_ALWAYS_HI
 -- rules a move's row doesn't carry (a gap found later, 2026-11-16): id -> rule
 local BY_ID_RULE = { FREEZE_DRY = "FREEZE_DRY", JUDGMENT = "JUDGMENT", RAGING_BULL = "RAGING_BULL",
   IVY_CUDGEL = "IVY_CUDGEL",
-  BLOOD_MOON = "GIGATON_HAMMER" }                 -- not twice in a row, as Gigaton Hammer
+  BLOOD_MOON = "GIGATON_HAMMER",                  -- not twice in a row, as Gigaton Hammer
+  PHOTON_GEYSER = "PHOTON_GEYSER", AVALANCHE = "AVALANCHE" }
 -- a signature move's type by its user's form (Raging Bull: the Paldean Tauros breeds; Ivy Cudgel:
 -- Ogerpon's masks); Judgment's by its Plate (MoveRules.plateTypeOf, src/abilities_more.lua)
 local FORM_TYPE = {
@@ -214,6 +215,9 @@ local function prepare(rule, A, D, move, o, set, num)
     if (tonumber(A.item) or 0) == 0 then power = base * 2 end
   elseif rule == "ASSURANCE" then
     if (tonumber(D.damageTakenThisTurn) or 0) > 0 then power = base * 2 end
+  elseif rule == "AVALANCHE" then
+    -- double when its user was hit first this turn (the cart's Revenge effect never doubled it)
+    if (tonumber(A.damageTakenThisTurn) or 0) > 0 then power = base * 2 end
   elseif rule == "PAYBACK" then
     if turn and D.__ndxMovedTurn == turn then power = base * 2 end
   elseif rule == "BOLT_BEAK" or rule == "FISHIOUS_REND" then
@@ -304,6 +308,12 @@ local function prepare(rule, A, D, move, o, set, num)
     use(A, aMon, offense, tonumber(dMon.attack) or tonumber(aMon[offense]), stageOf(D, "attack"))
   elseif rule == "BODY_PRESS" then
     use(A, aMon, offense, tonumber(aMon.defense) or tonumber(aMon[offense]), stageOf(A, "defense"))
+  elseif rule == "PHOTON_GEYSER" then
+    -- the higher of Attack and Sp. Atk, stages in
+    local function eff(v, s) s = tonumber(s) or 0; return (tonumber(v) or 0) * (s >= 0 and (2 + s) / 2 or 2 / (2 - s)) end
+    local atk, spa = eff(aMon.attack, stageOf(A, "attack")), eff(aMon.spAtk, stageOf(A, "spAtk"))
+    if atk > spa then use(A, aMon, offense, tonumber(aMon.attack) or tonumber(aMon[offense]), stageOf(A, "attack"))
+    else use(A, aMon, offense, tonumber(aMon.spAtk) or tonumber(aMon[offense]), stageOf(A, "spAtk")) end
   elseif rule == "SECRET_SWORD" then
     use(A, aMon, offense, tonumber(aMon.spAtk) or tonumber(aMon[offense]), stageOf(A, "spAtk"))
   elseif rule == "PSYSHOCK" then

@@ -31,6 +31,7 @@ MoveField._chargeLine = {}                        -- move number -> its charging
 MoveField._roost = nil                            -- Roost's move number
 MoveField._copycat = nil                          -- Copycat's move number
 MoveField._axeKick = nil                          -- Axe Kick's move number
+MoveField._thaws = {}                             -- move number -> true: thaws its frozen user
 -- the moves Gravity keeps off: the cart's Fly, Bounce, Jump Kick, Hi Jump Kick, Splash, and ours
 -- (install adds Flying Press, Telekinesis, Sky Drop by their rows)
 MoveField._gravityBanned = { [19] = true, [340] = true, [26] = true, [136] = true, [150] = true }
@@ -738,7 +739,9 @@ local function tickBattler(ad, b)
   end
   local octo = b.__ndxOctolock
   if octo then
-    if ad:hp(octo) <= 0 or octo.zeroed then
+    local here = false
+    for _, x in ipairs(ad:activeBattlers() or {}) do if x == octo then here = true end end
+    if ad:hp(octo) <= 0 or octo.zeroed or not here then                -- fainted, or switched out
       b.__ndxOctolock = nil
     else
       changeStat(ad, b, "defense", -1, { allowPtr = true })
@@ -941,10 +944,14 @@ function MoveField.install(opts)
   local CHARGE_LINE = { FREEZE_SHOCK = " became cloaked\nin a freezing light!", ICE_BURN = " became cloaked\nin freezing air!",
     ELECTRO_SHOT = " absorbed\nelectricity!", SOLAR_BLADE = " absorbed\nlight!" }
   MoveField._chargeLine = {}
+  local THAWS = { FLARE_BLITZ = true, SCALD = true, STEAM_ERUPTION = true, PYRO_BALL = true, FUSION_FLARE = true,
+    BURN_UP = true, MATCHA_GOTCHA = true, SCORCHING_SANDS = true }
+  MoveField._thaws = {}
   for _, r in ipairs(opts.moves or {}) do
     if r.id == "ROOST" and tonumber(r.index) then MoveField._roost = tonumber(r.index) end
     if r.id == "COPYCAT" and tonumber(r.index) then MoveField._copycat = tonumber(r.index) end
     if r.id == "AXE_KICK" and tonumber(r.index) then MoveField._axeKick = tonumber(r.index) end
+    if THAWS[r.id] and tonumber(r.index) then MoveField._thaws[tonumber(r.index)] = true end
     if CHARGE_LINE[r.id] and tonumber(r.index) then MoveField._chargeLine[tonumber(r.index)] = CHARGE_LINE[r.id] end
     if (r.id == "FLYING_PRESS" or r.id == "TELEKINESIS" or r.id == "SKY_DROP") and tonumber(r.index) then
       MoveField._gravityBanned[tonumber(r.index)] = true
@@ -996,7 +1003,9 @@ function MoveField.install(opts)
           ad:sayText("STRINGID_PKMNPROTECTEDITSELF", { def = target })
           return true
         end
-        if target.expProtected and target.__ndxProtectKind == "KINGS_SHIELD" and target.__ndxProtectTurn == st.turn then
+        local through = target.__ndxProtectKind == "KINGS_SHIELD" or target.__ndxProtectKind == "OBSTRUCT"
+          or target.__ndxProtectKind == "SILK_TRAP"
+        if target.expProtected and through and target.__ndxProtectTurn == st.turn then
           target.expProtected = nil
           local r = run(id, ad, user, target, move, moveId, moveCtx, ...)
           target.expProtected = true
@@ -1447,6 +1456,15 @@ function MoveField.install(opts)
         local okN, v = pcall(Engine.moveNum, moveId)
         n = okN and tonumber(v) or nil
         st.__ndxMoveNow = n
+      end
+      -- a move that thaws its frozen user (Flare Blitz, Scald...: the cart knows only Flame Wheel and
+      -- Sacred Fire): thawed before the cart's freeze check
+      if n and MoveField._thaws[n] and type(user) == "table" and type(adapter) == "table" then
+        local okS, s = pcall(adapter.status, adapter, user)
+        if okS and s == "FRZ" then
+          pcall(adapter.clearStatus, adapter, user)
+          pcall(adapter.say, adapter, prefixed(adapter, user) .. " thawed out!")
+        end
       end
       -- Copycat: the cart's Mirror Move (its effect), handed the last move anyone used in place of
       -- the last one aimed at its user, for this call

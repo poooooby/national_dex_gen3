@@ -488,4 +488,38 @@ do
   T.eq(st.enemy.flinched, true, "Double Iron Bash can flinch")
 end
 
+-- ------- Obstruct lets status moves through; Octolock ends when its user leaves; Flare Blitz thaws;
+-- Sunsteel Strike gets through Disguise; Photon Geyser's physical side
+do
+  local st, ad = battle()
+  use(st, ad, "OBSTRUCT", st.enemy, st.enemy)
+  use(st, ad, 45)                                                         -- GROWL
+  T.eq(st.enemy.stages.attack, -1, "Obstruct lets a status move through")
+  local st2, ad2 = battle()
+  st2.enemy.__ndxOctolock = { mon = {} }                                  -- a battler no longer out
+  Residuals.runTurn(ad2)
+  T.eq(st2.enemy.__ndxOctolock, nil, "Octolock ends when its user is gone")
+  local st3, ad3 = battle()
+  ad3:applyStatus(st3.player, "FRZ", nil, { force = true })
+  use(st3, ad3, "FLARE_BLITZ")
+  T.check(ad3:status(st3.player) ~= "FRZ", "Flare Blitz thaws its frozen user")
+  local st4, ad4 = battle()
+  st4.enemy.expTracedAbility = "DISGUISE"
+  local hp = st4.enemy.mon.hp
+  use(st4, ad4, "SUNSTEEL_STRIKE")
+  T.check(hp - st4.enemy.mon.hp ~= math.floor(300 / 8), "Sunsteel Strike gets through Disguise")
+  local function geyser(atk)
+    local s5, a5 = battle({ party = { mon({ attack = atk, spAtk = 50 }) } })
+    local h = s5.enemy.mon.hp; use(s5, a5, "PHOTON_GEYSER"); return h - s5.enemy.mon.hp
+  end
+  T.check(geyser(200) > geyser(20), "Photon Geyser uses a higher Attack")
+  local function avalanche(hitFirst)
+    local s6, a6 = battle({ foe = mon({ hp = 900, maxHp = 900 }) })
+    if hitFirst then use(s6, a6, 33, s6.enemy, s6.player) end
+    local h = s6.enemy.mon.hp; use(s6, a6, "AVALANCHE"); return h - s6.enemy.mon.hp
+  end
+  local calm, hit = avalanche(false), avalanche(true)
+  T.check(hit >= calm * 1.5, "Avalanche doubles after its user was hit (" .. hit .. " / " .. calm .. ")")   -- the damage roll varies: a double is over 1.5x, none under 1.2x
+end
+
 T.finish("national_dex_gen3 move gaps (" .. GAME .. ")")

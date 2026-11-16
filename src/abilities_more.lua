@@ -66,6 +66,7 @@ local FIXED = set{ "MULTITYPE", "STANCE_CHANGE", "SCHOOLING", "SHIELDS_DOWN", "D
   "ZERO_TO_HERO", "COMATOSE", "AS_ONE_GLASTRIER", "AS_ONE_SPECTRIER", "GULP_MISSILE", "MUMMY",
   "LINGERING_AROMA", "NEUTRALIZING_GAS", "TRACE", "WONDER_GUARD", "FORECAST", "HUNGER_SWITCH" }
 local MOLD = set{ "MOLD_BREAKER", "TURBOBLAZE", "TERAVOLT", "MYCELIUM_MIGHT" }
+local MOLD_MOVES = set{ "SUNSTEELSTRIKE", "MOONGEISTBEAM", "PHOTONGEYSER", "MENACINGMOONRAZEMAELSTROM" }
 local PRIORITY_BLOCK = set{ "QUEENLY_MAJESTY", "DAZZLING", "ARMOR_TAIL" }
 local MENTAL = set{ "TAUNT", "TORMENT", "ENCORE", "DISABLE", "HEALBLOCK", "ATTRACT" }
 local HEALING = set{ "ABSORB", "MEGADRAIN", "GIGADRAIN", "LEECHLIFE", "DRAINPUNCH", "HORNLEECH",
@@ -623,6 +624,13 @@ function More.install(opts)
       if MOLD[k or ""] then
         local rec = X.moveRec(X.moveNum(moveId))
         if k ~= "MYCELIUM_MIGHT" or X.isStatusMove(rec) then st.__ndxAbMold = { user = who } end
+      else
+        -- the moves that ignore abilities on their own
+        local okK, key = pcall(function()
+          local num = X.moveNum(moveId)
+          return num and X.moveKey(X.moveRec(num), num) or nil
+        end)
+        if okK and key and MOLD_MOVES[key] then st.__ndxAbMold = { user = who } end
       end
       local r = { pcall(resolve, user, target, moveId, slot, ad, st, out, o, ...) }
       st.__ndxAbMold = prev
