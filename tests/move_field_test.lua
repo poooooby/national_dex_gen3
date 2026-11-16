@@ -294,6 +294,24 @@ do
   local st2, ad2 = battle()
   status("MISTY_TERRAIN", st2, ad2)
   T.eq(Engine3.NATURE_POWER_MOVES[8], num("MOONBLAST"), "Moonblast on Misty Terrain")
+  -- Secret Power's added effect and Camouflage's type follow the terrain, then the background
+  local Ids = require("src.core.game3.battle.effect_ids")
+  local Types3 = require("src.core.game3.battle.types")
+  local function secret(s) return Ids.SECRET_POWER_BY_TERRAIN[Engine3.terrainOf(s)] or "PARALYSIS" end
+  local want = { ELECTRIC_TERRAIN = { "PARALYSIS", "ELECTRIC" }, GRASSY_TERRAIN = { "SLEEP", "GRASS" },
+    MISTY_TERRAIN = { "SP_ATK_MINUS_1", "FAIRY" }, PSYCHIC_TERRAIN = { "SPD_MINUS_1", "PSYCHIC" } }
+  for move, w in pairs(want) do
+    local s, a = battle()
+    s.terrain = 0                                                    -- tall grass: Poison / Grass
+    status(move, s, a)
+    T.eq(secret(s), w[1], "Secret Power on " .. move)
+    -- CAMOUFLAGE (headless Ruby has no type names for its message; the type is set before it)
+    pcall(cart, 293, s, a, s.player, s.player)
+    T.eq(s.player.type1, Types3.ID[w[2]], "Camouflage on " .. move)
+  end
+  local s0 = battle()
+  s0.terrain = 0
+  T.eq(secret(s0), "POISON", "Secret Power with no terrain: the background's")
 end
 do
   local st, ad = battle()

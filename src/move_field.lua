@@ -1305,6 +1305,46 @@ function MoveField.install(opts)
     end })
   end
 
+  -- Secret Power's added effect and Camouflage's type on a terrain: the cart reads both from
+  -- Engine.terrainOf (the background), so on a terrain it answers an id of ours, which the cart's
+  -- tables know (Electric: paralysis / Electric type, Grassy: sleep / Grass, Misty: Sp. Atk -1 /
+  -- Fairy, Psychic: Speed -1 / Psychic). Ruby / Sapphire pick Secret Power's effect from a table
+  -- of their own (effect_chance_rs), answered in a wrap of its prepare.
+  local TERRAIN_BG = { ELECTRIC = 101, GRASSY = 102, MISTY = 103, PSYCHIC = 104 }
+  if type(Engine.terrainOf) == "function" and not Engine.__ndxTerrainOf then
+    Engine.__ndxTerrainOf = true
+    local backgroundOf = Engine.terrainOf
+    Engine.terrainOf = function(st, ...)
+      local kind = MoveField._on and terrainOf(st)
+      if kind and TERRAIN_BG[kind] then return TERRAIN_BG[kind] end
+      return backgroundOf(st, ...)
+    end
+  end
+  local SECRET = { ELECTRIC = { 5, "PARALYSIS" }, GRASSY = { 1, "SLEEP" }, MISTY = { 25, "SP_ATK_MINUS_1" },
+    PSYCHIC = { 24, "SPD_MINUS_1" } }
+  local okIds, Ids = pcall(require, "src.core.game3.battle.effect_ids")
+  if okIds and type(Ids.SECRET_POWER_BY_TERRAIN) == "table" then
+    for kind, id in pairs(TERRAIN_BG) do Ids.SECRET_POWER_BY_TERRAIN[id] = SECRET[kind][2] end
+  end
+  local okSet, Setup = pcall(require, "src.core.game3.battle.effects.setup")
+  if okSet and type(Setup.TERRAIN_TYPE) == "table" then
+    local TYPE = { ELECTRIC = ID.ELECTRIC, GRASSY = ID.GRASS, MISTY = ID.FAIRY, PSYCHIC = ID.PSYCHIC }
+    for kind, id in pairs(TERRAIN_BG) do Setup.TERRAIN_TYPE[id] = TYPE[kind] end
+  end
+  local okRs, Rs = pcall(require, "src.core.game3.battle.effect_chance_rs")
+  if okRs and type(Rs) == "table" and type(Rs.prepare) == "function" and not Rs.__ndxSecretPower then
+    Rs.__ndxSecretPower = true
+    local prepare = Rs.prepare
+    Rs.prepare = function(M, ...)
+      local r = prepare(M, ...)
+      local kind = MoveField._on and type(r) == "table" and M and okIds and M.effect == Ids.SECRET_POWER
+        and terrainOf(M.st)
+      local spec = kind and SECRET[kind]
+      if spec then r.raw, r.effect = spec[1], spec[2] end
+      return r
+    end
+  end
+
   -- the turn counters and the healing
   if okR and okRu and type(Residuals.register) == "function" and not Rules.__nationalDexMoveField then
     Rules.__nationalDexMoveField = true

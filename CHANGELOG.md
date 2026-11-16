@@ -14,6 +14,8 @@ All notable changes to this mod are documented here, in
   up no longer falls asleep on it, Effect Spore and the like can't pass on a status the terrain
   blocks, a Terrain Extender makes a terrain last 8 turns, an Air Balloon holder floats above
   it, and the "...disappeared from the battlefield" message shows when a terrain runs out.
+  Secret Power's added effect (paralysis, sleep, lower Sp. Atk, lower Speed) and Camouflage's
+  type (Electric, Grass, Fairy, Psychic) follow the terrain, as on Red to Crystal.
 
 ## [1.12.1] - 2026-11-14
 

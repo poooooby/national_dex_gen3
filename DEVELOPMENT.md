@@ -395,7 +395,9 @@ Things that work but not exactly as in today's games, or are only partly verifie
   Turns and grounding ask the held items' core through `HeldItems.__ndxHeldHub` (Terrain
   Extender's `terrainTurns`, Air Balloon's `ungrounded`). Nature Power: `Engine.NATURE_POWER_MOVES`
   is a lookup table that answers the running battle's terrain (`Battle._adapter`) before the
-  background. Red to Crystal: Rest fails through `beforeMove` (`mech/field.lua`), Yawn asks
+  background. Secret Power / Camouflage: `Engine.terrainOf` answers ids 101-104 on a terrain,
+  added to `EffectIds.SECRET_POWER_BY_TERRAIN` and `Setup.TERRAIN_TYPE`; Ruby / Sapphire's
+  `effect_chance_rs.prepare` is wrapped (its table is local). Red to Crystal: Rest fails through `beforeMove` (`mech/field.lua`), Yawn asks
   `blockStatus`, Nature Power picks by terrain (`mech/power.lua`). Tests: `move_field_test`,
   `gen12_mech_test`.
 - Tailwind and Trick Room order the two battlers the engine compares; ties keep the cart's coin
