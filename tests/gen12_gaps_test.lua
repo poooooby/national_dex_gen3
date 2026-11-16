@@ -50,6 +50,14 @@ for _, version in ipairs(H.versions()) do
     for _ = 1, 5 do w.nextTurn() end
     T.eq(mult(w, "STRENGTH"), str, v("and not after five turns"))
 
+    -- Hadron Engine: Sp. Atk only on Electric Terrain
+    w = sim.fresh({ mine = "PIKACHU", foe = "SLOWPOKE", level = 50 })
+    local ts = mult(w, "THUNDERSHOCK")
+    as(w, "player", "HADRONENGINE")
+    T.eq(mult(w, "THUNDERSHOCK"), ts, v("Hadron Engine: no boost without Electric Terrain"))
+    w.A:field().terrain = { kind = "ELECTRIC", turns = 5 }
+    local boosted = mult(w, "THUNDERSHOCK")
+    T.check(boosted > ts * 1.3 * 1.3, v("and its 4/3 on top of the terrain's 1.3x (" .. boosted / ts .. ")"))
     -- conditions the data spells out: Rivalry by gender (one factor, or none), Fluffy by contact
     w = sim.fresh({ mine = "NIDORAN_M", foe = "SLOWPOKE", level = 50 })
     local t0 = mult(w, "TACKLE")

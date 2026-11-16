@@ -508,9 +508,37 @@ for _, version in ipairs(H.versions()) do
     local src = slurp("/src/gen12/mech/abilities_more.lua") .. slurp("/src/gen12/mech/abilities.lua")
     -- (the partner abilities and the ones with nothing to act on are swapped for a working one)
     local SWAP = core.ABILITY_SWAP or {}
+    -- what the generic runner acts on, by the data's trigger and effect kind (src/gen12/mech/abilities.lua):
+    -- an ability whose data the runner can't act on must be written out (named in the code), not
+    -- merely have data (Moxie, Cotton Down and the like passed on their data alone, doing nothing)
+    local MULT = { damage_dealt_multiplier = true, damage_taken_multiplier = true, stat_multiplier = true,
+      priority_change = true, crit_change = true, accuracy_multiplier = true, status_immunity = true,
+      type_immunity = true }
+    local APPLY = { stat_change = true, set_weather = true, set_terrain = true, heal = true, damage_self = true }
+    local RUNS = {
+      passive = MULT, on_weather = { heal = true, damage_self = true }, on_terrain = MULT, on_status = MULT,
+      switch_in = APPLY, turn_end = APPLY,
+      on_hit_by = { stat_change = true, set_terrain = true, set_weather = true, type_immunity = true, heal = true },
+      on_contact_taken = { inflict_status = true, damage = true, stat_change = true },
+      on_switch_out = { heal = true },
+    }
+    for _, k in ipairs({ "on_weather", "on_terrain", "on_status" }) do
+      for kind in pairs(MULT) do RUNS[k][kind] = true end
+    end
+    local function named(id) return src:find('"' .. id .. '"', 1, true) ~= nil or src:find(id .. " =", 1, true) ~= nil end
+    local function dataRuns(b)
+      local kinds = RUNS[b.trigger or ""] or {}
+      if #(b.effects or {}) == 0 then return false end
+      for _, e in ipairs(b.effects) do
+        -- a "hit by ..." stat change runs on the hit, whatever the trigger says (Thermal Exchange)
+        local onHit = e.kind == "stat_change" and tostring(e.when or ""):lower():find("^hit by") ~= nil
+        if not kinds[e.kind] and not onHit then return false end
+      end
+      return true
+    end
     local function works(id)
       local a = ABS[id]
-      return a ~= nil and (a.b ~= nil or src:find('"' .. id .. '"', 1, true) ~= nil or src:find(id .. " =", 1, true) ~= nil)
+      return a ~= nil and ((a.b ~= nil and dataRuns(a.b)) or named(id))
     end
     local missing = {}
     for id in pairs(ABS) do

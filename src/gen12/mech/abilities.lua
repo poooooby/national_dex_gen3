@@ -142,6 +142,9 @@ return function(core, opts)
     FLASHFIRE = { damage_dealt_multiplier = true },
     ELECTROMORPHOSIS = { damage_dealt_multiplier = true },
     WINDPOWER = { damage_dealt_multiplier = true },
+    -- their boost only while their own terrain / sun lasts (by hand in damageMult)
+    HADRONENGINE = { stat_multiplier = true },
+    ORICHALCUMPULSE = { stat_multiplier = true },
   }
   -- the data's own "when" phrases
   -- (`other`: the Pokemon on the other end of the hit, for Rivalry)
@@ -213,6 +216,13 @@ return function(core, opts)
     end, m)
     -- Flash Fire, once it has taken in a Fire move
     if mt == "FIRE" and A:vol(u).flashFire then k = k * 1.5 end
+    -- Hadron Engine on Electric Terrain (special), Orichalcum Pulse in the sun (physical)
+    local ua = abilityOf(A, u)
+    if ua == "HADRONENGINE" and cat == "special" and core.terrain and core.terrain(A) == "ELECTRIC" then
+      k = k * 4 / 3
+    elseif ua == "ORICHALCUMPULSE" and cat == "physical" and weather(A) == "sun" then
+      k = k * 4 / 3
+    end
     each(A, t, "stat_multiplier", function(e)
       if (e.stat == "defense" and cat == "physical") or (e.stat == "special-defense" and cat == "special") then
         k = k / e.factor
