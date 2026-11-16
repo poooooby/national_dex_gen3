@@ -284,4 +284,44 @@ do
   T.eq(s6.enemy.mon.hp, h6, "Bulletproof stops Rock Blast")
 end
 
+-- ------- abilities that can't be suppressed, overwritten or copied; Ability Shield; Mold Breaker
+do
+  local function holding(b, name) b.expTracedAbility = name end           -- the cart's own way
+  local st, ad = battle()
+  holding(st.enemy, "DISGUISE")
+  use(st, ad, "GASTRO_ACID")
+  T.eq(st.enemy.expAbilitySuppressed, nil, "Gastro Acid fails on Disguise")
+  local st2, ad2, said2 = battle()
+  holding(st2.enemy, "COMATOSE")
+  use(st2, ad2, "WORRY_SEED")
+  T.eq(st2.enemy.expTracedAbility, "COMATOSE", "Worry Seed can't overwrite Comatose")
+  local st3, ad3 = battle()
+  holding(st3.enemy, "DISGUISE")
+  use(st3, ad3, 285)                                                      -- SKILL SWAP
+  T.eq(st3.enemy.expTracedAbility, "DISGUISE", "Skill Swap can't take Disguise")
+  local st4, ad4 = battle()
+  holding(st4.enemy, "MULTITYPE")
+  use(st4, ad4, 272)                                                      -- ROLE PLAY
+  T.check(st4.player.expTracedAbility ~= "MULTITYPE", "Role Play can't copy Multitype")
+  local st5, ad5 = battle()
+  st5.enemy.item = ITEM.ABILITY_SHIELD
+  use(st5, ad5, "GASTRO_ACID")
+  T.eq(st5.enemy.expAbilitySuppressed, nil, "Ability Shield keeps Gastro Acid off")
+  local st6, ad6 = battle()
+  use(st6, ad6, "GASTRO_ACID")
+  T.eq(st6.enemy.expAbilitySuppressed, true, "(which works otherwise)")
+  -- Mold Breaker gets through Disguise: a full hit, not the eighth
+  local st7, ad7 = battle()
+  holding(st7.player, "MOLD_BREAKER")
+  holding(st7.enemy, "DISGUISE")
+  local hp = st7.enemy.mon.hp
+  use(st7, ad7, 33)
+  local st8, ad8 = battle()
+  local hp8 = st8.enemy.mon.hp
+  use(st8, ad8, 33)
+  local through, plain = hp - st7.enemy.mon.hp, hp8 - st8.enemy.mon.hp
+  T.check(math.abs(through - plain) <= 1 and through ~= math.floor(300 / 8),
+    "Mold Breaker hits through Disguise (" .. through .. " / " .. plain .. ")")
+end
+
 T.finish("national_dex_gen3 move gaps (" .. GAME .. ")")

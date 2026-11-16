@@ -44,6 +44,11 @@ All notable changes to this mod are documented here, in
   Life Orb's recoil and covers sure added effects (Flame Charge); Infiltrator goes through
   Aurora Veil; Guard Dog can't be forced out by Roar, Whirlwind or Dragon Tail; Tailwind raises
   Wind Rider's Attack and charges Wind Power; Bulletproof stops Rock Blast and Syrup Bomb.
+- **Abilities that can't be taken away, FireRed to Emerald:** Gastro Acid, Worry Seed, Simple Beam,
+  Entrainment, Doodle, Core Enforcer, Skill Swap, Role Play, Trace, Mummy and Wandering Spirit
+  leave Comatose, Disguise, Multitype, Stance Change and the other permanent abilities alone, and
+  an Ability Shield protects its holder; Mold Breaker gets through Disguise and Ice Face, and
+  Neutralizing Gas quiets Shadow Shield, Prism Armor and Full Metal Body.
 
 ## [1.12.1] - 2026-11-14
 

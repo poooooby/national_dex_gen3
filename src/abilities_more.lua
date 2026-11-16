@@ -52,10 +52,15 @@ end
 
 local function letters(s) return (tostring(s or ""):upper():gsub("[^%w]", "")) end
 
--- set aside by Mold Breaker / Neutralizing Gas never
-local UNBREAKABLE = set{ "SHADOW_SHIELD", "PRISM_ARMOR", "FULL_METAL_BODY", "COMATOSE", "MULTITYPE",
-  "STANCE_CHANGE", "SCHOOLING", "SHIELDS_DOWN", "DISGUISE", "ICE_FACE", "ZERO_TO_HERO", "AS_ONE_GLASTRIER",
-  "AS_ONE_SPECTRIER", "NEUTRALIZING_GAS", "GULP_MISSILE" }
+-- never suppressed (Neutralizing Gas, Gastro Acid, Core Enforcer) nor overwritten (Worry Seed,
+-- Simple Beam, Entrainment, Mummy, Skill Swap)
+local PERMANENT = set{ "COMATOSE", "MULTITYPE", "STANCE_CHANGE", "SCHOOLING", "SHIELDS_DOWN", "DISGUISE",
+  "ICE_FACE", "ZERO_TO_HERO", "AS_ONE_GLASTRIER", "AS_ONE_SPECTRIER", "NEUTRALIZING_GAS", "GULP_MISSILE" }
+-- never set aside by Mold Breaker: those, less Disguise and Ice Face (Mold Breaker gets through
+-- both), plus the three it can't (which Neutralizing Gas does quiet)
+local NO_BREAK = set{ "SHADOW_SHIELD", "PRISM_ARMOR", "FULL_METAL_BODY", "COMATOSE", "MULTITYPE",
+  "STANCE_CHANGE", "SCHOOLING", "SHIELDS_DOWN", "ZERO_TO_HERO", "AS_ONE_GLASTRIER", "AS_ONE_SPECTRIER",
+  "NEUTRALIZING_GAS", "GULP_MISSILE" }
 -- never copied or replaced (Mummy, Wandering Spirit)
 local FIXED = set{ "MULTITYPE", "STANCE_CHANGE", "SCHOOLING", "SHIELDS_DOWN", "DISGUISE", "ICE_FACE",
   "ZERO_TO_HERO", "COMATOSE", "AS_ONE_GLASTRIER", "AS_ONE_SPECTRIER", "GULP_MISSILE", "MUMMY",
@@ -514,12 +519,13 @@ function More.install(opts)
       a.abilityOf = function(self, b)
         local name = of(self, b)
         local X = hub.C
-        if not (X and name and b) or UNBREAKABLE[name] then return name end
+        if not (X and name and b) then return name end
         local st = self._st
         if st then
           local mb = st.__ndxAbMold
-          if mb and mb.user ~= b and mb.user.side ~= b.side then return nil end
-          if st.__ndxAbGas and name ~= "NEUTRALIZING_GAS" then
+          if mb and mb.user ~= b and mb.user.side ~= b.side and not NO_BREAK[name] then return nil end
+          -- Neutralizing Gas: not what can't be suppressed, nor an Ability Shield's holder
+          if st.__ndxAbGas and not PERMANENT[name] and heldKind(b) ~= "abilityShield" then
             for _, x in ipairs(self:activeBattlers() or {}) do
               if x ~= b and self:hp(x) > 0 and of(self, x) == "NEUTRALIZING_GAS" then return nil end
             end
@@ -990,6 +996,9 @@ function More.install(opts)
         if okB and pb then blocked = true
         elseif ta == "GOOD_AS_GOLD" and X.isStatusMove(mv) then
           say(ad, "It doesn't affect %s...", who(ad, target)); blocked = true
+        elseif (id == "EXP_ROLE_PLAY_EFFECT" or id == "EXP_SKILL_SWAP_EFFECT")
+            and More.abilityGuard(X, ad, user, target, id == "EXP_ROLE_PLAY_EFFECT" and "copy" or "swap") then
+          ad:sayFail(); blocked = true
         elseif ta == "GUARD_DOG" and id == "EXP_ROAR_EFFECT" then
           say(ad, "%s anchors itself with %s!", who(ad, target), X.nameOf(ta)); blocked = true
         elseif ta == "AROMA_VEIL" and MENTAL[key] then
@@ -1066,6 +1075,24 @@ function More.install(opts)
         b.__ndxAbItemAtEntry = tonumber(b.item) or 0
       end
       return switchIn(st, ad, b, o, ...)
+    end
+  end
+  -- Trace: what can't be copied isn't seen (the cart copies anything but Wonder Guard)
+  if type(Ab.runTrace) == "function" and not Ab.__ndxAbMoreTrace then
+    Ab.__ndxAbMoreTrace = true
+    local runTrace = Ab.runTrace
+    Ab.runTrace = function(ad, ...)
+      if not (hub.C and type(ad) == "table" and type(ad.abilityOf) == "function") then return runTrace(ad, ...) end
+      local of = ad.abilityOf
+      ad.abilityOf = function(self, b)
+        local n = of(self, b)
+        if n and n ~= "TRACE" and FIXED[n] then return nil end
+        return n
+      end
+      local r = { pcall(runTrace, ad, ...) }
+      ad.abilityOf = of
+      if not r[1] then error(r[2], 0) end
+      return (unpack or table.unpack)(r, 2)
     end
   end
   if type(Ab.switchIn) == "function" and not Ab.__ndxAbMoreSwitchIn then
@@ -1349,6 +1376,14 @@ function More.install(opts)
       return float
     end
   end
+  -- the ability moves' guard (src/move_rules.lua asks: Gastro Acid, Worry Seed, Simple Beam,
+  -- Entrainment, Doodle, Core Enforcer)
+  if C.MoveRules then
+    C.MoveRules.abilityGuard = function(ad, user, target, how)
+      local X = hub.C
+      return X and More.abilityGuard(X, ad, user, target, how) or false
+    end
+  end
   -- what keeps a Pokemon awake against Yawn (src/move_field.lua asks: the move, the drowsy turn)
   if C.MoveField then
     C.MoveField.otherSleepGuard = function(ad, b)
@@ -1373,6 +1408,28 @@ end
 
 -- ------------------------------------------------------------------ the pieces
 -- the status a guard keeps off this Pokemon (its ability's key), or nil
+-- whether an ability move must fail on `target` (its user: `user`). how:
+--   "suppress"  Gastro Acid, Core Enforcer       the target's ability can't be
+--   "replace"   Worry Seed, Simple Beam, Entrainment (the target's is overwritten)
+--   "copy"      Role Play, Doodle (the target's is copied; the user's overwritten)
+--   "swap"      Skill Swap
+-- Ability Shield keeps its holder's ability from being suppressed or changed.
+function More.abilityGuard(C, ad, user, target, how)
+  local raw = ad.__ndxRawAbility
+  local function abOf(b) if raw then return raw(ad, b) end return ad:abilityOf(b) end
+  local t = target and abOf(target)
+  local u = user and abOf(user)
+  local tShield = target and heldKind(target) == "abilityShield"
+  local uShield = user and heldKind(user) == "abilityShield"
+  if how == "suppress" then return tShield or PERMANENT[t or ""] == true end
+  if how == "replace" then return tShield or PERMANENT[t or ""] == true or t == "TRUANT" end
+  if how == "copy" then return uShield or not t or FIXED[t] == true or PERMANENT[u or ""] == true end
+  if how == "swap" then
+    return tShield or uShield or FIXED[t or ""] == true or FIXED[u or ""] == true or not (t or u)
+  end
+  return false
+end
+
 function More.statusGuard(C, ad, b, status)
   local k = C.ab(ad, b)
   if not k then return nil end
@@ -1659,14 +1716,14 @@ function More.afterHit(C, M)
       did = true
     elseif (ta == "MUMMY" or ta == "LINGERING_AROMA") and touched and uUp then
       local k = C.ab(ad, user)
-      if k ~= ta and not FIXED[k or ""] then
+      if k ~= ta and not FIXED[k or ""] and heldKind(user) ~= "abilityShield" then
         C.setAbility(user, ta)
         say(ad, "%s's ability became %s!", who(ad, user), C.nameOf(ta))
         did = true
       end
     elseif ta == "WANDERING_SPIRIT" and touched and uUp then
       local k = C.ab(ad, user)
-      if k and not FIXED[k] then
+      if k and not FIXED[k] and heldKind(user) ~= "abilityShield" then
         C.setAbility(user, "WANDERING_SPIRIT")
         C.setAbility(target, k)
         say(ad, "%s swapped abilities with its target!", who(ad, target))

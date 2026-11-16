@@ -16,6 +16,8 @@
 local MoveRules = {}
 
 MoveRules._rules = {}                             -- move number -> rule name (install fills it)
+-- fn(ad, user, target, how) -> true when an ability move must fail (src/abilities_more.lua sets it)
+MoveRules.abilityGuard = nil
 MoveRules._hits = {}                              -- move number -> hit count (true: 2-5)
 MoveRules._formWeight = {}                        -- form slot -> hectograms
 MoveRules._neverMiss = {}                         -- move number -> true: a move that never misses (accuracy 0)
@@ -500,7 +502,8 @@ local function after(rule, M)
       end
     end
   elseif rule == "CORE_ENFORCER" and landed and targetUp and not M.hitSubstitute
-      and M.st and target.__ndxMovedTurn == M.st.turn and abilityOf(ad, target) then
+      and M.st and target.__ndxMovedTurn == M.st.turn and abilityOf(ad, target)
+      and not (MoveRules.abilityGuard and MoveRules.abilityGuard(ad, user, target, "suppress")) then
     target.expTracedAbility, target.expAbilitySuppressed = nil, true
     ad:say(prefixed(ad, target) .. "'s ability\nwas suppressed!")
   elseif rule == "PLASMA_FISTS" and landed and M.st then
@@ -577,6 +580,10 @@ local function statusRule(rule, ad, user, target, M)
       if not foe or not accuracy("lockon") then return true end
       local cur = abilityOf(ad, foe)
       if cur == "WONDER_GUARD" or (rule == "GASTRO_ACID" and foe.expAbilitySuppressed) then return fail() end
+      -- an ability that can't be suppressed or overwritten, or an Ability Shield (src/abilities_more.lua)
+      local guard = MoveRules.abilityGuard
+      if guard and guard(ad, user, foe, rule == "GASTRO_ACID" and "suppress" or "replace") then return fail() end
+      if guard and rule == "ENTRAINMENT" and guard(ad, foe, user, "copy") then return fail() end
       anim()
       if rule == "GASTRO_ACID" then
         foe.expTracedAbility, foe.expAbilitySuppressed = nil, true
@@ -591,6 +598,7 @@ local function statusRule(rule, ad, user, target, M)
       if not foe or not accuracy("lockon") then return true end
       local name = abilityOf(ad, foe)
       if not name or name == "WONDER_GUARD" then return fail() end
+      if MoveRules.abilityGuard and MoveRules.abilityGuard(ad, user, foe, "copy") then return fail() end
       anim()
       for _, b in ipairs({ user, partnerOf(ad, user) }) do if b then setAbility(b, name) end end
       ad:say(prefixed(ad, user) .. " acquired\n" .. tostring(name):gsub("_", " ") .. "!")
