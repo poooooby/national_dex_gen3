@@ -272,6 +272,17 @@ for _, version in ipairs(H.versions()) do
     T.check(took > 0 and gained == math.floor(base * 1.3),
       v("Big Root: Mega Drain heals 1.3x (" .. gained .. " from " .. base .. ")"))
   end
+  -- ------- running from a wild battle while trapped
+  do
+    local w = sim.fresh({ foe = "RATTATA" })
+    as(w, "enemy", "SHADOWTAG")
+    core.lastAdapter = w.A
+    local ran = w.battle:runRoll(999, 1)
+    T.eq(ran, false, v("Shadow Tag: no running away"))
+    w = sim.fresh({ foe = "RATTATA" })
+    core.lastAdapter = w.A
+    T.eq(w.battle:runRoll(999, 1), true, v("(a faster Pokemon runs otherwise)"))
+  end
   sim.release()
 end
 T.finish("national_dex_gen3 Gen 1/2 gaps")

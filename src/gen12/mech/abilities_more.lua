@@ -873,8 +873,12 @@ return function(core, opts)
       opts.mod.hooks:wrap("battle.run", function(nextFn, c, ...)
         local A = core.lastAdapter
         local battle = type(c) == "table" and (c.battle or c) or nil
-        if A and battle and A.battle == battle and A.battle.player and ab(A, A.battle.player) == "RUNAWAY" then
-          return true
+        local p = A and battle and A.battle == battle and A.battle.player or nil
+        if p and ab(A, p) == "RUNAWAY" then return true end
+        -- a trapped Pokemon can't run (Shadow Tag, Arena Trap, Magnet Pull, Ingrain, Block, Jaw
+        -- Lock, Octolock...: core "trapped", asked till now only for switching); a Ghost type can
+        if p and core.hooks.trapped and core:ask("trapped", A, p) and not A:hasType(p, "GHOST") then
+          return false
         end
         return nextFn(c, ...)
       end)
