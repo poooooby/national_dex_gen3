@@ -28,7 +28,8 @@ All notable changes to this mod are documented here, in
   Hydration, Dry Skin and Solar Power (in the sun) now act; Rivalry applies one factor by gender;
   Fluffy halves only contact moves; Tangled Feet only when confused. Poison, burn and Leech Seed
   damage now respect Magic Guard, Poison Heal (which heals only while poisoned), Heatproof,
-  Liquid Ooze, Big Root and Heal Block.
+  Liquid Ooze, Big Root and Heal Block. Rest fails on Insomnia, Vital Spirit, Comatose and the
+  like, and a held Chesto, Lum, Mint or MiracleBerry wakes the Pokémon right after it.
 - **Held items on FireRed to Emerald:** Light Clay, the weather rocks, Safety Goggles in a
   sandstorm or hail, Ring Target, Iron Ball against Ground moves, Covert Cloak, Protective Pads,
   Big Root, Float Stone and Loaded Dice now work, and Utility Umbrella in rain or sun. The

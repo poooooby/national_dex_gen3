@@ -180,6 +180,21 @@ for _, version in ipairs(H.versions()) do
     tick(w, "enemy")
     T.check(w.hp("player") < hp, v("Leech Seed into Liquid Ooze hurts the seeder"))
   end
+  -- ------- Rest: past nothing that keeps its user awake; a berry wakes it
+  do
+    for _, k in ipairs({ "INSOMNIA", "VITALSPIRIT", "COMATOSE" }) do
+      local w = sim.fresh({ foe = "SLOWPOKE" })
+      as(w, "player", k)
+      w.A:damage(w.battler("player"), 30)
+      w.use("REST")
+      T.eq(w.status("player"), nil, v(k .. " stops Rest"))
+    end
+    local w = sim.fresh({ foe = "SLOWPOKE" })
+    w.A:setItem(w.battler("player"), sim.gen == 1 and "CHESTO_BERRY" or "MINT_BERRY")
+    w.A:damage(w.battler("player"), 30)
+    w.use("REST")
+    T.eq(w.status("player"), nil, v("a held Chesto Berry wakes it right after Rest"))
+  end
   sim.release()
 end
 T.finish("national_dex_gen3 Gen 1/2 gaps")

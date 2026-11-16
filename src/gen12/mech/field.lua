@@ -371,13 +371,23 @@ return function(core)
     if tk == "MISTY" then return A:text("%s surrounds itself with a protective mist!", A:name(b)) end
     if tk == "ELECTRIC" and s == "SLP" then return A:text("%s is protected by the Electric Terrain!", A:name(b)) end
   end)
-  -- Rest fails on a Pokemon the terrain keeps awake (the cart puts it to sleep past blockStatus)
+  -- Rest: the game puts its user to sleep past blockStatus, so it asks first (a terrain,
+  -- Insomnia, Vital Spirit, Comatose, Sweet Veil, Leaf Guard in the sun...); a Rest that worked is
+  -- then told as a status given (core "statusInflicted": a Chesto or Lum Berry, Early Bird)
   core:on("beforeMove", function(A, u, t, m)
-    if m.id ~= "REST" or A:status(u) == "SLP" then return nil end
-    local tk = terrain(A)
-    if not tk or not grounded(A, u) then return nil end
-    if tk == "MISTY" then return A:text("%s surrounds itself with a protective mist!", A:name(u)) end
-    if tk == "ELECTRIC" then return A:text("%s is protected by the Electric Terrain!", A:name(u)) end
+    if m.id ~= "REST" or A:status(u) == "SLP" or not core.hooks.blockStatus then return nil end
+    local r = core:ask("blockStatus", A, u, "SLP", {})
+    if r then return (type(r) == "string" and r ~= "") and r or A:failText() end
+  end)
+  core:on("afterMove", function(A, u, t, moveId)
+    if moveId == "REST" and u and A:status(u) == "SLP" and A:hp(u) > 0 then
+      core:fire("statusInflicted", A, { target = u, status = "SLP" })
+      -- Gold's own berries (Mint, MiracleBerry) are its own: its check, which Rest never runs
+      local bt = A.battle
+      if A:status(u) == "SLP" and type(bt) == "table" and type(bt.cureHeldStatus) == "function" then
+        pcall(bt.cureHeldStatus, bt, u)
+      end
+    end
   end)
   core:on("blocks", function(A, u, t, m)
     if terrain(A) == "PSYCHIC" and A:basePriority(m) > 0 and grounded(A, t) then
