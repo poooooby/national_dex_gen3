@@ -79,4 +79,25 @@ do
   T.eq(st2.enemy.stages.evasion, -1, "Defog lands")
 end
 
+-- ------- abilities that guard their holder only against moves aimed at it
+local function withAbility(ad, b, name)
+  local of = ad.abilityOf
+  ad.abilityOf = function(self, x) if x == b then return name end return of(self, x) end
+end
+do
+  local st, ad = battle()
+  withAbility(ad, st.player, "GOOD_AS_GOLD")
+  use(st, ad, 14, st.enemy, st.player)                                   -- the foe's SWORDS DANCE
+  T.eq(st.enemy.stages.attack, 2, "Good as Gold lets the foe's Swords Dance work")
+  use(st, ad, 45, st.enemy, st.player)                                   -- GROWL at it
+  T.eq(st.player.stages.attack, 0, "but blocks Growl")
+  local st2, ad2 = battle()
+  withAbility(ad2, st2.player, "QUEENLY_MAJESTY")
+  use(st2, ad2, 182, st2.enemy, st2.player)                              -- the foe's PROTECT
+  T.check(st2.enemy.expProtected, "Queenly Majesty lets the foe's Protect work")
+  local hp = st2.player.mon.hp
+  use(st2, ad2, 98, st2.enemy, st2.player)                               -- QUICK ATTACK at it
+  T.eq(st2.player.mon.hp, hp, "but blocks Quick Attack")
+end
+
 T.finish("national_dex_gen3 move gaps (" .. GAME .. ")")

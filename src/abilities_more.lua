@@ -717,9 +717,14 @@ function More.install(opts)
     end
     return false
   end
+  -- a move aimed at the foe (the cart's move targets: selected, depends, random, both foes, foes
+  -- and ally). In singles the engine names the foe as the target of every move, the user's own
+  -- Swords Dance or Protect included, so the guards below ask the move itself.
+  local AIMED = { [0] = true, [1] = true, [4] = true, [8] = true, [32] = true }
+  local function aimed(move) return AIMED[tonumber(move and move.target) or 0] == true end
   -- the target's priority guard: a foe's move with raised priority fails
   local function priorityBlocked(ad, user, target, move)
-    if not (target and target ~= user and user.side ~= target.side) then return false end
+    if not (target and target ~= user and user.side ~= target.side and aimed(move)) then return false end
     local blocker
     for _, x in ipairs(ad:activeBattlers() or {}) do
       if x.side == target.side and ad:hp(x) > 0 and PRIORITY_BLOCK[ab(ad, x) or ""] then blocker = x end
@@ -950,7 +955,7 @@ function More.install(opts)
       local num = tonumber(M and M.mnum) or tonumber(moveId)
       local mv = type(move) == "table" and move or X.moveRec(num)
       local key = X.moveKey(mv, num)
-      if type(target) == "table" and target ~= user and target.side ~= user.side then
+      if type(target) == "table" and target ~= user and target.side ~= user.side and aimed(mv) then
         local ta = X.ab(ad, target)
         local blocked
         local okB, pb = pcall(priorityBlocked, ad, user, target, mv)
