@@ -182,6 +182,32 @@ for _, version in ipairs(H.versions()) do
   T.eq(core:fold("damageMult", 1, w.A, w.battler("player"), w.battler("enemy"), thunder, {}), 1.3,
     version .. ": Electric Terrain boosts a grounded Electric move")
   T.check(not w.A:ailment(w.battler("enemy"), "SLEEP", {}), version .. ": and keeps the grounded asleep... awake")
+  w.A:damage(w.battler("player"), 30)
+  w.use("REST")
+  T.eq(w.status("player"), nil, version .. ": Rest fails on it")
+  w.use("YAWN")
+  T.eq(w.A:vol(w.battler("enemy")).yawn, nil, version .. ": and so does Yawn")
+  w = sim.fresh()
+  w.A:damage(w.battler("player"), 30)
+  w.use("REST")
+  T.eq(w.status("player"), "SLP", version .. ": (Rest works with no terrain)")
+  w = sim.fresh()
+  w.A:setItem(w.battler("player"), "TERRAIN_EXTENDER")
+  w.use("ELECTRIC_TERRAIN")
+  T.eq(w.A:field().terrain.turns, 8, version .. ": a Terrain Extender makes it last 8 turns")
+  do
+    local cls = getmetatable(w.A).__index
+    local callMove, called = cls.callMove, nil
+    cls.callMove = function(self, u, t, id) called = id; return callMove(self, u, t, id) end
+    w = sim.fresh()
+    w.use("NATURE_POWER")
+    T.eq(called, "TRI_ATTACK", version .. ": Nature Power is Tri Attack with no terrain")
+    w = sim.fresh()
+    w.use("ELECTRIC_TERRAIN")
+    w.use("NATURE_POWER")
+    T.eq(called, "THUNDERBOLT", version .. ": and Thunderbolt on Electric Terrain")
+    cls.callMove = callMove
+  end
   w = sim.fresh()
   w.use("SAFEGUARD", "enemy")
   T.check(not w.A:ailment(w.battler("enemy"), "BURN", { from = w.battler("player") }), version .. ": Safeguard")

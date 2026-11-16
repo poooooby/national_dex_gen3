@@ -675,6 +675,8 @@ return function(core)
   core:effect("YAWN", status({ aimed = true, run = function(A, u, t)
     local v = A:vol(t)
     if v.yawn or A:status(t) then return false end
+    -- fails on a Pokemon that could not fall asleep anyway (a terrain, Safeguard, Insomnia...)
+    if core.hooks.blockStatus and core:ask("blockStatus", A, t, "SLP", { from = u }) then return false end
     v.yawn = A:turn() + 1
     say(A, "%s made %s drowsy!", A:name(u), A:name(t))
     return true

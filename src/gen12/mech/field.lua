@@ -371,6 +371,14 @@ return function(core)
     if tk == "MISTY" then return A:text("%s surrounds itself with a protective mist!", A:name(b)) end
     if tk == "ELECTRIC" and s == "SLP" then return A:text("%s is protected by the Electric Terrain!", A:name(b)) end
   end)
+  -- Rest fails on a Pokemon the terrain keeps awake (the cart puts it to sleep past blockStatus)
+  core:on("beforeMove", function(A, u, t, m)
+    if m.id ~= "REST" or A:status(u) == "SLP" then return nil end
+    local tk = terrain(A)
+    if not tk or not grounded(A, u) then return nil end
+    if tk == "MISTY" then return A:text("%s surrounds itself with a protective mist!", A:name(u)) end
+    if tk == "ELECTRIC" then return A:text("%s is protected by the Electric Terrain!", A:name(u)) end
+  end)
   core:on("blocks", function(A, u, t, m)
     if terrain(A) == "PSYCHIC" and A:basePriority(m) > 0 and grounded(A, t) then
       return function() say(A, "%s is protected by the Psychic Terrain!", A:name(t)) end

@@ -388,6 +388,16 @@ Things that work but not exactly as in today's games, or are only partly verifie
   applies.
 - Terrains boost 1.3x (Gen 8+). Psychic Terrain blocks priority attacks, not priority status
   moves; Grassy Terrain does not halve Earthquake; Misty Terrain does not block confusion.
+- Terrain guards (`terrainGuard`: Misty every status, Electric sleep) also cover what the cart
+  forces past `canApplyStatus`: `Status.cantMakeAsleep` (Rest, the sleep moves), the Yawn move
+  (`EXP_YAWN_EFFECT` in the `Effects.run` wrap), a drowsy Pokemon (battler phase
+  `ndx_yawn_guard` before the cart's `yawn`) and `Abilities.applyStatus` (Effect Spore, Static).
+  Turns and grounding ask the held items' core through `HeldItems.__ndxHeldHub` (Terrain
+  Extender's `terrainTurns`, Air Balloon's `ungrounded`). Nature Power: `Engine.NATURE_POWER_MOVES`
+  is a lookup table that answers the running battle's terrain (`Battle._adapter`) before the
+  background. Red to Crystal: Rest fails through `beforeMove` (`mech/field.lua`), Yawn asks
+  `blockStatus`, Nature Power picks by terrain (`mech/power.lua`). Tests: `move_field_test`,
+  `gen12_mech_test`.
 - Tailwind and Trick Room order the two battlers the engine compares; ties keep the cart's coin
   flip. Both go through the real abilities' turn-order hook, so they need the abilities on.
 - Evolution item icons are not verified in-game.

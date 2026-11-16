@@ -311,7 +311,15 @@ return function(core)
     if A:chance(30) then A:ailment(t, "PARALYSIS", { from = u, secondary = true, moveType = m.type }) end end }))
 
   -- ------------------------------------------------------------------ calls another move
+  -- on a terrain, that terrain's move; otherwise Tri Attack (these games have no backgrounds)
+  local NATURE = { ELECTRIC = { "THUNDERBOLT" }, GRASSY = { "ENERGY_BALL" }, MISTY = { "MOONBLAST" },
+    PSYCHIC = { "PSYCHIC_M", "PSYCHIC" } }
   core:effect("NATURE_POWER", { kind = "status", run = function(A, u, t)
-    A:callMove(u, t, "TRI_ATTACK")
+    local called = "TRI_ATTACK"
+    local moves = A.battle and A.battle.data and A.battle.data.moves
+    for _, id in ipairs(NATURE[(core.terrain and core.terrain(A)) or ""] or {}) do
+      if not moves or moves[id] then called = id break end
+    end
+    A:callMove(u, t, called)
     return true end })
 end

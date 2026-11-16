@@ -3,6 +3,18 @@
 All notable changes to this mod are documented here, in
 [keep a changelog](https://keepachangelog.com/en/1.1.0/) format.
 
+## [Unreleased]
+
+### Fixed
+
+- **Terrains, every game:** Rest fails on a grounded Pokémon on Electric or Misty Terrain, Yawn
+  fails on one the terrain keeps awake, and Nature Power calls the terrain's move (Thunderbolt,
+  Energy Ball, Moonblast, Psychic).
+- **Terrains on FireRed to Emerald:** a Pokémon made drowsy before Electric or Misty Terrain came
+  up no longer falls asleep on it, Effect Spore and the like can't pass on a status the terrain
+  blocks, a Terrain Extender makes a terrain last 8 turns, an Air Balloon holder floats above
+  it, and the "...disappeared from the battlefield" message shows when a terrain runs out.
+
 ## [1.12.1] - 2026-11-14
 
 ### Fixed

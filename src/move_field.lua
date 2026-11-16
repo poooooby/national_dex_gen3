@@ -117,14 +117,36 @@ local function terrainOf(st)
 end
 MoveField.terrainOf = terrainOf
 
+-- the held items' hooks (src/held/gen3.lua's core, through its process-wide hub): Terrain
+-- Extender ("terrainTurns"), Air Balloon ("ungrounded")
+local function heldHook(ad, how, name, value, ...)
+  local okHI, HI = pcall(require, "src.core.game3.battle.held_items")
+  local hub = okHI and type(HI) == "table" and HI.__ndxHeldHub
+  local env = hub and hub.env
+  local core = env and env.core
+  if not (core and core.hooks and core.hooks[name] and env.A_of) then return value end
+  local okA, A = pcall(env.A_of, ad)
+  if not (okA and A) then return value end
+  local ok, r
+  if how == "fold" then ok, r = pcall(core.fold, core, name, value, A, ...)
+  else ok, r = pcall(core.ask, core, name, A, ...) end
+  if not ok then return value end
+  return r
+end
+
+-- how long a terrain set by `by` lasts: 5 turns, 8 with a Terrain Extender
+local function terrainTurns(ad, by)
+  return by and tonumber(heldHook(ad, "fold", "terrainTurns", 5, by)) or 5
+end
+
 -- a terrain for 5 turns from outside a move (src/abilities_more.lua: the Surge abilities, Seed
--- Sower); false when it is already up
-function MoveField.startTerrain(ad, kind)
+-- Sower; `by` the Pokemon whose ability set it); false when it is already up
+function MoveField.startTerrain(ad, kind, by)
   local st = ad and ad._st
   local t = TERRAIN_BY_KIND[kind]
   if not (st and t) or terrainOf(st) == kind then return false end
   local f = field(st)
-  f.terrain, f.terrainTurns = kind, 5
+  f.terrain, f.terrainTurns = kind, terrainTurns(ad, by)
   ad:say(t.start)
   return true
 end
@@ -152,9 +174,24 @@ local function grounded(ad, b)
   if fieldOn(ad._st, "gravity") then return true end
   if b.semiInvulnerable == "ON_AIR" or (b.__ndxMagnetRise or 0) > 0 then return false end
   if hasType(ad, b, ID.FLYING) or abilityOf(ad, b) == "LEVITATE" then return false end
+  if heldHook(ad, "ask", "ungrounded", nil, b) then return false end   -- an Air Balloon
   return true
 end
 MoveField.grounded = grounded
+
+-- what a terrain says when it keeps `status` off a grounded Pokemon (Misty: every status;
+-- Electric: sleep), or nil
+local function terrainGuard(ad, b, status)
+  local kind = ad and b and terrainOf(ad._st)
+  if not kind or not grounded(ad, b) then return nil end
+  local s = tostring(status or ""):upper()
+  if kind == "MISTY" then return prefixed(ad, b) .. " surrounds itself\nwith a protective mist!" end
+  if kind == "ELECTRIC" and (s == "SLP" or s == "SLEEP") then
+    return prefixed(ad, b) .. " is protected by\nthe electric terrain!"
+  end
+  return nil
+end
+MoveField.terrainGuard = terrainGuard
 
 local function fail(ad, M)
   if M then M.failed = true end
@@ -302,8 +339,9 @@ local function clearHazards(side)
   end
 end
 
+-- the terrain goes (its turns ran out, or Steel Roller / Ice Spinner / Defog) and says so
 local function endTerrain(ad, f)
-  if f and (f.terrainTurns or 0) > 0 then
+  if f and f.terrain and TERRAIN_BY_KIND[f.terrain] then
     ad:say(TERRAIN_BY_KIND[f.terrain].stop)
     f.terrain, f.terrainTurns = nil, nil
   end
@@ -467,7 +505,7 @@ local function statusRule(rule, ad, user, target, M)
     local t = TERRAIN[rule]
     if terrainOf(st) == t.kind then return fail(ad, M) end
     anim()
-    f.terrain, f.terrainTurns = t.kind, 5
+    f.terrain, f.terrainTurns = t.kind, terrainTurns(ad, user)
     ad:say(t.start)
   elseif rule == "AQUA_RING" then
     if user.__ndxAquaRing then return fail(ad, M) end
@@ -884,6 +922,15 @@ function MoveField.install(opts)
           return r
         end
       end
+      -- Yawn fails on a Pokemon the terrain keeps awake
+      if id == "EXP_YAWN_EFFECT" and type(target) == "table" and target ~= user then
+        local msg = terrainGuard(ad, target, "SLP")
+        if msg then
+          if M then M.failed = true end
+          ad:say(msg)
+          return true
+        end
+      end
       local num = tonumber(moveCtx and moveCtx.mnum) or tonumber(moveId)
       local rule = num and MoveField._rules[num]
       if not (rule and id == "NATIONAL_DEX_GEN3_MOVE_EFFECT") then
@@ -1156,14 +1203,7 @@ function MoveField.install(opts)
       if type(a.canApplyStatus) == "function" then
         local can = a.canApplyStatus
         a.canApplyStatus = function(self, b, status, ...)
-          if MoveField._on and b then
-            local kind = terrainOf(self._st)
-            if kind and grounded(self, b) then
-              local s = tostring(status or ""):upper()
-              if kind == "MISTY" then return false, "terrain" end
-              if kind == "ELECTRIC" and (s == "SLP" or s == "SLEEP") then return false, "terrain" end
-            end
-          end
+          if MoveField._on and b and terrainGuard(self, b, status) then return false, "terrain" end
           return can(self, b, status, ...)
         end
       end
@@ -1186,6 +1226,83 @@ function MoveField.install(opts)
       end
       return a
     end
+  end
+
+  -- the terrains' guard where the cart forces a status past canApplyStatus: Rest and the sleep
+  -- moves (Status.cantMakeAsleep), the abilities that pass one on (Effect Spore, Static...),
+  -- and a drowsy Pokemon at the end of the turn (a battler phase before the cart's "yawn"); the
+  -- Yawn move itself is in the Effects.run wrap
+  local okSt, Status = pcall(require, "src.core.game3.battle.effects.status")
+  if okSt and type(Status) == "table" and type(Status.cantMakeAsleep) == "function"
+      and not Status.__ndxTerrainSleep then
+    Status.__ndxTerrainSleep = true
+    local cant = Status.cantMakeAsleep
+    Status.cantMakeAsleep = function(ctx, target, ...)
+      local ad = ctx and ctx.adapter
+      if MoveField._on and ad and target then
+        local msg = terrainGuard(ad, target, "SLP")
+        if msg then
+          if target == ctx.user then ad:sayFail() else ad:say(msg) end    -- Rest just fails
+          return true
+        end
+      end
+      return cant(ctx, target, ...)
+    end
+  end
+  local okAb, Ab = pcall(require, "src.core.game3.battle.abilities")
+  if okAb and type(Ab) == "table" and type(Ab.applyStatus) == "function" and not Ab.__ndxTerrainStatus then
+    Ab.__ndxTerrainStatus = true
+    local apply = Ab.applyStatus
+    Ab.applyStatus = function(ad, holder, victim, status, ...)
+      if MoveField._on and ad and victim and terrainGuard(ad, victim, status) then return false end
+      return apply(ad, holder, victim, status, ...)
+    end
+  end
+  if okR and okRu and type(Residuals.register) == "function" and type(Rules.BATTLER_PHASES_ORDER) == "table"
+      and not Rules.__ndxYawnGuard then
+    Rules.__ndxYawnGuard = true
+    local at
+    for i, name in ipairs(Rules.BATTLER_PHASES_ORDER) do
+      if name == "yawn" then at = i end
+    end
+    if at then
+      table.insert(Rules.BATTLER_PHASES_ORDER, at, "ndx_yawn_guard")
+      Residuals.register("ndx_yawn_guard", function(ctx)
+        local ad, b = ctx and ctx.adapter, ctx and ctx.target
+        -- the turn it would fall asleep: the drowsiness passes instead
+        if MoveField._on and ad and b and (b.expYawnTurns or 0) == 1 and terrainGuard(ad, b, "SLP") then
+          b.expYawnTurns, b.yawnTurns = nil, nil
+        end
+      end)
+    end
+  end
+
+  -- Nature Power on a terrain calls that terrain's move instead of the background's: the cart
+  -- looks Engine.NATURE_POWER_MOVES up by background on every use, so the table answers through
+  -- the running battle (Battle._adapter)
+  do
+    local okM, Moves = pcall(require, "src.core.game3.battle.moves")
+    local byName = {}
+    for _, r in ipairs(opts.moves or {}) do
+      if r.id and tonumber(r.index) then byName[r.id] = tonumber(r.index) end
+    end
+    local function num(id, cart)
+      return byName[id] or (okM and Moves.numForName and tonumber(Moves.numForName(cart or id))) or nil
+    end
+    MoveField._natureMoves = { ELECTRIC = num("THUNDERBOLT") or 85, PSYCHIC = num("PSYCHIC") or 94,
+      GRASSY = num("ENERGY_BALL"), MISTY = num("MOONBLAST") }
+  end
+  if type(Engine.NATURE_POWER_MOVES) == "table" and not Engine.__ndxNaturePower then
+    Engine.__ndxNaturePower = true
+    local byBackground = Engine.NATURE_POWER_MOVES
+    Engine.NATURE_POWER_MOVES = setmetatable({}, { __index = function(_, bg)
+      local okB, Battle = pcall(require, "src.core.game3.battle")
+      local ad = okB and type(Battle) == "table" and Battle._adapter
+      local kind = MoveField._on and type(ad) == "table" and terrainOf(ad._st)
+      local n = kind and MoveField._natureMoves and MoveField._natureMoves[kind]
+      if n then return n end
+      return byBackground[bg]
+    end })
   end
 
   -- the turn counters and the healing

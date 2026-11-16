@@ -1429,7 +1429,7 @@ function More.onEntry(C, ad, b)
   end
   local surge = ({ ELECTRIC_SURGE = "ELECTRIC", PSYCHIC_SURGE = "PSYCHIC", GRASSY_SURGE = "GRASSY",
     MISTY_SURGE = "MISTY", HADRON_ENGINE = "ELECTRIC" })[k]
-  if surge then return More.startTerrain(C, ad, surge) end
+  if surge then return More.startTerrain(C, ad, surge, b) end
   if k == "ORICHALCUM_PULSE" then
     local okR, Rules = pcall(C.require, "src.core.game3.battle.rules")
     local kind = okR and Rules.weather.kind(st.weather) or st.weather
@@ -1443,10 +1443,11 @@ function More.onEntry(C, ad, b)
   return false
 end
 
--- a terrain on the field for 5 turns (src/move_field.lua keeps and ends it)
-function More.startTerrain(C, ad, kind)
+-- a terrain on the field for 5 turns, 8 with `by` holding a Terrain Extender (src/move_field.lua
+-- keeps and ends it)
+function More.startTerrain(C, ad, kind, by)
   local MF = C.MoveField
-  if MF and MF.startTerrain then return MF.startTerrain(ad, kind) and true or false end
+  if MF and MF.startTerrain then return MF.startTerrain(ad, kind, by) and true or false end
   local st = ad._st
   st.__ndxField = st.__ndxField or {}
   local f = st.__ndxField
@@ -1573,7 +1574,7 @@ function More.afterHit(C, M)
         did = true
       end
     elseif ta == "SEED_SOWER" then
-      did = More.startTerrain(C, ad, "GRASSY")
+      did = More.startTerrain(C, ad, "GRASSY", target)
     elseif ta == "TOXIC_DEBRIS" and C.physical(mt) then
       local side = ad:ownSide(user)
       if side then

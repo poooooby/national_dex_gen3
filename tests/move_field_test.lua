@@ -226,6 +226,75 @@ do
   hit("STEEL_ROLLER", st, ad)
   T.eq(st.__ndxField.terrain, nil, "and wipes the terrain away when there is one")
 end
+
+-- ------- what the terrains keep off, where the cart forces a status (Rest, Yawn, Effect Spore),
+-- how long they last, and Nature Power
+local EffectIds = require("src.core.game3.battle.effect_ids")
+local function cart(n, st, ad, user, target)
+  local M = ctx(n, st, ad, user, target)
+  Effects.run(EffectIds.STATUS_SETUP[tonumber(M.move.effect)], ad, M.user, M.target, M.move, n, M)
+  return M
+end
+local SPORE, REST, YAWN = 147, 156, 281
+do
+  local st, ad = battle()
+  status("ELECTRIC_TERRAIN", st, ad)
+  cart(SPORE, st, ad)
+  T.eq(ad:status(st.enemy), nil, "Electric Terrain: Spore fails on a grounded Pokemon")
+  st.player.mon.hp = 50
+  cart(REST, st, ad, st.player, st.player)
+  T.check(ad:status(st.player) == nil and st.player.mon.hp == 50, "Rest fails, and heals nothing")
+  cart(YAWN, st, ad)
+  T.eq(st.enemy.expYawnTurns, nil, "Yawn fails")
+  require("src.core.game3.battle.abilities").applyStatus(ad, st.enemy, st.player, "SLP", false, ctx(33, st, ad))
+  T.eq(ad:status(st.player), nil, "and Effect Spore puts no one to sleep")
+  local st2, ad2 = battle()
+  cart(YAWN, st2, ad2)
+  status("ELECTRIC_TERRAIN", st2, ad2)
+  for _ = 1, 2 do Residuals.runTurn(ad2) end
+  T.eq(ad2:status(st2.enemy), nil, "a Pokemon made drowsy before it came up stays awake")
+  local st3, ad3 = battle()
+  cart(YAWN, st3, ad3)
+  for _ = 1, 2 do Residuals.runTurn(ad3) end
+  T.eq(ad3:status(st3.enemy), "SLP", "(with no terrain, Yawn puts it to sleep)")
+  local st4, ad4 = battle()
+  st4.player.mon.hp = 50
+  cart(REST, st4, ad4, st4.player, st4.player)
+  T.eq(ad4:status(st4.player), "SLP", "(and Rest works)")
+  local st5, ad5 = battle()
+  status("MISTY_TERRAIN", st5, ad5)
+  st5.player.mon.hp = 50
+  cart(REST, st5, ad5, st5.player, st5.player)
+  T.eq(ad5:status(st5.player), nil, "Misty Terrain: Rest fails too")
+end
+do
+  local st, ad = battle()
+  status("ELECTRIC_TERRAIN", st, ad)
+  local said = {}
+  local sayRaw = ad.say
+  ad.say = function(self, s, ...) said[#said + 1] = s; return sayRaw(self, s, ...) end
+  for _ = 1, 5 do Residuals.runTurn(ad) end
+  T.eq(st.__ndxField.terrain, nil, "Electric Terrain is gone after 5 turns")
+  T.eq(said[#said], "The electricity disappeared\nfrom the battlefield.", "and says so")
+  local st2, ad2 = battle()
+  st2.player.item = 1456                                                            -- TERRAIN EXTENDER
+  status("ELECTRIC_TERRAIN", st2, ad2)
+  T.eq(st2.__ndxField.terrainTurns, 8, "a Terrain Extender makes it last 8 turns")
+  local st3, ad3 = battle()
+  status("ELECTRIC_TERRAIN", st3, ad3)
+  st3.enemy.item = 1421                                                             -- AIR BALLOON
+  T.eq((ad3:canApplyStatus(st3.enemy, "SLP")), true, "an Air Balloon holder floats above it")
+end
+do
+  local Engine3 = require("src.core.game3.battle.engine")
+  local st, ad = battle()
+  T.eq(Engine3.NATURE_POWER_MOVES[8], 129, "Nature Power: the background's move with no terrain")
+  status("ELECTRIC_TERRAIN", st, ad)
+  T.eq(Engine3.NATURE_POWER_MOVES[8], 85, "Thunderbolt on Electric Terrain")
+  local st2, ad2 = battle()
+  status("MISTY_TERRAIN", st2, ad2)
+  T.eq(Engine3.NATURE_POWER_MOVES[8], num("MOONBLAST"), "Moonblast on Misty Terrain")
+end
 do
   local st, ad = battle()
   st.player.mon.hp = 100
