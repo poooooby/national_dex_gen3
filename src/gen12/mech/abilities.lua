@@ -333,6 +333,11 @@ return function(core, opts)
           local fell = A:stage(who, STAT[e.stat]) - before
           if who ~= b and fell < 0 and core.reactToDrops then core.reactToDrops(A, who, { [STAT[e.stat]] = fell }, b) end
           if id == "INTIMIDATE" and who ~= b then core:fire("intimidated", A, who, b) end
+          -- Rattled: Intimidate raises its Speed (Gen 8 on)
+          if id == "INTIMIDATE" and who ~= b and wid == "RATTLED" and A:hp(who) > 0 then
+            say(A, "%s's %s!", A:name(who), nameOf(wid))
+            A:stages(who, { speed = 1 })
+          end
         end
       elseif e.kind == "set_weather" then
         local w = ({ rain = "rain", sun = "sun", sandstorm = "sand", hail = (id == "SNOWWARNING") and "snow" or "hail" })[e.weather]
@@ -417,9 +422,14 @@ return function(core, opts)
     when = tostring(when or ""):lower()
     if when == "" or when:find("damaging") then return true end
     if when:find("wind") then return core.moveFlag ~= nil and core.moveFlag("wind", m) and true or false end
+    -- "a Fire-type move", "a Bug-, Ghost- or Dark-type move": any type named
     local mt = A:moveType(m):lower()
-    for ty in when:gmatch("(%a+)%-type") do return ty == mt end
-    return true
+    local named = false
+    for ty in when:gmatch("(%a+)%-") do
+      named = true
+      if ty == mt then return true end
+    end
+    return not named
   end
   local function wind(m) return core.moveFlag ~= nil and core.moveFlag("wind", m) and true or false end
   core:on("damageDealt", function(A, ev)

@@ -373,6 +373,17 @@ for _, version in ipairs(H.versions()) do
     c.use("TACKLE")
     T.eq(c.hp("enemy"), h, v("(the Substitute takes it otherwise)"))
   end
+  -- ------- Rattled: a Dark, Bug or Ghost hit raises Speed (each type of the list)
+  do
+    local w = sim.fresh({ foe = "SLOWPOKE", foeLevel = 60 })
+    as(w, "enemy", "RATTLED")
+    w.use("BITE")
+    T.eq(w.stage("enemy", "speed"), 1, v("Rattled: Bite raises Speed"))
+    w = sim.fresh({ foe = "SLOWPOKE", foeLevel = 60 })
+    as(w, "enemy", "RATTLED")
+    w.use("LEECH_LIFE")
+    T.eq(w.stage("enemy", "speed"), 1, v("Rattled: a Bug move too"))
+  end
   -- ------- Red's own Wrap turns: Sturdy holds at 1 HP
   if sim.gen == 1 then
     local w = sim.fresh({ foe = "GEODUDE" })

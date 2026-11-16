@@ -44,7 +44,8 @@ All notable changes to this mod are documented here, in
   Substitute and Gold's own Reflect and Light Screen. Suction Cups, Guard Dog and Ingrain hold on
   against Gold's own Roar and Whirlwind, and Light Clay stretches Gold's own Reflect and Light
   Screen to 8 turns. On Red, Blue and Yellow, Wrap's follow-up hits and Bide's release meet
-  Sturdy, Focus Sash, Disguise and Rocky Helmet.
+  Sturdy, Focus Sash, Disguise and Rocky Helmet. Rattled reacts to Bug, Ghost and Dark hits and
+  to Intimidate.
 - **Held items on FireRed to Emerald:** Light Clay, the weather rocks, Safety Goggles in a
   sandstorm or hail, Ring Target, Iron Ball against Ground moves, Covert Cloak, Protective Pads,
   Big Root, Float Stone and Loaded Dice now work, and Utility Umbrella in rain or sun. The
