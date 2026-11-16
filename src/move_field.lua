@@ -27,6 +27,9 @@ local MoveField = {}
 
 MoveField._rules = {}                             -- move number -> rule name (install fills it)
 MoveField._trapText = {}                          -- move number -> fn(ad, atk, def): its trap message
+-- the moves Gravity keeps off: the cart's Fly, Bounce, Jump Kick, Hi Jump Kick, Splash, and ours
+-- (install adds Flying Press, Telekinesis, Sky Drop by their rows)
+MoveField._gravityBanned = { [19] = true, [340] = true, [26] = true, [136] = true, [150] = true }
 MoveField._on = false
 MoveField._sound = {}                             -- move number -> true (Throat Chop)
 
@@ -756,6 +759,8 @@ local function beforeHit(rule, ad, st, M)
   local f = st and st.__ndxField
   local turn = st and st.turn
   local prio = tonumber(M.move and M.move.priority) or 0
+  -- Gravity: the moves that leave the ground can't be used
+  if f and (f.gravity or 0) > 0 and MoveField._gravityBanned[tonumber(M.mnum) or -1] then return "gravity" end
   -- the user's own state
   if user.__ndxPowder == turn and (tonumber(M.move and M.move.type) or -1) == ID.FIRE then
     ad:say("When the flame touched the powder\non " .. prefixed(ad, user) .. ", it exploded!")
@@ -928,6 +933,9 @@ function MoveField.install(opts)
   }
   MoveField._trapText = {}
   for _, r in ipairs(opts.moves or {}) do
+    if (r.id == "FLYING_PRESS" or r.id == "TELEKINESIS" or r.id == "SKY_DROP") and tonumber(r.index) then
+      MoveField._gravityBanned[tonumber(r.index)] = true
+    end
     if TRAP_TEXT[r.id] and tonumber(r.index) then MoveField._trapText[tonumber(r.index)] = TRAP_TEXT[r.id] end
   end
   MoveField._sound = {}
@@ -982,6 +990,14 @@ function MoveField.install(opts)
           return r
         end
       end
+      -- Gravity: Splash (a status move: the hit's check never sees it)
+      local gnum = tonumber(moveCtx and moveCtx.mnum) or tonumber(moveId)
+      if gnum and MoveField._gravityBanned[gnum] and st and st.__ndxField and (st.__ndxField.gravity or 0) > 0 then
+        if M then M.failed = true end
+        ad:say(prefixed(ad, user) .. " can't use the move
+because of gravity!")
+        return true
+      end
       -- Yawn fails on a Pokemon that can't fall asleep (a terrain, an ability)
       if id == "EXP_YAWN_EFFECT" and type(target) == "table" and target ~= user then
         local msg = sleepGuard(ad, target)
@@ -1021,6 +1037,9 @@ function MoveField.install(opts)
           ad:say(prefixed(ad, M.target) .. " is protected by\nthe psychic terrain!")
         elseif stop == "guard" then
           ad:sayText("STRINGID_PKMNPROTECTEDITSELF", { def = M.target })
+        elseif stop == "gravity" then
+          M.failed = true
+          ad:say(prefixed(ad, M.user) .. " can't use the move\nbecause of gravity!")
         elseif stop == "miss" then
           M.failed = nil
           M.missReason = "miss"

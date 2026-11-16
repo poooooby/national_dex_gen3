@@ -894,6 +894,11 @@ function MoveRules.hooks(mod)
     local id = type(move) == "table" and (MoveRules._weather[tonumber(move.num or move.index) or -1] or move.id)
     local need = id and WEATHER_CHARGE[id]
     if need and MoveRules.weatherOf(c.battle, adapter()) == need then return false end
+    -- Fly / Bounce under Gravity: no flying up first (src/move_field.lua then stops the move)
+    local num = type(move) == "table" and tonumber(move.num or move.index or move.numId)
+    local st = type(c) == "table" and type(c.battle) == "table" and c.battle or nil
+    local f = st and st.__ndxField
+    if (num == 19 or num == 340) and f and (f.gravity or 0) > 0 then return false end
     return nextFn(c)
   end)
 end

@@ -406,4 +406,17 @@ do
     "then heals the next one, PP too")
 end
 
+-- ------- Gravity keeps Jump Kick, Fly and the like off
+do
+  local st, ad, said = battle()
+  st.__ndxField = { gravity = 5 }
+  local hp = st.enemy.mon.hp
+  use(st, ad, 26)                                                        -- JUMP KICK
+  T.eq(st.enemy.mon.hp, hp, "Gravity: Jump Kick can't be used")
+  local st2, ad2 = battle()
+  local hp2 = st2.enemy.mon.hp
+  use(st2, ad2, 26)
+  T.check(st2.enemy.mon.hp < hp2, "(it hits otherwise)")
+end
+
 T.finish("national_dex_gen3 move gaps (" .. GAME .. ")")
