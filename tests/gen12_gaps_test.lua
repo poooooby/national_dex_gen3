@@ -345,6 +345,34 @@ for _, version in ipairs(H.versions()) do
     w.use("FURY_ATTACK")
     T.check(hits > 0 and hits < 5, v("(fewer on a low roll otherwise: " .. hits .. ")"))
   end
+  -- ------- Unseen Fist through Gold's Protect; Infiltrator past a Substitute
+  do
+    if sim.gen == 2 then
+      local w = sim.fresh({ foe = "SNORLAX", foeLevel = 80 })
+      as(w, "player", "UNSEENFIST")
+      w.battle:volatile(w.battler("enemy")).protect = true
+      local hp = w.hp("enemy")
+      w.use("MEGA_PUNCH")
+      T.check(w.hp("enemy") < hp, v("Unseen Fist punches through Protect"))
+      T.check(w.battle:volatile(w.battler("enemy")).protect, v("and the Protect stays for others"))
+      local c = sim.fresh({ foe = "SNORLAX", foeLevel = 80 })
+      c.battle:volatile(c.battler("enemy")).protect = true
+      local h = c.hp("enemy")
+      c.use("MEGA_PUNCH")
+      T.eq(c.hp("enemy"), h, v("(Protect stops it otherwise)"))
+    end
+    local w = sim.fresh({ foe = "SNORLAX", foeLevel = 80 })
+    as(w, "player", "INFILTRATOR")
+    w.use("SUBSTITUTE", "enemy")
+    local hp = w.hp("enemy")
+    w.use("TACKLE")
+    T.check(w.hp("enemy") < hp, v("Infiltrator hits past a Substitute"))
+    local c = sim.fresh({ foe = "SNORLAX", foeLevel = 80 })
+    c.use("SUBSTITUTE", "enemy")
+    local h = c.hp("enemy")
+    c.use("TACKLE")
+    T.eq(c.hp("enemy"), h, v("(the Substitute takes it otherwise)"))
+  end
   sim.release()
 end
 T.finish("national_dex_gen3 Gen 1/2 gaps")

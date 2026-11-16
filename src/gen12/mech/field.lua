@@ -345,6 +345,54 @@ return function(core)
     if (A:side(b).tailwind or 0) > 0 then return s * 2 end
     return s
   end)
+  -- what the games guard with on their own, set aside for one move: Unseen Fist through Gold's
+  -- Protect / Detect; Infiltrator past Gold's Reflect / Light Screen and either game's Substitute.
+  -- Put back after the move (or at the turn's end, if something stopped it first)
+  local function volOf(A, b)
+    local bt = A.battle
+    if A.gen == 2 and type(bt) == "table" and type(bt.volatile) == "function" then
+      local ok, v = pcall(bt.volatile, bt, b)
+      if ok and type(v) == "table" then return v end
+    end
+    return nil
+  end
+  local function putBack(A)
+    local f = A:field()
+    local s = f.__ndxAside
+    if not s then return end
+    f.__ndxAside = nil
+    local v = s.target and volOf(A, s.target)
+    if s.protect and v then v.protect = true end
+    if s.sub then
+      if v then v.substitute = s.sub else s.target.substituteHP = s.sub end
+    end
+    if s.screens then
+      for k, val in pairs(s.screens.saved) do s.screens.side[k] = val end
+    end
+  end
+  core:on("beforeMove", function(A, u, t, m)
+    putBack(A)
+    if not (u and t and t ~= u and m) then return nil end
+    local aside = {}
+    local v = volOf(A, t)
+    if v and v.protect and core.hooks.bypassProtect and core:ask("bypassProtect", A, u, t, m) then
+      v.protect, aside.protect = nil, true
+    end
+    if core.hooks.infiltrates and core:ask("infiltrates", A, u, t) then
+      if v and (v.substitute or 0) > 0 then aside.sub, v.substitute = v.substitute, nil
+      elseif not v and t.substituteHP then aside.sub, t.substituteHP = t.substituteHP, nil end
+      local bt = A.battle
+      local side = A.gen == 2 and type(bt) == "table" and bt.screens and bt.screens[bt:sideOf(t)]
+      if side and ((side.reflect or 0) > 0 or (side.lightScreen or 0) > 0) then
+        aside.screens = { side = side, saved = { reflect = side.reflect, lightScreen = side.lightScreen } }
+        side.reflect, side.lightScreen = nil, nil
+      end
+    end
+    if next(aside) then aside.target = t; A:field().__ndxAside = aside end
+    return nil
+  end)
+  core:on("afterMove", function(A) putBack(A) end)
+  core:on("endTurn", function(A) putBack(A) end)
   core:on("noCrit", function(A, attacker, target)
     if target and (A:side(target).luckyChant or 0) > 0 then return true end
   end)
