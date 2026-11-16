@@ -58,10 +58,18 @@ function MoveEffects.install(opts)
     return any
   end
 
-  local function roll(ad, chance)
+  -- an added effect's chance (Serene Grace: twice it)
+  local function roll(ad, chance, user)
     chance = tonumber(chance) or 100
     if chance >= 100 then return true end
+    if user and ad:abilityOf(user) == "SERENE_GRACE" then chance = chance * 2 end
     return ad:roll(1, 100) <= chance
+  end
+  -- the held item a battler holds, by kind (src/held/gen3.lua's hub)
+  local function heldKind(b)
+    local ok, HI = pcall(require, "src.core.game3.battle.held_items")
+    local h = ok and type(HI) == "table" and HI.__ndxHeldHub
+    return h and h.kindOf and h.kindOf(b) or nil
   end
 
   -- status moves
@@ -123,21 +131,30 @@ function MoveEffects.install(opts)
         if not (ad and user and target) or M.noEffect or not M.targetDamaged then return end
         local dealt = tonumber(M.hpDealt) or 0
         local targetUp = ad:hp(target) > 0
-        if spec.self and ad:hp(user) > 0 and roll(ad, spec.chance) then
+        -- Shield Dust, Covert Cloak: no added effects on the target
+        local shielded = ad:abilityOf(target) == "SHIELD_DUST" or heldKind(target) == "covertCloak"
+        if spec.self and ad:hp(user) > 0 and roll(ad, spec.chance, user) then
           stats(ad, user, spec.self, { user = true, certain = true })
         end
-        if spec.foe and targetUp and not M.hitSubstitute and roll(ad, spec.chance) then
+        if spec.foe and targetUp and not M.hitSubstitute and not shielded and roll(ad, spec.chance, user) then
           stats(ad, target, spec.foe, {})
         end
-        if spec.ailment and targetUp and not M.hitSubstitute and roll(ad, spec.ailmentChance) then
+        if spec.ailment and targetUp and not M.hitSubstitute and not shielded and roll(ad, spec.ailmentChance, user) then
           Secondary.set(M, spec.ailment, false, false, false)
         end
-        if spec.flinch and targetUp and not M.hitSubstitute and roll(ad, spec.flinch) then
+        if spec.flinch and targetUp and not M.hitSubstitute and not shielded and roll(ad, spec.flinch, user) then
           Secondary.set(M, "FLINCH", false, false, false)
         end
         if spec.drain and dealt > 0 then
-          if spec.drain > 0 and ad:hp(user) > 0 and ad:hp(user) < ad:maxHp(user) then
-            ad:heal(user, math.max(1, math.floor(dealt * spec.drain / 100)))
+          local amount = math.max(1, math.floor(dealt * math.abs(spec.drain) / 100))
+          if spec.drain > 0 and heldKind(user) == "bigRoot" then amount = math.floor(amount * 1.3) end
+          if spec.drain > 0 and ad:hp(user) > 0 and ad:abilityOf(target) == "LIQUID_OOZE" then
+            -- Liquid Ooze: the drain hurts instead
+            ad:applyHpLoss(user, amount)
+            ad:sayText("STRINGID_ITSUCKEDLIQUIDOOZE")
+            if M.tryFaintUser then M:tryFaintUser() end
+          elseif spec.drain > 0 and ad:hp(user) > 0 and ad:hp(user) < ad:maxHp(user) then
+            ad:heal(user, amount)
             ad:sayText("STRINGID_PKMNENERGYDRAINED", { def = target })
           elseif spec.drain < 0 and ad:hp(user) > 0 and ad:abilityOf(user) ~= "ROCK_HEAD" then
             ad:applyHpLoss(user, math.max(1, math.floor(dealt * -spec.drain / 100)))

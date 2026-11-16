@@ -27,6 +27,11 @@ All notable changes to this mod are documented here, in
   physical hits; Stamina, Thermal Exchange, Seed Sower, Moxie, Simple, Stench, Poison Touch,
   Hydration, Dry Skin and Solar Power (in the sun) now act; Rivalry applies one factor by gender;
   Fluffy halves only contact moves; Tangled Feet only when confused.
+- **Held items on FireRed to Emerald:** Light Clay, the weather rocks, Safety Goggles in a
+  sandstorm or hail, Ring Target, Iron Ball against Ground moves, Covert Cloak, Protective Pads,
+  Big Root, Float Stone and Loaded Dice now work, and Utility Umbrella in rain or sun. The
+  newer draining moves heal through Big Root, hurt on Liquid Ooze, and their added effects
+  respect Serene Grace, Shield Dust and Covert Cloak.
 
 ## [1.12.1] - 2026-11-14
 

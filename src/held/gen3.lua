@@ -32,6 +32,8 @@ local TYPE_NAME = { [0] = "NORMAL", "FIGHTING", "FLYING", "POISON", "GROUND", "R
 local TYPE_ID = {}
 for id, n in pairs(TYPE_NAME) do TYPE_ID[n] = id end
 local CHOICE_BAND = 29
+-- the cart's draining effects (EFFECT_ABSORB, EFFECT_DREAM_EATER): what Big Root boosts in Hit.run
+local DRAIN_EFFECT = { [3] = true, [8] = true }
 
 local function norm(s) return (tostring(s or ""):upper():gsub("[^%w]", "")) end
 -- held items this mod registers as evolution items (src/items.lua): they keep their number and get
@@ -240,9 +242,15 @@ function GA:dex(b)
   local ok, n = pcall(P.national, sp)
   return ok and n or nil
 end
+-- the battle's weather by kind: the cart names it its own way (Rain Dance's is "RAINY"), so it
+-- goes through the cart's Rules.weather.kind
 function GA:weather()
   local w = self.ad._st.weather
-  return w and ({ RAIN = "rain", SUN = "sun", SAND = "sand", HAIL = "hail" })[tostring(w):upper()] or nil
+  if not w then return nil end
+  local okR, Rules = pcall(self.env.require, "src.core.game3.battle.rules")
+  local k = okR and type(Rules.weather) == "table" and type(Rules.weather.kind) == "function"
+    and Rules.weather.kind(w) or w
+  return ({ RAIN = "rain", SUN = "sun", SAND = "sand", HAIL = "hail" })[tostring(k):upper()] or nil
 end
 function GA:switchOut(b, opts)
   local env = self.env
@@ -310,7 +318,22 @@ function Held.hooks(mod)
       if Held._core.hooks.immune and Held._core:ask("immune", A, c.user, c.target, m) then
         return 0, { effectiveness = 0, critical = false, typeFlags = { immune = true, super = false, notVery = false } }
       end
-      local dmg, info = nextFn(c)
+      -- a type the hit ignores (Ring Target: the holder's immunities; Iron Ball: a Flying holder
+      -- meets Ground moves), dropped for this one calculation
+      local dropped
+      if Held._core.hooks.dropTypes then
+        local okD, drop = pcall(Held._core.ask, Held._core, "dropTypes", A, c.user, c.target, m)
+        if okD and type(drop) == "table" then
+          dropped = {}
+          for _, f in ipairs({ "type1", "type2" }) do
+            local id = c.target[f]
+            if id ~= nil and drop[TYPE_NAME[id] or ""] then dropped[f] = id; c.target[f] = TYPE_ID.MYSTERY or 9 end
+          end
+        end
+      end
+      local okN, dmg, info = pcall(nextFn, c)
+      if dropped then for f, id in pairs(dropped) do c.target[f] = id end end
+      if not okN then error(dmg, 0) end
       dmg = tonumber(dmg) or 0
       if dmg > 0 and type(info) == "table" and (tonumber(info.effectiveness) or 1) > 0 then
         local k = Held._core:fold("damageMult", 1, A, c.user, c.target, m,
@@ -514,9 +537,19 @@ function Held.install(opts)
       local ad = M.adapter
       local okB, A, hp0 = pcall(hub.env.before, ad, M.user, M.target)
       M.__ndxHeldAfter = true
-      local r = { run(M, ...) }
+      -- Protective Pads: its moves make no contact (Rough Skin, Static, Iron Barbs, Mummy... all
+      -- read the move's flag), for this hit and the move's end (Engine.moveEndEffects below)
+      local move0 = M.move
+      pcall(hub.unpad, M)
+      -- Big Root: the cart's draining moves (Absorb's family, Dream Eater) heal more
+      local drain = DRAIN_EFFECT[tonumber(M.effect) or -1]
+      if drain then ad.__ndxDrainHeal = true end
+      local r = { pcall(run, M, ...) }
+      if drain then ad.__ndxDrainHeal = nil end
+      if M.move ~= move0 then M.move = move0 end
+      if not r[1] then error(r[2], 0) end
       if okB then pcall(hub.env.after, ad, A, M.user, M.target, hp0, tonumber(M.mnum), M.move) end
-      return (unpack or table.unpack)(r)
+      return (unpack or table.unpack)(r, 2)
     end
   end
   if okE and type(Effects.run) == "function" and not Effects.__ndxHeld then
@@ -548,9 +581,115 @@ function Held.install(opts)
       end
       local okB, A2, hp0 = pcall(hub.env.before, ad, user, target)
       if M then M.__ndxHeldAfter = true end
+      local side = ad.ownSide and ad:ownSide(user)
+      local st = ad._st
+      local was = { side and side.expReflectTurns, side and side.expLightScreenTurns,
+        side and side.__ndx and side.__ndx.auroraVeil, st and st.weather }
       local r = { run(id, ad, user, target, move, moveId, moveCtx, ...) }
+      pcall(hub.lengthen, ad, user, side, st, was)
       if okB then pcall(hub.env.after, ad, A2, user, target, nil, num, move) end
       return (unpack or table.unpack)(r)
+    end
+  end
+
+  -- Protective Pads: the holder's move as one that makes no contact, while M.move is swapped
+  function hub.unpad(M)
+    local mv = M.move
+    if hub.kindOf(M.user) == "protectivePads" and type(mv) == "table" and (tonumber(mv.flags) or 0) % 2 == 1 then
+      local copy = {}
+      for k, v in pairs(mv) do copy[k] = v end
+      copy.flags = mv.flags - 1
+      M.move = copy
+    end
+  end
+  if okEn and type(Engine.moveEndEffects) == "function" and not Engine.__ndxHeldPads then
+    Engine.__ndxHeldPads = true
+    local moveEnd = Engine.moveEndEffects
+    Engine.moveEndEffects = function(M, ...)
+      if not (hub.env and type(M) == "table" and M.user) then return moveEnd(M, ...) end
+      local move0 = M.move
+      pcall(hub.unpad, M)
+      local r = { pcall(moveEnd, M, ...) }
+      M.move = move0
+      if not r[1] then error(r[2], 0) end
+      return (unpack or table.unpack)(r, 2)
+    end
+  end
+  -- the kind of item a battler holds (nil: none of ours); other modules ask through the hub
+  function hub.kindOf(b)
+    local r = type(b) == "table" and hub.env and hub.env.byIndex[tonumber(b.item) or 0]
+    return r and r.effect.kind or nil
+  end
+  -- Light Clay and the weather rocks: a screen or weather the move just started lasts longer
+  function hub.lengthen(ad, user, side, st, was)
+    local A, c = hub.env.A_of(ad), hub.env.core
+    if not A then return end
+    if side then
+      for i, key in ipairs({ "expReflectTurns", "expLightScreenTurns" }) do
+        local n = tonumber(side[key])
+        if n and n > 0 and (tonumber(was[i]) or 0) <= 0 then side[key] = c:fold("screenTurns", n, A, user) end
+      end
+      local d = side.__ndx
+      local n = d and tonumber(d.auroraVeil)
+      if n and n > 0 and (tonumber(was[3]) or 0) <= 0 then d.auroraVeil = c:fold("screenTurns", n, A, user) end
+    end
+    local n = st and tonumber(st.weatherTurns)
+    if st and st.weather and st.weather ~= was[4] and n and n > 0 then
+      st.weatherTurns = c:fold("weatherTurns", n, A, user, A:weather())
+    end
+  end
+  -- Big Root: a drain heals 30% more (the cart's drains in Hit.run, Leech Seed, Ingrain and Aqua
+  -- Ring in the end-of-turn phases bracketed below; src/move_effects.lua's own drains ask hub.kindOf)
+  local okAd, Adapter = pcall(require, "src.core.game3.battle.adapter")
+  if okAd and type(Adapter.new) == "function" and not Adapter.__ndxHeld then
+    Adapter.__ndxHeld = true
+    local new = Adapter.new
+    Adapter.new = function(...)
+      local a = new(...)
+      if type(a) == "table" and type(a.heal) == "function" then
+        local heal = a.heal
+        a.heal = function(self, b, amount, ...)
+          if self.__ndxDrainHeal and hub.kindOf(b) == "bigRoot" and tonumber(amount) then
+            amount = math.floor(amount * 1.3)
+          end
+          return heal(self, b, amount, ...)
+        end
+      end
+      return a
+    end
+  end
+  if okR and okRu and type(Rules.BATTLER_PHASES_ORDER) == "table" and not Rules.__ndxBigRoot then
+    Rules.__ndxBigRoot = true
+    local order = Rules.BATTLER_PHASES_ORDER
+    local function around(phase, on, off)
+      for i, name in ipairs(order) do
+        if name == phase then
+          table.insert(order, i + 1, off)
+          table.insert(order, i, on)
+          return
+        end
+      end
+    end
+    around("ingrain", "ndx_root_on", "ndx_root_off")
+    around("leech_seed", "ndx_root_on2", "ndx_root_off2")
+    for _, name in ipairs({ "ndx_root_on", "ndx_root_on2" }) do
+      Residuals.register(name, function(ctx) if ctx and ctx.adapter then ctx.adapter.__ndxDrainHeal = true end end)
+    end
+    for _, name in ipairs({ "ndx_root_off", "ndx_root_off2" }) do
+      Residuals.register(name, function(ctx) if ctx and ctx.adapter then ctx.adapter.__ndxDrainHeal = nil end end)
+    end
+  end
+  -- Covert Cloak: no added effects of a foe's moves (the cart's roll and set)
+  local okSe, Secondary = pcall(require, "src.core.game3.battle.effects.secondary")
+  if okSe and type(Secondary.set) == "function" and not Secondary.__ndxHeld then
+    Secondary.__ndxHeld = true
+    local set = Secondary.set
+    Secondary.set = function(M, eff, primary, certain, affectsUser, ...)
+      if not primary and not affectsUser and type(M) == "table" and M.target and M.target ~= M.user
+          and hub.kindOf(M.target) == "covertCloak" then
+        return false
+      end
+      return set(M, eff, primary, certain, affectsUser, ...)
     end
   end
 

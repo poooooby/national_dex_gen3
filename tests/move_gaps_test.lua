@@ -110,4 +110,57 @@ do
   T.eq(st.player.expCharged, nil, "and the charge runs out")
 end
 
+-- ------- held items whose effect the Gen 3 path never asked for (src/held/gen3.lua)
+local ITEM = {}
+for _, r in ipairs(dofile("mods/national_dex_gen3/data/held_items.lua")) do ITEM[r.id] = r.index end
+-- what `fn(st, ad)` measures without the item and with it on `who` ("player" / "enemy")
+local function withItem(id, who, opts, fn)
+  local function once(item)
+    local st, ad = battle(opts and opts())
+    if item then (who == "enemy" and st.enemy or st.player).item = ITEM[id] end
+    return fn(st, ad)
+  end
+  return once(false), once(true)
+end
+do
+  local a, b = withItem("LIGHT_CLAY", "player", nil, function(st, ad)
+    use(st, ad, 115, st.player, st.player); return st.playerSide.expReflectTurns end)
+  T.check(a == 5 and b == 8, "Light Clay: Reflect lasts 8 turns (" .. tostring(a) .. " / " .. tostring(b) .. ")")
+  a, b = withItem("DAMP_ROCK", "player", nil, function(st, ad)
+    use(st, ad, 240, st.player, st.player); return st.weatherTurns end)
+  T.check(a == 5 and b == 8, "Damp Rock: Rain Dance lasts 8 turns (" .. tostring(a) .. " / " .. tostring(b) .. ")")
+  a, b = withItem("SAFETY_GOGGLES", "enemy", nil, function(st, ad)
+    st.weather, st.weatherTurns = "SAND", 5
+    local hp = st.enemy.mon.hp
+    Residuals.runTurn(ad)
+    return hp - st.enemy.mon.hp end)
+  T.check(a > 0 and b == 0, "Safety Goggles: no sandstorm damage (" .. a .. " / " .. b .. ")")
+  a, b = withItem("RING_TARGET", "enemy", function() return { foe = mon({ species = 92 }) } end, function(st, ad)
+    local hp = st.enemy.mon.hp; use(st, ad, 33); return hp - st.enemy.mon.hp end)
+  T.check(a == 0 and b > 0, "Ring Target: Tackle hits a Ghost holder (" .. a .. " / " .. b .. ")")
+  a, b = withItem("IRON_BALL", "enemy", function() return { foe = mon({ species = 16 }) } end, function(st, ad)
+    local hp = st.enemy.mon.hp; use(st, ad, 89); return hp - st.enemy.mon.hp end)
+  T.check(a == 0 and b > 0, "Iron Ball: Earthquake hits a Flying holder (" .. a .. " / " .. b .. ")")
+  a, b = withItem("COVERT_CLOAK", "enemy", function() return { foe = mon({ species = 1 }) } end, function(st, ad)
+    use(st, ad, 85); return ad:status(st.enemy) end)                     -- THUNDERBOLT, a middling roll
+  T.check(b == nil, "Covert Cloak: no added paralysis (" .. tostring(a) .. " / " .. tostring(b) .. ")")
+  a, b = withItem("PROTECTIVE_PADS", "player", nil, function(st, ad)
+    withAbility(ad, st.enemy, "ROUGH_SKIN")
+    local hp = st.player.mon.hp; use(st, ad, 33); return hp - st.player.mon.hp end)
+  T.check(a > 0 and b == 0, "Protective Pads: no Rough Skin damage (" .. a .. " / " .. b .. ")")
+  a, b = withItem("BIG_ROOT", "player", function() return { party = { mon({ hp = 20 }) } } end, function(st, ad)
+    use(st, ad, 202); return st.player.mon.hp - 20 end)                  -- GIGA DRAIN
+  T.check(b > a, "Big Root: Giga Drain heals more (" .. a .. " / " .. b .. ")")
+  a, b = withItem("FLOAT_STONE", "enemy", function() return { foe = mon({ species = 68 }) } end, function(st, ad)
+    local hp = st.enemy.mon.hp; use(st, ad, 67); return hp - st.enemy.mon.hp end)   -- LOW KICK, Machamp
+  T.check(b < a, "Float Stone: a lighter holder takes a weaker Low Kick (" .. a .. " / " .. b .. ")")
+  a, b = withItem("LOADED_DICE", "player", nil, function(st, ad)
+    local hp = st.enemy.mon.hp; use(st, ad, 331); return hp - st.enemy.mon.hp end)  -- BULLET SEED
+  T.check(b > a, "Loaded Dice: more hits (" .. a .. " / " .. b .. ")")
+  a, b = withItem("UTILITY_UMBRELLA", "player", nil, function(st, ad)
+    st.weather, st.weatherTurns = "RAINY", 5
+    local hp = st.enemy.mon.hp; use(st, ad, 55); return hp - st.enemy.mon.hp end)   -- WATER GUN in rain
+  T.check(b < a, "Utility Umbrella: no rain boost (" .. a .. " / " .. b .. ")")
+end
+
 T.finish("national_dex_gen3 move gaps (" .. GAME .. ")")

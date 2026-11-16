@@ -106,6 +106,13 @@ local function wrapText(s)
 end
 
 local function contact(move) return ((tonumber(move and move.flags) or 0) % 2) == 1 end
+-- the kind of held item a battler holds (src/held/gen3.lua's hub): Loaded Dice, Float Stone,
+-- Safety Goggles ride on the abilities' seams below
+local function heldKind(b)
+  local ok, HI = pcall(require, "src.core.game3.battle.held_items")
+  local h = ok and type(HI) == "table" and HI.__ndxHeldHub
+  return h and h.kindOf and h.kindOf(b) or nil
+end
 
 -- ------------------------------------------------------------------ the context
 -- Built by install(); the hooks and wraps read it through the hub.
@@ -553,7 +560,8 @@ function More.install(opts)
           local b = fill.atk or fill.scrActive
           if type(b) == "table" then
             local k = X.ab(self, b)
-            if INDIRECT_BEFORE[id] and (k == "MAGIC_GUARD" or (k == "OVERCOAT" and WEATHER_CHIP[id])) and not hub.allowLoss then
+            local goggles = WEATHER_CHIP[id] and heldKind(b) == "safetyGoggles"
+            if INDIRECT_BEFORE[id] and (k == "MAGIC_GUARD" or ((k == "OVERCOAT" or goggles) and WEATHER_CHIP[id])) and not hub.allowLoss then
               b.__ndxAbSkipLoss = true
               return nil
             end
@@ -840,13 +848,15 @@ function More.install(opts)
         end
         -- Skill Link: 2-5 hits are 5
         local eff = tonumber(M.effect) or 0
-        if ua == "SKILL_LINK" and type(M.move) == "table" then
+        -- Loaded Dice: 4 or 5
+        local dice = ua ~= "SKILL_LINK" and heldKind(user) == "loadedDice"
+        if (ua == "SKILL_LINK" or dice) and type(M.move) == "table" then
           local multi = X.EffectIds and eff == X.EffectIds.MULTI_HIT
           if multi or type(M.move.hits) == "table" then
             local mv, e0 = M.move, M.effect
             local copy = {}
             for k, v in pairs(mv) do copy[k] = v end
-            copy.hits = 5
+            copy.hits = dice and (ad:roll(0, 1) == 0 and 4 or 5) or 5
             M.move = copy
             if multi then M.effect = X.EffectIds.HIT or 0 end
             restore[#restore + 1] = function() M.move, M.effect = mv, e0 end
@@ -1302,8 +1312,9 @@ function More.install(opts)
     C.MoveRules.weightScale = function(b)
       local X, ad = hub.C, adNow()
       local k = X and ad and X.ab(ad, b)
-      if k == "LIGHT_METAL" then return 0.5 elseif k == "HEAVY_METAL" then return 2 end
-      return 1
+      local float = heldKind(b) == "floatStone" and 0.5 or 1          -- Float Stone halves it
+      if k == "LIGHT_METAL" then return 0.5 * float elseif k == "HEAVY_METAL" then return 2 * float end
+      return float
     end
   end
   -- Magic Guard: no Stealth Rock damage (src/move_field.lua asks)
