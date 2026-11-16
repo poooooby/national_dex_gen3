@@ -32,6 +32,10 @@ All notable changes to this mod are documented here, in
   Big Root, Float Stone and Loaded Dice now work, and Utility Umbrella in rain or sun. The
   newer draining moves heal through Big Root, hurt on Liquid Ooze, and their added effects
   respect Serene Grace, Shield Dust and Covert Cloak.
+- **Abilities that keep a status off, FireRed to Emerald:** Comatose, Purifying Salt, Leaf Guard
+  (in the sun), Sweet Veil and Flower Veil also stop Yawn, Toxic Spikes, Flame and Toxic Orb and
+  the statuses abilities pass on (Static, Effect Spore...); Overcoat and Safety Goggles keep
+  Effect Spore off.
 
 ## [1.12.1] - 2026-11-14
 

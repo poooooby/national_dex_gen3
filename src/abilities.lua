@@ -685,6 +685,13 @@ function RealAbilities.install(opts)
       if ab == "FLOWER_VEIL" and hasType(target, ID.GRASS) then return ab end
       return nil
     end
+    -- for src/abilities_more.lua's guard (the adapter's canApplyStatus, the abilities that pass
+    -- on a status, Yawn)
+    RealAbilities.guarded = function(ad, target, status)
+      if not RealAbilities._on then return nil end
+      local ok, ab = pcall(guarded, ad, target, status)
+      return ok and ab or nil
+    end
     local function say(ad, target, ab)
       ad:say(prefixed(ad, target) .. " is protected\nby " .. tostring(byKey[ab] and byKey[ab].name or ab) .. "!")
     end

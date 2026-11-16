@@ -163,4 +163,28 @@ do
   T.check(b < a, "Utility Umbrella: no rain boost (" .. a .. " / " .. b .. ")")
 end
 
+-- ------- the abilities' status guards where the cart forces or passes on a status
+do
+  local Ab = require("src.core.game3.battle.abilities")
+  for _, k in ipairs({ "COMATOSE", "PURIFYING_SALT", "SWEET_VEIL" }) do
+    local st, ad = battle()
+    withAbility(ad, st.enemy, k)
+    use(st, ad, 281)                                                     -- YAWN
+    T.eq(st.enemy.expYawnTurns, nil, k .. ": Yawn fails")
+  end
+  local st, ad = battle()
+  withAbility(ad, st.player, "LEAF_GUARD")
+  st.weather, st.weatherTurns = "SUN", 5
+  Ab.applyStatus(ad, st.enemy, st.player, "PAR", false, nil)            -- Static's way
+  T.eq(ad:status(st.player), nil, "Leaf Guard in the sun: no paralysis from an ability")
+  local st2, ad2 = battle({ party = { mon({ species = 1 }) } })          -- Bulbasaur, Grass
+  withAbility(ad2, st2.player, "FLOWER_VEIL")
+  T.eq((ad2:canApplyStatus(st2.player, "BRN")), false, "Flower Veil: a Grass type can't be burned")
+  local st3, ad3 = battle()
+  withAbility(ad3, st3.player, "OVERCOAT")
+  withAbility(ad3, st3.enemy, "EFFECT_SPORE")
+  Ab.applyStatus(ad3, st3.enemy, st3.player, "SLP", false, nil)
+  T.eq(ad3:status(st3.player), nil, "Overcoat keeps Effect Spore off")
+end
+
 T.finish("national_dex_gen3 move gaps (" .. GAME .. ")")

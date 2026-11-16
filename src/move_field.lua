@@ -193,6 +193,18 @@ local function terrainGuard(ad, b, status)
   return nil
 end
 MoveField.terrainGuard = terrainGuard
+-- fn(ad, b) -> what keeps b awake besides a terrain (src/abilities_more.lua sets it: Comatose,
+-- Sweet Veil, Leaf Guard in the sun...), or nil
+MoveField.otherSleepGuard = nil
+local function sleepGuard(ad, b)
+  local msg = terrainGuard(ad, b, "SLP")
+  if msg then return msg end
+  if MoveField.otherSleepGuard then
+    local ok, m = pcall(MoveField.otherSleepGuard, ad, b)
+    if ok and m then return m end
+  end
+  return nil
+end
 
 local function fail(ad, M)
   if M then M.failed = true end
@@ -936,9 +948,9 @@ function MoveField.install(opts)
           return r
         end
       end
-      -- Yawn fails on a Pokemon the terrain keeps awake
+      -- Yawn fails on a Pokemon that can't fall asleep (a terrain, an ability)
       if id == "EXP_YAWN_EFFECT" and type(target) == "table" and target ~= user then
-        local msg = terrainGuard(ad, target, "SLP")
+        local msg = sleepGuard(ad, target)
         if msg then
           if M then M.failed = true end
           ad:say(msg)
@@ -1299,7 +1311,7 @@ function MoveField.install(opts)
       Residuals.register("ndx_yawn_guard", function(ctx)
         local ad, b = ctx and ctx.adapter, ctx and ctx.target
         -- the turn it would fall asleep: the drowsiness passes instead
-        if MoveField._on and ad and b and (b.expYawnTurns or 0) == 1 and terrainGuard(ad, b, "SLP") then
+        if MoveField._on and ad and b and (b.expYawnTurns or 0) == 1 and sleepGuard(ad, b) then
           b.expYawnTurns, b.yawnTurns = nil, nil
         end
       end)

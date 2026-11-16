@@ -1027,6 +1027,11 @@ function More.install(opts)
     Ab.applyStatus = function(ad, holder, victim, status, primary, M, ...)
       local X = hub.C
       if X and ad and type(victim) == "table" and More.statusGuard(X, ad, victim, status) then return false end
+      -- Effect Spore is a powder: Overcoat and Safety Goggles keep it off
+      if X and ad and type(victim) == "table" and type(holder) == "table" and X.ab(ad, holder) == "EFFECT_SPORE"
+          and (X.ab(ad, victim) == "OVERCOAT" or heldKind(victim) == "safetyGoggles") then
+        return false
+      end
       return applyStatus(ad, holder, victim, status, primary, M, ...)
     end
   end
@@ -1317,6 +1322,15 @@ function More.install(opts)
       return float
     end
   end
+  -- what keeps a Pokemon awake against Yawn (src/move_field.lua asks: the move, the drowsy turn)
+  if C.MoveField then
+    C.MoveField.otherSleepGuard = function(ad, b)
+      local X = hub.C
+      local k = X and More.statusGuard(X, ad, b, "SLP")
+      if k then return string.format("%s is protected by %s!", X.who(ad, b), X.nameOf(k)) end
+      return nil
+    end
+  end
   -- Magic Guard: no Stealth Rock damage (src/move_field.lua asks)
   if C.MoveField then
     C.MoveField.noIndirect = function(ad, b)
@@ -1340,6 +1354,12 @@ function More.statusGuard(C, ad, b, status)
   if k == "SHIELDS_DOWN" and ad:hp(b) * 2 > ad:maxHp(b) then return k end
   if k == "PASTEL_VEIL" and (status == "PSN" or status == "TOX") then return k end
   if (k == "WATER_BUBBLE" or k == "THERMAL_EXCHANGE") and status == "BRN" then return k end
+  -- Leaf Guard in the sun, Sweet Veil against sleep, Flower Veil on a Grass type (src/abilities.lua)
+  local RA = C.RA
+  if RA and RA.guarded then
+    local g = RA.guarded(ad, b, status)
+    if g then return g end
+  end
   return nil
 end
 
