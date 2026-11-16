@@ -16,6 +16,17 @@ All notable changes to this mod are documented here, in
   it, and the "...disappeared from the battlefield" message shows when a terrain runs out.
   Secret Power's added effect (paralysis, sleep, lower Sp. Atk, lower Speed) and Camouflage's
   type (Electric, Grass, Fairy, Psychic) follow the terrain, as on Red to Crystal.
+- **FireRed to Emerald:** Infestation, Snap Trap, Thunder Cage and Magma Storm no longer stop the
+  battle when they trap; Play Nice, Defog, Purify, Topsy-Turvy and Miracle Eye no longer always
+  miss; Good as Gold, Queenly Majesty, Dazzling and Armor Tail only stop moves aimed at their
+  holder (the foe's own Swords Dance or Protect works again); Electromorphosis and Wind Power's
+  charge wears off like Charge's.
+- **Red to Crystal abilities:** Flash Fire powers up only after taking in a Fire move;
+  Electromorphosis and Wind Power charge only when hit; Slow Start ends after five turns; Cotton
+  Down slows the attacker, not its holder; Anger Point needs a critical hit; Weak Armor only
+  physical hits; Stamina, Thermal Exchange, Seed Sower, Moxie, Simple, Stench, Poison Touch,
+  Hydration, Dry Skin and Solar Power (in the sun) now act; Rivalry applies one factor by gender;
+  Fluffy halves only contact moves; Tangled Feet only when confused.
 
 ## [1.12.1] - 2026-11-14
 

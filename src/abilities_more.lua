@@ -1591,7 +1591,8 @@ function More.afterHit(C, M)
         end
       end
     elseif (ta == "WIND_POWER" and C.flag("wind", M.move, num)) or ta == "ELECTROMORPHOSIS" then
-      target.expCharged = true
+      -- as after Charge: the engine counts it down at the end of the turn (true never ran out)
+      target.expCharged, target.chargedUp = 2, true
       say(ad, "Being hit by %s charged %s with power!", M.moveName or "the move", who(ad, target))
       did = true
     elseif ta == "CURSED_BODY" and uUp and num and not user.expDisabledMove and ad:roll(1, 100) <= 30 then

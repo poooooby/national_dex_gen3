@@ -329,7 +329,7 @@ do
   local d3, st3 = dealt(nil, "WIND_RIDER", 16)
   T.check(d3 == 0 and st3.enemy.stages.attack == 1, "WIND_RIDER: Gust raises ATTACK instead")
   local _, st4 = dealt(nil, "ELECTROMORPHOSIS", TACKLE)
-  T.eq(st4.enemy.expCharged, true, "ELECTROMORPHOSIS: a hit charges it")
+  T.eq(st4.enemy.expCharged, 2, "ELECTROMORPHOSIS: a hit charges it, as Charge does (counted down)")
   local _, st5 = dealt(nil, "CURSED_BODY", TACKLE)
   T.eq(st5.player.expDisabledMove, TACKLE, "CURSED_BODY: disables the move")
   local _, st6 = dealt(nil, "SAND_SPIT", TACKLE)

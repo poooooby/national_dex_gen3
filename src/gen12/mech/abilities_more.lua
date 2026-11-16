@@ -241,6 +241,14 @@ return function(core, opts)
             if d ~= 0 then A:setStage(b, st, (before.stages[st] or 0) - d) end
           end
           say(A, "%s's %s turned its stat changes around!", A:name(b), nameOf(id))
+        elseif any and id == "SIMPLE" then
+          -- Simple: every change counts twice
+          for _, st in ipairs(STATS) do
+            local was = before.stages[st] or 0
+            local d = A:stage(b, st) - was
+            if d ~= 0 then A:setStage(b, st, math.max(-6, math.min(6, was + 2 * d))) end
+          end
+          if b ~= u and next(fell) then core.reactToDrops(A, b, fell, u) end
         elseif b ~= u and next(fell) then
           core.reactToDrops(A, b, fell, u)
         end
@@ -272,7 +280,8 @@ return function(core, opts)
         local uid = ab(A, u)
         if A:hp(u) > 0 then
           if uid == "BEASTBOOST" then say(A, "%s's %s!", A:name(u), nameOf(uid)); A:stages(u, { [bestStat(A, u)] = 1 })
-          elseif NEIGH[uid] then say(A, "%s's %s!", A:name(u), nameOf(uid)); A:stages(u, { [NEIGH[uid]] = 1 }) end
+          elseif NEIGH[uid] then say(A, "%s's %s!", A:name(u), nameOf(uid)); A:stages(u, { [NEIGH[uid]] = 1 })
+          elseif uid == "MOXIE" then say(A, "%s's %s!", A:name(u), nameOf(uid)); A:stages(u, { attack = 1 }) end
         end
         if tid == "INNARDSOUT" and A:hp(u) > 0 and not core:ask("noIndirect", A, u) then
           A:damage(u, before, { text = A:text("%s was hurt by %s's %s!", A:name(u), A:name(t), nameOf(tid)) })

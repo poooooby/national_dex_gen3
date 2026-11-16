@@ -120,12 +120,44 @@ return function(core, opts)
     LEAFGUARD = function(A) return weather(A) == "sun" end,
     SURGESURFER = function(A) return core.terrain ~= nil and core.terrain(A) == "ELECTRIC" end,
     GRASSPELT = function(A) return core.terrain ~= nil and core.terrain(A) == "GRASSY" end,
+    -- Slow Start: its first five turns out (counted from the first time anything asks)
+    SLOWSTART = function(A, b)
+      local v = A:vol(b)
+      v.slowStartUntil = v.slowStartUntil or (A:turn() + 5)
+      return A:turn() < v.slowStartUntil
+    end,
+    TANGLEDFEET = function(A, b)
+      if b.confusedTurns then return true end
+      local ok, v = pcall(function() return A.battle:volatile(b) end)
+      return ok and type(v) == "table" and v.confuseCount ~= nil or false
+    end,
+  }
+  -- what the data's kinds can't say when happens: the generic runner skips these kinds for these
+  -- abilities, and the code below does them (Flash Fire only after a Fire move it absorbed, the
+  -- charge only after a hit, Anger Point only on a critical hit, Weak Armor only physical hits)
+  local BY_HAND = {
+    FLASHFIRE = { damage_dealt_multiplier = true },
+    ELECTROMORPHOSIS = { damage_dealt_multiplier = true },
+    WINDPOWER = { damage_dealt_multiplier = true },
   }
   -- the data's own "when" phrases
-  local function whenHolds(A, b, m, when, ability)
+  -- (`other`: the Pokemon on the other end of the hit, for Rivalry)
+  local function whenHolds(A, b, m, when, ability, other)
     if when == nil then return true end
     when = tostring(when):lower()
     if when:find("1/3") then return A:hp(b) * 3 <= A:maxHp(b) end
+    if when:find("gender") then
+      local g1 = other and core:ask("gender", A, b)
+      local g2 = other and core:ask("gender", A, other)
+      if not (g1 and g2) then return false end
+      if when:find("opposite") then return g1 ~= g2 end
+      return g1 == g2
+    end
+    if when == "contact" then
+      if not m then return false end
+      if core.moveFlag then return core.moveFlag("contact", m) and true or false end
+      return A:category(m) == "physical"
+    end
     if when:find("stab") then
       return m and A:hasType(b, A:moveType(m)) or false
     end
@@ -153,6 +185,7 @@ return function(core, opts)
     local id = abilityOf(A, b)
     local beh = id and behaviourOf(id)
     if not beh or not holds(A, b, m, id) then return end
+    if BY_HAND[id] and BY_HAND[id][kind] then return end
     for _, e in ipairs(beh.effects or {}) do
       if e.kind == kind then fn(e, beh, id) end
     end
@@ -162,7 +195,7 @@ return function(core, opts)
   core:on("damageMult", function(k, A, u, t, m)
     local mt, cat = A:moveType(m), A:category(m)
     each(A, u, "damage_dealt_multiplier", function(e, beh, id)
-      if (not e.moveType or e.moveType == mt) and whenHolds(A, u, m, e.when, id) then
+      if (not e.moveType or e.moveType == mt) and whenHolds(A, u, m, e.when, id, t) then
         -- Adaptability's 2x STAB replaces the game's own 1.5x
         k = k * (id == "ADAPTABILITY" and 4 / 3 or e.factor)
       end
@@ -173,8 +206,10 @@ return function(core, opts)
       end
     end, m)
     each(A, t, "damage_taken_multiplier", function(e, beh, id)
-      if (not e.moveType or e.moveType == mt) and whenHolds(A, t, m, e.when, id) then k = k * e.factor end
+      if (not e.moveType or e.moveType == mt) and whenHolds(A, t, m, e.when, id, u) then k = k * e.factor end
     end, m)
+    -- Flash Fire, once it has taken in a Fire move
+    if mt == "FIRE" and A:vol(u).flashFire then k = k * 1.5 end
     each(A, t, "stat_multiplier", function(e)
       if (e.stat == "defense" and cat == "physical") or (e.stat == "special-defense" and cat == "special") then
         k = k / e.factor
@@ -242,6 +277,11 @@ return function(core, opts)
       if e.kind == "type_immunity" and e.moveType == mt then immune = true end
     end
     if not immune then return nil end
+    -- Flash Fire: its own Fire moves are stronger from now on
+    if id == "FLASHFIRE" and not A:vol(t).flashFire then
+      A:vol(t).flashFire = true
+      say(A, "%s's %s raised the power of its Fire-type moves!", A:name(t), nameOf(id))
+    end
     -- what it does with the hit (Water Absorb heals, Motor Drive and Lightning Rod raise a stat)
     for _, e in ipairs(beh.effects or {}) do
       if e.kind == "heal" and A:hp(t) < A:maxHp(t) then
@@ -339,6 +379,26 @@ return function(core, opts)
         local id = abilityOf(A, b)
         local beh = id and behaviourOf(id)
         if beh and beh.trigger == "turn_end" and holds(A, b, nil, id) then apply(A, b, beh, id, A:foe(b)) end
+        -- the weather's turn (Dry Skin, Solar Power): their "each turn in ..." heal or damage
+        if beh and beh.trigger == "on_weather" then
+          local list = {}
+          for _, e in ipairs(beh.effects or {}) do
+            if (e.kind == "heal" or e.kind == "damage_self") and tostring(e.when or ""):find("each turn") then
+              list[#list + 1] = e
+            end
+          end
+          if #list > 0 then apply(A, b, { effects = list, scope = "self" }, id, A:foe(b)) end
+        end
+        -- Hydration: rain cures its status
+        if id == "HYDRATION" and A:status(b) and weather(A) == "rain" then
+          A:cure(b)
+          say(A, "%s's %s cured its status!", A:name(b), nameOf(id))
+        end
+        -- Slow Start: the last of its five turns
+        local v = A:vol(b)
+        if id == "SLOWSTART" and v.slowStartUntil and A:turn() + 1 == v.slowStartUntil then
+          say(A, "%s got its act together!", A:name(b))
+        end
         -- Shed Skin: a third of the time, its status is cured
         if id == "SHEDSKIN" and A:status(b) and A:rng(3) == 0 then
           A:cure(b)
@@ -348,10 +408,35 @@ return function(core, opts)
     end
   end)
   -- hit: what the hit Pokemon's ability does back (contact: the physical moves)
+  -- does a hit by `m` meet an on-hit effect's "when" ("hit by a damaging move", "hit by a wind
+  -- move", "hit by a Fire-type move"; none: any hit)
+  local function hitMatches(A, m, when)
+    when = tostring(when or ""):lower()
+    if when == "" or when:find("damaging") then return true end
+    if when:find("wind") then return core.moveFlag ~= nil and core.moveFlag("wind", m) and true or false end
+    local mt = A:moveType(m):lower()
+    for ty in when:gmatch("(%a+)%-type") do return ty == mt end
+    return true
+  end
+  local function wind(m) return core.moveFlag ~= nil and core.moveFlag("wind", m) and true or false end
   core:on("damageDealt", function(A, ev)
     local u, t, m = ev.user, ev.target, ev.move
     if not (u and t and m) or u == t or A:hp(u) <= 0 then return end
+    -- the attacker's own: Stench (a tenth of its hits flinch), Poison Touch (a contact move
+    -- poisons three times in ten)
+    local uid = abilityOf(A, u)
+    if uid == "STENCH" and A:hp(t) > 0 and A:rng(10) == 0 then A:flinch(t)
+    elseif uid == "POISONTOUCH" and A:hp(t) > 0 and not A:status(t) and whenHolds(A, u, m, "contact")
+        and not core:ask("noContact", A, u) and A:rng(10) < 3 then
+      A:ailment(t, "POISON", { from = u, secondary = true })
+    end
     local id = abilityOf(A, t)
+    -- charged by the hit: Electromorphosis (any hit), Wind Power (a wind move); the next Electric
+    -- move is doubled, as after Charge
+    if A:hp(t) > 0 and (id == "ELECTROMORPHOSIS" or (id == "WINDPOWER" and wind(m))) then
+      A:vol(t).charged = A:turn() + 1
+      say(A, "Being hit by %s charged %s with power!", m.name or m.id or "the move", A:name(t))
+    end
     local beh = id and behaviourOf(id)
     if not beh then return end
     if beh.trigger == "on_contact_taken" and A:category(m) == "physical" and not core:ask("noContact", A, u) then
@@ -371,13 +456,23 @@ return function(core, opts)
           A:stages(u, { [STAT[x.stat]] = x.stages or -1 }, { from = t })
         end
       end
-    elseif beh.trigger == "on_hit_by" and A:hp(t) > 0 then
+    elseif A:hp(t) > 0 then
+      -- an on-hit ability, or a passive one whose effect says "hit by ..." (Thermal Exchange)
+      if id == "ANGERPOINT" and not ev.crit then return end
+      if id == "WEAKARMOR" and A:category(m) ~= "physical" then return end
       for _, x in ipairs(beh.effects or {}) do
-        if x.kind == "stat_change" and STAT[x.stat] then
-          local when = tostring(x.when or "")
-          local mt = A:moveType(m)
-          if when == "" or when:upper():find(mt, 1, true) then
-            A:stages(t, { [STAT[x.stat]] = x.stages or 1 })
+        local when = tostring(x.when or "")
+        local byHit = beh.trigger == "on_hit_by" or when:lower():find("^hit by") ~= nil
+        if byHit and hitMatches(A, m, when) then
+          if x.kind == "stat_change" and STAT[x.stat] then
+            -- "foes": the attacker (Cotton Down), else the holder
+            local who = beh.scope == "foes" and u or t
+            if A:hp(who) > 0 then
+              if id == "ANGERPOINT" then say(A, "%s maxed its Attack!", A:name(t)) end
+              A:stages(who, { [STAT[x.stat]] = x.stages or 1 }, who ~= t and { from = t } or nil)
+            end
+          elseif x.kind == "set_terrain" or x.kind == "set_weather" then
+            apply(A, t, { effects = { x }, scope = beh.scope }, id, u)          -- Seed Sower
           end
         end
       end

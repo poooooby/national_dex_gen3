@@ -100,4 +100,14 @@ do
   T.eq(st2.player.mon.hp, hp, "but blocks Quick Attack")
 end
 
+-- ------- Electromorphosis: charged by a hit, as after Charge, and it wears off
+do
+  local st, ad = battle()
+  withAbility(ad, st.player, "ELECTROMORPHOSIS")
+  use(st, ad, 33, st.enemy, st.player)                                   -- TACKLE at it
+  T.eq(st.player.expCharged, 2, "Electromorphosis: a hit charges it")
+  for _ = 1, 2 do Residuals.runTurn(ad) end
+  T.eq(st.player.expCharged, nil, "and the charge runs out")
+end
+
 T.finish("national_dex_gen3 move gaps (" .. GAME .. ")")
