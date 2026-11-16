@@ -324,4 +324,32 @@ do
     "Mold Breaker hits through Disguise (" .. through .. " / " .. plain .. ")")
 end
 
+-- ------- move details: Freeze-Dry
+do
+  local st, ad = battle({ foe = mon({ species = 7 }) })                  -- Squirtle, Water
+  local hp = st.enemy.mon.hp
+  use(st, ad, "FREEZE_DRY")
+  local onWater = hp - st.enemy.mon.hp
+  local st2, ad2 = battle({ foe = mon({ species = 19 }) })               -- Rattata, Normal
+  local hp2 = st2.enemy.mon.hp
+  use(st2, ad2, "FREEZE_DRY")
+  local onNormal = hp2 - st2.enemy.mon.hp
+  T.check(onWater > onNormal * 1.5, "Freeze-Dry is super effective on Water (" .. onWater .. " / " .. onNormal .. ")")
+end
+
+-- ------- foe-aimed status moves stop at Protect
+do
+  for _, id in ipairs({ "NOBLE_ROAR", "POWER_SWAP" }) do
+    local st, ad = battle()
+    use(st, ad, 182, st.enemy, st.enemy)                                  -- the foe's PROTECT
+    st.player.stages.attack = 2
+    use(st, ad, id)
+    T.check((st.enemy.stages.attack or 0) == 0 and (st.enemy.stages.spAtk or 0) == 0,
+      id .. " stops at Protect")
+  end
+  local st, ad = battle()
+  use(st, ad, "NOBLE_ROAR")
+  T.eq(st.enemy.stages.attack, -1, "(Noble Roar lowers Attack otherwise)")
+end
+
 T.finish("national_dex_gen3 move gaps (" .. GAME .. ")")

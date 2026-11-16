@@ -83,6 +83,11 @@ function MoveEffects.install(opts)
       if not spec then return false end
       local ok = pcall(function()
         local M = moveCtx
+        -- aimed at the foe: the accuracy check first, which is where Protect and a vanished foe
+        -- stop a move (Noble Roar, Tearful Look, Confide, Eerie Impulse, Spicy Extract)
+        if spec.foe and target and target ~= user and M and M.accuracyCheck and not M:accuracyCheck("normal", true) then
+          return
+        end
         if spec.self then
           if M and M.attackAnimation then M:attackAnimation() end
           stats(ad, user, spec.self, { user = true })

@@ -23,6 +23,8 @@ MoveRules._formWeight = {}                        -- form slot -> hectograms
 MoveRules._neverMiss = {}                         -- move number -> true: a move that never misses (accuracy 0)
 MoveRules._weather = {}                           -- move number -> its id, for the weather rules below
 local ALWAYS_HIT = 17                             -- the cart's EFFECT_ALWAYS_HIT (Swift, Aerial Ace)
+-- rules a move's row doesn't carry (a gap found later, 2026-11-16): id -> rule
+local BY_ID_RULE = { FREEZE_DRY = "FREEZE_DRY" }
 
 -- Newer moves the weather changes (the Gen 3 engine knows only its own: Thunder, Solar Beam...):
 --   accuracy  never miss in rain; Hurricane's accuracy is 50 in sun
@@ -323,6 +325,13 @@ local function adjust(rule, A, D, dmg, info)
       dmg = math.floor(dmg * eff)
     end
   end
+  -- Freeze-Dry: super effective on Water (the cart's chart halves it: x4 after)
+  if rule == "FREEZE_DRY" and (D.type1 == 11 or D.type2 == 11) then
+    info.effectiveness = (tonumber(info.effectiveness) or 1) * 4
+    if info.typeFlags then info.typeFlags.notVery = (tonumber(info.effectiveness) or 1) < 1 or nil end
+    if (tonumber(info.effectiveness) or 1) > 1 and info.typeFlags then info.typeFlags.super = true end
+    dmg = dmg * 4
+  end
   if D.__ndxGlaiveRush then dmg = dmg * 2 end
   local mtype = tonumber(info.moveType)
   if D.__ndxType3 and mtype then
@@ -612,6 +621,7 @@ local function statusRule(rule, ad, user, target, M)
       ad:say(prefixed(ad, foe) .. " transformed into\nthe " .. (t == 11 and "WATER" or "PSYCHIC") .. " type!")
     elseif rule == "REFLECT_TYPE" then
       if not foe or (foe.type1 == 9 and foe.type2 == nil) then return fail() end
+      if not accuracy() then return true end                         -- Protect, a vanished foe
       anim()
       user.type1, user.type2, user.__ndxType3 = foe.type1, foe.type2, foe.__ndxType3
       if user.expTransform then user.expTransform.type1, user.expTransform.type2 = foe.type1, foe.type2 end
@@ -632,6 +642,7 @@ local function statusRule(rule, ad, user, target, M)
       ad:say(prefixed(ad, foe) .. " became weaker\nto fire!")
     elseif rule == "ELECTRIFY" then
       if not foe or foe.__ndxMovedTurn == turn then return fail() end
+      if not accuracy() then return true end
       anim()
       foe.__ndxElectrified = turn
       ad:say(prefixed(ad, foe) .. "'s moves have been\nelectrified!")
@@ -641,6 +652,7 @@ local function statusRule(rule, ad, user, target, M)
       ad:say("A deluge of ions showers\nthe battlefield!")
     elseif rule == "POWER_SPLIT" or rule == "GUARD_SPLIT" then
       if not foe then return fail() end
+      if not accuracy() then return true end
       anim()
       local keys = rule == "POWER_SPLIT" and { "attack", "spAtk" } or { "defense", "spDef" }
       for _, b in ipairs({ user, foe }) do b.__ndxStat = b.__ndxStat or {} end
@@ -650,6 +662,7 @@ local function statusRule(rule, ad, user, target, M)
       ad:say(prefixed(ad, user) .. " shared its\n" .. (rule == "POWER_SPLIT" and "power" or "guard") .. " with the target!")
     elseif rule == "POWER_SWAP" or rule == "GUARD_SWAP" or rule == "HEART_SWAP" then
       if not foe then return fail() end
+      if not accuracy() then return true end
       anim()
       local keys = rule == "POWER_SWAP" and { "attack", "spAtk" } or rule == "GUARD_SWAP" and { "defense", "spDef" }
         or { "attack", "defense", "spAtk", "spDef", "speed", "accuracy", "evasion" }
@@ -659,6 +672,7 @@ local function statusRule(rule, ad, user, target, M)
       ad:say(prefixed(ad, user) .. " switched stat changes\nwith the target!")
     elseif rule == "SPEED_SWAP" then
       if not foe then return fail() end
+      if not accuracy() then return true end
       anim()
       local a, b = statOf(user, "speed"), statOf(foe, "speed")
       user.__ndxStat, foe.__ndxStat = user.__ndxStat or {}, foe.__ndxStat or {}
@@ -874,6 +888,8 @@ function MoveRules.install(opts)
       weather[tonumber(r.index)] = r.id
     end
     if type(r.rule) == "string" and tonumber(r.index) then rules[tonumber(r.index)] = r.rule end
+    -- moves whose only rule is here (their row has none)
+    if BY_ID_RULE[r.id] and not r.rule and tonumber(r.index) then rules[tonumber(r.index)] = BY_ID_RULE[r.id] end
     if r.hits and tonumber(r.index) then hits[tonumber(r.index)] = r.hits end
     -- accuracy 0 is "can't miss" (Play Nice, Defog, Topsy-Turvy, the Splits...): the engine
     -- would read it as a 0% chance; Protect and a vanished target still stop them

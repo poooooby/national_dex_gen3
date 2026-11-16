@@ -68,6 +68,9 @@ All notable changes to this mod are documented here, in
   leave Comatose, Disguise, Multitype, Stance Change and the other permanent abilities alone, and
   an Ability Shield protects its holder; Mold Breaker gets through Disguise and Ice Face, and
   Neutralizing Gas quiets Shadow Shield, Prism Armor and Full Metal Body.
+- **Moves on FireRed to Emerald:** Freeze-Dry is super effective on Water; Noble Roar, Tearful
+  Look, Confide, Eerie Impulse, Spicy Extract, the Split and Swap moves, Reflect Type and
+  Electrify stop at Protect and can miss a Pokémon that flew or dug.
 
 ## [1.12.1] - 2026-11-14
 
