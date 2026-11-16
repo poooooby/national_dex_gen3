@@ -71,7 +71,8 @@ All notable changes to this mod are documented here, in
 - **Moves on FireRed to Emerald:** Freeze-Dry is super effective on Water; Noble Roar, Tearful
   Look, Confide, Eerie Impulse, Spicy Extract, the Split and Swap moves, Reflect Type and
   Electrify stop at Protect and can miss a Pokémon that flew or dug; Judgment takes its Plate's
-  type, Raging Bull its Paldean Tauros breed's and Ivy Cudgel Ogerpon's mask's.
+  type, Raging Bull its Paldean Tauros breed's and Ivy Cudgel Ogerpon's mask's; Aurora Veil doesn't
+  stack with Reflect or Light Screen, and Brick Break, Psychic Fangs and Raging Bull shatter it.
 
 ## [1.12.1] - 2026-11-14
 

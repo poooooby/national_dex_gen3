@@ -107,6 +107,8 @@ local function field(st)
   return st.__ndxField
 end
 
+local BRICK_BREAK = 186                           -- the cart's EFFECT_BRICK_BREAK (screens shatter)
+
 local function sideData(side)
   side.__ndx = side.__ndx or {}
   return side.__ndx
@@ -1012,6 +1014,13 @@ function MoveField.install(opts)
       pcall(function()
         if M.missReason == "protected" then punish(ad, st, M) end
         if rule then afterHit(rule, ad, st, M) end
+        -- the screen breakers (the cart's Brick Break effect: Brick Break, Psychic Fangs, Raging
+        -- Bull) shatter Aurora Veil too
+        if tonumber(M.effect) == BRICK_BREAK and M.targetDamaged and not M.noEffect and M.target then
+          local side = ad:ownSide(M.target)
+          local d = side and side.__ndx
+          if d and (d.auroraVeil or 0) > 0 then d.auroraVeil = nil end
+        end
       end)
       return r
     end
@@ -1225,7 +1234,11 @@ function MoveField.install(opts)
         return 0, info
       end
       if veil and type(info) == "table" and not info.critical and (tonumber(dmg) or 0) > 0 then
-        mult = mult * (o.doubleScreens and 2 / 3 or 0.5)
+        -- not on top of the screen that already halves this hit (Gen 3 splits by type: 0-8 physical)
+        local physical = mtype ~= nil and mtype < 9
+        local screen = physical and (tonumber(dside.expReflectTurns) or 0) > 0
+          or (not physical and (tonumber(dside.expLightScreenTurns) or 0) > 0)
+        if not screen then mult = mult * (o.doubleScreens and 2 / 3 or 0.5) end
       end
       if mult ~= 1 and (tonumber(dmg) or 0) > 0 then dmg = math.max(1, math.floor(dmg * mult)) end
       return dmg, info

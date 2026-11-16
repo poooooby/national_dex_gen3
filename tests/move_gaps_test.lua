@@ -375,4 +375,20 @@ do
   T.check(jw > j0 * 1.5, "Judgment with a Splash Plate is Water (" .. jw .. " / " .. j0 .. ")")
 end
 
+-- ------- Aurora Veil: not on top of Reflect; Brick Break shatters it
+do
+  local function hit(veil, reflect)
+    local st, ad = battle()
+    st.enemySide.__ndx = { auroraVeil = veil and 5 or nil }
+    if reflect then st.enemySide.expReflectTurns = 5 end
+    local hp = st.enemy.mon.hp; use(st, ad, 33); return hp - st.enemy.mon.hp
+  end
+  local both, reflect = hit(true, true), hit(false, true)
+  T.check(math.abs(both - reflect) <= 1, "Aurora Veil doesn't stack with Reflect (" .. both .. " / " .. reflect .. ")")
+  local st, ad = battle()
+  st.enemySide.__ndx = { auroraVeil = 5 }
+  use(st, ad, 280)                                                       -- BRICK BREAK
+  T.eq(st.enemySide.__ndx.auroraVeil, nil, "Brick Break shatters Aurora Veil")
+end
+
 T.finish("national_dex_gen3 move gaps (" .. GAME .. ")")
