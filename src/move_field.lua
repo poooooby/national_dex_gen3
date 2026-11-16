@@ -28,6 +28,7 @@ local MoveField = {}
 MoveField._rules = {}                             -- move number -> rule name (install fills it)
 MoveField._trapText = {}                          -- move number -> fn(ad, atk, def): its trap message
 MoveField._chargeLine = {}                        -- move number -> its charging line (after the name)
+MoveField._roost = nil                            -- Roost's move number
 -- the moves Gravity keeps off: the cart's Fly, Bounce, Jump Kick, Hi Jump Kick, Splash, and ours
 -- (install adds Flying Press, Telekinesis, Sky Drop by their rows)
 MoveField._gravityBanned = { [19] = true, [340] = true, [26] = true, [136] = true, [150] = true }
@@ -178,6 +179,7 @@ end
 local function grounded(ad, b)
   if not (ad and b) then return false end
   if b.__ndxGrounded then return true end
+  if b.__ndxRoost and ad._st and b.__ndxRoost == ad._st.turn then return true end    -- Roost
   if fieldOn(ad._st, "gravity") then return true end
   if b.semiInvulnerable == "ON_AIR" or (b.__ndxMagnetRise or 0) > 0 then return false end
   if hasType(ad, b, ID.FLYING) or abilityOf(ad, b) == "LEVITATE" then return false end
@@ -937,6 +939,7 @@ function MoveField.install(opts)
     ELECTRO_SHOT = " absorbed\nelectricity!", SOLAR_BLADE = " absorbed\nlight!" }
   MoveField._chargeLine = {}
   for _, r in ipairs(opts.moves or {}) do
+    if r.id == "ROOST" and tonumber(r.index) then MoveField._roost = tonumber(r.index) end
     if CHARGE_LINE[r.id] and tonumber(r.index) then MoveField._chargeLine[tonumber(r.index)] = CHARGE_LINE[r.id] end
     if (r.id == "FLYING_PRESS" or r.id == "TELEKINESIS" or r.id == "SKY_DROP") and tonumber(r.index) then
       MoveField._gravityBanned[tonumber(r.index)] = true
@@ -994,6 +997,14 @@ function MoveField.install(opts)
           target.expProtected = true
           return r
         end
+      end
+      -- Roost: its Flying type is gone for the rest of the turn (noted once it has healed)
+      local rnum = tonumber(moveCtx and moveCtx.mnum) or tonumber(moveId)
+      if rnum and rnum == MoveField._roost and type(user) == "table" then
+        local hp0 = ad:hp(user)
+        local r = { run(id, ad, user, target, move, moveId, moveCtx, ...) }
+        if ad:hp(user) > hp0 and st then user.__ndxRoost = st.turn end
+        return (unpack or table.unpack)(r)
       end
       -- Gravity: Splash (a status move: the hit's check never sees it)
       local gnum = tonumber(moveCtx and moveCtx.mnum) or tonumber(moveId)
@@ -1214,8 +1225,9 @@ function MoveField.install(opts)
       local magnet = (defender.__ndxMagnetRise or 0) > 0 and mtype == ID.GROUND and not defender.__ndxGrounded
       -- a Flying type brought down (Smack Down, Gravity) takes Ground moves; so does one under Thousand Arrows
       local flying = defender.type1 == ID.FLYING or defender.type2 == ID.FLYING
+      local roosting = flying and defender.__ndxRoost ~= nil and defender.__ndxRoost == st.turn
       local brought = flying and mtype == ID.GROUND and (defender.__ndxGrounded or (f.gravity or 0) > 0)
-      if not (kind or (f.wonderRoom or 0) > 0 or veil or magnet or brought or rule == "THOUSAND_ARROWS") then
+      if not (kind or (f.wonderRoom or 0) > 0 or veil or magnet or brought or roosting or rule == "THOUSAND_ARROWS") then
         return calc(attacker, defender, moveId, o, ...)
       end
       local o2 = {}
@@ -1247,6 +1259,17 @@ function MoveField.install(opts)
             local ds, ss = defender.stages.defense, defender.stages.spDef
             set(defender.stages, "defense", ss)
             set(defender.stages, "spDef", ds)
+          end
+        end
+        if roosting then
+          -- Roost: no Flying type this turn (a pure Flying type is Normal)
+          local pure = defender.type1 == ID.FLYING and (defender.type2 == nil or defender.type2 == ID.FLYING)
+          if pure then
+            set(defender, "type1", ID.NORMAL)
+            set(defender, "type2", ID.NORMAL)
+          else
+            if defender.type1 == ID.FLYING then set(defender, "type1", defender.type2) end
+            if defender.type2 == ID.FLYING then set(defender, "type2", defender.type1) end
           end
         end
         if brought or (rule == "THOUSAND_ARROWS" and not grounded(ad, defender)) then

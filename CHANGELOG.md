@@ -76,7 +76,8 @@ All notable changes to this mod are documented here, in
   Lunar Dance restores PP, and Healing Wish and Lunar Dance wait for a Pokémon that needs them;
   Gravity keeps Fly, Bounce, Jump Kick, High Jump Kick, Splash and Flying Press off; Freeze Shock,
   Ice Burn and Electro Shot lose Sky Attack's high critical-hit ratio and charge with their own
-  words (Solar Blade too), and Snipe Shot and Dire Claw land critical hits more often.
+  words (Solar Blade too), and Snipe Shot and Dire Claw land critical hits more often; Blood Moon
+  can't be used twice in a row; Roost takes away the Flying type for the rest of the turn.
 
 ## [1.12.1] - 2026-11-14
 

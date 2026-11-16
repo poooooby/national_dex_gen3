@@ -26,7 +26,8 @@ MoveRules._weather = {}                           -- move number -> its id, for 
 local ALWAYS_HIT = 17                             -- the cart's EFFECT_ALWAYS_HIT (Swift, Aerial Ace)
 -- rules a move's row doesn't carry (a gap found later, 2026-11-16): id -> rule
 local BY_ID_RULE = { FREEZE_DRY = "FREEZE_DRY", JUDGMENT = "JUDGMENT", RAGING_BULL = "RAGING_BULL",
-  IVY_CUDGEL = "IVY_CUDGEL" }
+  IVY_CUDGEL = "IVY_CUDGEL",
+  BLOOD_MOON = "GIGATON_HAMMER" }                 -- not twice in a row, as Gigaton Hammer
 -- a signature move's type by its user's form (Raging Bull: the Paldean Tauros breeds; Ivy Cudgel:
 -- Ogerpon's masks); Judgment's by its Plate (MoveRules.plateTypeOf, src/abilities_more.lua)
 local FORM_TYPE = {

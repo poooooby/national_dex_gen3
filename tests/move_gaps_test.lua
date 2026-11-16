@@ -434,4 +434,27 @@ do
   T.check(cloaked, "Freeze Shock charges with its own line")
 end
 
+-- ------- Blood Moon: not twice in a row
+do
+  local st, ad = battle({ foe = mon({ hp = 900, maxHp = 900 }) })
+  use(st, ad, "BLOOD_MOON")
+  local hp = st.enemy.mon.hp
+  st.turn = st.turn + 1
+  use(st, ad, "BLOOD_MOON")
+  T.eq(st.enemy.mon.hp, hp, "Blood Moon fails the turn after")
+end
+
+-- ------- Roost: no Flying type for the rest of the turn
+do
+  local st, ad = battle({ foe = mon({ species = 16, hp = 100 }) })        -- Pidgey, hurt
+  use(st, ad, "ROOST", st.enemy, st.enemy)
+  local hp = st.enemy.mon.hp
+  use(st, ad, 89)                                                         -- EARTHQUAKE
+  T.check(st.enemy.mon.hp < hp, "Roost: Earthquake hits the roosting Pidgey")
+  local st2, ad2 = battle({ foe = mon({ species = 16 }) })
+  local hp2 = st2.enemy.mon.hp
+  use(st2, ad2, 89)
+  T.eq(st2.enemy.mon.hp, hp2, "(not otherwise)")
+end
+
 T.finish("national_dex_gen3 move gaps (" .. GAME .. ")")
