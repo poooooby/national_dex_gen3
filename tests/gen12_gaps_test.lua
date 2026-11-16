@@ -373,6 +373,14 @@ for _, version in ipairs(H.versions()) do
     c.use("TACKLE")
     T.eq(c.hp("enemy"), h, v("(the Substitute takes it otherwise)"))
   end
+  -- ------- Gold's own Reflect with Light Clay
+  if sim.gen == 2 then
+    local w = sim.fresh({ foe = "SNORLAX" })
+    w.A:setItem(w.battler("player"), "LIGHT_CLAY")
+    w.use("REFLECT")
+    local side = w.battle.screens[w.battle:sideOf(w.battler("player"))]
+    T.eq(side.reflect, 8, v("Light Clay: Gold's Reflect lasts 8 turns"))
+  end
   -- ------- Gold's own Roar: Suction Cups holds on
   if sim.gen == 2 then
     local w = sim.fresh({ foe = "SNORLAX", foeLevel = 20 })

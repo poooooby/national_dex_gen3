@@ -392,6 +392,17 @@ return function(core)
     return nil
   end)
   core:on("afterMove", function(A) putBack(A) end)
+  -- Gold's own Reflect / Light Screen: the turns they just set go through Light Clay
+  local SCREEN_MOVE = { REFLECT = "reflect", LIGHT_SCREEN = "lightScreen" }
+  core:on("afterMove", function(A, u, t, moveId)
+    local key = A.gen == 2 and SCREEN_MOVE[moveId or ""]
+    local bt = A.battle
+    local side = key and u and bt.screens and bt.screens[bt:sideOf(u)]
+    local full = bt and bt.SCREEN_TURNS or 5
+    if side and side[key] == full and core.hooks.screenTurns then
+      side[key] = core:fold("screenTurns", full, A, u)
+    end
+  end)
   core:on("endTurn", function(A) putBack(A) end)
   core:on("noCrit", function(A, attacker, target)
     if target and (A:side(target).luckyChant or 0) > 0 then return true end
