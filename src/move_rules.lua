@@ -20,11 +20,20 @@ MoveRules._rules = {}                             -- move number -> rule name (i
 MoveRules.abilityGuard = nil
 MoveRules._hits = {}                              -- move number -> hit count (true: 2-5)
 MoveRules._formWeight = {}                        -- form slot -> hectograms
+MoveRules._formIds = {}                           -- form slot -> its id (TAUROS_PALDEA_AQUA_BREED)
 MoveRules._neverMiss = {}                         -- move number -> true: a move that never misses (accuracy 0)
 MoveRules._weather = {}                           -- move number -> its id, for the weather rules below
 local ALWAYS_HIT = 17                             -- the cart's EFFECT_ALWAYS_HIT (Swift, Aerial Ace)
 -- rules a move's row doesn't carry (a gap found later, 2026-11-16): id -> rule
-local BY_ID_RULE = { FREEZE_DRY = "FREEZE_DRY" }
+local BY_ID_RULE = { FREEZE_DRY = "FREEZE_DRY", JUDGMENT = "JUDGMENT", RAGING_BULL = "RAGING_BULL",
+  IVY_CUDGEL = "IVY_CUDGEL" }
+-- a signature move's type by its user's form (Raging Bull: the Paldean Tauros breeds; Ivy Cudgel:
+-- Ogerpon's masks); Judgment's by its Plate (MoveRules.plateTypeOf, src/abilities_more.lua)
+local FORM_TYPE = {
+  RAGING_BULL = { TAUROS_PALDEA_COMBAT_BREED = 1, TAUROS_PALDEA_BLAZE_BREED = 10, TAUROS_PALDEA_AQUA_BREED = 11 },
+  IVY_CUDGEL = { OGERPON_WELLSPRING_MASK = 11, OGERPON_HEARTHFLAME_MASK = 10, OGERPON_CORNERSTONE_MASK = 5 },
+}
+MoveRules.plateTypeOf = nil                       -- fn(adapter, battler) -> type id | nil
 
 -- Newer moves the weather changes (the Gen 3 engine knows only its own: Thunder, Solar Beam...):
 --   accuracy  never miss in rain; Hurricane's accuracy is 50 in sun
@@ -181,6 +190,16 @@ end
 local function prepare(rule, A, D, move, o, set, num)
   local st, ad = battleOf(o)
   local turn = st and st.turn
+  -- the signature moves that take their user's type
+  if FORM_TYPE[rule] then
+    local slot = tonumber(A.species) or tonumber(A.mon and A.mon.species)
+    local form = slot and MoveRules._formIds[slot]
+    local t = form and FORM_TYPE[rule][form]
+    if t then o.moveType = t end
+  elseif rule == "JUDGMENT" and MoveRules.plateTypeOf then
+    local okT, t = pcall(MoveRules.plateTypeOf, ad, A)
+    if okT and tonumber(t) then o.moveType = t end
+  end
   local base = tonumber(o.power) or tonumber(move.power) or 0
   local power
   if rule == "HEX" then
@@ -902,6 +921,7 @@ function MoveRules.install(opts)
   MoveRules._neverMiss = neverMiss
   MoveRules._weather = weather
   MoveRules._formWeight = opts.formWeight or {}
+  MoveRules._formIds = opts.formIds or {}
 
   local okD, Damage = pcall(require, "src.core.game3.battle.damage")
   local okH, Hit = pcall(require, "src.core.game3.battle.effects.hit")

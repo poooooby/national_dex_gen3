@@ -352,4 +352,27 @@ do
   T.eq(st.enemy.stages.attack, -1, "(Noble Roar lowers Attack otherwise)")
 end
 
+-- ------- signature moves take their user's type: Raging Bull by the Paldean Tauros breed
+do
+  local api = run.loader.exports.national_dex_gen3
+  local aqua = api.slotOf("TAUROS_PALDEA_AQUA_BREED")
+  local function bull(species)
+    local st, ad = battle({ party = { mon({ species = species }) }, foe = mon({ species = 4 }) })  -- Charmander
+    local hp = st.enemy.mon.hp
+    use(st, ad, "RAGING_BULL")
+    return hp - st.enemy.mon.hp
+  end
+  local plain, water = bull(128), bull(aqua)
+  T.check(aqua and water > plain * 1.5, "Raging Bull: the Aqua Breed's is Water (" .. water .. " / " .. plain .. ")")
+  local function judged(plate)
+    local st, ad = battle({ foe = mon({ species = 4 }) })
+    if plate then st.player.item = ITEM[plate] end
+    local hp = st.enemy.mon.hp
+    use(st, ad, "JUDGMENT")
+    return hp - st.enemy.mon.hp
+  end
+  local j0, jw = judged(nil), judged("SPLASH_PLATE")
+  T.check(jw > j0 * 1.5, "Judgment with a Splash Plate is Water (" .. jw .. " / " .. j0 .. ")")
+end
+
 T.finish("national_dex_gen3 move gaps (" .. GAME .. ")")

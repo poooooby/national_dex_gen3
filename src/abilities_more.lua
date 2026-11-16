@@ -1376,6 +1376,14 @@ function More.install(opts)
       return float
     end
   end
+  -- Judgment's type: the Plate its user holds (src/move_rules.lua asks)
+  if C.MoveRules then
+    C.MoveRules.plateTypeOf = function(ad, b)
+      local X = hub.C
+      if not (X and ad and b) then return nil end
+      return More.plateOf(X, b)
+    end
+  end
   -- the ability moves' guard (src/move_rules.lua asks: Gastro Acid, Worry Seed, Simple Beam,
   -- Entrainment, Doodle, Core Enforcer)
   if C.MoveRules then
@@ -1581,15 +1589,23 @@ local PLATE = { FLAME_PLATE = "FIRE", SPLASH_PLATE = "WATER", ZAP_PLATE = "ELECT
   ICICLE_PLATE = "ICE", FIST_PLATE = "FIGHTING", TOXIC_PLATE = "POISON", EARTH_PLATE = "GROUND",
   SKY_PLATE = "FLYING", MIND_PLATE = "PSYCHIC", INSECT_PLATE = "BUG", STONE_PLATE = "ROCK", SPOOKY_PLATE = "GHOST",
   DRACO_PLATE = "DRAGON", DREAD_PLATE = "DARK", IRON_PLATE = "STEEL", PIXIE_PLATE = "FAIRY" }
-function More.plateType(C, ad, b)
-  local item = tonumber(b.item) or 0
-  local t = C.ID.NORMAL or 0
-  if item > 0 then
-    local name = C.itemName(item):gsub("[^%w]+", "_")
-    local tn = PLATE[name]
-    if tn and C.ID[tn] then t = C.ID[tn] end
+-- the type of the Plate b holds, or nil: by the held item's own id (src/held/gen3.lua), else its name
+function More.plateOf(C, b)
+  local item = tonumber(b and b.item) or 0
+  if item <= 0 then return nil end
+  local okHI, HI = pcall(require, "src.core.game3.battle.held_items")
+  local env = okHI and type(HI) == "table" and HI.__ndxHeldHub and HI.__ndxHeldHub.env
+  local row = env and env.byIndex and env.byIndex[item]
+  local tn = row and PLATE[row.id]
+  if not tn then
+    local okN, name = pcall(C.itemName, item)
+    tn = okN and name and PLATE[tostring(name):gsub("[^%w]+", "_")] or nil
   end
-  b.type1, b.type2 = t, nil
+  return tn and C.ID[tn] or nil
+end
+-- Multitype: its type is its Plate's
+function More.plateType(C, ad, b)
+  b.type1, b.type2 = More.plateOf(C, b) or C.ID.NORMAL or 0, nil
 end
 
 -- Mimicry: the terrain's type

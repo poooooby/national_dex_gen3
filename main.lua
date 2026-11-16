@@ -367,10 +367,10 @@ return function(mod)
     end
     -- moves whose power or outcome depends on the battle (src/move_rules.lua)
     if MoveRules then
-      local formWeight = {}
-      for _, f in ipairs(registeredForms) do formWeight[f.slot] = f.weight end
+      local formWeight, formIds = {}, {}
+      for _, f in ipairs(registeredForms) do formWeight[f.slot], formIds[f.slot] = f.weight, f.id end
       local okRu, ruErr = pcall(MoveRules.install, { moves = registeredMoves, require = require, log = mod.log,
-        formWeight = formWeight })
+        formWeight = formWeight, formIds = formIds })
       if not okRu then mod.log:warn("move rules are off: %s", tostring(ruErr)) end
     end
     -- hazards, terrains, Tailwind / Trick Room and the moves that switch Pokemon out
