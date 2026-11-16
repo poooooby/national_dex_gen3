@@ -578,6 +578,8 @@ function More.install(opts)
           if type(b) == "table" then
             local k = X.ab(self, b)
             local goggles = WEATHER_CHIP[id] and heldKind(b) == "safetyGoggles"
+            -- snow (Snowscape, Chilly Reception, Snow Warning) is the cart's hail without the chip
+            if id == "STRINGID_PKMNPELTEDBYHAIL" and self._st and self._st.__ndxSnow then goggles = true end
             if INDIRECT_BEFORE[id] and (k == "MAGIC_GUARD" or ((k == "OVERCOAT" or goggles) and WEATHER_CHIP[id])) and not hub.allowLoss then
               b.__ndxAbSkipLoss = true
               return nil

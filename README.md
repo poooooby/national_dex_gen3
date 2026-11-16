@@ -303,10 +303,8 @@ the game's own Pokémon keep their original data, so its event gifts arrive as u
 - **The original 386 Pokémon,** the story, trainers and maps are unchanged, apart from the
   originals' Fairy typing, their new evolutions and, with **Modern Moves** on, their newer moves.
 - **A few held items work in part.** Power items raise every stat's growth as the Macho Brace
-  does, not just their own; Binding Band does nothing; Loaded Dice only helps the newer
-  multi-strike moves.
-- **A few abilities work in part.** Leaf Guard, Sweet Veil and Flower Veil stop status moves but
-  not a status an attack can cause; Super Luck doesn't stack with a high critical-hit move;
+  does, not just their own; Binding Band does nothing.
+- **A few abilities work in part.** Super Luck doesn't stack with a high critical-hit move;
   Ice Body and Snow Cloak don't block hail damage; Infiltrator and Mold Breaker don't get past
   Soundproof's own check; the Pokémon that change form in battle (Aegislash, Wishiwashi, Minior,
   Palafin, Eiscue, Cramorant) change their stats but keep their picture.

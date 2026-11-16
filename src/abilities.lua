@@ -470,6 +470,7 @@ function RealAbilities.install(opts)
         local kind = st and (W and W.kind and W.kind(st.weather) or st.weather)
         if ab == "SNOW_WARNING" and st and kind ~= "HAIL" then
           st.weather, st.weatherTurns = "HAIL", 0
+          st.__ndxSnow = true                         -- snow (src/move_field.lua): no chip, Ice's Defense
           ad:sayText("STRINGID_STARTEDHAIL", {})
           pcall(ad.playAnim, ad, "general", "HAIL_CONTINUES", nil, nil)
           return true

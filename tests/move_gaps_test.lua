@@ -522,4 +522,27 @@ do
   T.check(hit >= calm * 1.5, "Avalanche doubles after its user was hit (" .. hit .. " / " .. calm .. ")")   -- the damage roll varies: a double is over 1.5x, none under 1.2x
 end
 
+-- ------- snow (Snowscape, Chilly Reception, Snow Warning): no chip, Ice types' Defense
+do
+  local st, ad = battle()
+  use(st, ad, "SNOWSCAPE", st.player, st.player)
+  T.eq(st.__ndxSnow, true, "Snowscape brings snow")
+  local hp = st.enemy.mon.hp
+  Residuals.runTurn(ad)
+  T.eq(st.enemy.mon.hp, hp, "snow doesn't hurt a non-Ice Pokemon")
+  local st2, ad2 = battle()
+  use(st2, ad2, 258, st2.player, st2.player)                             -- HAIL
+  T.check(not st2.__ndxSnow, "(the Hail move is hail)")
+  local hp2 = st2.enemy.mon.hp
+  Residuals.runTurn(ad2)
+  T.check(st2.enemy.mon.hp < hp2, "(and hail does)")
+  local function onJynx(snow)
+    local s3, a3 = battle({ foe = mon({ species = 124 }) })              -- Jynx, Ice / Psychic
+    if snow then use(s3, a3, "SNOWSCAPE", s3.player, s3.player) end
+    local h = s3.enemy.mon.hp; use(s3, a3, 33); return h - s3.enemy.mon.hp
+  end
+  local plain, snowy = onJynx(false), onJynx(true)
+  T.check(snowy < plain, "snow: an Ice type takes less from a physical hit (" .. snowy .. " / " .. plain .. ")")
+end
+
 T.finish("national_dex_gen3 move gaps (" .. GAME .. ")")

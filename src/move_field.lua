@@ -32,6 +32,7 @@ MoveField._roost = nil                            -- Roost's move number
 MoveField._copycat = nil                          -- Copycat's move number
 MoveField._axeKick = nil                          -- Axe Kick's move number
 MoveField._thaws = {}                             -- move number -> true: thaws its frozen user
+MoveField._snowMoves = {}                         -- move number -> true: sets snow (Snowscape...)
 -- the moves Gravity keeps off: the cart's Fly, Bounce, Jump Kick, Hi Jump Kick, Splash, and ours
 -- (install adds Flying Press, Telekinesis, Sky Drop by their rows)
 MoveField._gravityBanned = { [19] = true, [340] = true, [26] = true, [136] = true, [150] = true }
@@ -952,6 +953,9 @@ function MoveField.install(opts)
     if r.id == "COPYCAT" and tonumber(r.index) then MoveField._copycat = tonumber(r.index) end
     if r.id == "AXE_KICK" and tonumber(r.index) then MoveField._axeKick = tonumber(r.index) end
     if THAWS[r.id] and tonumber(r.index) then MoveField._thaws[tonumber(r.index)] = true end
+    if (r.id == "SNOWSCAPE" or r.id == "CHILLY_RECEPTION") and tonumber(r.index) then
+      MoveField._snowMoves[tonumber(r.index)] = true
+    end
     if CHARGE_LINE[r.id] and tonumber(r.index) then MoveField._chargeLine[tonumber(r.index)] = CHARGE_LINE[r.id] end
     if (r.id == "FLYING_PRESS" or r.id == "TELEKINESIS" or r.id == "SKY_DROP") and tonumber(r.index) then
       MoveField._gravityBanned[tonumber(r.index)] = true
@@ -1252,8 +1256,12 @@ function MoveField.install(opts)
       -- a Flying type brought down (Smack Down, Gravity) takes Ground moves; so does one under Thousand Arrows
       local flying = defender.type1 == ID.FLYING or defender.type2 == ID.FLYING
       local roosting = flying and defender.__ndxRoost ~= nil and defender.__ndxRoost == st.turn
+      local okWR, WR = pcall(require, "src.core.game3.battle.rules")
+      local snowy = st.__ndxSnow and okWR and WR.weather.kind(st.weather) == "HAIL"
+        and (defender.type1 == ID.ICE or defender.type2 == ID.ICE) and mtype ~= nil and mtype < 9
       local brought = flying and mtype == ID.GROUND and (defender.__ndxGrounded or (f.gravity or 0) > 0)
-      if not (kind or (f.wonderRoom or 0) > 0 or veil or magnet or brought or roosting or rule == "THOUSAND_ARROWS") then
+      if not (kind or (f.wonderRoom or 0) > 0 or veil or magnet or brought or roosting or snowy
+          or rule == "THOUSAND_ARROWS") then
         return calc(attacker, defender, moveId, o, ...)
       end
       local o2 = {}
@@ -1264,6 +1272,7 @@ function MoveField.install(opts)
         tbl[key] = value
       end
       local mult = 1
+      if snowy then mult = mult * 2 / 3 end                              -- snow: Ice's Defense x1.5
       local okP = pcall(function()
         if kind then
           local t = TERRAIN_BY_KIND[kind]
@@ -1465,6 +1474,15 @@ function MoveField.install(opts)
           pcall(adapter.clearStatus, adapter, user)
           pcall(adapter.say, adapter, prefixed(adapter, user) .. " thawed out!")
         end
+      end
+      -- the weather a move sets: Snowscape and Chilly Reception snow, the Hail move hail
+      if n and type(st) == "table" and (MoveField._snowMoves[n] or n == 258) then
+        local r = { pcall(resolveMove, user, target, moveId, slot, adapter, st, ...) }
+        local okR, Rules = pcall(require, "src.core.game3.battle.rules")
+        local kind = okR and Rules.weather.kind(st.weather) or st.weather
+        if kind == "HAIL" then st.__ndxSnow = MoveField._snowMoves[n] or nil end
+        if not r[1] then error(r[2], 0) end
+        return (unpack or table.unpack)(r, 2)
       end
       -- Copycat: the cart's Mirror Move (its effect), handed the last move anyone used in place of
       -- the last one aimed at its user, for this call

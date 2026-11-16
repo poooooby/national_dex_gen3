@@ -83,7 +83,8 @@ All notable changes to this mod are documented here, in
   Obstruct and Silk Trap let status moves through; Octolock ends when its user leaves; Flare Blitz,
   Scald and the other fiery moves thaw a frozen user; Sunsteel Strike, Moongeist Beam and Photon
   Geyser ignore abilities, and Photon Geyser uses the higher of Attack and Sp. Atk; Avalanche
-  doubles after its user is hit.
+  doubles after its user is hit; Snowscape, Chilly Reception and Snow Warning bring snow (no
+  chip damage, and Ice types take less from physical hits) where they brought hail.
 
 ## [1.12.1] - 2026-11-14
 
