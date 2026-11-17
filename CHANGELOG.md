@@ -3,6 +3,21 @@
 All notable changes to this mod are documented here, in
 [keep a changelog](https://keepachangelog.com/en/1.1.0/) format.
 
+## [1.15.1] - 2026-11-17
+
+### Changed
+
+- **Stat Hints wait for the move.** A tag used to appear the moment a move was chosen, before its
+  animation and text had played. Now it appears once the move that caused it has finished
+  playing, so you see Swords Dance, read "Attack sharply rose!", and then get ATK 2x. On Red to
+  Crystal too.
+
+### Fixed
+
+- **Type badges and Stat Hints on high-DPI screens (most Android phones).** The badges sat far off
+  to the right of the foe's box and on top of yours, and the foe's tags dropped down by your
+  Pokémon. They now sit beside their boxes at any screen density.
+
 ## [1.15.0] - 2026-11-16
 
 ### Changed

@@ -252,6 +252,26 @@ It wraps `Healthbox.draw` and the three `BattleChrome` box draws the same way th
 (process-wide on `Healthbox.__ndxStatHints`; `state.drawChip(text, up, x, y, w, h)` is the test
 seam) and reads the battler's `stages` each draw, so the chips follow every move.
 
+- Cause, then effect (`StatHints.holder`): every engine works a move out before playing it, so a
+  stage is already changed while the move's animation and lines play. While a turn plays back the
+  chips read a HOLD, a copy of the stages per battler (Gen 1/2: per side, with the battler it was
+  taken for; another battler on that side shows nothing until it catches up). The hold is taken
+  on every box drawn while nothing plays, and at these points while a turn plays:
+  - **Gen 3:** "playing" is `AnimSeq.busy()`. Each action is worked out and played as its own
+    sequence, and so is the end of the turn. A wrap of `AnimSeq.update`
+    (`AnimSeq.__ndxStatHintsHold`) takes every battler on `Battle._st` when it returns true, which
+    is before `after_anim_sequence` works out the next action.
+  - **Red:** "playing" is queued rows, `current` or `animPlaying`. Each action is worked out when
+    its queued row runs, so wraps of `BattleState:executeAction` and `:endOfTurn` (`hub.act`) take
+    the hold first.
+  - **Gold:** "playing" is the screen's `phase == "resolving"`. The whole turn is worked out first.
+    A wrap of `Battle:useMove` (outermost call only) reads both sides' stages before the move and
+    keeps them, weakly, on the first event the move makes (`state.marks`). A wrap of the screen's
+    `advanceQueue` takes them into the hold when that event comes up.
+  - **Tests:** `tests/stat_hints_test.lua` and `tests/gen12_extras_test.lua`. The probes
+    (`stat_hints_probe.lua`, `gen12_stat_hints_probe.lua`) check in game that the new chip is not
+    drawn before its move's "ATTACK ... rose" line has played.
+
 - Placement (`state.spot`, `StatHints.layout`, game pixels): a foe's in rows under its box, from its
   left, 120 wide (`FRAME.enemy.rows`); yours in columns left of your box, past its type badges
   (`BADGES`), from y + 3 (a foe's third row ends on y + 2) to the text box (`TEXT_TOP` 112).
@@ -295,7 +315,11 @@ Red from `battle.overlay`, hiding Red's own HUD through `battle.status_hud_visib
 - `src/box_shape.lua` measures a box picture once (weak cache by picture): each row's first and
   last drawn column. A LOVE Image is drawn onto a small canvas of its own and read back
   (`push("all")`, `newImageData`); ImageData (and test stubs with `getPixel`) is read as it is.
-  Nothing is saved or shipped and no file is read.
+  Nothing is saved or shipped and no file is read. The canvas is made with `{ dpiscale = 1 }`.
+  LOVE's default is the screen's DPI scale (2.625 on many Android phones), which read every edge
+  back 2.625× too far out. That was 1.15.0's Android bug: badges far right of the foe's box and on
+  yours, the foe's chips down by your Pokémon. A read-back larger than the picture is still
+  sampled at each picture pixel, so the shape is always in the picture's own pixels.
 - Gen 3: the badges' and chips' box wraps note the picture on `BattleChrome` as the box draws
   (whichever side of our wraps the swap happens, so a second game in the same run, where Facets'
   wrap ends up outside ours, still works). `Shape.likeGame` keeps `EDGES` / `FRAME` for a picture

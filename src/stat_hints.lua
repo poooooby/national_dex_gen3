@@ -1,7 +1,8 @@
 -- Stat Hints (option stat_hints): small chips by each battle HP box naming every stat a Pokemon
 -- has raised or lowered and what it multiplies by ("ATK 2x", "SPA 0.5x", "DEF 0.67x"), read from
--- the battler's stages each time the box is drawn, so they follow every move as it happens (Swords
--- Dance twice: ATK 3x; a Growl after: ATK 2.5x).
+-- the battler's stages each time the box is drawn, so they follow every move (Swords Dance twice:
+-- ATK 3x; a Growl after: ATK 2.5x). A change shows once the move that made it has finished playing
+-- (its animation and its lines), never when it is chosen: see "cause, then effect" below.
 --
 -- Where: a foe's under its box in singles, in rows from the box's left wrapping downward into the
 -- field. Yours, and every box in doubles, in columns beside the box, outward of its type badges:
@@ -86,6 +87,35 @@ function StatHints.chips(get, src, out)
   end
   for i = n + 1, #out do out[i] = nil end
   return out
+end
+
+-- ------- cause, then effect
+-- Every engine works a move out before it shows it: the stat has its new stage while the move's
+-- animation and its lines still play. So the chips read a HOLD, a copy of the stages taken when
+-- the battle last caught up with what it shows, while a move plays: a change appears once the move
+-- that made it has finished. A hold: StatHints.holder(); hold.take(key, get, src) copies
+-- get(src, stat) for every stat into the copy for `key` (a battler, or a side on Gen 1 / 2);
+-- hold.read(key, stat) answers from it (0 for a key never taken: nothing to show yet). One table
+-- per key, made once: a frame makes nothing.
+function StatHints.holder()
+  local held = setmetatable({}, { __mode = "k" })
+  local hold = { held = held }
+  local STATS = StatHints.STATS
+  function hold.take(key, get, src)
+    if key == nil then return end
+    local t = held[key]
+    if not t then t = {}; held[key] = t end
+    for i = 1, #STATS do
+      local k = STATS[i].key
+      t[k] = tonumber(get(src, k)) or 0
+    end
+  end
+  function hold.read(key, stat)
+    local t = key ~= nil and held[key]
+    return t and t[stat] or 0
+  end
+  function hold.has(key) return key ~= nil and held[key] ~= nil end
+  return hold
 end
 
 -- ------- the font and the chips
@@ -528,13 +558,57 @@ function StatHints.install(opts)
     local s = battler.stages
     return type(s) == "table" and s[k] or 0
   end
+  -- cause, then effect: while the battle plays an action back (AnimSeq busy: the engine has
+  -- already worked it out), the chips read the hold taken when it last caught up. It catches up
+  -- each time a played-back sequence ends (an AnimSeq.update wrap, before the next action is
+  -- worked out) and on every box drawn while nothing plays.
+  local hold = state.hold or StatHints.holder()
+  state.hold = hold
+  local okA, AnimSeq = pcall(require, "src.core.game3.battle.anim_seq")
+  if not (okA and type(AnimSeq) == "table" and type(AnimSeq.busy) == "function") then AnimSeq = nil end
+  local okB, BattleMod = pcall(require, "src.core.game3.battle")
+  if not (okB and type(BattleMod) == "table") then BattleMod = nil end
+  function state.playing()
+    if not AnimSeq then return false end
+    local ok, busy = pcall(AnimSeq.busy)
+    return ok and busy == true
+  end
+  -- every battler on the field, its stages as they are now, into the hold
+  function state.caughtUp()
+    local st = BattleMod and rawget(BattleMod, "_st")
+    if type(st) ~= "table" then return end
+    local bs = rawget(st, "battlers")
+    for id = 0, 3 do
+      local b = type(bs) == "table" and bs[id] or nil
+      if b == nil and id == 0 then b = st.player elseif b == nil and id == 1 then b = st.enemy end
+      if type(b) == "table" and type(b.stages) == "table" then hold.take(b, stageOf, b) end
+    end
+  end
+  if AnimSeq and type(AnimSeq.update) == "function" and not AnimSeq.__ndxStatHintsHold then
+    AnimSeq.__ndxStatHintsHold = true
+    local update = AnimSeq.update
+    AnimSeq.update = function(...)
+      local done, x = update(...)
+      if done then
+        local h = Healthbox.__ndxStatHints
+        if h and h.caughtUp then pcall(h.caughtUp) end
+      end
+      return done, x
+    end
+  end
+  local function heldOf(battler, k) return hold.read(battler, k) end
   local spotNow, chipsNow
   local function place(i, x, y, w, h) state.drawChip(chipsNow[i].text, chipsNow[i].up, x, y, w, h) end
   local function drawChips(battler)
     if not (boxX and type(battler) == "table") then return end
     local okOn, on = pcall(state.enabled)
     if okOn and on == false then return end
-    chipsNow = StatHints.chips(stageOf, battler, chips)
+    if state.playing() then
+      chipsNow = StatHints.chips(heldOf, battler, chips)
+    else
+      hold.take(battler, stageOf, battler)
+      chipsNow = StatHints.chips(stageOf, battler, chips)
+    end
     if #chipsNow == 0 then return end
     spotNow = state.spot(boxSide, boxX, boxY, boxDoubles, spotT, boxImg)
     state.hiNow = state.view() ~= nil

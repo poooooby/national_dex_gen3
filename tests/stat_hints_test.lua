@@ -94,6 +94,34 @@ T.check(two[1].up == true and two[2].up == false, "a rise and a drop told apart"
 T.check(SH.color(true) ~= SH.color(false) and SH.UP[2] > SH.UP[1] and SH.DOWN[1] > SH.DOWN[2],
   "a rise is green, a drop red")
 
+-- ------- cause, then effect: the engine works an action out, then plays it (AnimSeq); a change
+-- shows once the action that made it has finished playing
+local AnimSeq = require("src.core.game3.battle.anim_seq")
+local BattleMod = package.loaded["src.core.game3.battle"]
+T.check(AnimSeq.__ndxStatHintsHold and type(state.caughtUp) == "function" and BattleMod ~= nil,
+  "the hold is wired (AnimSeq.update, the battle)")
+local sd = { stages = { attack = 0 } }
+local foeSd = { stages = { attack = 0 } }
+local stOwn = BattleMod and rawget(BattleMod, "_st")
+if BattleMod then BattleMod._st = { battlers = { [0] = sd, [1] = foeSd } } end
+T.eq(#draw("player", sd), 0, "nothing played yet: no chips")
+sd.stages.attack = 2                                  -- Swords Dance worked out...
+AnimSeq._steps = { { kind = "pause", data = {} } }    -- ...and playing
+T.eq(#draw("player", sd), 0, "while Swords Dance plays: no chip yet")
+AnimSeq._steps = nil
+AnimSeq.update()                                      -- it finished (the next action comes now)
+sd.stages.attack = 1                                  -- the foe's Growl worked out...
+foeSd.stages.defense = -1
+AnimSeq._steps = { { kind = "pause", data = {} } }    -- ...and playing
+T.eq(texts(draw("player", sd)), "ATK 2x", "while the foe's Growl plays: Swords Dance's ATK 2x")
+T.eq(#draw("enemy", foeSd), 0, "and nothing on the foe yet")
+T.eq(#draw("player", { stages = { attack = 3 } }), 0, "a battler not on the field when it caught up: none while playing")
+AnimSeq._steps = nil
+AnimSeq.update()
+T.eq(texts(draw("player", sd)), "ATK 1.5x", "the Growl finished: ATK 1.5x")
+T.eq(texts(draw("enemy", foeSd)), "DEF 0.67x", "and the foe's")
+if BattleMod then BattleMod._st = stOwn end
+
 -- ------- singles: a foe's under its box, yours above the text box
 local ec = Healthbox.ENEMY_CENTER
 local ex, ey = ec.x - 32, ec.y - 16

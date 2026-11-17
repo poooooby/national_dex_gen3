@@ -1,7 +1,13 @@
 -- Stat Hints on Gen 1 / Gen 2 (option stat_hints): src/stat_hints.lua's chips (loaded as it is) by
 -- the battle HUDs, read every time a HUD is drawn from the battler's stages as the mechanics layer
 -- keeps them (src/gen12/battle/red.lua / gold.lua A:stage: Red's Sp. Def stage is ours), so they
--- follow every move as it happens.
+-- follow every move. A change shows once the move that made it has finished playing, as on Gen 3
+-- (src/stat_hints.lua "cause, then effect"): while the battle plays a turn back the chips read a
+-- hold per side, taken when it last caught up. Red works each action out as its turn comes (a
+-- queued row runs BattleState:executeAction, then its animation and lines play): the hold is taken
+-- as each action and the end of the turn start. Gold works the whole turn out first: each move's
+-- stages are read as Battle:useMove starts, kept on the first event it makes, and taken into the
+-- hold when the screen reaches that event. Both catch up on every HUD drawn while nothing plays.
 --
 -- Where (160 x 144; no doubles on these games):
 --   the foe's  under its HUD: name, level, HP bar and the underline fill rows 0-31 (x 8-87); the
@@ -49,6 +55,27 @@ function Hints.install(opts)
     local ok, v = pcall(opts.stage, c.battle, c.battler, key)
     return ok and v or 0
   end
+  -- the hold (cause, then effect): one per side, with the battler it was taken for
+  local hold = SH.holder()
+  state.hold = hold
+  local heldMon, hctx = {}, {}
+  local function takeSide(battle, side, battler)
+    if type(battler) ~= "table" then return end
+    hctx.battle, hctx.battler = battle, battler
+    hold.take(side, get, hctx)
+    heldMon[side] = battler
+  end
+  state.takeSide = takeSide
+  -- a stand-in Gold shows (a transformed mon's picture: its __index is the mon) is that mon
+  local function under(m)
+    local mt = type(m) == "table" and getmetatable(m)
+    local i = type(mt) == "table" and rawget(mt, "__index")
+    return type(i) == "table" and i or m
+  end
+  local function same(a, b)
+    return a ~= nil and (rawequal(a, b) or rawequal(under(a), b) or rawequal(a, under(b)))
+  end
+  local function heldOf(side, key) return hold.read(side, key) end
   local current
   local function place(i, x, y) state.drawChip(current[i].text, current[i].up, x, y) end
   -- a mod's box for `side` drawn just now (Shape.seen): the spot by that box, else nil
@@ -67,9 +94,16 @@ function Hints.install(opts)
     end
     return out
   end
-  local function drawFor(battle, battler, spot, side)
-    ctx.battle, ctx.battler = battle, battler
-    current = SH.chips(get, ctx, chips)
+  -- who: the battler's side; playing: the battle is playing a turn back (read the hold)
+  local function drawFor(battle, battler, spot, side, who, playing)
+    if playing and who then
+      if not same(heldMon[who], battler) then return end
+      current = SH.chips(heldOf, who, chips)
+    else
+      if who then takeSide(battle, who, battler) end
+      ctx.battle, ctx.battler = battle, battler
+      current = SH.chips(get, ctx, chips)
+    end
     if #current == 0 then return end
     spot = byBox(side, spot) or spot
     local g = love and love.graphics
@@ -107,17 +141,24 @@ function Hints.install(opts)
       local Shape = state.shape
       return Shape ~= nil and Shape.seen[side].img ~= nil
     end
+    -- a turn playing back: a row queued, one running, or a move's animation
+    local function playing(b)
+      local q = b.queue
+      return (type(q) == "table" and #q > 0) or b.current ~= nil or b.animPlaying == true
+    end
+    state.playing = playing
     -- boxed: from battle.overlay, where a mod's boxes were watched (wide)
     local function drawSides(b, spots, wide, boxed)
+      local busy = playing(b)
       if enemyShown(b, wide) or (boxed and b.enemy and modBox("enemy")) then
         local shake = not wide and b.fx and b.fx.hudShakeX or 0
         if shake ~= 0 then love.graphics.push(); love.graphics.translate(shake, 0) end
-        local ok, err = pcall(drawFor, b, b.enemy, spots.enemy, boxed and "enemy" or nil)
+        local ok, err = pcall(drawFor, b, b.enemy, spots.enemy, boxed and "enemy" or nil, "enemy", busy)
         if shake ~= 0 then love.graphics.pop() end
         if not ok then error(err, 0) end
       end
       if playerShown(b) or (boxed and b.player and modBox("player")) then
-        drawFor(b, b.player, spots.player, boxed and "player" or nil)
+        drawFor(b, b.player, spots.player, boxed and "player" or nil, "player", busy)
       end
     end
     local function ours(b)
@@ -142,6 +183,21 @@ function Hints.install(opts)
           if hub.zone then hub.safely(hub.zone, self, sx, sy) end
           return a, b
         end
+        -- the hold: as each action (its queued row running) and the end of the turn start
+        for _, name in ipairs({ "executeAction", "endOfTurn" }) do
+          local own = BS[name]
+          if type(own) == "function" then
+            BS[name] = function(self, ...)
+              if hub.act then hub.safely(hub.act, self) end
+              return own(self, ...)
+            end
+          end
+        end
+      end
+      hub.act = function(b)
+        if type(b) ~= "table" or (state.data and b.data and b.data ~= state.data) then return end
+        takeSide(b, "enemy", b.enemy)
+        takeSide(b, "player", b.player)
       end
       function state.hud(b, slide)
         state.pending = nil
@@ -188,8 +244,39 @@ function Hints.install(opts)
     if not (shown and self:statusHUDVisible() and not self:hudCleared(side)) then return end
     local mon = self:activeMon(side)
     if type(mon) ~= "table" or type(self.battle) ~= "table" then return end
-    drawFor(self.battle, mon, Hints.CLASSIC[side], side)
+    drawFor(self.battle, mon, Hints.CLASSIC[side], side, side, self.phase == "resolving")
   end
+  -- the hold on Gold: each move's stages read as Battle:useMove starts, kept on the first event it
+  -- makes (weak: gone with the event), taken when the screen pops that event
+  local marks = setmetatable({}, { __mode = "k" })
+  state.marks = marks
+  local function rawStage(t, key) return t[key] end
+  local function before(battle)
+    local snap = { enemyMon = battle.enemy, playerMon = battle.player, enemy = {}, player = {} }
+    hctx.battle = battle
+    for _, s in ipairs(SH.STATS) do
+      local k = s.key
+      hctx.battler = battle.enemy
+      snap.enemy[k] = type(battle.enemy) == "table" and get(hctx, k) or 0
+      hctx.battler = battle.player
+      snap.player[k] = type(battle.player) == "table" and get(hctx, k) or 0
+    end
+    return snap
+  end
+  local function note(battle, mark, snap)
+    local ev = type(battle.events) == "table" and battle.events[mark]
+    if type(ev) == "table" and not marks[ev] then marks[ev] = snap end
+  end
+  local function popped(ui)
+    local q = ui.queue
+    local snap = type(q) == "table" and q[1] and marks[q[1]]
+    if not snap then return end
+    hold.take("enemy", rawStage, snap.enemy)
+    heldMon.enemy = snap.enemyMon
+    hold.take("player", rawStage, snap.player)
+    heldMon.player = snap.playerMon
+  end
+  state.popped = popped
   local hub = GS.__ndxStatHints
   if not hub then
     hub = {}
@@ -209,7 +296,35 @@ function Hints.install(opts)
       return a, b
     end
   end
+  if type(GS.advanceQueue) == "function" and not hub.queueWrapped then
+    hub.queueWrapped = true
+    local advanceQueue = GS.advanceQueue
+    GS.advanceQueue = function(self, ...)
+      if hub.popped then hub.safely(hub.popped, self) end
+      return advanceQueue(self, ...)
+    end
+  end
+  local okG, Battle = pcall(require, "src.battle.gen2.Battle")
+  if okG and type(Battle) == "table" and type(Battle.useMove) == "function" and not hub.moveWrapped then
+    hub.moveWrapped = true
+    local useMove, depth = Battle.useMove, 0
+    Battle.useMove = function(self, ...)
+      depth = depth + 1
+      local mark = depth == 1 and type(self) == "table" and type(self.events) == "table" and #self.events + 1
+      local snap
+      if mark and hub.before then
+        local okS, got = pcall(hub.before, self)
+        if okS then snap = got end
+      end
+      local ok, a, b = pcall(useMove, self, ...)
+      depth = depth - 1
+      if snap and hub.note then pcall(hub.note, self, mark, snap) end
+      if not ok then error(a, 0) end
+      return a, b
+    end
+  end
   hub.after, hub.safely, hub.state = after, safely, state
+  hub.popped, hub.before, hub.note = popped, before, note
   hub.watch = state.shape and state.shape.watch or nil
   return state
 end

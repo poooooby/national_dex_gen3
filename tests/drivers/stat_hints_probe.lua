@@ -20,6 +20,12 @@ local function body(game, log)
     end
     return pred() and true or false
   end
+  -- PROBE_WIN=WxH: the window's size (a wide screen is where Battle Fit raises the foe's box)
+  local ww, wh = (os.getenv("PROBE_WIN") or ""):match("^(%d+)x(%d+)$")
+  if ww and love.window and love.window.setMode then
+    pcall(love.window.setMode, tonumber(ww), tonumber(wh), { resizable = true })
+    log(("window %sx%s"):format(ww, wh))
+  end
   if not waitFor(function() return game.phase == "boot" and game.boot end, 900) then log("FAIL boot"); return end
   game:_handleBootAction({ action = "new_game", name = "HINT", gender = 0 })
   U.wait(240)
@@ -38,6 +44,17 @@ local function body(game, log)
   check(session ~= nil, "field session exists")
   if not session then return end
   local function sp(name) return C.species.byName["SPECIES_" .. name] end
+  -- PROBE_MAP=NAME,x,y: battle there (outdoors, WoobleView's Battle Scene builds the overworld)
+  local pm, px, py = (os.getenv("PROBE_MAP") or ""):match("^([%w_]+),(%d+),(%d+)$")
+  if pm then
+    local Map = require("src.core.game3.map")
+    local Warp = require("src.core.game3.warp")
+    local Profile = require("src.core.game3.profile")
+    local mapId = Profile.forSession(session).map.enginePrefix .. pm
+    Warp.request(nil, game, mapId, tonumber(px), tonumber(py), "down", {})
+    check(waitFor(function() return Map.current == mapId and not Warp.isBusy() end, 1200), "warped to " .. mapId)
+    U.wait(tonumber(os.getenv("PROBE_SETTLE") or "") or 300)
+  end
 
   local state = Healthbox.__ndxStatHints
   check(state ~= nil, "Stat Hints are installed")
@@ -59,7 +76,9 @@ local function body(game, log)
       return drawBadge(t, x, y)
     end
   end
+  local atkFrame = false                    -- your ATK chip drawn this frame (cause, then effect)
   state.drawChip = function(text, up, x, y, w, h)
+    if text:sub(1, 3) == "ATK" and y > 60 then atkFrame = text end
     local key = text .. "@" .. x .. "," .. y
     if not seenChip[key] then
       seenChip[key] = true
@@ -130,7 +149,10 @@ local function body(game, log)
   -- Swords Dance twice, through the battle's own menu: after each, the chip is the stage as it is now
   -- (Spearow's Growl may take one back each turn: the chip follows that too)
   local after = {}
+  local AnimSeq = require("src.core.game3.battle.anim_seq")
   for turn = 1, 2 do
+    frame()
+    local beforeChip = myAttackChip()
     local sn = bapi:snapshot()
     submit({ revision = sn.revision, kind = "menu", choice = "fight" })
     waitFor(function() return Ui._mode == "moves" end, 240)
@@ -138,6 +160,26 @@ local function body(game, log)
     sn = bapi:snapshot()
     local ok, why = submit({ revision = sn.revision, kind = "move", slot = 1 })
     check(ok and true or false, ("turn %d: Swords Dance chosen %s"):format(turn, tostring(why or "")))
+    -- cause, then effect: while Swords Dance plays (the first sequence after the choice: Gyarados
+    -- moves first) the chip stays what it was; it changes once the move has finished
+    local span, early, frames, later = 0, nil, 0, nil
+    for _ = 1, 6000 do
+      if Battle.isActive() and Ui._mode == "menu" and not Anim.busy() and not AnimSeq.busy() then break end
+      atkFrame = false
+      if Ui.dialogPending and Ui.dialogPending() then U.tap(game, "a") else U.wait(1) end
+      local busy = AnimSeq.busy()
+      if busy and span == 0 then span = 1 elseif not busy and span == 1 then span = 2 end
+      if span == 1 then
+        frames = frames + 1
+        if atkFrame and atkFrame ~= beforeChip then early = early or atkFrame end
+      elseif span == 2 and atkFrame and not later then
+        later = atkFrame
+      end
+    end
+    log(("turn %d: before %s, %d frames of Swords Dance, then %s"):format(turn, tostring(beforeChip), frames, tostring(later)))
+    check(frames > 0, ("turn %d: Swords Dance played back"):format(turn))
+    check(early == nil, ("turn %d: no new chip while Swords Dance plays (%s)"):format(turn, tostring(early)))
+    check(later ~= nil and later ~= beforeChip, ("turn %d: the new chip once it finished (%s)"):format(turn, tostring(later)))
     check(toMenu(), ("turn %d: back at the menu"):format(turn))
     frame()
     local stage = st.player.stages.attack or 0

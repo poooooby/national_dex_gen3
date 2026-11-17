@@ -109,9 +109,10 @@ Crystal have their own section after them.
   a Pokémon hit by Soak, or using Roost or Transform, shows its new types. They stay beside their
   box in singles and doubles, and with WoobleView's Fill Screen.
 - 📊 **Stat Hints in battle:** small tags by each HP box show every stat a Pokémon has raised or
-  lowered and what it multiplies by: "ATK 2x" in green, "SPA 0.5x" in red, "ACC 1.33x". They
-  update the moment a move lands, so two Swords Dances read ATK 3x, and a Growl after brings it
-  back to ATK 2.5x. The foe's sit under its box, yours beside your box, and in doubles each
+  lowered and what it multiplies by: "ATK 2x" in green, "SPA 0.5x" in red, "ACC 1.33x". A tag
+  appears once the move that caused it has finished playing, after its animation and its "Attack
+  rose!" line, so cause comes before effect. Two Swords Dances read ATK 3x, and a Growl after
+  brings it back to ATK 2.5x. The foe's sit under its box, yours beside your box, and in doubles each
   Pokémon's stay by its own box without covering another. With WoobleView they're drawn sharp at
   your screen's full resolution in a smooth font.
 - 📦 **A bigger PC:** 40 boxes, room for 1,200 Pokémon, so every species and form fits with

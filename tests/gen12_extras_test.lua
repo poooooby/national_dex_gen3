@@ -380,6 +380,29 @@ for _, version in ipairs(H.versions()) do
     T.eq(table.concat(chips, " "), "ATK 2x@2,34 SPE 0.67x@" .. (304 - w) .. ",47",
       version .. ": with no mod's boxes drawn, the game's places")
     love.graphics.draw = real
+    -- cause, then effect: Red works each action out as its queued row runs (executeAction), then
+    -- plays its animation and lines; a change shows once that has finished
+    local hub = require("src.battle.BattleState").__ndxStatHints
+    T.check(hub and hub.act, version .. ": the hold is taken as each action starts")
+    local stages = { attack = 0 }
+    local held = Hints.install({ require = require, generation = 1, core = HintCore,
+      stage = function(_, battler, key) return battler == b.player and stages[key] or 0 end })
+    local said = {}
+    held.drawChip = function(text) said[#said + 1] = text end
+    local function shown() said = {}; held.overlay(b); return table.concat(said, " ") end
+    b.queue, b.current, b.animPlaying = {}, nil, false
+    T.eq(shown(), "", version .. ": nothing played yet: no chips")
+    b.queue = { {}, {} }                                 -- the turn's rows
+    if hub and hub.act then hub.act(b) end               -- your action starts...
+    stages.attack = 2                                    -- ...Swords Dance worked out
+    T.eq(shown(), "", version .. ": while Swords Dance plays: no chip yet")
+    if hub and hub.act then hub.act(b) end               -- the foe's action starts
+    stages.attack = 1                                    -- its Growl worked out
+    T.eq(shown(), "ATK 2x", version .. ": while the foe's Growl plays: Swords Dance's ATK 2x")
+    b.queue, b.current = {}, { text = "ATTACK fell!" }
+    T.eq(shown(), "ATK 2x", version .. ": while its last line is up: still ATK 2x")
+    b.current = nil
+    T.eq(shown(), "ATK 1.5x", version .. ": the turn played out: ATK 1.5x")
   else
     local hub = require("src.ui.gen2.BattleState").__ndxBadges
     T.check(hub and hub.after, version .. ": the HP boxes are wrapped")
@@ -422,6 +445,52 @@ for _, version in ipairs(H.versions()) do
     hub.after(self, "enemy")
     T.eq(#drawn, 0, version .. ": none with the option off")
     setOption(run, "type_badges", true)
+    -- Stat Hints, cause then effect: Gold works the whole turn out, then plays its events; each
+    -- move's stages are read as it starts and kept on its first event, taken when that is shown
+    local hh = require("src.ui.gen2.BattleState").__ndxStatHints
+    T.check(hh and hh.popped and hh.before and hh.note, version .. ": the hold is wired (moves, the screen's queue)")
+    T.check(hh and hh.moveWrapped,
+      version .. ": Battle:useMove is wrapped")
+    if hh and hh.popped then
+      local stages = { attack = 0 }
+      local hs = Hints.install({ require = require, generation = 2, core = HintCore,
+        stage = function(_, m, key) return m == mine and stages[key] or 0 end })
+      local said = {}
+      hs.drawChip = function(text) said[#said + 1] = text end
+      local fight = { events = {}, enemy = foe, player = mine }
+      local ui = { data = data, showEnemyHud = true, showPlayerHud = true, statusHUDVisible = yes,
+        hudCleared = no, activeMon = function(_, side) return side == "enemy" and foe or mine end,
+        battle = fight, phase = "menu", queue = {} }
+      local function shown() said = {}; hh.after(ui, "player"); return table.concat(said, " ") end
+      T.eq(shown(), "", version .. ": nothing played yet: no chips")
+      -- the turn worked out: your Swords Dance, then the foe's Growl
+      local snap = hh.before(fight)
+      stages.attack = 2
+      fight.events = { { kind = "move" }, { kind = "stage" } }
+      hh.note(fight, 1, snap)
+      snap = hh.before(fight)
+      stages.attack = 1
+      fight.events[3], fight.events[4] = { kind = "move" }, { kind = "stage" }
+      hh.note(fight, 3, snap)
+      ui.queue, ui.phase = fight.events, "resolving"
+      fight.events = {}
+      T.eq(shown(), "", version .. ": the turn worked out, nothing shown yet: no chip")
+      local function pop() hh.popped(ui); table.remove(ui.queue, 1) end
+      pop(); pop()
+      T.eq(shown(), "", version .. ": while Swords Dance plays: no chip yet")
+      pop()
+      T.eq(shown(), "ATK 2x", version .. ": the foe's move comes up: Swords Dance's ATK 2x")
+      pop()
+      T.eq(shown(), "ATK 2x", version .. ": while the Growl's line is up: still ATK 2x")
+      ui.phase = "menu"
+      T.eq(shown(), "ATK 1.5x", version .. ": the turn played out: ATK 1.5x")
+      local other = { stages = {} }
+      ui.phase = "resolving"
+      local own = ui.activeMon
+      ui.activeMon = function(_, side) return side == "enemy" and foe or other end
+      T.eq(shown(), "", version .. ": a Pokemon sent out since: none of the last one's while playing")
+      ui.activeMon, ui.phase = own, "menu"
+    end
   end
 
   -- ------- Bigger PC

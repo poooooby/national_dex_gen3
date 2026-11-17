@@ -36,8 +36,9 @@ end
 local DP_ENEMY = pic(128, 32, rowsOf(2, { 95, 97, 98, 98, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 101, 103,
   105, 105, 103, 101, 99, 99, 99, 99, 98, 98, 97, 95 }, 0, "enemy"))
 -- HGSS's box of yours: its left edge per row from row 0, slanting out to 0 at the foot
-local HGSS_PLAYER = pic(128, 64, rowsOf(0, { 14, 14, 13, 13, 13, 13, 13, 12, 12, 12, 12, 11, 11, 11, 11, 10, 10, 10,
-  9, 9, 9, 8, 8, 8, 7, 7, 7, 6, 6, 6, 5, 3, 1, 0, 0, 0 }, 108, "player"))
+local HGSS_ROWS = rowsOf(0, { 14, 14, 13, 13, 13, 13, 13, 12, 12, 12, 12, 11, 11, 11, 11, 10, 10, 10,
+  9, 9, 9, 8, 8, 8, 7, 7, 7, 6, 6, 6, 5, 3, 1, 0, 0, 0 }, 108, "player")
+local HGSS_PLAYER = pic(128, 64, HGSS_ROWS)
 -- a recolour of the game's foe box: its frame to 92 on the top rows, the shadow tail on to 100 under them
 local GAME_LIKE = (function()
   local rows = {}
@@ -58,6 +59,47 @@ T.check(not Shape.likeGame(s, EDGES.enemy, "enemy"), "DP's frame is not the game
 T.check(Shape.likeGame(Shape.of(GAME_LIKE), EDGES.enemy, "enemy"), "a recolour of the game's box is")
 local x, y = Shape.badgeSpot(s, "enemy", 1, 12, 8, 8, 2)
 T.check(x == 102 and y == 2, ("one badge clears DP's frame by 2 px (%s,%s)"):format(x, y))
+
+-- ------- an Android phone's screen (DPI scale 2.625): a picture (an Image: read back through a
+-- canvas) is measured in its own pixels. The canvas is asked for at scale 1; a read-back larger
+-- than the picture anyway is sampled at each picture pixel, never measured 2.625 times too far out
+do
+  local G = love.graphics
+  local own = { newCanvas = G.newCanvas, push = G.push, pop = G.pop }
+  local asked
+  local function fakeCanvas(w, h, settings)
+    asked = settings
+    local k = (settings and settings.dpiscale) or 2.625        -- (LOVE's default: the screen's)
+    local dw, dh = math.floor(w * k + 0.5), math.floor(h * k + 0.5)
+    return {
+      newImageData = function()
+        return { getDimensions = function() return dw, dh end,
+          getPixel = function(_, px, py)
+            local r = HGSS_ROWS[math.floor(py / k)]
+            local cx = math.floor(px / k)
+            return 1, 1, 1, (r and cx >= r[1] and cx <= r[2]) and 1 or 0
+          end }
+      end,
+      release = function() end,
+    }
+  end
+  G.newCanvas, G.push, G.pop = fakeCanvas, function() end, function() end
+  local stubs = {}
+  for _, k in ipairs({ "setCanvas", "origin", "setScissor", "setShader", "setStencilTest", "setBlendMode",
+    "setColor", "clear", "draw" }) do stubs[k] = G[k]; G[k] = function() end end
+  local image = { getDimensions = function() return 128, 64 end }  -- an Image: no getPixel
+  local m = Shape.of(image)
+  T.check(asked and asked.dpiscale == 1, "the measuring canvas is made at DPI scale 1")
+  T.check(m and m.w == 128 and m.minX == 0 and m.maxX == 108 and m.left[0] == 14,
+    ("an Image measured in its own pixels (%s, left %s)"):format(m and m.maxX, m and m.left[0]))
+  -- a canvas that comes back at the screen's scale all the same: still the picture's pixels
+  G.newCanvas = function(w, h) return fakeCanvas(w, h, nil) end
+  local m2 = Shape.of({ getDimensions = function() return 128, 64 end })
+  T.check(m2 and m2.w == 128 and m2.maxX == 108 and m2.left[0] == 14 and m2.bottom == 35,
+    ("a read-back 2.625x the picture still measures it in its pixels (%s, %s)"):format(m2 and m2.maxX, m2 and m2.left[0]))
+  G.newCanvas, G.push, G.pop = own.newCanvas, own.push, own.pop
+  for k, f in pairs(stubs) do G[k] = f end
+end
 x = Shape.badgeSpot(s, "enemy", 2, 12, 8, 8, 2)
 T.check(x == 102 and x + 8 >= 105 + 3, "a second, down and out, clears its arrow too")
 local hp = Shape.of(HGSS_PLAYER)

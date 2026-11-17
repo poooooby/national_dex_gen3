@@ -175,6 +175,30 @@ local function body(game, log, dir)
     U.shot(game, ("%s/%s_hints_turn%d.png"):format(dir, version, turn))
   end
 
+  -- cause, then effect: while a turn plays, the chip a move makes must not show before that move's
+  -- "ATTACK ... rose" line has played. lineAhead() says whether that line is still to come (Red: not
+  -- yet the row on screen; Gold: still in the screen's queue); done() when the turn has played out.
+  local function rising(t)
+    t = type(t) == "string" and t:upper() or ""
+    return t:find("ATTACK") ~= nil and (t:find("ROSE") ~= nil or t:find("RISE") ~= nil)
+  end
+  local function watch(turn, want, lineAhead, done)
+    local seenAt, early, f = nil, false, 0
+    for _ = 1, 1500 do
+      if done() then break end
+      local ahead = lineAhead()
+      chips, seen = {}, {}
+      U.tap(game, "a"); U.wait(3); f = f + 1
+      if not seenAt and has(want) then
+        seenAt = f
+        early = ahead and lineAhead()
+      end
+    end
+    log(("turn %d: %s first drawn on step %s"):format(turn, want, tostring(seenAt)))
+    check(seenAt ~= nil, ("turn %d: %s showed during the turn"):format(turn, want))
+    check(not early, ("turn %d: %s not drawn before its move's line played"):format(turn, want))
+  end
+
   if gen == 1 then
     local BattleState = require("src.battle.BattleState")
     local battle = BattleState.newWild(game, "SNORLAX", 20)
@@ -193,8 +217,19 @@ local function body(game, log, dir)
       return battle.phase == "menu"
     end
     check(toMenu(), "the battle reaches its menu")
+    local lineSeen
+    local function redAhead()
+      local cur = battle.current
+      if type(cur) == "table" and rising(cur.text) then lineSeen = true end
+      if not lineSeen then return true end
+      return false
+    end
     for turn, slot in ipairs({ 1, 2 }) do
+      lineSeen = false
       battle:resolveTurn(battle.player.curMoves[slot])
+      watch(turn, turn == 1 and "ATK 2x" or "ATK 3x", redAhead, function()
+        return battle.phase == "menu" and #battle.queue == 0 and battle.current == nil
+      end)
       check(toMenu(), ("turn %d: back at the menu"):format(turn))
       after(turn, turn == 1 and { "ATK 2x", "SPA 2x", "SPE 2x", "DEF 0.67x", "SPD 0.67x" }
         or { "ATK 3x", "SPA 2x", "SPE 2x" })
@@ -213,9 +248,18 @@ local function body(game, log, dir)
       U.tap(game, "a"); U.wait(8)
     end
     local b = screen.battle
+    local function goldAhead()
+      for _, e in ipairs(screen.queue or {}) do
+        if type(e) == "table" and rising(e.text) then return true end
+      end
+      return false
+    end
     for turn, slot in ipairs({ 1, 2 }) do
-      -- (the turn is run directly: no button presses, which would choose another move)
-      b:takeTurn({ kind = "move", move = b.player.moves[slot].id })
+      -- (the screen's own submit: the turn worked out, then played with its lines)
+      screen:submit({ kind = "move", move = b.player.moves[slot].id })
+      watch(turn, turn == 1 and "ATK 2x" or "ATK 3x", goldAhead, function()
+        return screen.phase ~= "resolving"
+      end)
       U.wait(30)
       after(turn, turn == 1 and { "ATK 2x", "SPA 2x", "SPE 2x", "DEF 0.67x", "SPD 0.67x" }
         or { "ATK 3x", "SPA 2x", "SPE 2x" })

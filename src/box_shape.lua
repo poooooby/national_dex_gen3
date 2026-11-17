@@ -26,7 +26,9 @@ function Shape.pixels(img)
   if not (okD and type(w) == "number" and type(h) == "number" and w > 0 and h > 0 and w <= 512 and h <= 512) then
     return nil
   end
-  local okC, canvas = pcall(G.newCanvas, w, h)
+  -- (one canvas pixel per picture pixel: LOVE's default is the screen's DPI scale, 2.625 on many
+  -- Android phones, which read every edge back that many times too far out)
+  local okC, canvas = pcall(G.newCanvas, w, h, { dpiscale = 1 })
   if not (okC and canvas) then return nil end
   G.push("all")
   local okR = pcall(function()
@@ -56,12 +58,21 @@ function Shape.of(img)
   cache[img] = false
   local d = Shape.pixels(img)
   if not d then return nil end
-  local okD, w, h = pcall(d.getDimensions, d)
-  if not (okD and type(w) == "number" and type(h) == "number") then return nil end
+  local okD, dw, dh = pcall(d.getDimensions, d)
+  if not (okD and type(dw) == "number" and type(dh) == "number" and dw > 0 and dh > 0) then return nil end
+  -- measured in the PICTURE's pixels: a read-back larger than the picture (a canvas at a DPI
+  -- scale) is sampled at each picture pixel's centre
+  local w, h = dw, dh
+  if d ~= img and type(img.getDimensions) == "function" then
+    local okI, iw, ih = pcall(img.getDimensions, img)
+    if okI and type(iw) == "number" and type(ih) == "number" and iw > 0 and ih > 0 then w, h = iw, ih end
+  end
+  local rx, ry = dw / w, dh / h
   local s = { w = w, h = h, left = {}, right = {} }
   for y = 0, h - 1 do
+    local sy = math.min(dh - 1, math.floor((y + 0.5) * ry))
     for x = 0, w - 1 do
-      local _, _, _, a = d:getPixel(x, y)
+      local _, _, _, a = d:getPixel(math.min(dw - 1, math.floor((x + 0.5) * rx)), sy)
       if a and a > 0 then
         if s.left[y] == nil then s.left[y] = x end
         s.right[y] = x
