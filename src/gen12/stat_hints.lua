@@ -13,7 +13,9 @@
 -- Red's wide layout (WideBattle's panels) the same by its panels. Drawn as the type badges are
 -- (src/gen12/type_badges.lua): Red with the HUDs (drawHUDs, and after the coloured path's
 -- drawZonePass), or from battle.overlay for the wide layout; Gold after drawEnemyHud /
--- drawPlayerHud.
+-- drawPlayerHud. A mod's Gen 3 box drawn in place of a HUD (Facets' BATTLE UI in wide battles) is
+-- seen as the type badges see it (src/box_shape.lua, opts.shape): the foe's chips then start under
+-- that box, yours end at its right edge just above it.
 local Hints = {}
 
 Hints.CLASSIC = {
@@ -26,10 +28,12 @@ Hints.WIDE1 = {
 }
 
 -- opts: { require, generation, core (src/stat_hints.lua), stage = fn(battle, battler, key) ->
--- stage, enabled = fn() -> bool, data, log }. Returns the state (state.overlay: Red's hook body).
+-- stage, enabled = fn() -> bool, data, log, shape = src/box_shape.lua (optional) }. Returns the
+-- state (state.overlay: Red's hook body).
 function Hints.install(opts)
   local require, gen, SH = opts.require, opts.generation, opts.core
-  local state = { enabled = opts.enabled or function() return true end, log = opts.log, data = opts.data }
+  local state = { enabled = opts.enabled or function() return true end, log = opts.log, data = opts.data,
+    shape = opts.shape }
   local image = SH.cache()
   state.drawChip = function(text, up, x, y)
     local img = image(text, up)
@@ -47,10 +51,27 @@ function Hints.install(opts)
   end
   local current
   local function place(i, x, y) state.drawChip(current[i].text, current[i].up, x, y) end
-  local function drawFor(battle, battler, spot)
+  -- a mod's box for `side` drawn just now (Shape.seen): the spot by that box, else nil
+  local boxSpot = { enemy = {}, player = {} }
+  local function byBox(side, spot)
+    local Shape = state.shape
+    local seen = side and Shape and Shape.seen[side]
+    local s = seen and seen.img and Shape.of(seen.img)
+    if not s then return nil end
+    local out = boxSpot[side]
+    out.mode, out.limit = spot.mode, spot.limit
+    if side == "enemy" then
+      out.x, out.y = seen.x + s.minX, seen.y + s.bottom + 2
+    else
+      out.x, out.y = seen.x + s.maxX + 1, math.max(0, seen.y + s.top - SH.PIXEL.H - 1)
+    end
+    return out
+  end
+  local function drawFor(battle, battler, spot, side)
     ctx.battle, ctx.battler = battle, battler
     current = SH.chips(get, ctx, chips)
     if #current == 0 then return end
+    spot = byBox(side, spot) or spot
     local g = love and love.graphics
     local shader = g and g.getShader and g.getShader()
     if shader then g.setShader() end
@@ -80,15 +101,24 @@ function Hints.install(opts)
       return not b.fieldCleared and b:statusHUDVisible() and p and not b.safari and not b.demo
         and not b.showPlayerBack and (b.introSlide or 0) == 0 and not p.fainted
     end
-    local function drawSides(b, spots, wide)
-      if enemyShown(b, wide) then
+    -- a mod's box for that side drawn this frame (it may hide the game's own through
+    -- battle.status_hud_visible, as Facets' BATTLE UI does: the box is shown, as the mod's)
+    local function modBox(side)
+      local Shape = state.shape
+      return Shape ~= nil and Shape.seen[side].img ~= nil
+    end
+    -- boxed: from battle.overlay, where a mod's boxes were watched (wide)
+    local function drawSides(b, spots, wide, boxed)
+      if enemyShown(b, wide) or (boxed and b.enemy and modBox("enemy")) then
         local shake = not wide and b.fx and b.fx.hudShakeX or 0
         if shake ~= 0 then love.graphics.push(); love.graphics.translate(shake, 0) end
-        local ok, err = pcall(drawFor, b, b.enemy, spots.enemy)
+        local ok, err = pcall(drawFor, b, b.enemy, spots.enemy, boxed and "enemy" or nil)
         if shake ~= 0 then love.graphics.pop() end
         if not ok then error(err, 0) end
       end
-      if playerShown(b) then drawFor(b, b.player, spots.player) end
+      if playerShown(b) or (boxed and b.player and modBox("player")) then
+        drawFor(b, b.player, spots.player, boxed and "player" or nil)
+      end
     end
     local function ours(b)
       if type(b) ~= "table" or b.blankForAskName or b.blackoutBlank or not on() then return false end
@@ -137,7 +167,7 @@ function Hints.install(opts)
       if not ours(b) or type(b.drawHUDs) ~= "function" then return end
       local wide = type(b.wideLayout) == "function" and b:wideLayout()
       if not wide and state.classicWithBoxes then return end
-      drawSides(b, wide and Hints.WIDE1 or Hints.CLASSIC, wide)
+      drawSides(b, wide and Hints.WIDE1 or Hints.CLASSIC, wide, wide)
     end
     return state
   end
@@ -158,32 +188,38 @@ function Hints.install(opts)
     if not (shown and self:statusHUDVisible() and not self:hudCleared(side)) then return end
     local mon = self:activeMon(side)
     if type(mon) ~= "table" or type(self.battle) ~= "table" then return end
-    drawFor(self.battle, mon, Hints.CLASSIC[side])
+    drawFor(self.battle, mon, Hints.CLASSIC[side], side)
   end
   local hub = GS.__ndxStatHints
   if not hub then
     hub = {}
     GS.__ndxStatHints = hub
     local drawEnemy, drawPlayer = GS.drawEnemyHud, GS.drawPlayerHud
+    -- (a mod's box drawn inside is watched: hub.watch, src/box_shape.lua)
     GS.drawEnemyHud = function(self, ...)
-      local a, b = drawEnemy(self, ...)
+      local a, b
+      if hub.watch then a, b = hub.watch(drawEnemy, self, ...) else a, b = drawEnemy(self, ...) end
       if hub.after then hub.safely(hub.after, self, "enemy") end
       return a, b
     end
     GS.drawPlayerHud = function(self, ...)
-      local a, b = drawPlayer(self, ...)
+      local a, b
+      if hub.watch then a, b = hub.watch(drawPlayer, self, ...) else a, b = drawPlayer(self, ...) end
       if hub.after then hub.safely(hub.after, self, "player") end
       return a, b
     end
   end
   hub.after, hub.safely, hub.state = after, safely, state
+  hub.watch = state.shape and state.shape.watch or nil
   return state
 end
 
 -- Red: the battle.overlay hook body (state from Hints.install)
 function Hints.overlayHook(state)
+  local watch = state.shape and state.shape.watch
   return function(next, b, ...)
-    local r = next(b, ...)
+    local r
+    if watch then r = watch(next, b, ...) else r = next(b, ...) end
     local ok, err = pcall(state.overlay, b)
     if not ok and state.log and not state.warned then
       state.warned = true

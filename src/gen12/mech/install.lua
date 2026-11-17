@@ -35,6 +35,28 @@ function Install.register(opts)
   end
   local okE, Effects = false, nil
   if gen == 2 then okE, Effects = pcall(opts.require, "src.battle.gen2.Effects") end
+  -- Gold's charge line: an engine that reads Effects.CHARGE[effect].text as a label of the game's
+  -- own text (Effects.chargeText, ROM text by label) has none for ours, so our charge moves say
+  -- their own line ("%s vanished instantly!", the user's name filled in); an older engine prints
+  -- CHARGE[effect].text itself. Process-wide (games switch in-process): the lines live on the module.
+  if okE and type(Effects) == "table" and type(Effects.chargeText) == "function" then
+    if not Effects.__ndxChargeLines then
+      Effects.__ndxChargeLines = {}
+      local own = Effects.chargeText
+      local okS, Strings = pcall(opts.require, "src.core.Strings")
+      Effects.chargeText = function(data, effect, moveId, name, ...)
+        local line = Effects.__ndxChargeLines[effect]
+        if line then
+          if okS and Strings then
+            local okF, text = pcall(Strings, line, name)
+            if okF and type(text) == "string" then return text end
+          end
+          return (line:gsub("%%s", tostring(name or "")))
+        end
+        return own(data, effect, moveId, name, ...)
+      end
+    end
+  end
 
   local result = { registered = 0, failed = 0, looks = {}, missing = {}, specs = {} }
   local firstError
@@ -64,6 +86,7 @@ function Install.register(opts)
               if spec.charge.vanish then rec.semiInvulnerable = true end
             elseif okE and type(Effects.CHARGE) == "table" then
               Effects.CHARGE[effectId] = { text = spec.charge.text, vanish = spec.charge.vanish or nil }
+              if Effects.__ndxChargeLines then Effects.__ndxChargeLines[effectId] = spec.charge.text end
             end
           end
           if gen == 1 then

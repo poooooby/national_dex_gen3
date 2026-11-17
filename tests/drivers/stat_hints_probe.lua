@@ -2,7 +2,9 @@
 -- Dance against a wild Spearow: Swords Dance twice through the battle's own menu, the chip by your box
 -- checked against your Attack stage after every move (stacking; Spearow's Growl in between lowers
 -- it); then several changes on both sides (shots), and a doubles battle with five changes on each of
--- the four Pokemon: every chip checked clear of every HP box. Shots in SHOT_DIR.
+-- the four Pokemon: every chip and type badge checked clear of every HP box: of the box picture
+-- actually drawn, row by row, when it is a mod's (Facets' battle box sets, src/box_shape.lua), else
+-- of the game's frame (SH.FRAME). Shots in SHOT_DIR.
 --   SHOT_DIR=<dir> POKEPORT_GAME=emerald POKEPORT_VERSION=emerald \
 --   POKEPORT_DRIVER=mods/national_dex_gen3/tests/drivers/stat_hints_probe.lua love .
 
@@ -41,9 +43,22 @@ local function body(game, log)
   check(state ~= nil, "Stat Hints are installed")
   if not state then return end
   local SH = dofile("mods/national_dex_gen3/src/stat_hints.lua")
+  local Shape = dofile("mods/national_dex_gen3/src/box_shape.lua")
   local drawChip = state.drawChip
-  local chips, boxes = {}, {}
-  local seenChip, seenBox = {}, {}
+  local chips, boxes, badges = {}, {}, {}
+  local seenChip, seenBox, seenBadge = {}, {}, {}
+  local badgeState = Healthbox.__ndxBadges
+  if badgeState then
+    local drawBadge = badgeState.drawBadge
+    badgeState.drawBadge = function(t, x, y)
+      local key = t .. "@" .. x .. "," .. y
+      if not seenBadge[key] then
+        seenBadge[key] = true
+        badges[#badges + 1] = { text = "badge " .. t, x = x, y = y, w = 12, h = 12 }
+      end
+      return drawBadge(t, x, y)
+    end
+  end
   state.drawChip = function(text, up, x, y, w, h)
     local key = text .. "@" .. x .. "," .. y
     if not seenChip[key] then
@@ -54,11 +69,15 @@ local function body(game, log)
   end
   log("drawn at " .. (state.view() and "window resolution (WoobleView)" or "the game's pixels"))
   -- every HP box drawn, from the cart's own draws (their pictures' frames: SH.FRAME)
-  for _, f in ipairs({ { "drawEnemyBox", "enemy" }, { "drawPlayerBox", "player" } }) do
-    local inner, side = Chrome[f[1]], f[2]
+  -- (the picture on BattleChrome as each box draws: a mod's set is swapped in for the draw)
+  for _, f in ipairs({ { "drawEnemyBox", "enemy", "_enemyBox" }, { "drawPlayerBox", "player", "_playerBox" } }) do
+    local inner, side, field = Chrome[f[1]], f[2], f[3]
     Chrome[f[1]] = function(x, y, ...)
       local key = side .. "@" .. x .. "," .. y
-      if not seenBox[key] then seenBox[key] = true; boxes[#boxes + 1] = { side = side, x = x, y = y } end
+      if not seenBox[key] then
+        seenBox[key] = true
+        boxes[#boxes + 1] = { side = side, x = x, y = y, img = Chrome[field] }
+      end
       return inner(x, y, ...)
     end
   end
@@ -67,13 +86,14 @@ local function body(game, log)
     local key = "d" .. tostring(isPlayer) .. "@" .. x .. "," .. y
     if not seenBox[key] then
       seenBox[key] = true
-      boxes[#boxes + 1] = { side = isPlayer and "player" or "enemy", x = x, y = y, doubles = true }
+      boxes[#boxes + 1] = { side = isPlayer and "player" or "enemy", x = x, y = y, doubles = true,
+        img = Chrome[isPlayer and "_doublesPlayerBox" or "_doublesOpponentBox"] }
     end
     return innerD(isPlayer, x, y, ...)
   end
   local function frame()
     U.wait(2)
-    chips, boxes, seenChip, seenBox = {}, {}, {}, {}
+    chips, boxes, badges, seenChip, seenBox, seenBadge = {}, {}, {}, {}, {}, {}
     U.wait(1)
   end
 
@@ -135,27 +155,62 @@ local function body(game, log)
   st.enemy.stages.defense, st.enemy.stages.speed, st.enemy.stages.accuracy, st.enemy.stages.evasion = -1, 2, -1, 1
   frame()
   U.still(game, dir .. "/hints_singles.png")
+  -- a mod's box picture (its rows), or nil: the game's own frame
+  local function modShape(b)
+    local s = b.img and Shape.of(b.img)
+    if s and not Shape.likeGame(s, SH.BADGE.edges[b.side], b.side) then return s end
+    return nil
+  end
+  local function onBox(c, b)
+    local s = modShape(b)
+    if s then
+      for y = math.max(0, math.floor(c.y - b.y)), math.min(s.h - 1, math.ceil(c.y + c.h - b.y) - 1) do
+        local l, r = s.left[y], s.right[y]
+        if l and c.x < b.x + r + 1 and c.x + c.w > b.x + l then return true end
+      end
+      return false
+    end
+    local F = SH.FRAME
+    local x0, x1, y0, y1
+    if b.doubles then
+      x0 = b.x + (b.side == "player" and F.doubles.playerLeft or 0)
+      x1 = b.x + (b.side == "player" and 103 or F.doubles.enemyRight)
+      y0, y1 = b.y + F.doubles.top, b.y + F.doubles.bottom
+    else
+      local e = b.side == "player" and F.player or F.enemy
+      x0, x1, y0, y1 = b.x + e.left, b.x + e.right, b.y + 2, b.y + e.bottom
+    end
+    return c.x < x1 and c.x + c.w > x0 and c.y < y1 and c.y + c.h > y0
+  end
   local function clearOfBoxes(label)
-    local bad = 0
-    for _, c in ipairs(chips) do
-      for _, b in ipairs(boxes) do
-        local F = SH.FRAME
-        local x0, x1, y0, y1
-        if b.doubles then
-          x0 = b.x + (b.side == "player" and F.doubles.playerLeft or 0)
-          x1 = b.x + (b.side == "player" and 103 or F.doubles.enemyRight)
-          y0, y1 = b.y + F.doubles.top, b.y + F.doubles.bottom
-        else
-          local e = b.side == "player" and F.player or F.enemy
-          x0, x1, y0, y1 = b.x + e.left, b.x + e.right, b.y + 2, b.y + e.bottom
-        end
-        if c.x < x1 and c.x + c.w > x0 and c.y < y1 and c.y + c.h > y0 then bad = bad + 1 end
+    local bad, badBadge, onChip = 0, 0, 0
+    for _, b in ipairs(boxes) do
+      for _, c in ipairs(chips) do if onBox(c, b) then bad = bad + 1; log("  ON A BOX: " .. c.text) end end
+      for _, c in ipairs(badges) do if onBox(c, b) then badBadge = badBadge + 1; log("  ON A BOX: " .. c.text) end end
+    end
+    for _, a in ipairs(badges) do
+      for _, c in ipairs(chips) do
+        if c.x < a.x + a.w and c.x + c.w > a.x and c.y < a.y + a.h and c.y + c.h > a.y then onChip = onChip + 1 end
       end
     end
-    log(("%s: %d chips, %d boxes"):format(label, #chips, #boxes))
+    log(("%s: %d chips, %d badges, %d boxes"):format(label, #chips, #badges, #boxes))
     for _, c in ipairs(chips) do log(("  %s at %d,%d"):format(c.text, c.x, c.y)) end
-    for _, b in ipairs(boxes) do log(("  box %s%s at %d,%d"):format(b.side, b.doubles and " (doubles)" or "", b.x, b.y)) end
+    for _, c in ipairs(badges) do log(("  %s at %d,%d"):format(c.text, c.x, c.y)) end
+    for _, b in ipairs(boxes) do
+      local s = modShape(b)
+      log(("  box %s%s at %d,%d: %s"):format(b.side, b.doubles and " (doubles)" or "", b.x, b.y,
+        s and ("a mod's picture (rows %d-%d, columns %d-%d)"):format(s.top, s.bottom, s.minX, s.maxX)
+        or "the game's frame"))
+    end
     check(bad == 0, ("%s: no chip on any HP box (%d)"):format(label, bad))
+    check(badBadge == 0, ("%s: no type badge on any HP box (%d)"):format(label, badBadge))
+    check(onChip == 0, ("%s: no chip on a type badge (%d)"):format(label, onChip))
+    local want = os.getenv("WANT_MOD_BOXES")
+    if want then
+      local n = 0
+      for _, b in ipairs(boxes) do if modShape(b) then n = n + 1 end end
+      check(n == #boxes and n > 0, ("%s: every box is the mod's set (%d of %d)"):format(label, n, #boxes))
+    end
   end
   local want = 0
   for _, side in ipairs({ st.player, st.enemy }) do

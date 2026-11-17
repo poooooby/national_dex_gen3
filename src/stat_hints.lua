@@ -10,8 +10,10 @@
 -- from the screen's top, yours from row 66 to the text box), the band nearest the box, so a box's
 -- columns never reach the partner's chips or any box. No chip crosses row 66 (SPLIT): Battle Fit
 -- views (gen3-hd-sprites) draw the screen's rows above and below it apart. A column that would
--- leave the screen (seven changes on one of your doubles Pokemon) is held at its edge. Red to
--- Crystal (src/gen12/stat_hints.lua) place them by their own HUDs.
+-- leave the screen (seven changes on one of your doubles Pokemon) is held at its edge. Another mod's
+-- box picture (Facets' battle box sets) is measured (src/box_shape.lua, opts.shape) and the chips
+-- go by its own frame and the type badges' place beside it, as the badges do. Red to Crystal
+-- (src/gen12/stat_hints.lua) place them by their own HUDs.
 --
 -- A chip: its text inside a rounded outline, both green for a rise and red for a drop, on a white
 -- ground a quarter see-through. The multiplier is a decimal rounded to hundredths, trailing zeros
@@ -347,8 +349,46 @@ end
 StatHints.SCREEN_W = 240
 StatHints.TEXT_TOP = 112                              -- the battle's text box: nothing below this
 StatHints.BADGES = 2 + 12 + 8 + 2                     -- room for the type badges (two, a step apart)
+-- the type badges (src/type_badges.lua): size, step (down and out), gap to the box; and the game's
+-- own box edges they are placed by (TypeBadges.EDGES)
+StatHints.BADGE = { size = 12, step = 8, gap = 2,
+  edges = { enemy = { right = 92, top = 2 }, player = { left = 9, top = 2 } } }
 
--- opts: { require, enabled = fn() -> bool, log, view = fn() -> WoobleView's exports or nil }
+-- where a box's chips go by a measured box picture (src/box_shape.lua's shape s, from the picture's
+-- top left at x, y), into out; false when the picture gives nothing to go by (the caller keeps FRAME)
+-- partner: a doubles partner's box ({ s, x, y } from this one's top left), as the badges clear it
+function StatHints.spotByShape(Shape, s, side, x, y, doubles, out, partner)
+  local B = StatHints.BADGE
+  local bx = Shape.badgeSpot(s, side, 2, B.size, B.step, B.step, B.gap, partner)
+  if not bx then return false end
+  local NONE = -1e9
+  out.split, out.right = StatHints.SPLIT, StatHints.SCREEN_W
+  if doubles then
+    out.mode = "column"
+    out.y, out.limit = StatHints.doublesBand(side, y)
+    local r0, r1 = out.y - y, out.y - y + out.limit - 1
+    if side == "enemy" then
+      out.x, out.dir = x + math.max(bx + B.size + B.step + 1, (Shape.rightOver(s, r0, r1) or NONE) + 3), 1
+    else
+      out.x, out.dir = x + math.min(bx - 2, (Shape.leftOver(s, r0, r1) or -NONE) - 2), -1
+    end
+    return out
+  end
+  if side == "enemy" then
+    out.mode, out.dir, out.limit = "down", 1, StatHints.FRAME.enemy.rows
+    out.x = x + s.minX
+    out.y = y + math.max(s.bottom + 2, s.top + B.size + 2 * B.step + 1)
+    return out
+  end
+  out.mode, out.dir = "column", -1
+  out.y = y + s.top + 1
+  out.limit = math.min(s.bottom - s.top - 1, StatHints.TEXT_TOP - out.y)
+  out.x = x + math.min(bx - 2, (Shape.leftOver(s, s.top + 1, s.top + out.limit) or -NONE) - 2)
+  return out
+end
+
+-- opts: { require, enabled = fn() -> bool, log, view = fn() -> WoobleView's exports or nil,
+--   shape = src/box_shape.lua (optional) }
 function StatHints.install(opts)
   local require = opts.require
   local okH, Healthbox = pcall(require, "src.core.game3.battle.healthbox")
@@ -360,6 +400,7 @@ function StatHints.install(opts)
   end
   local state = Healthbox.__ndxStatHints or {}
   state.enabled = opts.enabled or function() return true end
+  state.shape = opts.shape or state.shape
   -- WoobleView's exports when they can place window-resolution chips (features.uiMap), else nil
   local viewOf = opts.view or function() return nil end
   state.view = function()
@@ -411,17 +452,31 @@ function StatHints.install(opts)
   end
 
   local image = StatHints.cache()
-  local inside, boxX, boxY, boxSide, boxDoubles = 0, nil, nil, nil, false
-  local function note(side, x, y, doubles)
+  local inside, boxX, boxY, boxSide, boxDoubles, boxImg, boxId = 0, nil, nil, nil, false, nil, nil
+  -- a doubles box's partner (the same side's other box, the same picture), from Healthbox.CENTERS
+  local partnerT = { x = 0, y = 0 }
+  local function partnerOf(s)
+    local centers = boxId and Healthbox.CENTERS and Healthbox.CENTERS[true]
+    local me, other = centers and centers[boxId], centers and centers[(boxId + 2) % 4]
+    if not (me and other) then return nil end
+    partnerT.s, partnerT.x, partnerT.y = s, other.x - me.x, other.y - me.y
+    return partnerT
+  end
+  -- the picture on BattleChrome as the box draws (a mod's set swaps it in for the draw, whichever
+  -- side of our wraps it is); measured once each, the game's own keeps FRAME
+  local FIELD = { enemy = "_enemyBox", player = "_playerBox",
+    doublesEnemy = "_doublesOpponentBox", doublesPlayer = "_doublesPlayerBox" }
+  local function note(side, x, y, doubles, field)
     if inside == 0 then return end
     boxSide, boxX, boxY, boxDoubles = side, x, y, doubles
+    boxImg = Chrome[field]
   end
   local drawEnemyBox, drawPlayerBox, drawDoublesBox = Chrome.drawEnemyBox, Chrome.drawPlayerBox, Chrome.drawDoublesBox
-  Chrome.drawEnemyBox = function(x, y, ...) note("enemy", x, y, false) return drawEnemyBox(x, y, ...) end
-  Chrome.drawPlayerBox = function(x, y, ...) note("player", x, y, false) return drawPlayerBox(x, y, ...) end
+  Chrome.drawEnemyBox = function(x, y, ...) note("enemy", x, y, false, FIELD.enemy) return drawEnemyBox(x, y, ...) end
+  Chrome.drawPlayerBox = function(x, y, ...) note("player", x, y, false, FIELD.player) return drawPlayerBox(x, y, ...) end
   if type(drawDoublesBox) == "function" then
     Chrome.drawDoublesBox = function(isPlayer, x, y, ...)
-      note(isPlayer and "player" or "enemy", x, y, true)
+      note(isPlayer and "player" or "enemy", x, y, true, isPlayer and FIELD.doublesPlayer or FIELD.doublesEnemy)
       return drawDoublesBox(isPlayer, x, y, ...)
     end
   end
@@ -432,9 +487,15 @@ function StatHints.install(opts)
     local img = image(text, up)
     if img then love.graphics.draw(img, x, y) end
   end
-  -- where a box's chips go (into `out`, one table for every frame)
-  function state.spot(side, x, y, doubles, out)
+  -- where a box's chips go (into `out`, one table for every frame); img: another mod's box picture
+  function state.spot(side, x, y, doubles, out, img)
     out = out or {}
+    local Shape = state.shape
+    local s = img and Shape and Shape.of(img)
+    if s and not Shape.likeGame(s, StatHints.BADGE.edges[side], side)
+      and StatHints.spotByShape(Shape, s, side, x, y, doubles, out, doubles and partnerOf(s) or nil) then
+      return out
+    end
     local F = StatHints.FRAME
     if doubles then
       local D = F.doubles
@@ -475,7 +536,7 @@ function StatHints.install(opts)
     if okOn and on == false then return end
     chipsNow = StatHints.chips(stageOf, battler, chips)
     if #chipsNow == 0 then return end
-    spotNow = state.spot(boxSide, boxX, boxY, boxDoubles, spotT)
+    spotNow = state.spot(boxSide, boxX, boxY, boxDoubles, spotT, boxImg)
     state.hiNow = state.view() ~= nil
     if state.hiNow then
       StatHints.layout(chipsNow, spotNow, place, StatHints.HI)
@@ -487,8 +548,9 @@ function StatHints.install(opts)
 
   local draw = Healthbox.draw
   Healthbox.draw = function(side, battler, o, ...)
+    if inside == 0 then boxId = type(side) == "number" and side or nil end
     inside = inside + 1
-    boxX = nil
+    boxX, boxImg = nil, nil
     local ok, a, b = pcall(draw, side, battler, o, ...)
     inside = inside - 1
     if not ok then error(a, 0) end

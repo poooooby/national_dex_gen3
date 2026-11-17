@@ -227,7 +227,8 @@ hidden box, applies the slide-in and bounce, and hands the top left to `BattleCh
   runs on below them, right of a foe's box and left of the player's): a foe's ends at x 92, the
   player's starts at x 9, both at row 2; the badges keep 2 px clear on either side. Measured
   from every cart's `pokemon/battle/healthbox_*.rgba`, singles and doubles: the same on all five,
-  within a pixel. (Mod code may not read the ROM-derived cache, so it is not measured at run time.)
+  within a pixel. (Mod code may not read the ROM-derived cache files; see "Other mods' battle
+  boxes" below for the pictures it does measure.)
 - Types: the battler's `type1`, `type2` and `__ndxType3` (Forest's Curse), as numbers or names;
   a repeat is dropped, and `???` (9) only shows alone.
 - The badges are on the battle's own UI canvas in their box's rows, so WoobleView's Fill Screen
@@ -280,6 +281,45 @@ seven changes on all four doubles boxes, the split row, the window-resolution pa
 WoobleView, the option, garbage), drivers `tests/drivers/stat_hints_probe.lua` (Emerald: Swords
 Dance twice through the battle's menu, singles and doubles, every chip clear of every box) and
 `tests/drivers/gen12_stat_hints_probe.lua` (Red / Gold: Shell Smash, then Swords Dance).
+
+## Other mods' battle boxes (Facets)
+
+Facets' BATTLE UI box sets (XY, DP, HGSS, BW, B2W2, GAIA, PLATINUM, the ZEKE recolours...) swap their
+own healthbox pictures onto `BattleChrome` (`_enemyBox`, `_playerBox`, `_doublesOpponentBox`,
+`_doublesPlayerBox`) for the length of each `Healthbox.draw`, at the same 128 x 32 / 128 x 64 sizes
+and top left, but with their own frames: DP's foe box runs to x 99 with an arrow out to 105,
+HGSS's sides slant, BW and B2W2 start at row 4. On Red / Gold (its `classic_hud.lua`) it draws a
+Gen 3 box in place of each HUD in the wide layout only: Gold from `drawEnemyHud` / `drawPlayerHud`,
+Red from `battle.overlay`, hiding Red's own HUD through `battle.status_hud_visible`.
+
+- `src/box_shape.lua` measures a box picture once (weak cache by picture): each row's first and
+  last drawn column. A LOVE Image is drawn onto a small canvas of its own and read back
+  (`push("all")`, `newImageData`); ImageData (and test stubs with `getPixel`) is read as it is.
+  Nothing is saved or shipped and no file is read.
+- Gen 3: the badges' and chips' box wraps note the picture on `BattleChrome` as the box draws
+  (whichever side of our wraps the swap happens, so a second game in the same run, where Facets'
+  wrap ends up outside ours, still works). `Shape.likeGame` keeps `EDGES` / `FRAME` for a picture
+  whose top 8 rows end where the game's do (the game's own on all five carts, measured: 20 of 20,
+  and the recolour-only sets); any other goes by `Shape.badgeSpot`, which clears the frame on each
+  badge's own rows, and `StatHints.spotByShape` (chips outward of the badges, under the foe's box
+  past `max(bottom + 2, badge rows)`). In doubles the partner's box (same picture, offset from
+  `Healthbox.CENTERS`) counts too: the taller sets' boxes reach into each other's rows.
+- Gen 1/2: `Shape.watch(fn, ...)` runs the HUD draw (Gold's hub wraps) or the overlay's `next`
+  (Red's overlay hooks, now at priority 1 so they run outside Facets' priority-0 wrap) with
+  `love.graphics.draw` swapped for a recorder of 128-wide box pictures (`Shape.seen.enemy` /
+  `.player`: picture, x, y; nested watches share the outer's notes; the draw is put back on an
+  error). The badges then stack beside that box (`badgeSpot` with dx 0), the foe's chips start
+  under it and yours end at its right edge above it; on Red a seen box counts as shown even though
+  `statusHUDVisible()` says no.
+
+Tests: `tests/box_shape_test.lua [game]` (Facets' DP and HGSS rows as stubs: shapes, badge spots,
+the watch, the badges and chips by a swapped set in singles and doubles, a recolour kept in place,
+a swap outside our wraps), `tests/gen12_extras_test.lua` (Red's overlay and Gold's HUD calls with
+a mod's boxes drawn). In game: `tests/drivers/stat_hints_probe.lua` checks every chip and badge
+against the picture actually drawn when it is a mod's (`WANT_MOD_BOXES=1` fails a run where the
+set did not apply); run with Facets on and `gbcHud` set to a set (DP and HGSS: 0 failures on
+Emerald, 2026-11-16), and `gen12_stat_hints_probe.lua` on Red / Gold with Facets' boxes and
+`battleLayout = "wide"` (0 failures).
 
 ## Art
 
@@ -1214,6 +1254,14 @@ SHOT_DIR=/tmp/ndx-red  POKEPORT_VERSION=red  POKEPORT_DRIVER=mods/national_dex_g
 SHOT_DIR=/tmp/ndx-gold POKEPORT_VERSION=gold POKEPORT_DRIVER=mods/national_dex_gen3/tests/drivers/gen12_probe.lua love .
 ```
 
+- **Driver timing (gen1recomp 0.4.6+):** a driver's frames run far faster than 60 a second
+  (about 300 measured), so anything on the clock (the vending screen's boot, cries, animations)
+  needs a wait on its own state, not a frame count. `U.wait(240)` is under a second now.
+- **Headless Gold / Crystal data (0.4.6+):** Gen 2's UI text, landmarks and swarms are required
+  cache reads with no hand-typed fallback, and battle lines are ROM text by label. A built
+  `game.data` needs the real `rom_text` (as `data.text`), `text`, `landmarks`, `encounters` and
+  `events` (`tests/_gen12.lua` `GEN2_KEYS`). Battle text is the cart's own wording, capitals
+  included ("PROTECTED itself!"): match it without regard to case.
 - **Portable mode:** a checkout with `portable.txt` keeps its saves and `options.lua` in the
   checkout itself, and `POKEPORT_IDENTITY` does not move them. The probe starts a new game in the
   active slot and saves it, and the game rewrites `options.lua`, up to about 10 seconds after

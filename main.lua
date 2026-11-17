@@ -109,6 +109,8 @@ return function(mod)
   -- optional: the type badges beside the battle's HP boxes
   local TypeBadges = loadSibling(mod, "src/type_badges.lua")
   local StatHints = loadSibling(mod, "src/stat_hints.lua")
+  -- optional: another mod's battle box pictures measured, so the badges and chips follow them
+  local BoxShape = loadSibling(mod, "src/box_shape.lua")
   -- optional: without it every new move plays the cart animation named in data/moves.lua
   local MoveAnims = loadSibling(mod, "src/anims.lua")
   -- optional: without it the moves data/fx.lua draws with pixelfx keep their cart look
@@ -553,7 +555,8 @@ return function(mod)
       mod.events:on("mod.options_changed", function(ev)
         if type(ev) == "table" and ev.mod == mod.id and ev.key == "type_badges" then readBadges() end
       end)
-      pcall(TypeBadges.install, { require = require, log = mod.log, enabled = function() return badgesOn end })
+      pcall(TypeBadges.install, { require = require, log = mod.log, enabled = function() return badgesOn end,
+        shape = BoxShape })
     end
     -- the stat chips by the battle's HP boxes (src/stat_hints.lua), option stat_hints
     if StatHints then
@@ -577,7 +580,7 @@ return function(mod)
         return view or nil
       end
       local okI, hints = pcall(StatHints.install, { require = require, log = mod.log,
-        enabled = function() return hintsOn end, view = wooble })
+        enabled = function() return hintsOn end, view = wooble, shape = BoxShape })
       if okI and type(hints) == "table" and type(hints.hud) == "function" then
         mod.hooks:wrap("render.hud", function(nxt, game, viewport)
           pcall(hints.hud)

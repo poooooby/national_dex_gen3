@@ -3,6 +3,24 @@
 All notable changes to this mod are documented here, in
 [keep a changelog](https://keepachangelog.com/en/1.1.0/) format.
 
+## [1.15.0] - 2026-11-16
+
+### Changed
+
+- **Type badges and Stat Hints follow Facets' battle boxes.** With one of Facets' BATTLE UI box
+  sets (XY, DP, HGSS, BW and the rest) the badges and tags go by that set's own box, row by row,
+  so they no longer sit on a box that is wider, taller or slanted (DP's arrow, HGSS's sides); in
+  doubles they also keep clear of the partner's box, which some sets make taller. On Red to
+  Crystal the same holds for Facets' boxes in wide battles (on Red they were missing there, since
+  Facets hides the game's own boxes). The game's own boxes, and sets that only recolour them, keep
+  exactly the places they had.
+
+### Fixed
+
+- **Phantom Force, Shadow Force and Geomancy on Gold, Silver and Crystal** with gen1recomp 0.4.6
+  or later: their charge turn ("vanished instantly!", "is absorbing power!") stopped the battle
+  with an error. They work again, on older engines too.
+
 ## [1.14.0] - 2026-11-16
 
 ### Added

@@ -10,8 +10,11 @@
 -- rows, so whatever moves that UI (WoobleView's Fill Screen) moves them with their box.
 --
 -- A box's edges are where its picture is drawn (EDGES: the same on all five carts, singles and
--- doubles, measured from each cart's box pictures). The badges are 12 x 12, drawn on the CPU once
--- per type (no art files); nothing is made per frame.
+-- doubles, measured from each cart's box pictures). Another mod's box picture (Facets' battle box
+-- sets, swapped onto BattleChrome while the box draws) is measured row by row (src/box_shape.lua,
+-- opts.shape) and the badges clear its own frame, each on its own rows; one whose frame is where the
+-- game's is (a recolour) keeps EDGES. The badges are 12 x 12, drawn on the CPU once per type (no art
+-- files); nothing is made per frame.
 local TypeBadges = {}
 
 local SIZE = 12
@@ -87,7 +90,11 @@ function TypeBadges.imageData(typeId)
   return d
 end
 
--- opts: { require, enabled = fn() -> bool, log }
+-- BattleChrome's picture field for each box the wraps note
+TypeBadges.FIELDS = { enemy = "_enemyBox", player = "_playerBox",
+  doublesEnemy = "_doublesOpponentBox", doublesPlayer = "_doublesPlayerBox" }
+
+-- opts: { require, enabled = fn() -> bool, log, shape = src/box_shape.lua (optional) }
 function TypeBadges.install(opts)
   local require = opts.require
   local okH, Healthbox = pcall(require, "src.core.game3.battle.healthbox")
@@ -102,12 +109,25 @@ function TypeBadges.install(opts)
   state = state or {}
   state.enabled = opts.enabled or function() return true end
   state.require = require
+  state.shape = opts.shape or state.shape
   if Healthbox.__ndxBadges then return true end
   Healthbox.__ndxBadges = state
 
   local hasLove = love and love.graphics and love.image and love.image.newImageData and true or false
   local images = {}          -- type id -> Image, or false
-  local inside, boxX, boxY, boxSide = 0, nil, nil, nil
+  local inside, boxX, boxY, boxSide, boxImg, boxId = 0, nil, nil, nil, nil, nil
+  -- a doubles box's partner (the same side's other box, the same picture), from Healthbox.CENTERS
+  local partner = { x = 0, y = 0 }
+  local function partnerOf(s)
+    local centers = boxId and Healthbox.CENTERS and Healthbox.CENTERS[true]
+    local me, other = centers and centers[boxId], centers and centers[(boxId + 2) % 4]
+    if not (me and other) then return nil end
+    partner.s, partner.x, partner.y = s, other.x - me.x, other.y - me.y
+    return partner
+  end
+  -- the picture on BattleChrome as the box draws (a mod's set swaps it in for the draw, whichever
+  -- side of our wraps it is); measured once each, the game's own keeps EDGES
+  local F = TypeBadges.FIELDS
 
   local function badge(t)
     local img = images[t]
@@ -128,23 +148,24 @@ function TypeBadges.install(opts)
     return img
   end
 
-  local function note(side, x, y)
+  local function note(side, x, y, field)
     if inside == 0 then return end
     boxSide, boxX, boxY = side, x, y
+    boxImg = Chrome[field]
   end
 
   local drawEnemyBox, drawPlayerBox, drawDoublesBox = Chrome.drawEnemyBox, Chrome.drawPlayerBox, Chrome.drawDoublesBox
   Chrome.drawEnemyBox = function(x, y, ...)
-    note("enemy", x, y)
+    note("enemy", x, y, F.enemy)
     return drawEnemyBox(x, y, ...)
   end
   Chrome.drawPlayerBox = function(x, y, ...)
-    note("player", x, y)
+    note("player", x, y, F.player)
     return drawPlayerBox(x, y, ...)
   end
   if type(drawDoublesBox) == "function" then
     Chrome.drawDoublesBox = function(isPlayer, x, y, ...)
-      note(isPlayer and "player" or "enemy", x, y)
+      note(isPlayer and "player" or "enemy", x, y, isPlayer and F.doublesPlayer or F.doublesEnemy)
       return drawDoublesBox(isPlayer, x, y, ...)
     end
   end
@@ -178,13 +199,23 @@ function TypeBadges.install(opts)
     if not t1 then return end
     local e = TypeBadges.EDGES[boxSide]
     local n = 1 + (t2 and 1 or 0) + (t3 and 1 or 0)
-    local x, y, dx
-    if boxSide == "enemy" then
-      x, dx = boxX + e.right + 1 + GAP, STEP
-    else
-      x, dx = boxX + e.left - GAP - SIZE - (n - 1) * STEP, STEP
+    local x, y
+    local dx = STEP
+    -- another mod's box picture: by its own frame (one shaped as the game's keeps EDGES)
+    local Shape = state.shape
+    local s = boxImg and Shape and Shape.of(boxImg)
+    if s and not Shape.likeGame(s, e, boxSide) then
+      local sx, sy = Shape.badgeSpot(s, boxSide, n, SIZE, STEP, STEP, GAP, partnerOf(s))
+      if sx then x, y = boxX + sx, boxY + sy end
     end
-    y = boxY + e.top
+    if not x then
+      if boxSide == "enemy" then
+        x = boxX + e.right + 1 + GAP
+      else
+        x = boxX + e.left - GAP - SIZE - (n - 1) * STEP
+      end
+      y = boxY + e.top
+    end
     if love and love.graphics and love.graphics.setColor then love.graphics.setColor(1, 1, 1, 1) end
     state.drawBadge(t1, x, y)
     if t2 then state.drawBadge(t2, x + dx, y + STEP) end
@@ -193,8 +224,9 @@ function TypeBadges.install(opts)
 
   local draw = Healthbox.draw
   Healthbox.draw = function(side, battler, o, ...)
+    if inside == 0 then boxId = type(side) == "number" and side or nil end
     inside = inside + 1
-    boxX = nil
+    boxX, boxImg = nil, nil
     local ok, a, b = pcall(draw, side, battler, o, ...)
     inside = inside - 1
     if not ok then error(a, 0) end

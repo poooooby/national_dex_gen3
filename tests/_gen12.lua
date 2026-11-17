@@ -68,6 +68,10 @@ local GEN2_KEYS = {
   gen2Encounters = "encounters", gen2Maps = "maps", gen2Landmarks = "landmarks",
   gen2Marts = "marts", gen2Icons = "icons", gen2Trainers = "trainers",
   gen2BattleAnims = "battle_anims", gen2Text = "text",
+  -- (the side tables scripts name: Phone.registerInto reads the phone book from them)
+  gen2EventTables = "events",
+  -- (the engine's own strings by label: Gold's battle code reads them through RomText)
+  text = "rom_text",
 }
 
 function H.gen2Data(version)

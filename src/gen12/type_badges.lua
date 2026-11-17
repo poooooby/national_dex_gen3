@@ -16,6 +16,9 @@
 --   Gold  BattleState.drawEnemyHud / drawPlayerHud are wrapped (the game calls them through the
 --         module, in every layout), and the badges are drawn right after the box when it was
 --         drawn; what is drawn later (menus) covers them as it covers the boxes.
+-- A mod that draws a Gen 3 box in place of a HUD (Facets' BATTLE UI in wide battles: Red from
+-- battle.overlay, Gold from drawEnemyHud / drawPlayerHud) is seen while that draw runs
+-- (src/box_shape.lua's watch, opts.shape) and the badges go beside that box's own frame instead.
 local Badges = {}
 
 Badges.SIZE = 10
@@ -81,7 +84,8 @@ function Badges.imageData(G, typeId)
   return d
 end
 
--- opts: { require, generation, glyphs (src/type_badges.lua), enabled = fn() -> bool, data, log }
+-- opts: { require, generation, glyphs (src/type_badges.lua), enabled = fn() -> bool, data, log,
+--   shape = src/box_shape.lua (optional) }
 -- Returns the state (state.overlay: Red's hook body), or nil. Gold's wraps are made once per
 -- process (games switch in-process) and ask the last install's state; `data` is that game's
 -- data, so a later game without this mod draws none.
@@ -89,7 +93,7 @@ function Badges.install(opts)
   local require, gen = opts.require, opts.generation
   local G = opts.glyphs
   local state = { enabled = opts.enabled or function() return true end, log = opts.log,
-    data = opts.data }
+    data = opts.data, shape = opts.shape }
   local images = {}
 
   local function badge(t)
@@ -120,15 +124,24 @@ function Badges.install(opts)
     local ok, v = pcall(state.enabled)
     return not ok or v ~= false
   end
-  local function drawRow(types, spot)
+  -- side: a mod's box for that side may have been drawn just now (Shape.seen); the badges go by it
+  local function drawRow(types, spot, side)
     local ids = Badges.ids(types)
     if #ids == 0 then return end
+    local x, y = spot.x, spot.y
+    local Shape = state.shape
+    local seen = side and Shape and Shape.seen[side]
+    local s = seen and seen.img and Shape.of(seen.img)
+    if s then
+      local bx, by = Shape.badgeSpot(s, side, #ids, Badges.SIZE, 0, Badges.STEP, 2)
+      if bx then x, y = seen.x + bx, seen.y + by end
+    end
     local g = love and love.graphics
     local shader = g and g.getShader and g.getShader()
     if shader then g.setShader() end
     if g and g.setColor then g.setColor(1, 1, 1, 1) end
     for i = 1, #ids do
-      state.drawBadge(ids[i], spot.x, spot.y + (i - 1) * Badges.STEP)
+      state.drawBadge(ids[i], x, y + (i - 1) * Badges.STEP)
     end
     if shader then g.setShader(shader) end
   end
@@ -158,16 +171,25 @@ function Badges.install(opts)
       return battler.curTypes or (battler.def and battler.def.types)
         or (battler.mon and battler.mon.types)
     end
-    local function drawSides(b, spots, wide)
-      if enemyShown(b, wide) then
+    -- a mod's box for that side drawn this frame (it may hide the game's own through
+    -- battle.status_hud_visible, as Facets' BATTLE UI does: the box is shown, as the mod's)
+    local function modBox(side)
+      local Shape = state.shape
+      return Shape ~= nil and Shape.seen[side].img ~= nil
+    end
+    -- boxed: from battle.overlay, where a mod's boxes were watched (wide)
+    local function drawSides(b, spots, wide, boxed)
+      if enemyShown(b, wide) or (boxed and b.enemy and modBox("enemy")) then
         -- AnimationShakeEnemyHUD nudges the foe's box sideways; its badges go with it
         local shake = not wide and b.fx and b.fx.hudShakeX or 0
         if shake ~= 0 then love.graphics.push(); love.graphics.translate(shake, 0) end
-        local ok, err = pcall(drawRow, typesOf(b.enemy), spots.enemy)
+        local ok, err = pcall(drawRow, typesOf(b.enemy), spots.enemy, boxed and "enemy" or nil)
         if shake ~= 0 then love.graphics.pop() end
         if not ok then error(err, 0) end
       end
-      if playerShown(b) then drawRow(typesOf(b.player), spots.player) end
+      if playerShown(b) or (boxed and b.player and modBox("player")) then
+        drawRow(typesOf(b.player), spots.player, boxed and "player" or nil)
+      end
     end
     local function ours(b)
       if type(b) ~= "table" or b.blankForAskName or b.blackoutBlank or not on() then return false end
@@ -229,7 +251,7 @@ function Badges.install(opts)
       if not ours(b) or type(b.drawHUDs) ~= "function" then return end
       local wide = type(b.wideLayout) == "function" and b:wideLayout()
       if not wide and state.classicWithBoxes then return end
-      drawSides(b, wide and Badges.WIDE1 or Badges.CLASSIC, wide)
+      drawSides(b, wide and Badges.WIDE1 or Badges.CLASSIC, wide, wide)
     end
     return state
   end
@@ -258,32 +280,38 @@ function Badges.install(opts)
     if not (shown and self:statusHUDVisible() and not self:hudCleared(side)) then return end
     local mon = self:activeMon(side)
     if type(mon) ~= "table" then return end
-    drawRow(typesOf(self, mon), Badges.CLASSIC[side])
+    drawRow(typesOf(self, mon), Badges.CLASSIC[side], side)
   end
   local hub = GS.__ndxBadges
   if not hub then
     hub = {}
     GS.__ndxBadges = hub
     local drawEnemy, drawPlayer = GS.drawEnemyHud, GS.drawPlayerHud
+    -- (a mod's box drawn inside is watched: hub.watch, src/box_shape.lua)
     GS.drawEnemyHud = function(self, ...)
-      local a, b = drawEnemy(self, ...)
+      local a, b
+      if hub.watch then a, b = hub.watch(drawEnemy, self, ...) else a, b = drawEnemy(self, ...) end
       if hub.after then hub.safely(hub.after, self, "enemy") end
       return a, b
     end
     GS.drawPlayerHud = function(self, ...)
-      local a, b = drawPlayer(self, ...)
+      local a, b
+      if hub.watch then a, b = hub.watch(drawPlayer, self, ...) else a, b = drawPlayer(self, ...) end
       if hub.after then hub.safely(hub.after, self, "player") end
       return a, b
     end
   end
   hub.after, hub.safely, hub.state = after, safely, state
+  hub.watch = state.shape and state.shape.watch or nil
   return state
 end
 
 -- Red: the battle.overlay hook body for mod.hooks:wrap (state from Badges.install)
 function Badges.overlayHook(state)
+  local watch = state.shape and state.shape.watch
   return function(next, b, ...)
-    local r = next(b, ...)
+    local r
+    if watch then r = watch(next, b, ...) else r = next(b, ...) end
     local ok, err = pcall(state.overlay, b)
     if not ok and state.log and not state.warned then
       state.warned = true

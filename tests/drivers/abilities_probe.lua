@@ -66,9 +66,11 @@ local function body(game, log)
   local nextId = 0
   local function turn(slot)
     local hp0 = ad:hp(st.enemy)
+    local low = hp0       -- (read while the battle lasts: a knockout ends it before the loop does)
     local chose = false
     for _ = 1, 3000 do
       U.wait(1)
+      if Battle.isActive() and Battle._st == st then low = math.min(low, ad:hp(st.enemy)) end
       local sn = bapi:snapshot()
       local p = sn and sn.prompt
       if not Battle.isActive() then break end
@@ -82,7 +84,7 @@ local function body(game, log)
         chose = bapi:submit({ id = nextId, revision = sn.revision, kind = "move", slot = slot }) and true or false
       end
     end
-    return hp0 - ad:hp(st.enemy)
+    return hp0 - low
   end
 
   check(ad:abilityOf(st.enemy) == "LEVITATE", "the wild Gastly has LEVITATE")
@@ -95,6 +97,7 @@ local function body(game, log)
   U.still(game, dir .. "/abilities_mold.png")
   if Battle.isActive() and ad:hp(st.enemy) > 0 then
     st.enemy.ability = "DISGUISE"
+    st.player.expTracedAbility = nil   -- (Mold Breaker would set Disguise aside, as in the games)
     local d2 = turn(1)
     log("Earthquake on DISGUISE: " .. d2 .. " (max HP " .. ad:maxHp(st.enemy) .. ")")
     check(d2 == math.max(1, math.floor(ad:maxHp(st.enemy) / 8)), "DISGUISE: the hit only costs 1/8 HP")

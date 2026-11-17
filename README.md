@@ -286,6 +286,9 @@ This mod adds the Pokémon. Two companions bring them to life:
 - 🔍 [WoobleView](https://github.com/poooooby/gen3-hd-sprites) (0.8.6 or later): on FireRed to
   Emerald, Stat Hints are drawn at your screen's full resolution, and they follow the battle when
   Fill Screen rearranges it.
+- 💎 [Facets](https://github.com/ElvieBlooms/facets): with any of its BATTLE UI box sets (XY, DP,
+  HGSS, BW and the rest, or its boxes in Red to Crystal's wide battles), the type badges and Stat
+  Hints sit beside each set's own box, clear of its frame, in singles and doubles.
 
 It also plays well with [Event Distributions](https://github.com/CapnJames95/gen1recomp-event-distributions):
 the game's own Pokémon keep their original data, so its event gifts arrive as usual.

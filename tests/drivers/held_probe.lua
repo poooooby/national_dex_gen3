@@ -86,6 +86,11 @@ local function body(game, log, dir)
       local Stats = require("src.pokemon.Stats")
       local data = game.data
       local m = Mon.new(data, "ALAKAZAM", 50)
+      -- a damaging move first (Life Orb costs HP only on a hit; its own moves may lead with a
+      -- status move such as Role Play)
+      local pid = data.moves and (data.moves.PSYCHIC_M and "PSYCHIC_M" or data.moves.PSYCHIC and "PSYCHIC")
+      local psychic = pid and data.moves[pid]
+      if psychic then m.moves[1] = { id = pid, pp = psychic.pp or 10, maxPp = psychic.pp or 10 } end
       m.dvs = { attack = 10, defense = 10, speed = 10, special = 10, hp = 0 }     -- shiny
       m.stats = Stats.calc(data.pokemon.ALAKAZAM, 50, m.dvs, m.statExp)
       m.hp = m.stats.hp

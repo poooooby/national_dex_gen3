@@ -1,7 +1,11 @@
 -- Driver: Stat Hints on Red / Gold (src/gen12/stat_hints.lua) in a real battle: a Pokemon that knows
 -- Shell Smash and Swords Dance uses both against a wild Snorlax; after each move the chips drawn by
 -- the HUDs are read (the hint's drawChip seam) and checked: the stages as they are now (Shell Smash:
--- five chips; Swords Dance after it: ATK 3x), all on the screen, none on another. Shots in SHOT_DIR.
+-- five chips; Swords Dance after it: ATK 3x), all on the screen, none on another. The type badges
+-- are read too, and when a mod draws Gen 3 boxes in place of the HUDs (Facets' BATTLE UI in the wide
+-- layout: a 128-wide picture drawn through love.graphics.draw) every chip and badge is checked
+-- clear of that picture, row by row (src/box_shape.lua); WANT_MOD_BOXES=1 fails a run where no such
+-- box was drawn. Shots in SHOT_DIR.
 -- From the gen1recomp root:
 --   SHOT_DIR=<dir> POKEPORT_GAME=red POKEPORT_VERSION=red \
 --   POKEPORT_DRIVER=mods/national_dex_gen3/tests/drivers/gen12_stat_hints_probe.lua love .
@@ -19,6 +23,15 @@ local function body(game, log, dir)
     U.wait(1)
   end
   U.wait(60)
+  -- FACETS_UI=<set>: Facets' BATTLE UI for this run only, in the loader's live options (the save's
+  -- own Facets settings would otherwise win); nothing is written
+  local facetsUi = os.getenv("FACETS_UI")
+  if facetsUi and type(game.mods) == "table" then
+    game.mods.modOptions = game.mods.modOptions or {}
+    game.mods.modOptions.facets = game.mods.modOptions.facets or {}
+    game.mods.modOptions.facets.classicBattleUi = facetsUi
+    log("Facets BATTLE UI: " .. facetsUi)
+  end
   local data = game.data
   if gen == 1 then U.teleport(game, "ROUTE_1", 5, 5, "down"); U.wait(60) end
   local Mon = gen == 1 and require("src.pokemon.Pokemon") or require("src.battle.gen2.Mon")
@@ -41,7 +54,43 @@ local function body(game, log, dir)
   check(state ~= nil and type(state.drawChip) == "function", "Stat Hints are installed on the HUDs")
   if not state then log(("%d failures"):format(fails)) return end
   local SH = dofile("mods/national_dex_gen3/src/stat_hints.lua")
+  local Shape = dofile("mods/national_dex_gen3/src/box_shape.lua")
   local chips, seen = {}, {}
+  local badges, seenBadge, boxes, seenBox = {}, {}, {}, {}
+  local badgeHub = gen == 1 and require("src.battle.BattleState").__ndxBadges
+    or require("src.ui.gen2.BattleState").__ndxBadges
+  local badgeState = badgeHub and badgeHub.state
+  check(badgeState ~= nil, "Type Badges are installed on the HUDs")
+  if badgeState then
+    local drawBadge = badgeState.drawBadge
+    badgeState.drawBadge = function(t, x, y)
+      local key = t .. "@" .. x .. "," .. y
+      if not seenBadge[key] then
+        seenBadge[key] = true
+        badges[#badges + 1] = { text = "badge " .. t, x = x, y = y, w = 10, h = 10 }
+      end
+      return drawBadge(t, x, y)
+    end
+  end
+  -- a mod's Gen 3 box pictures (128 x 32 a foe's, 128 x 64 yours), wherever they are drawn
+  local realDraw = love.graphics.draw
+  love.graphics.draw = function(img, x, y, ...)
+    if type(x) == "number" and (type(img) == "userdata" or type(img) == "table") and img.getDimensions then
+      local ok, w, h = pcall(img.getDimensions, img)
+      -- (not src/box_shape.lua measuring a picture: drawn alone onto a canvas its own size)
+      local target = love.graphics.getCanvas()
+      local tw, th
+      if target then tw, th = target:getDimensions() end
+      if ok and w == 128 and (h == 32 or h == 64) and not (tw == w and th == h) then
+        local key = tostring(img) .. "@" .. x .. "," .. (y or 0)
+        if not seenBox[key] then
+          seenBox[key] = true
+          boxes[#boxes + 1] = { side = h == 32 and "enemy" or "player", img = img, x = x, y = y or 0 }
+        end
+      end
+    end
+    return realDraw(img, x, y, ...)
+  end
   local drawChip = state.drawChip
   state.drawChip = function(text, up, x, y, w, h)
     local key = text .. "@" .. x .. "," .. y
@@ -51,7 +100,11 @@ local function body(game, log, dir)
     end
     return drawChip(text, up, x, y, w, h)
   end
-  local function frame() U.wait(2); chips, seen = {}, {}; U.wait(2) end
+  local function frame()
+    U.wait(2)
+    chips, seen, badges, seenBadge, boxes, seenBox = {}, {}, {}, {}, {}, {}
+    U.wait(2)
+  end
   local function has(text)
     for _, c in ipairs(chips) do if c.text == text then return true end end
     return false
@@ -67,12 +120,58 @@ local function body(game, log, dir)
     end
     for _, c in ipairs(chips) do log(("  %s at %d,%d (%dx%d)"):format(c.text, c.x, c.y, c.w, c.h)) end
     check(bad == 0, ("%s: %d chips, all on the screen, none on another (%d)"):format(label, #chips, bad))
+    -- the badges: on the screen, not on a chip; chips and badges off every mod box's drawn pixels
+    local onChip, onBox, off = 0, 0, 0
+    for _, a in ipairs(badges) do
+      if a.x < 0 or a.y < 0 or a.x + a.w > width then off = off + 1 end
+      for _, c in ipairs(chips) do
+        if c.x < a.x + a.w and a.x < c.x + c.w and c.y < a.y + a.h and a.y < c.y + c.h then onChip = onChip + 1 end
+      end
+    end
+    for _, b in ipairs(boxes) do
+      local sh = Shape.of(b.img)
+      if sh then
+        log(("  %s box at %d,%d: rows %d-%d, columns %d-%d"):format(b.side, b.x, b.y, sh.top, sh.bottom, sh.minX, sh.maxX))
+        for _, list in ipairs({ chips, badges }) do
+          for _, c in ipairs(list) do
+            for y = math.max(0, c.y - b.y), math.min(sh.h - 1, c.y + c.h - 1 - b.y) do
+              local l, r = sh.left[y], sh.right[y]
+              if l and c.x < b.x + r + 1 and c.x + c.w > b.x + l then
+                onBox = onBox + 1
+                log("  ON A BOX: " .. c.text)
+                break
+              end
+            end
+          end
+        end
+      end
+    end
+    for _, c in ipairs(badges) do log(("  %s at %d,%d"):format(c.text, c.x, c.y)) end
+    check(#badges > 0 and off == 0, ("%s: %d badges, all on the screen (%d off)"):format(label, #badges, off))
+    check(onChip == 0, ("%s: no chip on a badge (%d)"):format(label, onChip))
+    check(onBox == 0, ("%s: no chip or badge on a mod's box (%d)"):format(label, onBox))
+    if os.getenv("WANT_MOD_BOXES") then
+      local e, pl = 0, 0
+      for _, b in ipairs(boxes) do if b.side == "enemy" then e = e + 1 else pl = pl + 1 end end
+      check(e > 0 and pl > 0, ("%s: the mod's boxes were drawn (foe %d, yours %d)"):format(label, e, pl))
+    end
   end
 
+  local screenW = 160      -- Red's wide layout: WideBattle's width (set when its battle starts)
   local function after(turn, wantMine)
     frame()
+    local GS = gen == 2 and require("src.ui.gen2.BattleState")
+    if GS and game.stack:top() and game.stack:top().battle then
+      local top = game.stack:top()
+      local okW, wide = pcall(function() return top:isWideBattleLayout() end)
+      if okW and wide then
+        local okM, WB = pcall(require, "src.ui.gen2.WideBattle")
+        screenW = okM and tonumber(WB.WIDTH) or screenW
+      end
+      log(("layout %s, %d wide"):format(okW and wide and "wide" or "standard", screenW))
+    end
     for _, t in ipairs(wantMine) do check(has(t), ("turn %d: %s shows"):format(turn, t)) end
-    tidy("turn " .. turn, 160)
+    tidy("turn " .. turn, screenW)
     U.shot(game, ("%s/%s_hints_turn%d.png"):format(dir, version, turn))
   end
 
@@ -80,6 +179,11 @@ local function body(game, log, dir)
     local BattleState = require("src.battle.BattleState")
     local battle = BattleState.newWild(game, "SNORLAX", 20)
     battle.onFinish = function() end
+    if type(battle.wideLayout) == "function" and battle:wideLayout() then
+      local okW, WideBattle = pcall(require, "src.battle.WideBattle")
+      screenW = okW and tonumber(WideBattle.WIDTH) or 304
+      log("wide layout, " .. screenW .. " wide")
+    end
     game.overworld:pushBattle(battle)
     local function toMenu()
       for _ = 1, 600 do

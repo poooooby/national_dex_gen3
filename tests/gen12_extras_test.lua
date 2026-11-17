@@ -11,7 +11,9 @@
 --     TM counter, kept out of Red's .sav export and Gold's TM / HM numbers; Gold's TM pocket grows
 --   Exp. Candies: the Rare Candy's flow (Red: leveledTo + every move of the levels gained; Gold:
 --     the "candy" action over Mon.gainExperience), sold with the vitamins
---   Type Badges: which badges, where, and only while the game draws the box
+--   Type Badges: which badges, where, and only while the game draws the box; beside a mod's Gen 3
+--     box in a wide battle (Facets' BATTLE UI, seen through src/box_shape.lua's watch), and Red's
+--     stat chips by it too
 --   Bigger PC: 40 boxes; the save writer writes a cart-shaped save (the extra boxes in the mod's
 --     save data) and puts the live save back; save.loading and the option move them back
 package.path = "./?.lua;./?/init.lua;" .. package.path
@@ -23,6 +25,24 @@ local Runtime = require("src.mods.Runtime")
 local modernRows = H.module("data/gen12/modern.lua")
 local Badges = H.module("src/gen12/type_badges.lua")
 local Glyphs = H.module("src/type_badges.lua")
+local Hints = H.module("src/gen12/stat_hints.lua")
+local HintCore = H.module("src/stat_hints.lua")
+
+-- a box picture (ImageData-like) drawn from x = left[y] to right[y] on each row listed: Facets' DP
+-- foe box (its arrow out to 105) and HGSS box of yours (slanting out to 0 at the foot)
+local function pic(w, h, first, edges, fixed, side)
+  local rows = {}
+  for i, e in ipairs(edges) do rows[first + i - 1] = side == "enemy" and { fixed, e } or { e, fixed } end
+  return { getDimensions = function() return w, h end,
+    getPixel = function(_, x, y)
+      local r = rows[y]
+      return 1, 1, 1, (r and x >= r[1] and x <= r[2]) and 1 or 0
+    end }
+end
+local DP_ENEMY = pic(128, 32, 2, { 95, 97, 98, 98, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 99, 101, 103, 105, 105,
+  103, 101, 99, 99, 99, 99, 98, 98, 97, 95 }, 0, "enemy")
+local HGSS_PLAYER = pic(128, 64, 0, { 14, 14, 13, 13, 13, 13, 13, 12, 12, 12, 12, 11, 11, 11, 11, 10, 10, 10, 9, 9,
+  9, 8, 8, 8, 7, 7, 7, 6, 6, 6, 5, 3, 1, 0, 0, 0 }, 108, "player")
 
 -- the save writers, stubbed before the mod wraps them: what a write would put on disk
 local written
@@ -330,6 +350,36 @@ for _, version in ipairs(H.versions()) do
     b.wideLayout = no
     state.hud(b, 0); state.zone(b, 0, 0)
     T.eq(#drawn, 0, version .. ": none while the boxes are not drawn")
+    -- a mod's Gen 3 boxes in the wide layout (Facets' BATTLE UI, drawn from the overlay before ours)
+    local Shape = H.module("src/box_shape.lua")
+    local boxed = Badges.install({ require = require, generation = 1, glyphs = Glyphs, shape = Shape })
+    stub(boxed)
+    b.enemy.fainted, b.showPlayerBack, b.wideLayout = nil, nil, yes
+    local real = love.graphics.draw
+    love.graphics.draw = function() end
+    local function facets()
+      love.graphics.draw(DP_ENEMY, 2, 6)
+      love.graphics.draw(HGSS_PLAYER, 194, 57)
+    end
+    drawn = {}
+    Badges.overlayHook(boxed)(facets, b)
+    T.eq(table.concat(drawn, " "), "10@110,8 2@110,19 14@194,57",
+      version .. ": beside a mod's Gen 3 boxes: each badge clear of the box's own edge on its rows")
+    -- Red's stat chips by them: the foe's under its box, yours ending at its right edge above it
+    local chips = {}
+    local hints = Hints.install({ require = require, generation = 1, core = HintCore, shape = Shape,
+      stage = function(_, battler, key) return (battler == b.enemy and key == "attack") and 2
+        or (battler == b.player and key == "speed") and -1 or 0 end })
+    hints.drawChip = function(text, _, x, y) chips[#chips + 1] = text .. "@" .. x .. "," .. y end
+    Hints.overlayHook(hints)(facets, b)
+    local w = HintCore.width("SPE 0.67x")
+    T.eq(table.concat(chips, " "), ("ATK 2x@2,38 SPE 0.67x@%d,47"):format(194 + 108 + 1 - w),
+      version .. ": the chips by a mod's boxes (under the foe's, above yours)")
+    chips = {}
+    Hints.overlayHook(hints)(function() end, b)
+    T.eq(table.concat(chips, " "), "ATK 2x@2,34 SPE 0.67x@" .. (304 - w) .. ",47",
+      version .. ": with no mod's boxes drawn, the game's places")
+    love.graphics.draw = real
   else
     local hub = require("src.ui.gen2.BattleState").__ndxBadges
     T.check(hub and hub.after, version .. ": the HP boxes are wrapped")
@@ -341,6 +391,25 @@ for _, version in ipairs(H.versions()) do
     hub.after(self, "enemy")
     hub.after(self, "player")
     T.eq(table.concat(drawn, " "), "8@89,2 18@89,13 17@69,57", version .. ": the foe's and yours")
+    -- a mod's Gen 3 boxes (Facets' BATTLE UI in a wide battle) drawn by the HUD calls: watched
+    local Shape = hub.state.shape
+    T.check(Shape and hub.watch, version .. ": the HUD calls are watched for a mod's boxes")
+    if Shape then
+      drawn = {}
+      local real = love.graphics.draw
+      love.graphics.draw = function() end
+      Shape.watch(function() love.graphics.draw(DP_ENEMY, 2, 2) end)
+      hub.after(self, "enemy")
+      Shape.watch(function() love.graphics.draw(HGSS_PLAYER, 50, 31) end)
+      hub.after(self, "player")
+      T.eq(table.concat(drawn, " "), "8@110,4 18@110,15 17@50,31",
+        version .. ": beside a mod's Gen 3 boxes, clear of each box's own edge")
+      drawn = {}
+      Shape.watch(function() end)
+      hub.after(self, "enemy")
+      T.eq(table.concat(drawn, " "), "8@89,2 18@89,13", version .. ": none drawn: the game's place again")
+      love.graphics.draw = real
+    end
     drawn = {}
     self.showEnemyHud = false
     hub.after(self, "enemy")

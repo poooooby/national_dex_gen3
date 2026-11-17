@@ -414,14 +414,20 @@ return function(mod, loadSibling)
   -- Type Badges (src/gen12/type_badges.lua, the Gen 3 badges' colours and symbols)
   local Badges = loadSibling(mod, "src/gen12/type_badges.lua")
   local Glyphs = Badges and loadSibling(mod, "src/type_badges.lua")
+  -- a mod's Gen 3 boxes in wide battles (Facets' BATTLE UI), measured so badges and chips follow them
+  local BoxShape = loadSibling(mod, "src/box_shape.lua")
+  -- (Red's overlay draws: outside a box mod's own, at priority 0, so its boxes are drawn first)
+  local OVERLAY_PRIORITY = 1
   if Badges and Glyphs then
     local function badgeOpts(data)
       return { require = require, generation = generation, glyphs = Glyphs, data = data,
-        enabled = function() return option("type_badges") end, log = mod.log }
+        enabled = function() return option("type_badges") end, log = mod.log, shape = BoxShape }
     end
     if generation == 1 then
       local badges = Badges.install(badgeOpts(nil))
-      if badges then pcall(function() mod.hooks:wrap("battle.overlay", Badges.overlayHook(badges)) end) end
+      if badges then
+        pcall(function() mod.hooks:wrap("battle.overlay", Badges.overlayHook(badges), OVERLAY_PRIORITY) end)
+      end
     else
       mod.events:on("game.ready", function(ev)
         local game = ev and ev.game or mod.game
@@ -445,11 +451,13 @@ return function(mod, loadSibling)
     end
     local function hintOpts(data)
       return { require = require, generation = generation, core = HintCore, stage = stage, data = data,
-        enabled = function() return option("stat_hints") end, log = mod.log }
+        enabled = function() return option("stat_hints") end, log = mod.log, shape = BoxShape }
     end
     if generation == 1 then
       local hints = Hints.install(hintOpts(nil))
-      if hints then pcall(function() mod.hooks:wrap("battle.overlay", Hints.overlayHook(hints)) end) end
+      if hints then
+        pcall(function() mod.hooks:wrap("battle.overlay", Hints.overlayHook(hints), OVERLAY_PRIORITY) end)
+      end
     else
       mod.events:on("game.ready", function(ev)
         local game = ev and ev.game or mod.game
