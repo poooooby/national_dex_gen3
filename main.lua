@@ -600,7 +600,15 @@ return function(mod)
   if okOptions and optionsSource then
     local chunk = load(optionsSource, "@" .. mod.path .. "/options.lua")
     local okSchema, schema = pcall(chunk or function() end)
-    if okSchema and type(schema) == "table" then pcall(function() mod.options:define(schema) end) end
+    if okSchema and type(schema) == "table" then
+      pcall(function() mod.options:define(schema) end)
+      -- a WOOBLEDEX row on the game's own OPTIONS menu, opening these settings (src/options_row.lua)
+      local OptionsRow = not inEditor and loadSibling(mod, "src/options_row.lua") or nil
+      if OptionsRow then
+        local okRow, errRow = pcall(OptionsRow.install, mod, { generation = 3, count = #schema })
+        if not okRow then mod.log:warn("WOOBLEDEX options row is off: %s", tostring(errRow)) end
+      end
+    end
   end
   local function clockSource()
     local okGet, value = pcall(function() return mod.options:get("clock_source") end)

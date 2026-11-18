@@ -242,7 +242,8 @@ you've been playing is credited for what it already has the first time it loads.
 
 ## ⚙️ Options
 
-Open **OPTIONS → MODS → WoobleDex**. Each option is one setting for every game it appears in.
+Pick **WOOBLEDEX** in the game's own **OPTIONS** menu (or go to **OPTIONS → MODS → WoobleDex**); B takes
+you back to OPTIONS. Each option is one setting for every game it appears in.
 Red to Crystal show Modern Moves, Register Owned, Bigger PC, Type Badges, Stat Hints and Move Split, and
 Red, Blue and Yellow also Day & Night and Modern Rules; the rest are for FireRed to Emerald.
 

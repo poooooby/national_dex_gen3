@@ -15,7 +15,14 @@ return function(mod, loadSibling)
   -- The manifest's options_schema is Gen 3's. This path declares its own list (src/gen12/options.lua:
   -- Modern Moves, Register Owned, and Day & Night on Red / Blue / Yellow), same keys.
   local Options = loadSibling(mod, "src/gen12/options.lua")
-  pcall(function() mod.options:define(Options and Options.forGeneration(generation) or {}) end)
+  local optionRows = Options and Options.forGeneration(generation) or {}
+  pcall(function() mod.options:define(optionRows) end)
+  -- a WOOBLEDEX row on the game's own OPTIONS menu, opening these settings (src/options_row.lua)
+  local OptionsRow = loadSibling(mod, "src/options_row.lua")
+  if OptionsRow then
+    local okRow, errRow = pcall(OptionsRow.install, mod, { generation = generation, count = #optionRows })
+    if not okRow then mod.log:warn("WOOBLEDEX options row is off: %s", tostring(errRow)) end
+  end
   local function option(key)
     local ok, value = pcall(function() return mod.options:get(key) end)
     return not ok or value ~= false

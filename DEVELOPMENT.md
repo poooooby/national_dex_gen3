@@ -363,6 +363,24 @@ where it is drawn (`"battle"`, `"dex"`, ...), both from the engine's `pokemon.sp
 provider written for three arguments ignores them). Return a PNG path (the engine centres and
 crops it to 64×64), or nil to let the next provider answer.
 
+## The WOOBLEDEX options row (`src/options_row.lua`)
+
+A `ui.options.rows` wrap appends one row (`id = "national_dex_gen3:options"`, value "N OPTIONS", the
+count of the schema this game defined) to the game's own OPTIONS list on every game: Red's and
+Gold's `OptionsMenu` and Gen 3's three option screens all raise the hook, and a row in no group
+lands after the engine's ordered rows (after MODS). A opens the mod manager and moves it onto this
+mod's settings page through the manager's own steps, since no API opens one mod's page:
+
+- Gen 3: `src.ui.game3.mod_manager` `show({ game })`, then its `_mgr` (a `ManagerState`);
+- Gen 1/2: `Screens.push(game, "ManagerState")` (the stack's push runs `enter`, which fills `byId`);
+- then `m:openOptions(m.byId[mod.id])` and `m.backStack = {}`, so B (`goBack`) pops the manager
+  straight back to OPTIONS instead of to the mod list.
+
+Values go through the manager's `setOption` (save options, the loader's copy, the file and
+`mod.options_changed`), so nothing here stores a setting. Any step failing leaves the manager on
+its list, as MODS does. Not wired in the Gen 3 save editor. Test: `tests/options_row_test.lua [game]`
+(the real Gen 3 manager and the real `StateStack`; 84 checks over seven games).
+
 ## API (`mod.exports`)
 
 | Export | Returns |

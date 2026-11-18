@@ -3,6 +3,13 @@
 All notable changes to this mod are documented here, in
 [keep a changelog](https://keepachangelog.com/en/1.1.0/) format.
 
+## [1.15.2] - 2026-11-17
+
+### Added
+
+- **A WOOBLEDEX row in the OPTIONS menu**, on every game. It opens WoobleDex's settings straight
+  away, with each one's description, instead of going through MODS; B returns to OPTIONS.
+
 ## [1.15.1] - 2026-11-17
 
 ### Changed
