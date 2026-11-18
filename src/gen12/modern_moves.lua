@@ -3,8 +3,10 @@
 -- egg moves (Gold). Data: data/gen12/modern.lua (tools/build_gen12.py), National move numbers.
 --
 -- Only moves the game has outright are added (the cart's own, or a newer move that runs natively
--- there: Moves.resolver's `direct`): a stand-in would only repeat a move the Pokemon has. Moves it
--- already learns keep their own level. Their own rows stay first at a level.
+-- there: Moves.resolver's `direct`): a stand-in would only repeat a move the Pokemon has. A move it
+-- already learns is learned at the earlier of its own level and today's (Squirtle's Water Gun at
+-- 3 as today, not Red's 8); one it knows from level 1 (Red's level1Moves) stays as it is. Their own
+-- rows stay first at a level.
 --
 -- Records are frozen once mods load, so the live lists are swapped: on game.ready and when the
 -- option changes, each cart species' level-up list (Red `learnset`, Gold `levelMoves`) and egg
@@ -20,20 +22,27 @@ function Modern.merge(def, row, gen, direct)
   local list = gen == 1 and def.learnset or def.levelMoves
   local knows = {}
   for _, m in ipairs(gen == 1 and def.level1Moves or {}) do knows[m] = true end
-  for _, r in ipairs(list or {}) do knows[r.move] = true end
-  local merged = {}
+  local merged, rowOf = {}, {}
   for i, r in ipairs(list or {}) do
     local c = copyRow(r)
     c.order = i
     merged[i] = c
+    local j = rowOf[r.move]
+    if not knows[r.move] and (j == nil or c.level < j.level) then rowOf[r.move] = c end
   end
   local added = 0
   for _, r in ipairs(row.learnset or {}) do
     local id = direct(r[2])
-    if id and not knows[id] then
+    local level = math.max(1, r[1])
+    local own = id and rowOf[id]
+    if own then
+      if level < own.level then own.level = level end
+    elseif id and not knows[id] then
       knows[id] = true
       added = added + 1
-      merged[#merged + 1] = { level = math.max(1, r[1]), move = id, order = 100000 + added }
+      local c = { level = level, move = id, order = 100000 + added }
+      merged[#merged + 1] = c
+      rowOf[id] = c
     end
   end
   table.sort(merged, function(a, b)

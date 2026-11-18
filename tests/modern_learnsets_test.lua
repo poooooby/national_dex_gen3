@@ -2,8 +2,9 @@
 -- gen1recomp root; needs that cart imported, FireRed by default).
 --
 -- The Modern Moves option (src/modern_learnsets.lua, data/species/modern.lua): on by default;
--- off, the original 386 keep the cart's learnsets; on, they also learn their newer moves at the modern
--- level (and the egg species their newer egg moves); off again puts the cart's own lists back.
+-- off, the original 386 keep the cart's learnsets; on, they learn today's level-up moves at today's
+-- level (a cart move at the earlier of its two levels: Squirtle's Water Gun at 3) and the egg
+-- species their newer egg moves; off again puts the cart's own lists back.
 -- The option follows the mod menu (mod.options_changed).
 package.path = "./?.lua;./?/init.lua;" .. package.path
 
@@ -53,7 +54,34 @@ T.eq(knowsAt(clefairy, MOONBLAST), nil, "off: Clefairy keeps the cart's learnset
 
 setOption(true)
 T.eq(knowsAt(clefairy, MOONBLAST), 44, "on: Clefairy learns Moonblast at 44, as today")
-T.eq(#P.learnset(clefairy), cartCount + #modern[35].learnset, "its Gen 3 moves stay, the newer ones are added")
+-- every cart move at its own level or earlier, every one of today's at today's level or earlier
+local function mergedRight(slot, cart, dex)
+  for _, row in ipairs(cart) do
+    local at = knowsAt(slot, row[2])
+    if not at or at > row[1] then return false end
+  end
+  for _, row in ipairs(modern[dex].learnset) do
+    local at = knowsAt(slot, row[2])
+    if not at or at > row[1] then return false end
+  end
+  return true
+end
+T.check(mergedRight(clefairy, cartList, 35), "its Gen 3 moves stay (never later), today's are added")
+-- the report: Squirtle learns Water Gun at 3 as today (13 in the cart), so a level 5 starter knows it
+local squirtle = P.speciesFromNational(7)
+local WATER_GUN = 55 -- Gen 3 move indexes 1-354 are the National numbers
+T.eq(knowsAt(squirtle, WATER_GUN), 3, "Squirtle learns Water Gun at 3, as today")
+local starter = P.movesAtLevel(squirtle, 5) or {}
+local hasGun = false
+for _, m in ipairs(starter) do if m == WATER_GUN then hasGun = true end end
+T.check(hasGun, "a level 5 Squirtle knows Water Gun")
+local merges = 0
+for dex in pairs(modern) do
+  local slot = P.speciesFromNational(dex)
+  local cur = slot and P._learnsets[slot]
+  if cur then merges = merges + 1 end
+end
+T.eq(merges, 386, "all 386 have a merged list")
 local sorted = true
 local list = P.learnset(clefairy)
 for i = 2, #list do if list[i][1] < list[i - 1][1] then sorted = false end end
@@ -89,7 +117,10 @@ if eggMove then T.check(not eggHas(cleffa, eggMove), "and the egg moves too") en
 
 setOption(true)
 setOption(true)
-T.eq(#P.learnset(clefairy), cartCount + #modern[35].learnset, "turning it on twice adds the rows once")
+local onceCount = #P.learnset(clefairy)
+setOption(true)
+T.eq(#P.learnset(clefairy), onceCount, "turning it on twice merges once")
+T.check(mergedRight(clefairy, cartList, 35), "and the same list")
 
 run.release()
 T.finish("national_dex_gen3 modern moves (" .. GAME .. ")")

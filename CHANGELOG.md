@@ -3,6 +3,18 @@
 All notable changes to this mod are documented here, in
 [keep a changelog](https://keepachangelog.com/en/1.1.0/) format.
 
+## [1.15.3] - 2026-11-17
+
+### Fixed
+
+- **Modern Moves teaches moves at today's levels.** The game's own Pokémon only gained moves newer
+  than their game, so a move they already knew how to learn stayed at its old level: a starter
+  Squirtle had no Water Gun until level 13 in FireRed (8 in Red, 15 in Gold), where today it
+  learns it at 3. Every move from today's list the game can do is now learned at today's level
+  when that is earlier, and moves today's games added for them (like Squirtle's Rapid Spin) are
+  learned too. Their own moves are never learned later than before. A Pokémon you already have can
+  pick up a move it skipped at the Move Reminder.
+
 ## [1.15.2] - 2026-11-17
 
 ### Added

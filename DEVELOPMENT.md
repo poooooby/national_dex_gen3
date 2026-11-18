@@ -95,9 +95,14 @@ the R/S Bag draws three-digit numbers into the name (fixed positions in a local)
 ## Modern Moves (option)
 
 `data/species/modern.lua` (`python tools/build_modern_learnsets.py`, after `tools/build_moves.py`):
-for National #1-386, the level-up rows and egg moves of the newest game that lists the species
-(`build_species.VERSION_GROUPS`) whose move is a real newer move here. `src/modern_learnsets.lua`
-replaces each cart list with a merged copy while `modern_moves` is on (weak-keyed `ours[list]`
+for National #1-386, the level-up rows of the newest game that lists the species
+(`build_species.VERSION_GROUPS`) whose move Gen 3 has (1-354) or is a real newer move here, and
+the egg moves that are real newer moves. `src/modern_learnsets.lua` replaces each cart list with
+a merged copy while `modern_moves` is on: a move in both lists is learned at the EARLIER of its
+two levels (the cart's row copied with today's level, never edited in place; Squirtle's Water Gun
+13 -> 3, so a Lv 5 starter from `Party` / `movesAtLevel` knows it), a move only today's list has
+is added, a cart-only move stays. Before 1.15.3 only newer moves were added, so a starter missed
+moves today's games teach earlier (player report, 2026-11-17). The swap (weak-keyed `ours[list]`
 remembers the cart's list, so turning it off restores it and a reload re-applies), on
 `game.ready`, `mod.options_changed` and, in the save editor, `mods.loaded`. Egg moves only go to
 species that already have a cart egg-move list. `ModernLearnsets.installRelearner` (always on)
@@ -990,7 +995,9 @@ The owner asked for the Gen 3 extras on Gen 1/2 (2026-11-12). Phase A is the fou
   - The cart species' newest lists (#1-251) are added to `used` in the builder, so their moves
     get rows too.
   - At runtime only moves the game has outright (`direct`) are added, at their level; each move
-    appears once and the cart's own rows come first at a level.
+    appears once and the cart's own rows come first at a level. A move the cart already teaches
+    is learned at the earlier of its own level and today's (Squirtle's Water Gun: Red 8 / Gold
+    15 -> 3); a Red `level1Moves` move is left alone. Same rule as Gen 3.
   - Records are frozen, so `apply(data, on)` swaps the live `learnset`/`levelMoves` (and Gold's
     `eggMoves`) on `game.ready` and `mod.options_changed`, keeping the originals.
   - It applies to the game `game.ready` handed over: in a headless run `mod.game` on Gen 1 is

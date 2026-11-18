@@ -32,7 +32,7 @@ return {
     label = "Modern Moves",
     type = "toggle",
     default = true,
-    description = "Let the original 386 Pokemon learn the newer moves they learn in today's games, at the same levels (Clefairy learns Moonblast at 44), plus their newer egg moves. Their own Gen 3 moves stay. Moves a Pokemon already knows are kept when you turn this off.",
+    description = "Let the original 386 Pokemon learn their moves as in today's games, at today's levels (Squirtle gets Water Gun at 3, Clefairy learns Moonblast at 44), newer moves included, plus their newer egg moves. Their own Gen 3 moves stay and are never learned later than before. Moves a Pokemon already knows are kept when you turn this off.",
   },
   {
     key = "big_pc",

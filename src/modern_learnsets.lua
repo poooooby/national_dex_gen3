@@ -1,8 +1,11 @@
--- The "Modern Moves" option (on by default): the original 386 Pokemon also learn the newer
--- moves they learn in the modern games (data/species/modern.lua, tools/build_modern_learnsets.py).
+-- The "Modern Moves" option (on by default): the original 386 Pokemon learn their moves as in the
+-- modern games (data/species/modern.lua, tools/build_modern_learnsets.py): every move of today's
+-- level-up list that this game has, at today's level, with the cart's own moves kept.
 --
 -- The cart's own learnsets stay as they are; while the option is on, each species' level-up list
--- is swapped for a copy with the newer rows merged in by level, and its egg-move list (only a
+-- is swapped for a copy with today's rows merged in by level (a move in both is learned at the
+-- earlier of its two levels: Squirtle's Water Gun at 3 as today, not 13; a cart move is never
+-- learned later than in the cart), and its egg-move list (only a
 -- species that has one: the one an egg hatches as) for a copy with the newer egg moves added.
 -- Turning it off puts the cart's own lists back. Pokemon.learnset / eggMoves read these tables
 -- live, so level-up learning, the Move Reminder, breeding and the save editor all follow.
@@ -22,13 +25,23 @@ function ModernLearnsets.install(opts)
   -- builds new tables and drops ours)
   local ours = setmetatable({}, { __mode = "k" })
 
+  -- the cart's rows plus today's: a move in both at the earlier of the two levels (the cart's row
+  -- copied with today's level, never changed in place), a move only in today's list added
   local function merged(base, extra)
-    local out = {}
-    for i, row in ipairs(base) do out[i] = row end
-    local have = {}
-    for _, row in ipairs(base) do have[tostring(row[1]) .. ":" .. tostring(row[2])] = true end
+    local out, at = {}, {}
+    for i, row in ipairs(base) do
+      out[i] = row
+      local j = at[row[2]]
+      if j == nil or row[1] < out[j][1] then at[row[2]] = i end
+    end
     for _, row in ipairs(extra) do
-      if not have[row[1] .. ":" .. row[2]] then out[#out + 1] = { row[1], row[2] } end
+      local j = at[row[2]]
+      if j == nil then
+        out[#out + 1] = { row[1], row[2] }
+        at[row[2]] = #out
+      elseif row[1] < out[j][1] then
+        out[j] = { row[1], row[2] }
+      end
     end
     -- by level; the cart's rows keep their order among equal levels, then the newer ones
     local order = {}

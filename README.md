@@ -220,8 +220,9 @@ you've been playing is credited for what it already has the first time it loads.
 - 🔗 **Linking Cord:** use it on a Pokémon that evolves by trading and it evolves on the spot
   (Kadabra, Machoke, Boldore...). In Gold, Silver and Crystal, one that trades holding an item
   must hold it, and uses it up, just as in a trade. Sold by EVO EXPRESS.
-- 🆙 **Modern Moves:** the game's own Pokémon also learn the newer moves they learn today, at the
-  same levels, plus newer egg moves in Gold, Silver and Crystal (only moves the game can do).
+- 🆙 **Modern Moves:** the game's own Pokémon learn their moves at today's levels (Squirtle's Water
+  Gun at 3), newer ones included, plus newer egg moves in Gold, Silver and Crystal (only moves the
+  game can do).
 - 🌅 **Day and night in Red, Blue and Yellow:** the outdoors follows your device's clock, the same
   morning, evening and night looks as in the Generation 3 games. Gold, Silver and Crystal keep
   their own day and night.
@@ -252,7 +253,7 @@ Red, Blue and Yellow also Day & Night and Modern Rules; the rest are for FireRed
 | **Clock Source** | In-game / Device | In-game | Which clock Day & Night and the time-of-day evolutions read (Midnight Lycanroc, Alcremie's night and day creams, Budew, Riolu, Chingling, Snom). FireRed and LeafGreen have no clock, so they always use the device's. |
 | **National Dex** | On / Off | Off | Turns the National Pokédex on from the start, instead of earning it in the story. Nothing is written to your save. |
 | **Day & Night** | On / Off | On | Tints the outdoors for morning, evening and night; the afternoon is the game's own look. Changes when you enter an area. Indoors, caves, battles and menus are never tinted. Red, Blue and Yellow use the device's clock; Gold, Silver and Crystal have their own day and night instead. |
-| **Modern Moves** | On / Off | On | The game's own Pokémon also learn the newer moves they learn today, at the same levels (Clefairy learns Moonblast at 44), plus newer egg moves. Their own moves stay, and moves they already know are kept if you turn it off. On Red to Crystal only moves the game can do are added. The save editor follows this setting. |
+| **Modern Moves** | On / Off | On | The game's own Pokémon learn their moves as they do today, at today's levels (Squirtle gets Water Gun at 3, Clefairy learns Moonblast at 44), plus newer egg moves. Their own moves stay and are never learned later than in the original game, and moves they already know are kept if you turn it off. Only moves the game can do are added. The save editor follows this setting. |
 | **Bigger PC** | On / Off | On | 40 PC boxes instead of the game's own: 14 in FireRed to Emerald (1,200 Pokémon), 12 in Red, Blue and Yellow and 14 in Gold, Silver and Crystal (800 Pokémon). Turning it off hides the extra boxes; the Pokémon in them stay in your save and come back when you turn it on again. |
 | **Register Owned** | On / Off | On | Opening the Pokédex counts every Pokémon in your party and PC as seen and caught, handy for Pokémon added with a save editor. |
 | **Type Badges** | On / Off | On | Shows each Pokémon's types as small badges by its HP box in battle. |

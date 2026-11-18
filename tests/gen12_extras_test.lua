@@ -176,10 +176,21 @@ for _, version in ipairs(H.versions()) do
   local kept = true
   for _, r in ipairs(before) do
     local found = false
-    for _, a in ipairs(after) do if a.move == r.move and a.level == r.level then found = true end end
+    for _, a in ipairs(after) do if a.move == r.move and a.level <= r.level then found = true end end
     if not found then kept = false end
   end
-  T.check(kept, version .. ": its own moves stay, at their own levels")
+  T.check(kept, version .. ": its own moves stay, at their own level or earlier")
+  -- the report: Squirtle learns Water Gun at 3 as today (Red 8, Gold 15), so a level 5 one knows it
+  local function gunAt(list)
+    for _, r in ipairs(list or {}) do if r.move == "WATER_GUN" then return r.level end end
+  end
+  T.eq(gunAt(data.pokemon.SQUIRTLE[listKey]), 3, version .. ": Squirtle learns Water Gun at 3, as today")
+  local young = (gen == 1 and require("src.pokemon.Pokemon") or require("src.battle.gen2.Mon")).new(data, "SQUIRTLE", 5)
+  local hasGun = false
+  for _, m in ipairs(young and young.moves or {}) do
+    if m == "WATER_GUN" or (type(m) == "table" and (m.id == "WATER_GUN" or m.move == "WATER_GUN")) then hasGun = true end
+  end
+  T.check(hasGun, version .. ": a level 5 Squirtle knows Water Gun")
   local changed = 0
   for _, row in ipairs(modernRows) do
     local def = row.dex <= (gen == 1 and 151 or 251) and nil
