@@ -109,6 +109,27 @@ species that already have a cart egg-move list. `ModernLearnsets.installRelearne
 wraps `MoveLearn.relearnableMoves`, whose local cap of 20 rows would hide the rest of a modern
 learnset. Test: `tests/modern_learnsets_test.lua`; the editor half is in `editor_stock_test.lua`.
 
+## Bigger Bag (option `bigger_bag`)
+
+Every limit is read live, so nothing is edited, only wrapped (process-wide, guarded on the
+module; a reload hands over the new `enabled`):
+
+- Gen 3 (`src/bigger_bag.lua`): `ItemsData.applyProfile` re-raises `ItemsData.CAPACITY` after each
+  refill from the profile's `bag.capacity` (ITEMS 300, KEY_ITEMS 60, POKE_BALLS 30, BERRY_POUCH 60;
+  a pocket already bigger keeps its size: the TM Case src/tms.lua grows); `Storage.pcItemsCount`
+  answers 300; `Storage.restore` lifts the PC limit while it runs (its legacy shapes trim to the
+  limit; the Bag never trims on load). `mod.options_changed` re-raises. Not in the editor.
+- Gen 1/2 (`src/gen12/bigger_bag.lua`): `Bag.capacity(data, pocket)` (shared `src.inventory.Bag`,
+  every add asks it; ITEM / nil 300, BALL 30, KEY_ITEM 60, TM_HM left to src/gen12/tms.lua);
+  `data.field.pcItemCap` = 300 on the live game's data (Red's PlayerPC and Gold's Mom read it;
+  cleared on off only if we wrote it); Gold's `ItemPcMenu.pcAdd` overridden (its 50 is a file
+  local) with the same 99-a-stack count.
+- Off loses nothing: saves never trim, so a fuller pocket / PC keeps its items and refuses new
+  kinds. Cartridge .sav: Red's export keeps the first 20 / 50, Gold's refuses an over-full Bag
+  (Gen2Save `refuse`).
+
+Test: `tests/bigger_bag_test.lua [game]` (both halves).
+
 ## Day & Night (option)
 
 `src/day_night.lua`, option `day_night` (default on), hours from `Clock.phase` (src/clock.lua:

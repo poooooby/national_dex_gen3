@@ -40,6 +40,16 @@ Options.ROWS = {
     } },
   },
   {
+    key = "bigger_bag",
+    label = "Bigger Bag",
+    type = "toggle",
+    default = true,
+    description = "Room for the new items: the Bag holds up to 300 different items (instead of 20), and the PC stores 300 kinds instead of 50. Turning it off loses nothing: a Bag or PC holding more keeps it all, and only takes new items once it is back under the game's own limit.",
+    byGeneration = { [2] = {
+      description = "Room for the new items: the Items pocket holds up to 300 different items (instead of 20), Key Items 60, the Ball pocket 30, and the PC stores 300 kinds instead of 50. Turning it off loses nothing: a pocket or PC holding more keeps it all, and only takes new items once it is back under the game's own limit.",
+    } },
+  },
+  {
     key = "type_badges",
     label = "Type Badges",
     type = "toggle",

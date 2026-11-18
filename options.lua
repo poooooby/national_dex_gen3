@@ -42,6 +42,13 @@ return {
     description = "40 PC boxes (1200 Pokemon) instead of 14. Turning it off hides boxes 15-40; the Pokemon in them are kept in your save and come back when you turn it on again.",
   },
   {
+    key = "bigger_bag",
+    label = "Bigger Bag",
+    type = "toggle",
+    default = true,
+    description = "Room for the new items: the Bag holds up to 300 different items in the Items pocket, 60 Key Items, 30 kinds of Poke Balls and 60 kinds of Berries, and the PC stores 300 different items. Turning it off loses nothing: a pocket or the PC holding more keeps it all, and only takes new items once it is back under the game's own limit.",
+  },
+  {
     key = "register_owned",
     label = "Register Owned",
     type = "toggle",

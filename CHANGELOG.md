@@ -3,6 +3,15 @@
 All notable changes to this mod are documented here, in
 [keep a changelog](https://keepachangelog.com/en/1.1.0/) format.
 
+## [1.16.0] - 2026-11-17
+
+### Added
+
+- **Bigger Bag** (option, on): room for all the new items, on every game. FireRed to Emerald's
+  Items pocket holds 300 different items, Key Items 60, Poké Balls 30 and Berries 60; Red to
+  Crystal's Bag holds 300 (Gold, Silver and Crystal: Key Items 60, Balls 30); the PC stores 300
+  kinds of items everywhere. Turning it off never loses an item.
+
 ## [1.15.3] - 2026-11-17
 
 ### Fixed

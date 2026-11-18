@@ -489,6 +489,24 @@ return function(mod, loadSibling)
     end)
   end
 
+  -- Bigger Bag: more room in the Bag and the PC's item storage (src/gen12/bigger_bag.lua)
+  local BiggerBag = loadSibling(mod, "src/gen12/bigger_bag.lua")
+  local bigBag = BiggerBag and BiggerBag.install({ require = require, generation = generation,
+    enabled = function() return option("bigger_bag") end, log = mod.log })
+  if bigBag then
+    local bagGame                        -- the game game.ready handed over: the live one
+    mod.events:on("game.ready", function(ev)
+      bagGame = ev and ev.game or mod.game
+      pcall(bigBag.apply, bagGame and bagGame.data)
+    end, 1)
+    mod.events:on("mod.options_changed", function(ev)
+      if type(ev) == "table" and ev.mod == mod.id and ev.key == "bigger_bag" then
+        local g = bagGame or mod.game
+        pcall(bigBag.apply, g and g.data)
+      end
+    end)
+  end
+
   -- mod.exports: src/api.lua (the Gen 3 path's, as it is) over this path's species
   local Api = loadSibling(mod, "src/api.lua")
   local GenApi = loadSibling(mod, "src/gen12/api.lua")

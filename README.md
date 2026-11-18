@@ -118,6 +118,8 @@ Crystal have their own section after them.
 - 📦 **A bigger PC:** 40 boxes, room for 1,200 Pokémon, so every species and form fits with
   space to spare. The extra boxes use the game's own wallpapers and work everywhere the first
   14 do: switching boxes, depositing, catching straight into the PC and the save editor.
+- 🎒 **A bigger Bag:** room for all the new items. The Items pocket holds 300 different items,
+  Key Items 60, Poké Balls 30 and the Berry Pouch 60, and the PC stores 300 different items.
 - 🌅 **Day and night:** the outdoors follows the clock. Mornings (4–10) are soft and hazy,
   afternoons (10–17) are the game's own look, evenings (17–20) glow warm orange and nights
   (20–4) turn a moonlit blue, dim enough to feel like night but bright enough to play. It
@@ -240,12 +242,14 @@ you've been playing is credited for what it already has the first time it loads.
 - 📊 **Stat Hints:** small tags by each HP box show every raised or lowered stat and what it
   multiplies by ("ATK 2x" in green, "DEF 0.67x" in red), updated after every move.
 - 📦 **Bigger PC:** 40 boxes (800 Pokémon) instead of 12 or 14.
+- 🎒 **Bigger Bag:** the Bag holds 300 different items instead of 20 (Gold, Silver and Crystal:
+  Key Items 60, Balls 30), and the PC stores 300 kinds of items instead of 50.
 
 ## ⚙️ Options
 
 Pick **WOOBLEDEX** in the game's own **OPTIONS** menu (or go to **OPTIONS → MODS → WoobleDex**); B takes
 you back to OPTIONS. Each option is one setting for every game it appears in.
-Red to Crystal show Modern Moves, Register Owned, Bigger PC, Type Badges, Stat Hints and Move Split, and
+Red to Crystal show Modern Moves, Register Owned, Bigger PC, Bigger Bag, Type Badges, Stat Hints and Move Split, and
 Red, Blue and Yellow also Day & Night and Modern Rules; the rest are for FireRed to Emerald.
 
 | Option | Choices | Default | What it does |
@@ -255,6 +259,7 @@ Red, Blue and Yellow also Day & Night and Modern Rules; the rest are for FireRed
 | **Day & Night** | On / Off | On | Tints the outdoors for morning, evening and night; the afternoon is the game's own look. Changes when you enter an area. Indoors, caves, battles and menus are never tinted. Red, Blue and Yellow use the device's clock; Gold, Silver and Crystal have their own day and night instead. |
 | **Modern Moves** | On / Off | On | The game's own Pokémon learn their moves as they do today, at today's levels (Squirtle gets Water Gun at 3, Clefairy learns Moonblast at 44), plus newer egg moves. Their own moves stay and are never learned later than in the original game, and moves they already know are kept if you turn it off. Only moves the game can do are added. The save editor follows this setting. |
 | **Bigger PC** | On / Off | On | 40 PC boxes instead of the game's own: 14 in FireRed to Emerald (1,200 Pokémon), 12 in Red, Blue and Yellow and 14 in Gold, Silver and Crystal (800 Pokémon). Turning it off hides the extra boxes; the Pokémon in them stay in your save and come back when you turn it on again. |
+| **Bigger Bag** | On / Off | On | More room for items. FireRed to Emerald: the Items pocket holds 300 different items, Key Items 60, Poké Balls 30, Berries 60, and the PC 300. Red to Crystal: the Bag 300 (Gold, Silver, Crystal: Key Items 60, Balls 30) and the PC 300. Turning it off loses nothing: a pocket or PC holding more keeps every item and only takes new kinds once it is back under the game's own limit. |
 | **Register Owned** | On / Off | On | Opening the Pokédex counts every Pokémon in your party and PC as seen and caught, handy for Pokémon added with a save editor. |
 | **Type Badges** | On / Off | On | Shows each Pokémon's types as small badges by its HP box in battle. |
 | **Stat Hints** | On / Off | On | Shows each raised or lowered stat by its HP box in battle, with what it multiplies by ("ATK 2x", "SPA 0.5x"). |
@@ -313,6 +318,9 @@ the game's own Pokémon keep their original data, so its event gifts arrive as u
   save underneath: turning Bigger PC off or removing the mod never loses them. Tools that only
   know the 14 boxes see boxes 1–14: exporting to a cartridge .sav, the cross-game Pokémon Box,
   online team picking, and Ruby/Sapphire's lottery and PokéNav condition search.
+- **A cartridge .sav only has room for the game's own Bag and PC.** Exporting one with Bigger
+  Bag's extra items keeps the first ones that fit in Red, Blue and Yellow, and Gold, Silver and
+  Crystal refuse the export until the Bag fits. Your mod save always keeps everything.
 - **Exporting to a cartridge .sav** leaves Hall of Fame entries for Pokémon from #448 on (and
   the alternate forms) out: the cartridge format can't store them. The game says so when it
   exports; your save itself keeps them.
@@ -345,7 +353,7 @@ the game's own Pokémon keep their original data, so its event gifts arrive as u
 - **Battle mods made for the original National Dex** (the g9 battle mods, Battle Forms) ask for
   it by name, so for now they don't run beside WoobleDex. WoobleDex already answers everything
   they ask of a National Dex, so they can run on it once they also accept WoobleDex.
-- **Red to Crystal's options** are Modern Moves, Register Owned, Bigger PC, Type Badges, Stat
+- **Red to Crystal's options** are Modern Moves, Register Owned, Bigger PC, Bigger Bag, Type Badges, Stat
   Hints, Move Split and (Red, Blue, Yellow) Day & Night and Modern Rules, shared with the
   Generation 3 games:
   turning one off turns it off everywhere.

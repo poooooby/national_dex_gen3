@@ -652,6 +652,22 @@ return function(mod)
     local okPc, pcErr = pcall(BigPc.installGame, { mod = mod, require = require, log = mod.log, enabled = bigPcOn })
     if not okPc then mod.log:warn("bigger PC is off: %s", tostring(pcErr)) end
   end
+  -- the Bigger Bag option (src/bigger_bag.lua): more room in the Bag's pockets and the PC's item
+  -- storage, set now so a Continue already loads every item; follows the option when it changes
+  local BiggerBag = not inEditor and loadSibling(mod, "src/bigger_bag.lua") or nil
+  if BiggerBag then
+    local okBag, refreshBag = pcall(BiggerBag.install, { require = require, log = mod.log,
+      enabled = function()
+        local okGet, value = pcall(function() return mod.options:get("bigger_bag") end)
+        return okGet and value ~= false
+      end })
+    if not okBag then mod.log:warn("bigger bag is off: %s", tostring(refreshBag)) end
+    if okBag and refreshBag then
+      mod.events:on("mod.options_changed", function(ev)
+        if type(ev) == "table" and ev.mod == mod.id and ev.key == "bigger_bag" then pcall(refreshBag) end
+      end)
+    end
+  end
   -- the vending machines (src/vending.lua): their sprites now, while mods load; placed on entering
   -- their map; not in the save editor
   if makeVending and makeVendingScreen and not inEditor then
