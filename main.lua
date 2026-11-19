@@ -168,6 +168,12 @@ return function(mod)
     local okC, nC = pcall(ExpCandies.register, mod)
     if okC then mod.log:info("registered %d Exp. Candies", nC) else mod.log:warn("Exp. Candies not registered: %s", tostring(nC)) end
   end
+  -- the EV-lowering berries' modern use on the carts without it (src/ev_berries.lua)
+  local EvBerries = loadSibling(mod, "src/ev_berries.lua")
+  if EvBerries then
+    local okB, nB = pcall(EvBerries.register, mod, require)
+    if not okB then mod.log:warn("the EV-lowering berries keep the game's own use: %s", tostring(nB)) end
+  end
   -- (a form's id by its slot, filled once the forms are registered below)
   local formIdBySlot = {}
   local Dynamax = nil

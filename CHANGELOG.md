@@ -14,6 +14,9 @@ All notable changes to this mod are documented here, in
   abilities' own checks, the newer held items (Choice Specs, Muscle Band, Wise Glasses, the
   Kee, Maranga, Jaboca and Rowap Berries) and Doom Desire. Link battles keep the game's own rule,
   so both players' games agree. Red to Crystal already had it; one setting covers every game.
+- **EV-lowering berries on FireRed, LeafGreen, Ruby and Sapphire:** Pomeg, Kelpsy, Qualot, Hondew,
+  Grepa and Tamato, used from the Bag, lower one stat's EVs by 10 and raise friendship, as Emerald
+  and today's games do. Before, these games said they had no effect.
 - **Measured sprite heights for other mods** (`artHeightOf`, `artHeights`), on every game: how tall
   each WoobleSprite front picture really stands, in metres, for a Pokédex height chart (the
   same measurements WoobleView sizes battles by).

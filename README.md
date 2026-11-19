@@ -31,6 +31,7 @@ is missing, up to Pecharunt, with today's moves, abilities, items and types to g
 
 - 🏪 **Vending machines** in the department store sell [the new items](docs/items.md) and [TMs](docs/tms.md)
 - 🎒 **Modern held items**, evolution items, Linking Cord and Exp. Candies
+- 🍓 **EV-lowering berries** (Pomeg, Kelpsy, Qualot, Hondew, Grepa, Tamato) lower an EV and raise friendship in every Gen 3 game
 
 ### In Battle
 

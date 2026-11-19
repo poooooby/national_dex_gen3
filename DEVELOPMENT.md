@@ -164,6 +164,19 @@ Counter and Mirror Coat read), Hustle's accuracy, and this mod's move rules and 
 - The option is read once and on `mod.options_changed` (the engine asks on every hit).
 - Test: `tests/move_split_test.lua [game]` (all five carts).
 
+## EV-lowering berries (`src/ev_berries.lua`)
+
+Pomeg, Kelpsy, Qualot, Hondew, Grepa and Tamato (cart items 153-158) lower an EV in Emerald by its
+own item data (the engine's `ItemUse.useVitamin` -> `ev_berry` / `use_ev_berry`, after
+`ItemUseCB_ReduceEV`); FireRed, LeafGreen, Ruby and Sapphire's data has no EV change, so the Bag
+said "It won't have any effect". Each berry is patched at load with an `item_effects` record
+(`items:patch(id, { effect = "EV_<ID>" })`; Schemas `itemWrite` keeps the ROM effect bytes beside
+the mod effect, so `fieldUseKind` answers `"mod"`). The effect: EVs -10 (never below 0),
+`Pokemon.itemFriendship(mon, { 10, 5, 2 })`, Emerald's three messages, "It won't have any effect"
+when neither changes. Where the cart's own bytes already lower the EV (Emerald), it hands the use
+to `ItemUse.useVitamin`, so Emerald is unchanged. Test: `tests/ev_berries_test.lua [game]` (all
+five carts).
+
 ## Day & Night (option)
 
 `src/day_night.lua`, option `day_night` (default on), hours from `Clock.phase` (src/clock.lua:
