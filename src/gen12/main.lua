@@ -522,6 +522,11 @@ return function(mod, loadSibling)
         load = function(path) return loadSibling(mod, path) end })
       if not ok then mod.log:warn("read API: %s", tostring(err)) end
     end
+    -- each sprite's measured height, for height charts (src/art_heights.lua, as on Gen 3)
+    local ArtHeights = loadSibling(mod, "src/art_heights.lua")
+    if ArtHeights then
+      pcall(ArtHeights, mod, { read = function(path) return loadSibling(mod, path) end })
+    end
     -- the candies' ids, as on Gen 3 (a reward mod can give them)
     if candyState and #candyState.registered > 0 then
       local ids = {}

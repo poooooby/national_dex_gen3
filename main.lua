@@ -743,6 +743,9 @@ return function(mod)
       return DexSync.sync(session)
     end,
     formLabel = DexForms and DexForms.label or nil })
+  -- mod.exports.artHeightOf / artHeights: each sprite's measured height, for height charts
+  local ArtHeights = loadSibling(mod, "src/art_heights.lua")
+  if ArtHeights then pcall(ArtHeights, mod, { read = read }) end
   -- optional: WoobleDex's achievements in Recomp Achievements (src/achievements.lua), counted from
   -- the session's Pokedex (keyed by species slot; a form has a slot of its own)
   local Achievements = not inEditor and loadSibling(mod, "src/achievements.lua") or nil

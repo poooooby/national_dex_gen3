@@ -454,6 +454,7 @@ its list, as MODS does. Not wired in the Gen 3 save editor. Test: `tests/options
 | `registerOwned(session)` / `formLabel(slot)` | (apiVersion 3) Register Owned's step as the game's Pokédex runs it on opening (every party and PC Pokémon marked caught; `0` while the option is off), and a form's name as the FORMS page shows it (`"GALARIAN"`, `"RUBY CREAM"`; `nil` for a base species). For a Pokédex that opens in the game's place (WoobOS) |
 | `setArtProvider(fn)` | registers an art provider |
 | `setDexPeek(fn)` | `fn(speciesSlot) -> true` lets that unseen species open in the Pokédex in a limited view (number shown, name dashed, "?" picture, no cry, only the AREA page). `nil` turns it off. Modern Spawns uses it |
+| `artHeightOf(idOrDex)` / `artHeights()` | (1.17.0, by presence; every game) each WoobleSprite front picture's measured size in metres, for height charts (WoobleOS's Pokédex): `{ id, dex, slot, pokedex, standing, art, width, long }`. `standing` is the resting picture feet to top (the height to draw beside a person), `art` feet to the top over the whole animation (WoobleView's battle size), `long` when the Pokédex number is a length. A string is a sprite id (`"VULPIX_ALOLA"`, `"MEOWSTIC_FEMALE"`), a number the base species' National number. `src/art_heights.lua`, `data/art_heights.lua` |
 
 ## Achievements (`src/achievements.lua`, `data/achievements.lua`)
 
@@ -1411,6 +1412,8 @@ python -m pip install requests
 python tools/build_species.py            # PokéAPI responses cached in tools/.cache
 python tools/build_gen12.py              # data/gen12 (needs red, gold and firered imported, luajit)
 python tools/build_api.py                # data/gen12/api (the read API's reference data)
+python tools/build_move_split.py         # data/move_split.lua (Move Split's classes, from data/gen12/api)
+python tools/build_art_heights.py        # data/art_heights.lua (from ../poke-scale-realism/data/scale.json)
 python tools/build_placeholder.py        # assets/gen12 (the Gen 1/2 placeholder pictures)
 ```
 

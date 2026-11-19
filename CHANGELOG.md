@@ -14,6 +14,9 @@ All notable changes to this mod are documented here, in
   abilities' own checks, the newer held items (Choice Specs, Muscle Band, Wise Glasses, the
   Kee, Maranga, Jaboca and Rowap Berries) and Doom Desire. Link battles keep the game's own rule,
   so both players' games agree. Red to Crystal already had it; one setting covers every game.
+- **Measured sprite heights for other mods** (`artHeightOf`, `artHeights`), on every game: how tall
+  each WoobleSprite front picture really stands, in metres, for a Pokédex height chart (the
+  same measurements WoobleView sizes battles by).
 
 ### Changed
 
