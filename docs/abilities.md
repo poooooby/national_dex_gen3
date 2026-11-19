@@ -5,7 +5,8 @@ you (Battery, Power Spot, Friend Guard, Commander, Receiver, Hospitality, Curiou
 act on nothing these games have (Ball Fetch, Illusion, RKS System, Power Construct, Tera Shift)
 are the closest Gen 3 ability instead (see each Pokémon's page). The summary screen has room for one short line,
 so **What it does** below is the full effect, with every number and anything that works
-differently from the newer games. Gen 3 decides physical or special by a move's type.
+differently from the newer games. Gen 3 decides physical or special by a move's type, unless the
+**Move Split** option is on.
 
 | Ability | Summary screen | What it does |
 |---|---|---|

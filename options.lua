@@ -69,4 +69,11 @@ return {
     default = true,
     description = "Show every stat a Pokemon has raised or lowered in battle by its HP box, with what it multiplies by: ATK 2x after Swords Dance, SPA 1/2 after two drops. They update after every move. Red for a rise, blue for a drop. In doubles they sit beside each box so they never cover the other Pokemon's.",
   },
+  {
+    key = "move_split",
+    label = "Move Split",
+    type = "toggle",
+    default = false,
+    description = "Decide whether a move is physical or special by the move itself, as in today's games (Shadow Ball and Moonblast special, Crunch, Shadow Claw and Fire Punch physical), instead of by its type as these games do. It changes how the game's own moves hit too, and what Counter and Mirror Coat answer.",
+  },
 }

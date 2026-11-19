@@ -131,6 +131,8 @@ return function(mod)
   -- optional: without it the rest of the newer abilities stay the closest Gen 3 one in effect
   local MoreAbilities = RealAbilities and loadSibling(mod, "src/abilities_more.lua")
   if MoreAbilities then MoreAbilities.hooks(mod) end
+  -- the Move Split option (physical / special by the move): without it, by type as Gen 3 does
+  local MoveSplit = loadSibling(mod, "src/move_split.lua")
   -- optional: without it the newer held items are not in the game (src/held/gen3.lua)
   local HeldItems = loadSibling(mod, "src/held/gen3.lua")
   if HeldItems then HeldItems.hooks(mod) end
@@ -406,6 +408,23 @@ return function(mod)
         log = mod.log, flags = read("data/move_flags.lua"), abilities = RealAbilities, moveField = MoveField,
         moveEffects = MoveEffects, moveRules = MoveRules, held = HeldItems })
       if not okMa then mod.log:warn("the other newer abilities are off: %s", tostring(maErr)) end
+    end
+    -- the Move Split option (src/move_split.lua): last of the battle's wraps, so the move rules,
+    -- field moves, abilities and held items all ask inside the move. The option is read once and
+    -- on a change (the engine asks on every hit).
+    if MoveSplit then
+      local splitOn = false
+      local function readSplit()
+        local okGet, value = pcall(function() return mod.options:get("move_split") end)
+        splitOn = okGet and value == true
+      end
+      readSplit()
+      mod.events:on("mod.options_changed", function(e)
+        if type(e) == "table" and e.mod == mod.id and e.key == "move_split" then readSplit() end
+      end)
+      local okSp, spErr = pcall(MoveSplit.install, { require = require, log = mod.log,
+        classes = read("data/move_split.lua") or {}, enabled = function() return splitOn end })
+      if not okSp then mod.log:warn("move split is off: %s", tostring(spErr)) end
     end
     -- the Fairy type (src/types.lua): after the repairs, so National numbers resolve to this
     -- mod's slots and its reload hook runs after theirs

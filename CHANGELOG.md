@@ -3,6 +3,21 @@
 All notable changes to this mod are documented here, in
 [keep a changelog](https://keepachangelog.com/en/1.1.0/) format.
 
+## [Unreleased]
+
+### Added
+
+- **Move Split on FireRed, LeafGreen, Ruby, Sapphire and Emerald** (option, off): a move is
+  physical or special by the move itself, as in today's games (Shadow Ball and Moonblast special;
+  Crunch, Shadow Claw and Fire Punch physical), instead of by its type. It covers the damage, burn,
+  Reflect and Light Screen, what Counter and Mirror Coat answer, and the newer moves' and
+  abilities' own checks. Red to Crystal already had it; one setting covers every game.
+
+### Changed
+
+- **A shorter README**: short feature bullets that link to the player guides for the details.
+  The moves guide shows each move's class with Move Split on.
+
 ## [1.16.0] - 2026-11-17
 
 ### Added

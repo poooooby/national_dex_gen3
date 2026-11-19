@@ -130,6 +130,29 @@ module; a reload hands over the new `enabled`):
 
 Test: `tests/bigger_bag_test.lua [game]` (both halves).
 
+## Move Split on Gen 3 (option `move_split`, `src/move_split.lua`)
+
+The same key as Red to Crystal's (`src/gen12/mech/split.lua`), default off. The Gen 3 engine
+asks one function for every physical / special decision: `Types.isPhysical(moveType)`
+(`src/core/game3/battle/types.lua`), from the damage formula (stats, stages, burn, screens, type
+boosting items), `Hit.dealDamage` (`lastPhysicalDamageTaken` / `lastSpecialDamageTaken`, what
+Counter and Mirror Coat read), Hustle's accuracy, and this mod's move rules and abilities. So
+`Types.isPhysical` is wrapped to answer by the move being resolved, when there is one:
+
+- **Which move:** a stack per coroutine (`coroutine.running()`, weak-keyed; the engine runs a move
+  in a coroutine that can pause for a prompt), pushed by wraps of `Damage.calc` (the battle and
+  the AI's estimate), `Hit.run` (`M.mnum`) and `Hit.dealDamage` (whose `info.physical`, computed
+  by the engine from the type for its own fixed-damage calls, is corrected too). A move with no
+  class pushes NATIVE, so a typeless hit inside another move gets the game's answer.
+- **Classes:** `data/move_split.lua` by Gen 3 index (`tools/build_move_split.py`: the cart's
+  1-354 are National numbers, ours carry `api`; damage classes from `data/gen12/api/moves.lua`).
+- **Order:** installed last of the battle's wraps on game.ready (after MoreAbilities), so it is
+  the outermost on `Damage.calc` and `Hit.run` and every other wrap asks inside the move (move
+  rules' stat swaps put Body Press's Defense into the slot the move's class reads). Process-wide
+  (`Types.__ndxSplit`); a later install only refreshes the classes and the option reader.
+- The option is read once and on `mod.options_changed` (the engine asks on every hit).
+- Test: `tests/move_split_test.lua [game]` (all five carts).
+
 ## Day & Night (option)
 
 `src/day_night.lua`, option `day_night` (default on), hours from `Clock.phase` (src/clock.lua:

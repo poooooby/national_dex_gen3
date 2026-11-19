@@ -647,18 +647,21 @@ local M = {
   "The " .. #newMoves .. " moves from later generations that work in battle here. Pokémon learn them by",
   "level-up or as egg moves. The few left (moves that need a partner to act out of turn, such as",
   "After You and Instruct) are swapped for the closest Gen 3 move. As in Gen 3, a move's type",
-  "decides whether it is physical or special.",
+  "decides whether it is physical or special (**Kind**); with the **Move Split** option on, the move",
+  "itself does, as in today's games (**Move Split**).",
   "",
-  "| Move | Type | Kind | Power | Accuracy | PP | What it does |",
-  "|---|---|---|---|---|---|---|",
+  "| Move | Type | Kind | Move Split | Power | Accuracy | PP | What it does |",
+  "|---|---|---|---|---|---|---|---|",
 }
+local split = load("data/move_split.lua")
 local sortedMoves = {}
 for _, m in ipairs(newMoves) do sortedMoves[#sortedMoves + 1] = m end
 table.sort(sortedMoves, function(a, b) return (a.full or a.name) < (b.full or b.name) end)
 for _, m in ipairs(sortedMoves) do
   local kind = m.power == 0 and "Status" or (physical[m.type] and "Physical" or "Special")
+  local today = m.power == 0 and "Status" or ({ p = "Physical", s = "Special" })[split[m.index]] or kind
   local text = (m.rse or m.frlg or ""):gsub("%c", " ")
-  M[#M + 1] = string.format("| %s | %s | %s | %s | %s | %d | %s |", m.full or title(m.name), title(m.type), kind,
+  M[#M + 1] = string.format("| %s | %s | %s | %s | %s | %s | %d | %s |", m.full or title(m.name), title(m.type), kind, today,
     m.power > 1 and tostring(m.power) or "—", m.accuracy > 0 and tostring(m.accuracy) or "—", m.pp, text)
 end
 out("docs/moves.md", M)
@@ -673,7 +676,8 @@ local A = {
   "act on nothing these games have (Ball Fetch, Illusion, RKS System, Power Construct, Tera Shift)",
   "are the closest Gen 3 ability instead (see each Pokémon's page). The summary screen has room for one short line,",
   "so **What it does** below is the full effect, with every number and anything that works",
-  "differently from the newer games. Gen 3 decides physical or special by a move's type.",
+  "differently from the newer games. Gen 3 decides physical or special by a move's type, unless the",
+  "**Move Split** option is on.",
   "",
   "| Ability | Summary screen | What it does |",
   "|---|---|---|",
