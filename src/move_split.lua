@@ -14,6 +14,14 @@
 --   Damage.calc       the battle's and the AI's damage estimate: its move
 --   Hit.run           the move's hit, from accuracy to after the damage: M.mnum
 --   Hit.dealDamage    a hit dealt outside Hit.run (the engine's own fixed-damage calls): M.mnum
+--   Effects.run       a move's effect script (Future Sight and Doom Desire work out their damage
+--                     there, with Damage.base); an effect with no move keeps the move around it
+-- A called move (Metronome, Sleep Talk, Mirror Move, Assist) is a move of its own to the engine
+-- (Engine.resolveMove), so it pushes its own class.
+-- Link battles and recorded link battles keep the game's split: both players' games must work out
+-- the same damage, and the link fingerprint checks the type table, not this option.
+-- hub.categoryOf(num, st) answers "physical" / "special" (or nil: the game's way) for code that
+-- classifies a move itself rather than asking Types.isPhysical (src/held/gen3.lua).
 -- Outside a move, or with the option off, or for a move with no class (status moves, Struggle's
 -- stand-ins), the engine's own answer by type stands. The stacks are weak-keyed by coroutine, so
 -- a battle left in the middle of a move leaves nothing behind.
@@ -66,13 +74,26 @@ function Split.install(opts)
       return ...
     end
 
+    -- a link battle, live or recorded: both sides must work out the same damage
+    local function linked(st)
+      return type(st) == "table" and (st.link or (type(st.kinds) == "table" and st.kinds.recordedLink)) and true or false
+    end
+    local function active(st) return hub.enabled and hub.enabled() and not linked(st) end
+    hub.categoryOf = function(num, st)
+      if not active(st) then return nil end
+      local c = classOf(tonumber(num))
+      if c == true then return "physical" elseif c == false then return "special" end
+      return nil
+    end
+
     -- run f(...) with the move num on this coroutine's stack: its class, or NATIVE for a move
-    -- with none (so a status move or a typeless hit inside another move gets the game's answer)
-    local function within(num, f, ...)
-      if not (hub.enabled and hub.enabled()) then return f(...) end
+    -- with none (so a status move or a typeless hit inside another move gets the game's answer);
+    -- inherit: with no move to go by, leave the stack as it is (an effect run inside a hit)
+    local function within(num, st, inherit, f, ...)
+      if not active(st) then return f(...) end
       local physical = classOf(num)
       local s = stack()
-      if physical == nil and #s == 0 then return f(...) end
+      if physical == nil and (#s == 0 or (inherit and num == nil)) then return f(...) end
       local depth = #s + 1
       if physical == nil then s[depth] = NATIVE else s[depth] = physical end
       return finish(s, depth, pcall(f, ...))
@@ -104,20 +125,22 @@ function Split.install(opts)
 
     local calc = Damage.calc
     Damage.calc = function(attacker, defender, moveId, o, ...)
-      return within(moveNum(moveId), calc, attacker, defender, moveId, o, ...)
+      local st = type(o) == "table" and type(o.adapter) == "table" and o.adapter._st or nil
+      return within(moveNum(moveId), st, false, calc, attacker, defender, moveId, o, ...)
     end
 
     local run = Hit.run
     Hit.run = function(M, ...)
       local num = type(M) == "table" and (tonumber(M.mnum) or moveNum(M.move)) or nil
-      return within(num, run, M, ...)
+      return within(num, type(M) == "table" and M.st or nil, false, run, M, ...)
     end
 
     if type(Hit.dealDamage) == "function" then
       local deal = Hit.dealDamage
       Hit.dealDamage = function(M, dmg, info, ...)
         local num = type(M) == "table" and (tonumber(M.mnum) or moveNum(M.move)) or nil
-        if type(info) == "table" and info.physical ~= nil and num and hub.enabled and hub.enabled() then
+        local st = type(M) == "table" and M.st or nil
+        if type(info) == "table" and info.physical ~= nil and num and active(st) then
           local c = classOf(num)
           if c ~= nil and c ~= info.physical then
             local copy = {}
@@ -126,7 +149,18 @@ function Split.install(opts)
             info = copy
           end
         end
-        return within(num, deal, M, dmg, info, ...)
+        return within(num, st, false, deal, M, dmg, info, ...)
+      end
+    end
+
+    local okE, Effects = pcall(require, "src.core.game3.battle.effects")
+    if okE and type(Effects) == "table" and type(Effects.run) == "function" then
+      local effRun = Effects.run
+      Effects.run = function(id, adapter, user, target, move, moveId, moveCtx, ...)
+        local num = moveNum(moveId)
+        if num == nil or not (hub.classes and hub.classes[num]) then num = moveNum(move) or num end
+        local st = type(adapter) == "table" and adapter._st or nil
+        return within(num, st, true, effRun, id, adapter, user, target, move, moveId, moveCtx, ...)
       end
     end
   end

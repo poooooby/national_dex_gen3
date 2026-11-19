@@ -187,7 +187,17 @@ function GA:hasType(b, name)
   return id ~= nil and b ~= nil and (b.type1 == id or b.type2 == id)
 end
 function GA:moveType(m) return m and m.type end
-function GA:category(m) return m and m.category or "physical" end
+-- (the Move Split option on: the move's own class, from src/move_split.lua; else by type)
+function GA:category(m)
+  local c = m and m.category or "physical"
+  if m and c ~= "status" then
+    local okT, Types = pcall(self.env.require, "src.core.game3.battle.types")
+    local hub = okT and type(Types) == "table" and Types.__ndxSplit
+    local by = hub and hub.categoryOf and hub.categoryOf(m.num, self.ad and self.ad._st)
+    if by then return by end
+  end
+  return c
+end
 function GA:typeEff(at, dt)
   local okT, Types = pcall(self.env.require, "src.core.game3.battle.types")
   if not (okT and TYPE_ID[at] and TYPE_ID[dt]) then return 10 end

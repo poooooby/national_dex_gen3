@@ -11,7 +11,9 @@ All notable changes to this mod are documented here, in
   physical or special by the move itself, as in today's games (Shadow Ball and Moonblast special;
   Crunch, Shadow Claw and Fire Punch physical), instead of by its type. It covers the damage, burn,
   Reflect and Light Screen, what Counter and Mirror Coat answer, and the newer moves' and
-  abilities' own checks. Red to Crystal already had it; one setting covers every game.
+  abilities' own checks, the newer held items (Choice Specs, Muscle Band, Wise Glasses, the
+  Kee, Maranga, Jaboca and Rowap Berries) and Doom Desire. Link battles keep the game's own rule,
+  so both players' games agree. Red to Crystal already had it; one setting covers every game.
 
 ### Changed
 

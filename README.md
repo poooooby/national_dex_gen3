@@ -98,7 +98,7 @@ Pick **WOOBLEDEX** in the game's **OPTIONS** menu. Each setting applies to every
 - **On Red to Crystal it replaces the original National Dex mod.** Turn that one off.
 - **Alternate forms aren't found in the wild yet,** and there are no Megas or Gigantamax forms.
 - **A few evolutions are adapted** where the game can't check a condition ([details](docs/evolutions-and-forms.md)).
-- **A move's type decides physical or special,** as in the original games, unless you turn on **Move Split**.
+- **A move's type decides physical or special,** as in the original games, unless you turn on **Move Split**. Link battles always use the game's own rule, so both players' games agree.
 - **Keep the mod installed** on any save that uses its Pokémon or moves.
 - **Exporting to a cartridge .sav** can't hold the new Pokémon, moves, items or extra boxes. Your mod save always keeps them.
 - **Link play** works with players who also use WoobleDex.

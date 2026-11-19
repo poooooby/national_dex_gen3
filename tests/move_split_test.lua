@@ -122,7 +122,7 @@ end
 do
   local hub = Types.__ndxSplit
   local co = coroutine.create(function()
-    hub.within(SHADOW_BALL, function()
+    hub.within(SHADOW_BALL, nil, false, function()
       assert(Types.isPhysical(GHOST) == false)
       coroutine.yield()
     end)
@@ -130,6 +130,57 @@ do
   coroutine.resume(co)
   T.check(coroutine.status(co) == "suspended", "the move is paused inside")
   T.check(Types.isPhysical(GHOST), "and outside it Ghost is still physical")
+end
+
+-- Doom Desire works out its damage in its effect script (Steel: physical by type, special today)
+local Effects = require("src.core.game3.battle.effects")
+local function doomDesire()
+  local st, ad = battle()
+  ad.sayText, ad.playAnim = function() end, function() end
+  local okR = pcall(Effects.run, "EXP_FUTURE_SIGHT_EFFECT", ad, st.player, st.enemy, Moves.get(353), 353)
+  local side = ad:foeSide(st.player)
+  local tok = okR and side and side.tokens and side.tokens[#side.tokens]
+  return tok and tok.damage or -1
+end
+local onDD = doomDesire()
+setOption(false)
+local offDD = doomDesire()
+setOption(true)
+T.check(offDD > 0 and onDD > 0 and onDD < offDD,
+  ("Doom Desire turns special: it reads the weak Sp. Atk (%d -> %d)"):format(offDD, onDD))
+
+-- link battles keep the game's split (both games must agree)
+do
+  local st, ad = battle()
+  st.link = true
+  local d = Damage.calc(st.player, st.enemy, Moves.get(CRUNCH), { adapter = ad, noRandom = true, forceCrit = false })
+  T.eq(d, offCr, "a link battle's Crunch stays special")
+  st.link = nil
+  st.kinds = st.kinds or {}
+  st.kinds.recordedLink = true
+  d = Damage.calc(st.player, st.enemy, Moves.get(CRUNCH), { adapter = ad, noRandom = true, forceCrit = false })
+  T.eq(d, offCr, "so does a recorded link battle's")
+end
+
+-- this mod's held items classify the move the same way (Choice Specs boosts special moves)
+do
+  local Battle = require("src.core.game3.battle")
+  local Runtime = require("src.mods.Runtime")
+  local held = {}
+  for _, r in ipairs(dofile("mods/national_dex_gen3/data/held_items.lua")) do held[r.id] = r end
+  local function boosted(num)
+    local st, ad = battle()
+    Battle._adapter = ad
+    st.player.item = held.CHOICE_SPECS.index
+    return Runtime.call("battle.damage", function() return 100, { effectiveness = 1, critical = false } end,
+      { battle = st, user = st.player, target = st.enemy, move = Moves.get(num), moveNum = num })
+  end
+  T.eq(boosted(CRUNCH), 100, "Choice Specs no longer boosts Crunch (physical now)")
+  T.eq(boosted(SHADOW_BALL), 150, "it boosts Shadow Ball (special now)")
+  setOption(false)
+  T.eq(boosted(CRUNCH), 150, "off: Choice Specs boosts Crunch (special by type)")
+  T.eq(boosted(SHADOW_BALL), 100, "and not Shadow Ball (physical by type)")
+  setOption(true)
 end
 
 setOption(false)

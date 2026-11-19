@@ -143,7 +143,18 @@ Counter and Mirror Coat read), Hustle's accuracy, and this mod's move rules and 
   in a coroutine that can pause for a prompt), pushed by wraps of `Damage.calc` (the battle and
   the AI's estimate), `Hit.run` (`M.mnum`) and `Hit.dealDamage` (whose `info.physical`, computed
   by the engine from the type for its own fixed-damage calls, is corrected too). A move with no
-  class pushes NATIVE, so a typeless hit inside another move gets the game's answer.
+  class pushes NATIVE, so a typeless hit inside another move gets the game's answer. `Effects.run`
+  is wrapped too: Future Sight and Doom Desire work out their damage in their effect script
+  (`Setup.futureSight`, `Damage.base`); an effect with no move of its own keeps the move around
+  it. A called move (Metronome, Sleep Talk, Mirror Move, Assist) is its own `Engine.resolveMove`,
+  so it pushes its own class.
+- **Link battles** (`st.link`, `st.kinds.recordedLink`) keep the game's split: both games must
+  work out the same damage, and `src/link/Fingerprint.lua` compares `Types.PHYSICAL`, not this
+  option.
+- **Code that classifies a move itself:** `hub.categoryOf(num, st)`. The held items' Gen 3
+  adapter (`src/held/gen3.lua` `GA:category`) asks it, since its move views carry the category
+  `Moves.get` worked out by type at load (Choice Specs, Muscle Band, Wise Glasses, the
+  category berries).
 - **Classes:** `data/move_split.lua` by Gen 3 index (`tools/build_move_split.py`: the cart's
   1-354 are National numbers, ours carry `api`; damage classes from `data/gen12/api/moves.lua`).
 - **Order:** installed last of the battle's wraps on game.ready (after MoreAbilities), so it is
