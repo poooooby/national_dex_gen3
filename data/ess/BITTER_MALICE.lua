@@ -38,8 +38,8 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}},
     },
     timing = {
-      { f = 0, t = 0, se = "SE_M_DRAGON_RAGE" },
-      { f = 0, t = 0, se = "SE_M_DRAGON_RAGE" },
+      { f = 0, t = 0, se = "NDX_ESS_PRSFX_OVERHEAT1_V100_P148" },
+      { f = 0, t = 0, se = "NDX_ESS_PRSFX_OVERHEAT1_V80_P123" },
       { f = 12, t = 0, se = "NDX_ESS_PRSFX_OVERHEAT1" },
       { f = 16, t = 0, se = "NDX_ESS_ICE8_V100_P70" },
     },

@@ -25,10 +25,10 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}, {4, 360, 116, 1, 100, 100, 0, 140}},
     },
     timing = {
-      { f = 0, t = 0, se = "SE_M_SWAGGER2" },
-      { f = 8, t = 0, se = "SE_M_SWAGGER2" },
-      { f = 11, t = 0, se = "SE_M_SWAGGER2" },
-      { f = 14, t = 0, se = "SE_M_SWAGGER2" },
+      { f = 0, t = 0, se = "NDX_ESS_PRSFX_TORMENT1_V100_P80" },
+      { f = 8, t = 0, se = "NDX_ESS_PRSFX_TORMENT2" },
+      { f = 11, t = 0, se = "NDX_ESS_PRSFX_TORMENT2" },
+      { f = 14, t = 0, se = "NDX_ESS_PRSFX_TORMENT2" },
     },
   },
 }

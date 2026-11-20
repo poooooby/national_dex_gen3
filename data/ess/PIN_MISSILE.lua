@@ -24,7 +24,7 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}, {0, 368, 100, 3, 100, 100, 125, 145}},
     },
     timing = {
-      { f = 7, t = 0, se = "SE_M_JUMP_KICK" },
+      { f = 7, t = 0, se = "NDX_ESS_PRSFX_PIN_MISSILE_V100_P90" },
     },
   },
   opp = {
@@ -48,7 +48,7 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}, {0, 152, 212, 3, 100, 100, 125, 145, 0, 0, 0}},
     },
     timing = {
-      { f = 7, t = 0, se = "SE_M_JUMP_KICK" },
+      { f = 7, t = 0, se = "NDX_ESS_PRSFX_PIN_MISSILE_V100_P90" },
     },
   },
 }

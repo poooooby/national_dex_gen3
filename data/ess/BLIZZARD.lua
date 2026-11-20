@@ -43,7 +43,7 @@ return {
       { f = 0, t = 2, d = 3, o = 255 },
       { f = 0, t = 4, d = 3, o = 125 },
       { f = 0, t = 4, d = 34, x = 500 },
-      { f = 0, t = 0, se = "SE_M_BLIZZARD" },
+      { f = 0, t = 0, se = "NDX_ESS_PRSFX_BLIZZARD_V100_P150" },
       { f = 0, t = 3, bg = "pras_blizzard_fg", x = 0, y = 0, o = 0, c = {0, 0, 0, 0} },
       { f = 23, t = 4, d = 6, o = 0 },
       { f = 23, t = 2, d = 6, o = 0 },

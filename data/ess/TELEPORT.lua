@@ -29,7 +29,7 @@ return {
       {{-1, 128, 224, 2, 100, 100, 0, 0}, {-2, 384, 96, 1}},
     },
     timing = {
-      { f = 3, t = 0, se = "SE_M_TELEPORT" },
+      { f = 3, t = 0, se = "NDX_ESS_PRSFX_TELEPORT_V100_P90" },
     },
   },
 }

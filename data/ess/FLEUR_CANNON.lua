@@ -43,8 +43,8 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}},
     },
     timing = {
-      { f = 0, t = 0, se = "SE_M_MEGA_KICK" },
-      { f = 9, t = 0, se = "SE_M_MEGA_KICK" },
+      { f = 0, t = 0, se = "NDX_ESS_PRSFX_SYNTHESIS_V80_P90" },
+      { f = 9, t = 0, se = "NDX_ESS_PRSFX_SYNTHESIS_V80_P90" },
       { f = 31, t = 0, se = "NDX_ESS_SAINT3_V80_P100" },
     },
   },

@@ -38,8 +38,8 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}, {0, 384, 95, 1, 100, 100, 0, 80, 2}},
     },
     timing = {
-      { f = 0, t = 0, se = "SE_M_FAINT_ATTACK" },
-      { f = 24, t = 0, se = "SE_M_VITAL_THROW2" },
+      { f = 0, t = 0, se = "NDX_ESS_PRSFX_FEINT_ATTACK1_V100_P80" },
+      { f = 24, t = 0, se = "NDX_ESS_PRSFX_FEINT_ATTACK2" },
     },
   },
 }

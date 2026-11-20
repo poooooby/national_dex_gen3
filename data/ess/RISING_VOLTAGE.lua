@@ -28,8 +28,8 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}, {1, 128, 224, 2}},
     },
     timing = {
-      { f = 0, t = 0, se = "SE_M_CHARGE" },
-      { f = 12, t = 0, se = "SE_M_COMET_PUNCH" },
+      { f = 0, t = 0, se = "NDX_ESS_PRSFX_CHARGE_V80_P100" },
+      { f = 12, t = 0, se = "NDX_ESS_PRSFX_THUNDER_PUNCH1_V80_P100" },
     },
   },
 }

@@ -28,8 +28,8 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}, {2, 126, 210, 3, 100, 100, 0, 60, 0, 0, 2}},
     },
     timing = {
-      { f = 0, t = 0, se = "SE_M_ABSORB" },
-      { f = 11, t = 0, se = "SE_M_ABSORB" },
+      { f = 0, t = 0, se = "NDX_ESS_PRSFX_ABSORB1" },
+      { f = 11, t = 0, se = "NDX_ESS_PRSFX_ABSORB2" },
     },
   },
   opp = {
@@ -57,8 +57,8 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}, {2, 384, 97, 3, 100, 100, 0, 70}},
     },
     timing = {
-      { f = 0, t = 0, se = "SE_M_ABSORB" },
-      { f = 11, t = 0, se = "SE_M_ABSORB" },
+      { f = 0, t = 0, se = "NDX_ESS_PRSFX_ABSORB1" },
+      { f = 11, t = 0, se = "NDX_ESS_PRSFX_ABSORB2" },
     },
   },
 }

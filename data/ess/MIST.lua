@@ -43,7 +43,7 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}},
     },
     timing = {
-      { f = 0, t = 0, se = "SE_M_MIST" },
+      { f = 0, t = 0, se = "NDX_ESS_PRSFX_MIST" },
       { f = 0, t = 3, bg = "pras_mist_fg", x = 0, y = 0, o = 0, c = {0, 0, 0, 0} },
       { f = 0, t = 4, d = 15, o = 120 },
       { f = 14, t = 4, d = 20, o = 20 },

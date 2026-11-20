@@ -24,9 +24,9 @@ return {
       {{-1, 128, 224, 3}, {-2, 384, 96, 3}},
     },
     timing = {
-      { f = 2, t = 0, se = "SE_M_HEADBUTT" },
-      { f = 7, t = 0, se = "SE_M_HEADBUTT" },
-      { f = 12, t = 0, se = "SE_M_HEADBUTT" },
+      { f = 2, t = 0, se = "NDX_ESS_PRSFX_STRUGGLE" },
+      { f = 7, t = 0, se = "NDX_ESS_PRSFX_STRUGGLE" },
+      { f = 12, t = 0, se = "NDX_ESS_PRSFX_STRUGGLE" },
     },
   },
 }

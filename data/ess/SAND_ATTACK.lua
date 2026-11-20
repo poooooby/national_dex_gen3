@@ -19,7 +19,7 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}},
     },
     timing = {
-      { f = 0, t = 0, se = "SE_M_SAND_ATTACK" },
+      { f = 0, t = 0, se = "NDX_ESS_PRSFX_SAND_ATTACK" },
     },
   },
   opp = {
@@ -38,7 +38,7 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}, {0, 184, 225, 3, 100, 100, 0, 150, 0, 1, 0}, {0, 160, 183, 3, 100, 100, 0, 150, 0, 1, 0}},
     },
     timing = {
-      { f = 0, t = 0, se = "SE_M_SAND_ATTACK" },
+      { f = 0, t = 0, se = "NDX_ESS_PRSFX_SAND_ATTACK" },
     },
   },
 }

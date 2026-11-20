@@ -14,7 +14,7 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}, {11, 368, 118, 1, 100, 100, 0, 150}},
     },
     timing = {
-      { f = 0, t = 0, se = "SE_M_VITAL_THROW2" },
+      { f = 0, t = 0, se = "NDX_ESS_PRSFX_DOUBLE_KICK" },
     },
   },
 }

@@ -53,8 +53,8 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}, {16, 384, 96, 1, 100, 100, 0, 51}},
     },
     timing = {
-      { f = 0, t = 0, se = "SE_M_WHIRLPOOL" },
-      { f = 18, t = 0, se = "SE_M_WHIRLPOOL" },
+      { f = 0, t = 0, se = "NDX_ESS_PRSFX_WHIRLPOOL_V80_P110" },
+      { f = 18, t = 0, se = "NDX_ESS_PRSFX_WHIRLPOOL2_V80_P100" },
       { f = 28, t = 0, se = "NDX_ESS_WATER1_V65_P100" },
       { f = 31, t = 0, se = "NDX_ESS_BLOW3_V80_P100" },
     },

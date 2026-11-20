@@ -48,7 +48,7 @@ return {
     timing = {
       { f = 0, t = 1, bg = "pras_sheer_cold_bg", x = 0, y = 0, o = 0, c = {0, 0, 0, 0} },
       { f = 0, t = 2, d = 8, o = 255 },
-      { f = 4, t = 0, se = "SE_M_ICY_WIND" },
+      { f = 4, t = 0, se = "NDX_ESS_PRSFX_SHEER_COLD" },
       { f = 29, t = 2, d = 8, o = 0 },
     },
   },

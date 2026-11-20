@@ -48,7 +48,7 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}},
     },
     timing = {
-      { f = 4, t = 0, se = "SE_M_POISON_POWDER" },
+      { f = 4, t = 0, se = "NDX_ESS_PRSFX_LEECH_SEED2" },
     },
   },
   opp = {
@@ -96,7 +96,7 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}},
     },
     timing = {
-      { f = 0, t = 0, se = "SE_M_POISON_POWDER" },
+      { f = 0, t = 0, se = "NDX_ESS_PRSFX_LEECH_SEED2" },
     },
   },
 }

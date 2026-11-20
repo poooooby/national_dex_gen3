@@ -25,7 +25,7 @@ return {
     timing = {
       { f = 0, t = 1, bg = "pras_hyper_fang_bg", x = 0, y = 0, o = 0, c = {0, 0, 0, 0} },
       { f = 0, t = 2, d = 5, o = 255 },
-      { f = 1, t = 0, se = "SE_M_BITE" },
+      { f = 1, t = 0, se = "NDX_ESS_PRSFX_HYPER_FANG_V100_P66" },
       { f = 10, t = 2, d = 5, o = 0, c = {-1, -1, -1, 0} },
     },
   },
@@ -51,7 +51,7 @@ return {
     timing = {
       { f = 0, t = 1, bg = "pras_hyper_fang_opp_bg", x = 0, y = 0, o = 0, c = {0, 0, 0, 0} },
       { f = 0, t = 2, d = 5, o = 255 },
-      { f = 1, t = 0, se = "SE_M_BITE" },
+      { f = 1, t = 0, se = "NDX_ESS_PRSFX_HYPER_FANG_V100_P66" },
       { f = 10, t = 2, d = 5, o = 0, c = {-1, -1, -1, 0} },
     },
   },

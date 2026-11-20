@@ -28,7 +28,7 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}, {0, 128, 224, 2, 150, 150, 0, 70, 1}},
     },
     timing = {
-      { f = 0, t = 0, se = "SE_M_MILK_DRINK" },
+      { f = 0, t = 0, se = "NDX_ESS_PRSFX_SAFEGUARD" },
     },
   },
 }

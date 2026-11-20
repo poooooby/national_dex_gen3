@@ -454,6 +454,7 @@ do
   end }
   state.mod, state.sources, state.soundBytes = mod, {}, nil
   local Ess = dofile(ROOT .. "src/ess_anims.lua")
+  Ess.Core = dofile(ROOT .. "src/ess_core.lua")
   local id = ess.moves.NIGHT_SLASH.se[1]
   T.check(Ess.playSound(state, id, require), "a pack sound plays through the mod")
   local at = ess.sounds[id]

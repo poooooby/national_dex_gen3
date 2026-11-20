@@ -19,8 +19,8 @@ return {
       {{-1, 128, 224, 3}, {-2, 384, 96, 3, 100, 100, 0, 255, 0, 0, 1, 0, 0, 0, 0, 10}},
     },
     timing = {
-      { f = 6, t = 0, se = "SE_M_JUMP_KICK" },
-      { f = 7, t = 0, se = "SE_M_JUMP_KICK" },
+      { f = 6, t = 0, se = "NDX_ESS_PRSFX_MACH_PUNCH" },
+      { f = 7, t = 0, se = "NDX_ESS_PRSFX_MACH_PUNCH_V100_P89" },
     },
   },
 }

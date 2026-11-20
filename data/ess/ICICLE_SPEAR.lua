@@ -26,7 +26,7 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}, {0, 361, 105, 3, 100, 100, 15, 150}},
     },
     timing = {
-      { f = 8, t = 0, se = "SE_M_ICY_WIND" },
+      { f = 8, t = 0, se = "NDX_ESS_PRSFX_ICICLE_SPEAR" },
     },
   },
   opp = {
@@ -52,7 +52,7 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}, {1, 144, 209, 3, 100, 100, 15, 150, 0, 0, 0}},
     },
     timing = {
-      { f = 8, t = 0, se = "SE_M_ICY_WIND" },
+      { f = 8, t = 0, se = "NDX_ESS_PRSFX_ICICLE_SPEAR" },
     },
   },
 }

@@ -56,11 +56,11 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}},
     },
     timing = {
-      { f = 0, t = 0, se = "SE_M_SOLAR_BEAM" },
+      { f = 0, t = 0, se = "NDX_ESS_PRSFX_LUSTER_PURGE1" },
       { f = 20, t = 2, d = 5, o = 255 },
-      { f = 25, t = 0, se = "SE_M_HYPER_BEAM" },
+      { f = 25, t = 0, se = "NDX_ESS_PRSFX_LUSTER_PURGE2" },
       { f = 34, t = 2, d = 14, o = 0 },
-      { f = 34, t = 0, se = "SE_M_HYPER_BEAM" },
+      { f = 34, t = 0, se = "NDX_ESS_PRSFX_LUSTER_PURGE3" },
     },
   },
 }

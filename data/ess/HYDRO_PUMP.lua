@@ -36,8 +36,8 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}, {2, 376, 103, 3, 100, 100, 0, 160, 1}, {3, 384, 143, 3, 100, 100, 0, 160, 1}},
     },
     timing = {
-      { f = 1, t = 0, se = "SE_M_HYDRO_PUMP" },
-      { f = 9, t = 0, se = "SE_M_HYDRO_PUMP" },
+      { f = 1, t = 0, se = "NDX_ESS_PRSFX_HYDRO_PUMP_V100_P40" },
+      { f = 9, t = 0, se = "NDX_ESS_PRSFX_HYDRO_PUMP_V100_P50" },
     },
   },
   opp = {
@@ -73,8 +73,8 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}, {4, 178, 176, 3, 100, 100, 0, 255, 1, 0, 0}, {2, 176, 222, 3, 100, 100, 0, 255, 1, 0, 0}},
     },
     timing = {
-      { f = 1, t = 0, se = "SE_M_HYDRO_PUMP" },
-      { f = 9, t = 0, se = "SE_M_HYDRO_PUMP" },
+      { f = 1, t = 0, se = "NDX_ESS_PRSFX_HYDRO_PUMP_V100_P40" },
+      { f = 9, t = 0, se = "NDX_ESS_PRSFX_HYDRO_PUMP_V100_P50" },
     },
   },
 }

@@ -22,8 +22,8 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}, {0, 384, 96, 1, 100, 100, 0, 135}},
     },
     timing = {
-      { f = 0, t = 0, se = "SE_M_SWAGGER2" },
-      { f = 9, t = 0, se = "SE_M_SWAGGER2" },
+      { f = 0, t = 0, se = "NDX_ESS_PRSFX_RAGE1" },
+      { f = 9, t = 0, se = "NDX_ESS_PRSFX_RAGE2_V100_P50" },
     },
   },
 }

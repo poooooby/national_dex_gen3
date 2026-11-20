@@ -33,11 +33,11 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}, {0, 304, 272, 2, 100, 100, 0, 140}},
     },
     timing = {
-      { f = 0, t = 0, se = "SE_M_DIG" },
-      { f = 11, t = 0, se = "SE_M_DIG" },
-      { f = 13, t = 0, se = "SE_M_DIG" },
-      { f = 15, t = 0, se = "SE_M_DIG" },
-      { f = 18, t = 0, se = "SE_M_DIG" },
+      { f = 0, t = 0, se = "NDX_ESS_PRSFX_MUD_SPORT1_V100_P80" },
+      { f = 11, t = 0, se = "NDX_ESS_PRSFX_MUD_SPORT2_V85_P100" },
+      { f = 13, t = 0, se = "NDX_ESS_PRSFX_MUD_SPORT2_V95_P90" },
+      { f = 15, t = 0, se = "NDX_ESS_PRSFX_MUD_SPORT2_V90_P108" },
+      { f = 18, t = 0, se = "NDX_ESS_PRSFX_MUD_SPORT2_V85_P95" },
     },
   },
 }

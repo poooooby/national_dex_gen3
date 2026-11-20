@@ -18,7 +18,7 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}, {0, 370, 110, 3, 100, 100, 0, 80}},
     },
     timing = {
-      { f = 7, t = 0, se = "SE_M_SWAGGER" },
+      { f = 7, t = 0, se = "NDX_ESS_PRSFX_ROCK_BLAST" },
     },
   },
   opp = {
@@ -36,7 +36,7 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}, {0, 142, 229, 3, 100, 100, 0, 120, 0, 0, 0}},
     },
     timing = {
-      { f = 7, t = 0, se = "SE_M_SWAGGER" },
+      { f = 7, t = 0, se = "NDX_ESS_PRSFX_ROCK_BLAST" },
     },
   },
 }

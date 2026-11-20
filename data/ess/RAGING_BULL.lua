@@ -40,8 +40,8 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}},
     },
     timing = {
-      { f = 3, t = 0, se = "SE_M_TAIL_WHIP" },
-      { f = 7, t = 0, se = "SE_M_TAIL_WHIP" },
+      { f = 3, t = 0, se = "NDX_ESS_PRSFX_TAUNT2_V80_P100" },
+      { f = 7, t = 0, se = "NDX_ESS_PRSFX_TAUNT2_V80_P100" },
       { f = 12, t = 0, se = "NDX_ESS_PRSFX_HI_JUMP_KICK1_V80_P100" },
       { f = 19, t = 0, se = "NDX_ESS_PRSFX_BRUTAL_SWING3_V80_P100" },
     },
@@ -83,8 +83,8 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}},
     },
     timing = {
-      { f = 3, t = 0, se = "SE_M_TAIL_WHIP" },
-      { f = 7, t = 0, se = "SE_M_TAIL_WHIP" },
+      { f = 3, t = 0, se = "NDX_ESS_PRSFX_TAUNT2_V80_P100" },
+      { f = 7, t = 0, se = "NDX_ESS_PRSFX_TAUNT2_V80_P100" },
       { f = 12, t = 0, se = "NDX_ESS_PRSFX_HI_JUMP_KICK1_V80_P100" },
       { f = 19, t = 0, se = "NDX_ESS_PRSFX_BRUTAL_SWING3_V80_P100" },
     },

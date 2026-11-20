@@ -115,6 +115,7 @@ return function(mod)
   local MoveAnims = loadSibling(mod, "src/anims.lua")
   -- optional: without it the moves data/ess_anims.lua animates keep their cart look
   local EssAnims = loadSibling(mod, "src/ess_anims.lua")
+  if EssAnims then EssAnims.Core = loadSibling(mod, "src/ess_core.lua") end
   -- the Modern Moves option: the original 386 also learn their newer moves
   local ModernLearnsets = loadSibling(mod, "src/modern_learnsets.lua")
   -- optional: without it the newer moves have no TMs

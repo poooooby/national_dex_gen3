@@ -125,3 +125,5 @@ tools/build_ess_anims.py
 tools/ess_marshal.py
 tools/ess_gallery.py
 tools/ess_quant.py
+tests/gen12_ess_test.lua
+tests/drivers/gen12_ess_probe.lua

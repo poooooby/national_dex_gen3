@@ -35,9 +35,9 @@ return {
     timing = {
       { f = 0, t = 1, bg = "pras_black_bg", x = 0, y = 0, o = 0, c = {0, 0, 0, 0} },
       { f = 0, t = 2, d = 8, o = 255 },
-      { f = 7, t = 0, se = "SE_M_TRI_ATTACK2" },
+      { f = 7, t = 0, se = "NDX_ESS_PRSFX_THUNDER_PUNCH2" },
       { f = 8, t = 1, bg = "pras_flash_fg", x = 0, y = 0, o = 150, c = {0, 0, 0, 0} },
-      { f = 8, t = 0, se = "SE_M_COMET_PUNCH" },
+      { f = 8, t = 0, se = "NDX_ESS_PRSFX_THUNDER_PUNCH1" },
       { f = 11, t = 1, bg = "pras_black_bg", x = 0, y = 0, o = 255, c = {0, 0, 0, 0} },
       { f = 21, t = 2, d = 5, o = 0 },
     },

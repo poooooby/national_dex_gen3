@@ -24,7 +24,7 @@ return {
     timing = {
       { f = 0, t = 0, se = "NDX_ESS_PRSFX_HI_JUMP_KICK1_V80_P100" },
       { f = 6, t = 0, se = "NDX_ESS_PRSFX_HI_JUMP_KICK2_V80_P100" },
-      { f = 11, t = 0, se = "SE_M_COMET_PUNCH" },
+      { f = 11, t = 0, se = "NDX_ESS_PRSFX_DIZZY_PUNCH1_V80_P100" },
     },
   },
   opp = {
@@ -48,7 +48,7 @@ return {
     timing = {
       { f = 0, t = 0, se = "NDX_ESS_PRSFX_HI_JUMP_KICK1_V80_P100" },
       { f = 6, t = 0, se = "NDX_ESS_PRSFX_HI_JUMP_KICK2_V80_P100" },
-      { f = 11, t = 0, se = "SE_M_COMET_PUNCH" },
+      { f = 11, t = 0, se = "NDX_ESS_PRSFX_DIZZY_PUNCH1_V80_P100" },
     },
   },
 }

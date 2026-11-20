@@ -34,10 +34,10 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}},
     },
     timing = {
-      { f = 4, t = 0, se = "SE_M_ACID_ARMOR" },
-      { f = 10, t = 0, se = "SE_M_ACID_ARMOR" },
-      { f = 16, t = 0, se = "SE_M_ACID_ARMOR" },
-      { f = 18, t = 0, se = "SE_M_BUBBLE3" },
+      { f = 4, t = 0, se = "NDX_ESS_PRSFX_ACID_ARMOR2_V80_P65" },
+      { f = 10, t = 0, se = "NDX_ESS_PRSFX_ACID_ARMOR2_V80_P65" },
+      { f = 16, t = 0, se = "NDX_ESS_PRSFX_ACID_ARMOR2_V80_P65" },
+      { f = 18, t = 0, se = "NDX_ESS_PRSFX_ACID_V80_P100" },
     },
   },
   opp = {
@@ -71,10 +71,10 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}},
     },
     timing = {
-      { f = 4, t = 0, se = "SE_M_ACID_ARMOR" },
-      { f = 10, t = 0, se = "SE_M_ACID_ARMOR" },
-      { f = 16, t = 0, se = "SE_M_ACID_ARMOR" },
-      { f = 18, t = 0, se = "SE_M_BUBBLE3" },
+      { f = 4, t = 0, se = "NDX_ESS_PRSFX_ACID_ARMOR2_V80_P65" },
+      { f = 10, t = 0, se = "NDX_ESS_PRSFX_ACID_ARMOR2_V80_P65" },
+      { f = 16, t = 0, se = "NDX_ESS_PRSFX_ACID_ARMOR2_V80_P65" },
+      { f = 18, t = 0, se = "NDX_ESS_PRSFX_ACID_V80_P100" },
     },
   },
 }

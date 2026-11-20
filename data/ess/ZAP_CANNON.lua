@@ -33,9 +33,9 @@ return {
       {{-1, 128, 224, 3}, {-2, 384, 96, 3}},
     },
     timing = {
-      { f = 0, t = 0, se = "SE_M_THUNDER_WAVE" },
-      { f = 8, t = 0, se = "SE_M_THUNDER_WAVE" },
-      { f = 13, t = 0, se = "SE_M_THUNDERBOLT2" },
+      { f = 0, t = 0, se = "NDX_ESS_PRSFX_ZAP_CANNON3_V80_P100" },
+      { f = 8, t = 0, se = "NDX_ESS_PRSFX_ZAP_CANNON1" },
+      { f = 13, t = 0, se = "NDX_ESS_PRSFX_ZAP_CANNON2" },
     },
   },
   opp = {
@@ -68,9 +68,9 @@ return {
       {{-1, 128, 224, 3}, {-2, 384, 96, 3}},
     },
     timing = {
-      { f = 0, t = 0, se = "SE_M_THUNDER_WAVE" },
-      { f = 8, t = 0, se = "SE_M_THUNDER_WAVE" },
-      { f = 13, t = 0, se = "SE_M_THUNDERBOLT2" },
+      { f = 0, t = 0, se = "NDX_ESS_PRSFX_ZAP_CANNON3_V80_P100" },
+      { f = 8, t = 0, se = "NDX_ESS_PRSFX_ZAP_CANNON1" },
+      { f = 13, t = 0, se = "NDX_ESS_PRSFX_ZAP_CANNON2" },
     },
   },
 }

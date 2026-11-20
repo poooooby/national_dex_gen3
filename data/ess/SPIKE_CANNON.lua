@@ -23,9 +23,9 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}, {0, 357, 83, 3, 100, 100, 0, 150}},
     },
     timing = {
-      { f = 8, t = 0, se = "SE_M_RAZOR_WIND2" },
-      { f = 10, t = 0, se = "SE_M_RAZOR_WIND2" },
-      { f = 12, t = 0, se = "SE_M_RAZOR_WIND2" },
+      { f = 8, t = 0, se = "NDX_ESS_PRSFX_SPIKE_CANNON_V100_P140" },
+      { f = 10, t = 0, se = "NDX_ESS_PRSFX_SPIKE_CANNON_V100_P140" },
+      { f = 12, t = 0, se = "NDX_ESS_PRSFX_SPIKE_CANNON_V100_P140" },
     },
   },
   opp = {
@@ -48,9 +48,9 @@ return {
       {{-1, 128, 224, 3}, {-2, 384, 96, 3}, {1, 152, 187, 3, 100, 100, 0, 150, 0, 0, 0}},
     },
     timing = {
-      { f = 8, t = 0, se = "SE_M_RAZOR_WIND2" },
-      { f = 10, t = 0, se = "SE_M_RAZOR_WIND2" },
-      { f = 12, t = 0, se = "SE_M_RAZOR_WIND2" },
+      { f = 8, t = 0, se = "NDX_ESS_PRSFX_SPIKE_CANNON_V100_P140" },
+      { f = 10, t = 0, se = "NDX_ESS_PRSFX_SPIKE_CANNON_V100_P140" },
+      { f = 12, t = 0, se = "NDX_ESS_PRSFX_SPIKE_CANNON_V100_P140" },
     },
   },
 }

@@ -281,8 +281,11 @@ constants (pokeemerald-expansion's `include/constants/moves.h`, 1-354), keeps th
   take entries from what shows); the octree alone bands gradients. About ten files, 1.2 MB.
 - `assets/ess/sounds.ogg`: the pack's sounds, mono 22 kHz, one per volume/pitch used, each a whole
   ogg, end to end in one file (a chained Ogg; converted one by one into `tools/.cache/ess_se`, which
-  `--no-sounds` reuses). A `PRSFX- <Move>N` sound of a Gen 1-3 move is that move's Nth cart sound
-  instead (from pokeemerald-expansion's scripts).
+  `--no-sounds` reuses). Every game plays the pack's own recordings (owner, 2026-11-20). Until then a
+  `PRSFX- <Move>N` recording of a Gen 1-3 move played that move's Nth Gen 3 cart sound instead, but
+  a cart sound often lost its timing: Dragon Breath's Flame Wheel crackle, which the cart loops,
+  played twice in five frames and the hit cut it off. Now only a recording the pack lacks (Baton
+  Pass's) falls back to the cart sound (from pokeemerald-expansion's scripts), on Gen 3 only.
 - `data/ess_anims.lua`: the atlas `pages`; each sheet's cels as rects on them (`r`: page, x, y, w, h
   and where the rect sat in its 72 px cell, 7 numbers a cel); each background as one rect (drawn
   repeated by hand to cover the screen, as Essentials' plane does: a rect of an atlas can't wrap);
@@ -342,8 +345,80 @@ version plays), through `Audio.playCry` with the species the cart's own cry task
 pitch, so the pack's pitch is not kept.
 
 Not done: the cart's stat-change, item and switch animations (no exact counterpart), Double Team, Memento, Nature Power and Secret Power (the
-pack has no real one), and Red/Blue/Yellow/Gold/Silver/Crystal, which play their borrowed cart
-animations.
+pack has no real one).
+
+The generation-neutral part lives in `src/ess_core.lua` (main.lua sets it as `EssAnims.Core`): loading
+a data/ess file, the atlas pages and shaders, `Core.start(state, anim, stage)` (a stage is where the
+user and target stand, the screen's size, the scale, and the generation's hooks `setMon`, `play`,
+`copyPic` / `drawCopy`), `place`, `layerOf`, `step` / `timings`, `monPose`, `drawCels`, `drawPlane`,
+`drawLayer`, and the pack sounds (`soundSource`, `prewarm` with the generation's queue, `moveSounds`,
+`playSound` at a level and rate it is given, `dropSounds`). `src/ess_anims.lua` is the Gen 3 glue
+(the VM task, `present`, the wraps) and `src/gen12/ess_anims.lua` the Gen 1/2 one.
+
+#### On Gen 1 / Gen 2 (`src/gen12/ess_anims.lua`)
+
+The same data plays on Red/Blue/Yellow and Gold/Silver/Crystal (owner, 2026-11-19: the same scope as
+Gen 3, the pack's own recordings, full colour). Neither game runs a mod's code inside a move
+animation, so `Ess12.register` (at load, after the moves have their looks) gives every move the pack
+animates a cart animation that only takes its time:
+
+- **Red:** `battle_anims:override(id, { seq = ceil(ticks / 10) x { effect = "SE_DELAY_ANIMATION_10" } })`
+  (no `sound`), ending with the cart record's lasting picture rows (`Ess12.LASTING`: Minimize's blob,
+  Explosion's hide) and, for Fly / Dig, `SE_SHOW_MON_PIC`. A cart record that swaps a picture
+  (`SE_TRANSFORM_MON`, `SE_SUBSTITUTE_MON`) keeps the cart's. Status: `BURN_PSN_ANIM` (burn or
+  poison by the battler's status when it plays), `SLP_ANIM` / `SLP_PLAYER_ANIM`, `CONF_ANIM` /
+  `CONF_PLAYER_ANIM` (`Ess12.RED_COMMONS`).
+- **Gold:** `scripts["ndx:<id>"] = { { "wait", ticks - 1 }, { "ret" } }` and `moves[id]`; a two-turn
+  move's script starts `{ "if_param_equal", 1, <the cart's script> }`, so its first turn is the
+  cart's. A cart script with a picture-swap op (`transform`, `raisesub`, `dropsub`, `minimizeopp`,
+  `beatup`, through `call` / `jump`) keeps the cart's: Beat Up (and Gold's Minimize; Crystal's has
+  none). `ids`: `ANIM_PSN`, `ANIM_BRN`, `ANIM_IN_SANDSTORM`, `ANIM_SAP` (`Ess12.GOLD_COMMONS`).
+- A newer move's borrowed look no longer matters (`opts.newer`, the ids this mod registered).
+  Curse, Bide, Transform and Substitute keep the cart's (`Ess12.KEEP`). Names: the pack's, else
+  `Ess12.ALIASES` (PSYCHIC_M, HI_JUMP_KICK, FAINT_ATTACK, VICEGRIP), else the same name without
+  underscores (THUNDERSHOCK, DOUBLESLAP, SOLARBEAM...).
+
+`Ess12.install` (on game.ready) wraps the battle screen once per process (hub `BS.__ndxEss` on
+`src.battle.BattleState` / `src.ui.gen2.BattleState`). `hub.current(b)` finds what plays (Red:
+`animPlaying`, `animName`, `animAttackerIsPlayer`, `animPlayer.elapsed`; Gold: the script key
+`startAnim` tagged on the runner, `anim.frames`, `env.battleTurn`, the param it started with) and
+steps every Essentials frame since the last draw (3 ticks each), so a fast game speed keeps its
+sounds. A two-turn move's first turn (param 1) draws nothing.
+
+- **Drawing:** Red's `drawPicsLayer` and Gold's `drawPics` are wrapped: the background and the cels
+  behind the enemy, the pictures (the band between them just before your mon's), then the front cels
+  and the foreground. The field above the text box is all there is: Red's pictures are scissored to
+  it, Gold's text box is drawn after. On Gold the cels are inside the panel the animation view bakes,
+  so the cart's own scanline shakes move them too. Stage: centres `Ess12.CENTRE` (Red: foe 124,28,
+  you 36,68; Gold: you 40,72), screen 160 x 144, cels at `CEL_SCALE` 0.9 of Gen 3's (the line is ~90%
+  as long); planes scale by 160 / 240.
+- **Battlers:** Red's `drawBattlerPic` runs under a transform about the picture's centre (offset,
+  scale, turn) with the cel's opacity as the colour (Red draws a picture with the colour it is given);
+  Gold's `drawPic` under the same transform, but Gold forces full opacity, so a battler under half
+  opacity is not drawn. A frame without the battler's cel hides it, as Essentials does. Copies
+  (patterns -3 / -4) draw the picture again at the cel (Red: with the arguments it was last drawn
+  with). Fly / Dig's attack turn shows its user from the start (Red: the picture's `hidden`; Gold: the
+  vanish latch `picHidden` / `vanishReveal`), as Gen 3 does.
+- **Wide layouts:** Gold's draws `drawPics` inside its shifted field, so nothing changes. Red's
+  (`WideBattle.lua`) draws each side in a clipped region of a 304-wide field: the stage moves each
+  side by `Ess12.WIDE` (you +20,+8, the foe +136,0); the poses apply in the regions; the back band is
+  drawn from your side's region (drawn first) with its offset and clip undone, and the rest from
+  `battle.overlay` (`Ess12.overlayHook`, wrapped at load), scissored to the field (rows above 104).
+- **Sounds:** the pack's recordings (a Gen 3 cart sound, Baton Pass's fallback, is skipped); a
+  nameless one the attacker's cry (Red `Sound.playMoveCry`, Gold `Sound.playCry`). The level is the
+  game's `sfxVol` (Red `game.save.options`, Gold `game.options`), the rate `Sound.rate()`. Decoded
+  ahead on a queue of the hub's, stepped 2 ms a frame from the draw wraps: `battle.started` queues
+  both parties' moves (`se`) and `commonSounds`, `battle.move_used` the move first; `battle.ended`
+  drops them.
+- **Known:** on Red's classic layout a background covers the HP boxes while it shows (they are drawn
+  before the pictures, on the same canvas as the field).
+
+Tests: `tests/gen12_ess_test.lua [version]` (every move resolves; each record / script takes its
+animation's time; Fly, Dig, Minimize; the status animations; Beat Up kept; every pack sound ships; the hub
+steps with the clock, poses the user, and lets go). Driver `tests/drivers/gen12_ess_probe.lua`
+(`MOVES`, `FOE=1`, `WIDE=1`, `SHOT_EVERY`) in the shadow engine folder; 2026-11-19: Red classic and
+wide, Gold classic and wide, Night Slash, Axe Kick, Surf, Dark Pulse, Ice Beam, Fly, Dig, Swords
+Dance, Thunder, Poison Sting from both sides.
 
 Rebuild with `python tools/build_ess_anims.py [--pack <dir>]` (Pillow, numpy, ffmpeg, and
 pokeemerald-expansion beside this repo; `--no-sounds` keeps the converted sounds). Tests:
@@ -1239,9 +1314,10 @@ The owner asked for the Gen 3 extras on Gen 1/2 (2026-11-12). Phase A is the fou
   when aimed); self-only ones join `Effects.NO_CHECKHIT` (Protect lets them through, as Gold's
   stat-ups). Chances roll 0-255 on the battle's RNG. Animation: the first stand-in that is a cart
   move. Hex and Mystical Fire (Gen 3 rules) stay stand-ins.
-- **Animations**: the newer moves play the cart animation they borrow (`look`). (Until 2026-11-19
-  18 of them drew pixelfx effects over a timing-only animation from the `battle.overlay` hook; the
-  pixelfx effects were removed with the Gen 9 Move Animation Project's arrival on Gen 3.)
+- **Animations**: the Gen 9 Move Animation Project's (`src/gen12/ess_anims.lua`, "On Gen 1 / Gen 2"
+  above), over the cart animation each newer move borrows (`look`), which stays for the moves the
+  pack lacks. (Until 2026-11-19 18 of them drew pixelfx effects over a timing-only animation from
+  the `battle.overlay` hook.)
 - **FORMS page** (`src/gen12/dex_forms.lua`): Red wraps `DexEntryMenu.update`: on the last page
   with the cry done, A pushes our page (one form at a time: picture via `Sprites.path`, the form's
   words via `src/dex_forms.lua`'s `label`, types, "FORM n/m"; `sgbPalettes` colours the picture),
@@ -1260,7 +1336,7 @@ The owner asked for the Gen 3 extras on Gen 1/2 (2026-11-12). Phase A is the fou
   `assets/items/icons.png` by the slug's Gen 3 index. A state of ours on `game.stack` takes the
   buttons; `render.hud` draws the screen; `input.pointer` / `input.wheel` while open; the touch
   pad's `active` off. With the machines on, `Items.stock` and the TM Mart stock are skipped.
-- **Tests:** `tests/gen12_mechanics_test.lua`, `gen12_forms_page_test.lua`, `gen12_fx_test.lua`,
+- **Tests:** `tests/gen12_mechanics_test.lua`, `gen12_forms_page_test.lua`, `gen12_ess_test.lua`,
   `gen12_vending_test.lua`.
 - **In game** (2026-11-12, probe 0 failures on Red and Gold): Night Slash plays its slash (57
   frames on Red, 76 on Gold), Close Combat lowers the user's defences by one each, Alcremie's

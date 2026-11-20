@@ -53,8 +53,9 @@ for _, version in ipairs(H.versions()) do
     T.check(Damage.isSpecial("DARK"), version .. ": Night Slash hits with Special")
     local look = byId.AQUA_JET.look.gen1
     local anims = data.battle_anims and data.battle_anims.moveAnims or {}
-    T.check(anims.AQUA_JET ~= nil and #anims.AQUA_JET.seq == #anims[look].seq,
-      version .. ": Aqua Jet plays " .. look .. "'s animation")
+    -- the Gen 9 Move Animation Project's (src/gen12/ess_anims.lua: a record that takes its time)
+    T.check(anims.AQUA_JET ~= nil and anims.AQUA_JET.seq[1].effect == "SE_DELAY_ANIMATION_10"
+      and not anims.AQUA_JET.seq[1].subanim, version .. ": Aqua Jet plays the Gen 9 project's animation")
     T.eq(aj and aj.anim and aj.anim.sound, moves[look].anim.sound, version .. ": and its sound")
     local noAnim = 0
     for _, r in ipairs(rows) do
@@ -68,7 +69,8 @@ for _, version in ipairs(H.versions()) do
     T.eq(ns and ns.index, 400, version .. ": Night Slash keeps #400 as its index")
     local scripts = data.gen2BattleAnims.moves
     local look = byId.AQUA_JET.look.gen2
-    T.eq(scripts.AQUA_JET, scripts[look], version .. ": Aqua Jet plays " .. look .. "'s animation")
+    T.eq(scripts.AQUA_JET, "ndx:AQUA_JET", version .. ": Aqua Jet plays the Gen 9 project's animation (not "
+      .. look .. "'s)")
     local noAnim = 0
     for _, r in ipairs(rows) do
       if r[key] and moves[r.id] and not scripts[r.id] then noAnim = noAnim + 1 end

@@ -26,7 +26,7 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}},
     },
     timing = {
-      { f = 5, t = 0, se = "SE_M_HEADBUTT" },
+      { f = 5, t = 0, se = "NDX_ESS_PRSFX_WITHDRAW_V80_P100" },
       { f = 7, t = 0, se = "NDX_ESS_HARDEN_V80_P100" },
     },
   },

@@ -38,8 +38,8 @@ return {
       {{-1, 128, 224, 3, 100, 100, 359}, {-2, 384, 96, 3, 100, 100, 359}},
     },
     timing = {
-      { f = 0, t = 0, se = "SE_M_SWIFT" },
-      { f = 14, t = 0, se = "SE_M_SWAGGER" },
+      { f = 0, t = 0, se = "NDX_ESS_PRSFX_DOUBLE_EDGE1" },
+      { f = 14, t = 0, se = "NDX_ESS_PRSFX_DOUBLE_EDGE2" },
     },
   },
 }

@@ -44,9 +44,9 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}, {12, 360, 93, 1, 100, 100, 0, 150}},
     },
     timing = {
-      { f = 0, t = 0, se = "SE_M_HEADBUTT" },
-      { f = 14, t = 0, se = "SE_M_HEADBUTT" },
-      { f = 24, t = 0, se = "SE_M_HEADBUTT" },
+      { f = 0, t = 0, se = "NDX_ESS_PRSFX_FLAIL_V100_P75" },
+      { f = 14, t = 0, se = "NDX_ESS_PRSFX_FLAIL_V100_P75" },
+      { f = 24, t = 0, se = "NDX_ESS_PRSFX_FLAIL_V100_P75" },
     },
   },
 }

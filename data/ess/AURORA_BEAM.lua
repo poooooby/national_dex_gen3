@@ -38,7 +38,7 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}, {20, 336, 124, 3}},
     },
     timing = {
-      { f = 0, t = 0, se = "SE_M_BUBBLE_BEAM" },
+      { f = 0, t = 0, se = "NDX_ESS_PRSFX_AURORA_BEAM" },
       { f = 0, t = 1, bg = "pras_aurora_bg", x = 0, y = 0, o = 0, c = {0, 0, 0, 0} },
       { f = 0, t = 2, d = 3, o = 255 },
       { f = 27, t = 2, d = 3, o = 0 },

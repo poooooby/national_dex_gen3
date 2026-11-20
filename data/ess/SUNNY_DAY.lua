@@ -28,7 +28,7 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}},
     },
     timing = {
-      { f = 0, t = 0, se = "SE_M_PETAL_DANCE" },
+      { f = 0, t = 0, se = "NDX_ESS_PRSFX_SUNNY_DAY_V100_P130" },
       { f = 0, t = 2, d = 10, o = 200, c = {200, 200, -1, -1} },
       { f = 0, t = 1, bg = "pras_sunny_day_bg", x = 0, y = 0, o = 0, c = {0, 0, 0, 0} },
       { f = 11, t = 2, d = 8, o = 0 },

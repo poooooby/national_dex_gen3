@@ -78,8 +78,8 @@ return {
     timing = {
       { f = 0, t = 1, bg = "pras_psycho_boost_bg", x = 0, y = 0, o = 0, c = {0, 0, 0, 0} },
       { f = 0, t = 2, d = 10, o = 255 },
-      { f = 0, t = 0, se = "SE_M_PSYBEAM2" },
-      { f = 32, t = 0, se = "SE_M_PSYBEAM2" },
+      { f = 0, t = 0, se = "NDX_ESS_PRSFX_PSYCHO_BOOST1" },
+      { f = 32, t = 0, se = "NDX_ESS_PRSFX_PSYCHO_BOOST2_V100_P110" },
       { f = 62, t = 2, d = 5, o = 0 },
     },
   },
@@ -158,8 +158,8 @@ return {
     timing = {
       { f = 0, t = 1, bg = "pras_psycho_boost_opp_bg", x = 0, y = 0, o = 0, c = {0, 0, 0, 0} },
       { f = 0, t = 2, d = 10, o = 255 },
-      { f = 0, t = 0, se = "SE_M_PSYBEAM2" },
-      { f = 32, t = 0, se = "SE_M_PSYBEAM2" },
+      { f = 0, t = 0, se = "NDX_ESS_PRSFX_PSYCHO_BOOST1" },
+      { f = 32, t = 0, se = "NDX_ESS_PRSFX_PSYCHO_BOOST2" },
       { f = 62, t = 2, d = 5, o = 0 },
     },
   },

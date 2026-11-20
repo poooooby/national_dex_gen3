@@ -32,7 +32,7 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}},
     },
     timing = {
-      { f = 0, t = 0, se = "SE_M_REFLECT" },
+      { f = 0, t = 0, se = "NDX_ESS_PRSFX_MIRROR_COAT" },
     },
   },
   opp = {
@@ -64,7 +64,7 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}},
     },
     timing = {
-      { f = 0, t = 0, se = "SE_M_REFLECT" },
+      { f = 0, t = 0, se = "NDX_ESS_PRSFX_MIRROR_COAT" },
     },
   },
 }

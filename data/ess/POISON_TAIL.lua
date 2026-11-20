@@ -38,9 +38,9 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}, {3, 384, 0, 3, 100, 100, 0, 55}, {3, 424, 0, 3, 100, 100, 0, 55}},
     },
     timing = {
-      { f = 4, t = 0, se = "SE_M_VITAL_THROW2" },
-      { f = 5, t = 0, se = "SE_M_VITAL_THROW2" },
-      { f = 10, t = 0, se = "SE_M_HARDEN" },
+      { f = 4, t = 0, se = "NDX_ESS_PRSFX_POISON_TAIL2" },
+      { f = 5, t = 0, se = "NDX_ESS_PRSFX_POISON_TAIL2_V100_P70" },
+      { f = 10, t = 0, se = "NDX_ESS_PRSFX_POISON_TAIL1" },
     },
   },
   opp = {
@@ -78,9 +78,9 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}},
     },
     timing = {
-      { f = 5, t = 0, se = "SE_M_VITAL_THROW2" },
-      { f = 6, t = 0, se = "SE_M_VITAL_THROW2" },
-      { f = 10, t = 0, se = "SE_M_HARDEN" },
+      { f = 5, t = 0, se = "NDX_ESS_PRSFX_POISON_TAIL2_V80_P100" },
+      { f = 6, t = 0, se = "NDX_ESS_PRSFX_POISON_TAIL2_V100_P70" },
+      { f = 10, t = 0, se = "NDX_ESS_PRSFX_POISON_TAIL1_V80_P100" },
     },
   },
 }

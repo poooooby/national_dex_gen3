@@ -15,7 +15,7 @@ return {
       {{-1, 128, 224, 3}, {-2, 384, 96, 3}},
     },
     timing = {
-      { f = 0, t = 0, se = "SE_M_COMET_PUNCH" },
+      { f = 0, t = 0, se = "NDX_ESS_PRSFX_TACKLE" },
     },
   },
 }

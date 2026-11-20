@@ -16,8 +16,8 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}},
     },
     timing = {
-      { f = 0, t = 0, se = "SE_M_SWAGGER" },
-      { f = 5, t = 0, se = "SE_M_STRENGTH" },
+      { f = 0, t = 0, se = "NDX_ESS_PRSFX_BARRAGE1" },
+      { f = 5, t = 0, se = "NDX_ESS_PRSFX_BARRAGE2" },
     },
   },
   opp = {
@@ -33,8 +33,8 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}},
     },
     timing = {
-      { f = 0, t = 0, se = "SE_M_SWAGGER" },
-      { f = 5, t = 0, se = "SE_M_STRENGTH" },
+      { f = 0, t = 0, se = "NDX_ESS_PRSFX_BARRAGE1" },
+      { f = 5, t = 0, se = "NDX_ESS_PRSFX_BARRAGE2" },
     },
   },
 }

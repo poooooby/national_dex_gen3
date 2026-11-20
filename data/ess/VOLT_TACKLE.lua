@@ -36,8 +36,8 @@ return {
       {{-1, 128, 224, 3}, {-2, 384, 96, 1}},
     },
     timing = {
-      { f = 0, t = 0, se = "SE_M_CHARGE" },
-      { f = 14, t = 0, se = "SE_M_THUNDERBOLT" },
+      { f = 0, t = 0, se = "NDX_ESS_PRSFX_VOLT_TACKLE1" },
+      { f = 14, t = 0, se = "NDX_ESS_PRSFX_VOLT_TACKLE2" },
     },
   },
 }

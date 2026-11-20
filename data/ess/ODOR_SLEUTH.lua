@@ -28,8 +28,8 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}, {7, 128, 200, 2, 100, 100, 90, 255, 1}},
     },
     timing = {
-      { f = 0, t = 0, se = "SE_M_SWAGGER" },
-      { f = 14, t = 0, se = "SE_M_SWAGGER" },
+      { f = 0, t = 0, se = "NDX_ESS_PRSFX_ODOR_SLEUTH1" },
+      { f = 14, t = 0, se = "NDX_ESS_PRSFX_ODOR_SLEUTH2" },
     },
   },
 }

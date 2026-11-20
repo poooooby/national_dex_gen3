@@ -27,7 +27,7 @@ return {
     timing = {
       { f = 0, t = 1, bg = "gen8_snipe_shot_bg2", x = 0, y = 0, o = 0, c = {0, 0, 0, 0} },
       { f = 0, t = 2, d = 8, o = 128 },
-      { f = 7, t = 0, se = "SE_M_HYDRO_PUMP" },
+      { f = 7, t = 0, se = "NDX_ESS_PRSFX_HYDRO_PUMP_V80_P100" },
     },
   },
 }

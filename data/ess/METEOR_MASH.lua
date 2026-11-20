@@ -53,10 +53,10 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}},
     },
     timing = {
-      { f = 0, t = 0, se = "SE_M_BARRIER" },
+      { f = 0, t = 0, se = "NDX_ESS_PRSFX_METEOR_MASH1" },
       { f = 0, t = 1, bg = "pras_space_bg", x = 0, y = 0, o = 0, c = {0, 0, 0, 0} },
       { f = 0, t = 2, d = 5, o = 255 },
-      { f = 29, t = 0, se = "SE_M_VITAL_THROW2" },
+      { f = 29, t = 0, se = "NDX_ESS_PRSFX_METEOR_MASH2" },
       { f = 39, t = 2, d = 5, o = 0 },
     },
   },

@@ -38,8 +38,8 @@ return {
     timing = {
       { f = 0, t = 2, d = 4, o = 255 },
       { f = 0, t = 1, bg = "eeriespell_bg", x = 0, y = 0, o = 0, c = {0, 0, 0, 0} },
-      { f = 1, t = 0, se = "SE_M_SCRATCH" },
-      { f = 7, t = 0, se = "SE_M_SCRATCH" },
+      { f = 1, t = 0, se = "NDX_ESS_PRSFX_FURY_SWIPES" },
+      { f = 7, t = 0, se = "NDX_ESS_PRSFX_FURY_SWIPES" },
       { f = 14, t = 0, se = "NDX_ESS_POISON_V80_P100" },
       { f = 18, t = 0, se = "NDX_ESS_SLASH11_V80_P100" },
       { f = 24, t = 2, d = 4, o = 0 },

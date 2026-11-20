@@ -54,7 +54,7 @@ return {
     },
     timing = {
       { f = 0, t = 2, d = 5, o = 120 },
-      { f = 11, t = 0, se = "SE_M_NIGHTMARE" },
+      { f = 11, t = 0, se = "NDX_ESS_PRSFX_NIGHTMARE" },
       { f = 40, t = 2, d = 5, o = 0 },
     },
   },

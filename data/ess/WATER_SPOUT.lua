@@ -48,8 +48,8 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}, {31, 293, 159, 3, 100, 100, 0, 255, 1}},
     },
     timing = {
-      { f = 0, t = 0, se = "SE_M_HEADBUTT" },
-      { f = 9, t = 0, se = "SE_M_DIVE" },
+      { f = 0, t = 0, se = "NDX_ESS_PRSFX_WATER_SPOUT1" },
+      { f = 9, t = 0, se = "NDX_ESS_PRSFX_WATER_SPOUT2" },
     },
   },
   opp = {
@@ -97,8 +97,8 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}, {31, 47, 255, 3, 100, 100, 0, 255, 1}},
     },
     timing = {
-      { f = 0, t = 0, se = "SE_M_HEADBUTT" },
-      { f = 9, t = 0, se = "SE_M_DIVE" },
+      { f = 0, t = 0, se = "NDX_ESS_PRSFX_WATER_SPOUT1" },
+      { f = 9, t = 0, se = "NDX_ESS_PRSFX_WATER_SPOUT2" },
     },
   },
 }

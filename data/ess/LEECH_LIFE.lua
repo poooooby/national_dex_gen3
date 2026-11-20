@@ -30,8 +30,8 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}},
     },
     timing = {
-      { f = 3, t = 0, se = "SE_M_ABSORB" },
-      { f = 8, t = 0, se = "SE_M_ABSORB" },
+      { f = 3, t = 0, se = "NDX_ESS_PRSFX_LEECH_LIFE1" },
+      { f = 8, t = 0, se = "NDX_ESS_PRSFX_LEECH_LIFE2_V100_P75" },
     },
   },
 }

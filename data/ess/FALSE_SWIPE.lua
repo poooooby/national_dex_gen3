@@ -25,7 +25,7 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}},
     },
     timing = {
-      { f = 7, t = 0, se = "SE_M_VITAL_THROW" },
+      { f = 7, t = 0, se = "NDX_ESS_PRSFX_FALSE_SWIPE" },
     },
   },
 }

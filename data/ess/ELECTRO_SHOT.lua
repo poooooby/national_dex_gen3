@@ -41,7 +41,7 @@ return {
     },
     timing = {
       { f = 0, t = 0, se = "NDX_ESS_GEN8_ELECTRICITY1_V80_P100" },
-      { f = 13, t = 0, se = "SE_M_THUNDERBOLT" },
+      { f = 13, t = 0, se = "NDX_ESS_PRSFX_THUNDERBOLT2_V80_P100" },
       { f = 23, t = 0, se = "NDX_ESS_PRSFX_WILD_CHARGE2_V80_P100" },
     },
   },

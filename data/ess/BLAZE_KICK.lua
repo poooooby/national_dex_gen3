@@ -21,8 +21,8 @@ return {
       {{-1, 128, 224, 3}, {-2, 384, 96, 1}},
     },
     timing = {
-      { f = 4, t = 0, se = "SE_M_FLAME_WHEEL" },
-      { f = 4, t = 0, se = "SE_M_FLAMETHROWER" },
+      { f = 4, t = 0, se = "NDX_ESS_PRSFX_BLAZE_KICK1_V100_P80" },
+      { f = 4, t = 0, se = "NDX_ESS_PRSFX_BLAZE_KICK2" },
     },
   },
 }

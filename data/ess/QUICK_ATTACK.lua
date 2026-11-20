@@ -22,7 +22,7 @@ return {
       {{-1, 128, 224, 3}, {-2, 384, 96, 3}},
     },
     timing = {
-      { f = 3, t = 0, se = "SE_M_JUMP_KICK" },
+      { f = 3, t = 0, se = "NDX_ESS_PRSFX_QUICK_ATTACK" },
     },
   },
   opp = {
@@ -44,7 +44,7 @@ return {
       {{-1, 128, 224, 3}, {-2, 384, 96, 3}},
     },
     timing = {
-      { f = 3, t = 0, se = "SE_M_JUMP_KICK" },
+      { f = 3, t = 0, se = "NDX_ESS_PRSFX_QUICK_ATTACK" },
     },
   },
 }

@@ -34,7 +34,7 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}, {1, 399, 90, 3, 100, 100, 0, 90}},
     },
     timing = {
-      { f = 7, t = 0, se = "SE_M_RAZOR_WIND2" },
+      { f = 7, t = 0, se = "NDX_ESS_PRSFX_POISON_STING" },
     },
   },
   opp = {
@@ -68,7 +68,7 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}, {1, 134, 194, 3, 100, 100, 0, 90}},
     },
     timing = {
-      { f = 7, t = 0, se = "SE_M_RAZOR_WIND2" },
+      { f = 7, t = 0, se = "NDX_ESS_PRSFX_POISON_STING" },
     },
   },
 }

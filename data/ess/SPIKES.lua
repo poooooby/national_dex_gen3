@@ -38,10 +38,10 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}},
     },
     timing = {
-      { f = 0, t = 0, se = "SE_M_JUMP_KICK" },
-      { f = 4, t = 0, se = "SE_M_JUMP_KICK" },
-      { f = 5, t = 0, se = "SE_M_HORN_ATTACK" },
-      { f = 8, t = 0, se = "SE_M_JUMP_KICK" },
+      { f = 0, t = 0, se = "NDX_ESS_PRSFX_SPIKES1_V30_P50" },
+      { f = 4, t = 0, se = "NDX_ESS_PRSFX_SPIKES1_V30_P50" },
+      { f = 5, t = 0, se = "NDX_ESS_PRSFX_SPIKES2_V60_P100" },
+      { f = 8, t = 0, se = "NDX_ESS_PRSFX_SPIKES1_V30_P50" },
     },
   },
   opp = {
@@ -80,10 +80,10 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}},
     },
     timing = {
-      { f = 0, t = 0, se = "SE_M_JUMP_KICK" },
-      { f = 4, t = 0, se = "SE_M_JUMP_KICK" },
-      { f = 5, t = 0, se = "SE_M_HORN_ATTACK" },
-      { f = 8, t = 0, se = "SE_M_JUMP_KICK" },
+      { f = 0, t = 0, se = "NDX_ESS_PRSFX_SPIKES1_V30_P50" },
+      { f = 4, t = 0, se = "NDX_ESS_PRSFX_SPIKES1_V30_P50" },
+      { f = 5, t = 0, se = "NDX_ESS_PRSFX_SPIKES2_V60_P100" },
+      { f = 8, t = 0, se = "NDX_ESS_PRSFX_SPIKES1_V30_P50" },
     },
   },
 }

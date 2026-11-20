@@ -32,8 +32,8 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}},
     },
     timing = {
-      { f = 0, t = 0, se = "SE_M_TAIL_WHIP" },
-      { f = 9, t = 0, se = "SE_M_BUBBLE2" },
+      { f = 0, t = 0, se = "NDX_ESS_PRSFX_PRESENT1_V100_P85" },
+      { f = 9, t = 0, se = "NDX_ESS_PRSFX_PRESENT2" },
       { f = 9, t = 3, bg = "pras_flash_fg", x = 0, y = 0, o = 0, c = {0, 0, 0, 0} },
       { f = 9, t = 4, d = 3, o = 255 },
       { f = 17, t = 4, d = 5, o = 0 },
@@ -68,8 +68,8 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}},
     },
     timing = {
-      { f = 0, t = 0, se = "SE_M_TAIL_WHIP" },
-      { f = 9, t = 0, se = "SE_M_BUBBLE2" },
+      { f = 0, t = 0, se = "NDX_ESS_PRSFX_PRESENT1_V100_P85" },
+      { f = 9, t = 0, se = "NDX_ESS_PRSFX_PRESENT2" },
       { f = 9, t = 3, bg = "pras_flash_fg", x = 0, y = 0, o = 0, c = {0, 0, 0, 0} },
       { f = 9, t = 4, d = 3, o = 255 },
       { f = 17, t = 4, d = 5, o = 0 },

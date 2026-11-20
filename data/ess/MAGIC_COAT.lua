@@ -29,7 +29,7 @@ return {
       {{-1, 128, 224, 3}, {-2, 384, 96, 3}},
     },
     timing = {
-      { f = 0, t = 0, se = "SE_M_BARRIER" },
+      { f = 0, t = 0, se = "NDX_ESS_PRSFX_MAGIC_COAT" },
     },
   },
   opp = {
@@ -58,7 +58,7 @@ return {
       {{-1, 128, 224, 1}, {-2, 384, 96, 1}},
     },
     timing = {
-      { f = 0, t = 0, se = "SE_M_BARRIER" },
+      { f = 0, t = 0, se = "NDX_ESS_PRSFX_MAGIC_COAT" },
     },
   },
 }

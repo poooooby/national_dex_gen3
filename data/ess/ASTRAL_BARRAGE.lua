@@ -44,7 +44,7 @@ return {
     },
     timing = {
       { f = 0, t = 1, bg = "gen8_astralbarrage_bg", x = 0, y = 0, o = 255, c = {0, 0, 0, 0} },
-      { f = 0, t = 0, se = "SE_M_PSYBEAM" },
+      { f = 0, t = 0, se = "NDX_ESS_PRSFX_PSYBEAM_V80_P100" },
       { f = 16, t = 0, se = "NDX_ESS_PRSFX_PSYCHIC_TERRAIN1_V80_P100" },
       { f = 19, t = 0, se = "NDX_ESS_PRSFX_PSYCHIC_TERRAIN1_V80_P100" },
       { f = 23, t = 0, se = "NDX_ESS_PRSFX_PSYCHIC_TERRAIN1_V80_P80" },

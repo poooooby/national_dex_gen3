@@ -26,8 +26,8 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}},
     },
     timing = {
-      { f = 0, t = 0, se = "SE_M_TAIL_WHIP" },
-      { f = 9, t = 0, se = "SE_M_SELF_DESTRUCT" },
+      { f = 0, t = 0, se = "NDX_ESS_PRSFX_EGG_BOMB1_V100_P80" },
+      { f = 9, t = 0, se = "NDX_ESS_PRSFX_EGG_BOMB2_V100_P120" },
     },
   },
   opp = {
@@ -53,8 +53,8 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}},
     },
     timing = {
-      { f = 0, t = 0, se = "SE_M_TAIL_WHIP" },
-      { f = 9, t = 0, se = "SE_M_SELF_DESTRUCT" },
+      { f = 0, t = 0, se = "NDX_ESS_PRSFX_EGG_BOMB1_V100_P80" },
+      { f = 9, t = 0, se = "NDX_ESS_PRSFX_EGG_BOMB2_V100_P120" },
     },
   },
 }

@@ -46,8 +46,8 @@ return {
       { f = 6, t = 0, se = "NDX_ESS_BLOW1_V80_P100" },
       { f = 10, t = 0, se = "NDX_ESS_BLOW1_V80_P100" },
       { f = 14, t = 0, se = "NDX_ESS_BLOW1_V80_P100" },
-      { f = 18, t = 0, se = "SE_M_JUMP_KICK" },
-      { f = 26, t = 0, se = "SE_M_JUMP_KICK" },
+      { f = 18, t = 0, se = "NDX_ESS_PRSFX_VINE_WHIP_V80_P100" },
+      { f = 26, t = 0, se = "NDX_ESS_PRSFX_VINE_WHIP_V80_P100" },
     },
   },
   opp = {
@@ -93,8 +93,8 @@ return {
       { f = 6, t = 0, se = "NDX_ESS_BLOW1_V80_P100" },
       { f = 10, t = 0, se = "NDX_ESS_BLOW1_V80_P100" },
       { f = 14, t = 0, se = "NDX_ESS_BLOW1_V80_P100" },
-      { f = 18, t = 0, se = "SE_M_JUMP_KICK" },
-      { f = 26, t = 0, se = "SE_M_JUMP_KICK" },
+      { f = 18, t = 0, se = "NDX_ESS_PRSFX_VINE_WHIP_V80_P100" },
+      { f = 26, t = 0, se = "NDX_ESS_PRSFX_VINE_WHIP_V80_P100" },
     },
   },
 }

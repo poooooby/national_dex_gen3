@@ -43,7 +43,7 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}},
     },
     timing = {
-      { f = 0, t = 0, se = "SE_M_COSMIC_POWER" },
+      { f = 0, t = 0, se = "NDX_ESS_PRSFX_COSMIC_POWER" },
       { f = 0, t = 1, bg = "pras_space_bg", x = 0, y = 0, o = 0, c = {0, 0, 0, 0} },
       { f = 0, t = 2, d = 3, o = 255 },
       { f = 31, t = 2, d = 3, o = 0 },

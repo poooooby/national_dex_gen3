@@ -26,7 +26,7 @@ return {
       {{-1, 128, 224, 3}, {-2, 384, 96, 3, 100, 100, 0, 255, 0, 0, 0}},
     },
     timing = {
-      { f = 0, t = 0, se = "SE_M_SACRED_FIRE2" },
+      { f = 0, t = 0, se = "NDX_ESS_PRSFX_DRAGON_CLAW_V80_P54" },
     },
   },
   opp = {
@@ -52,7 +52,7 @@ return {
       {{-1, 128, 224, 3}, {-2, 384, 96, 3, 100, 100, 0, 255, 0, 0, 0}},
     },
     timing = {
-      { f = 0, t = 0, se = "SE_M_SACRED_FIRE2" },
+      { f = 0, t = 0, se = "NDX_ESS_PRSFX_DRAGON_CLAW_V80_P54" },
     },
   },
 }

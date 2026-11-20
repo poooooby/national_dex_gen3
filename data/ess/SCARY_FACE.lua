@@ -31,7 +31,7 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}},
     },
     timing = {
-      { f = 0, t = 0, se = "SE_M_PSYBEAM" },
+      { f = 0, t = 0, se = "NDX_ESS_PRSFX_SCARY_FACE" },
       { f = 0, t = 2, d = 3, o = 255, c = {-1, -1, -1, 1} },
       { f = 19, t = 2, d = 3, o = 0 },
     },
@@ -64,7 +64,7 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}},
     },
     timing = {
-      { f = 0, t = 0, se = "SE_M_PSYBEAM" },
+      { f = 0, t = 0, se = "NDX_ESS_PRSFX_SCARY_FACE" },
       { f = 0, t = 2, d = 3, o = 255, c = {-1, -1, -1, 1} },
       { f = 19, t = 2, d = 3, o = 0 },
     },

@@ -40,7 +40,7 @@ return {
     timing = {
       { f = 0, t = 1, bg = "pras_psychic_bg", x = 0, y = 0, o = 0, c = {0, 0, 0, 0} },
       { f = 0, t = 2, d = 3, o = 200 },
-      { f = 3, t = 0, se = "SE_M_STRING_SHOT2" },
+      { f = 3, t = 0, se = "NDX_ESS_PRSFX_CONFUSE_RAY_V100_P65" },
       { f = 26, t = 2, d = 3, o = 0 },
     },
   },

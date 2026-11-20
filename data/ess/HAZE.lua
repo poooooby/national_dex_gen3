@@ -43,7 +43,7 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}},
     },
     timing = {
-      { f = 0, t = 0, se = "SE_M_HAZE" },
+      { f = 0, t = 0, se = "NDX_ESS_PRSFX_HAZE_V100_P85" },
       { f = 0, t = 3, bg = "pras_haze_fg", x = 0, y = 0, o = 0, c = {0, 0, 0, 0} },
       { f = 0, t = 4, d = 40, x = 300 },
       { f = 0, t = 4, d = 15, o = 150 },

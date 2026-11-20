@@ -31,8 +31,8 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}, {7, 128, 226, 2, 100, 100, 0, 145}},
     },
     timing = {
-      { f = 0, t = 0, se = "SE_M_HORN_ATTACK" },
-      { f = 15, t = 0, se = "SE_M_HYPER_BEAM" },
+      { f = 0, t = 0, se = "NDX_ESS_PRSFX_IMPRISON1" },
+      { f = 15, t = 0, se = "NDX_ESS_PRSFX_IMPRISON2" },
     },
   },
 }

@@ -25,10 +25,10 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}, {0, 177, 218, 2, 100, 100, 65, 150, 0, 0, 0}},
     },
     timing = {
-      { f = 1, t = 0, se = "SE_M_METRONOME" },
-      { f = 7, t = 0, se = "SE_M_METRONOME" },
-      { f = 11, t = 0, se = "SE_M_METRONOME" },
-      { f = 14, t = 0, se = "SE_M_METRONOME" },
+      { f = 1, t = 0, se = "NDX_ESS_PRSFX_METRONOME" },
+      { f = 7, t = 0, se = "NDX_ESS_PRSFX_METRONOME_V100_P80" },
+      { f = 11, t = 0, se = "NDX_ESS_PRSFX_METRONOME" },
+      { f = 14, t = 0, se = "NDX_ESS_PRSFX_METRONOME_V100_P80" },
     },
   },
   opp = {
@@ -53,10 +53,10 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}, {0, 342, 128, 1, 100, 100, 65, 150}},
     },
     timing = {
-      { f = 1, t = 0, se = "SE_M_METRONOME" },
-      { f = 7, t = 0, se = "SE_M_METRONOME" },
-      { f = 11, t = 0, se = "SE_M_METRONOME" },
-      { f = 14, t = 0, se = "SE_M_METRONOME" },
+      { f = 1, t = 0, se = "NDX_ESS_PRSFX_METRONOME" },
+      { f = 7, t = 0, se = "NDX_ESS_PRSFX_METRONOME_V100_P80" },
+      { f = 11, t = 0, se = "NDX_ESS_PRSFX_METRONOME" },
+      { f = 14, t = 0, se = "NDX_ESS_PRSFX_METRONOME_V100_P80" },
     },
   },
 }

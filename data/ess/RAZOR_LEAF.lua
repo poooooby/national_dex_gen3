@@ -38,8 +38,8 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}, {3, 552, 15, 3, 100, 100, 0, 145}},
     },
     timing = {
-      { f = 0, t = 0, se = "SE_M_RAZOR_WIND2" },
-      { f = 17, t = 0, se = "SE_M_POISON_POWDER" },
+      { f = 0, t = 0, se = "NDX_ESS_PRSFX_RAZOR_LEAF2" },
+      { f = 17, t = 0, se = "NDX_ESS_PRSFX_RAZOR_LEAF1" },
     },
   },
   opp = {
@@ -77,8 +77,8 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}, {3, 56, 279, 3, 100, 100, 0, 145, 0, 0, 0}},
     },
     timing = {
-      { f = 0, t = 0, se = "SE_M_RAZOR_WIND2" },
-      { f = 17, t = 0, se = "SE_M_POISON_POWDER" },
+      { f = 0, t = 0, se = "NDX_ESS_PRSFX_RAZOR_LEAF2" },
+      { f = 17, t = 0, se = "NDX_ESS_PRSFX_RAZOR_LEAF1" },
     },
   },
 }

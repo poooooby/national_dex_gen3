@@ -23,8 +23,8 @@ return {
       {{-1, 128, 224, 3}, {-2, 384, 96, 3}},
     },
     timing = {
-      { f = 0, t = 0, se = "SE_M_VITAL_THROW" },
-      { f = 8, t = 0, se = "SE_M_VITAL_THROW2" },
+      { f = 0, t = 0, se = "NDX_ESS_PRSFX_COUNTER1" },
+      { f = 8, t = 0, se = "NDX_ESS_PRSFX_COUNTER2" },
     },
   },
 }

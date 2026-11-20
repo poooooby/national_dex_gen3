@@ -18,9 +18,9 @@ return {
       {{-1, 128, 224, 3}, {-2, 384, 96, 1}, {19, 432, 146, 1, 100, 100, 0, 140}},
     },
     timing = {
-      { f = 1, t = 0, se = "SE_M_HORN_ATTACK" },
-      { f = 4, t = 0, se = "SE_M_HORN_ATTACK" },
-      { f = 7, t = 0, se = "SE_M_HORN_ATTACK" },
+      { f = 1, t = 0, se = "NDX_ESS_PRSFX_PECK" },
+      { f = 4, t = 0, se = "NDX_ESS_PRSFX_PECK" },
+      { f = 7, t = 0, se = "NDX_ESS_PRSFX_PECK" },
     },
   },
 }

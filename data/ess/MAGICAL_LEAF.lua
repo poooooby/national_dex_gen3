@@ -37,10 +37,10 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}},
     },
     timing = {
-      { f = 0, t = 0, se = "SE_M_POISON_POWDER" },
-      { f = 16, t = 0, se = "SE_M_RAZOR_WIND2" },
-      { f = 18, t = 0, se = "SE_M_RAZOR_WIND2" },
-      { f = 20, t = 0, se = "SE_M_RAZOR_WIND2" },
+      { f = 0, t = 0, se = "NDX_ESS_PRSFX_MAGICAL_LEAF1_V100_P90" },
+      { f = 16, t = 0, se = "NDX_ESS_PRSFX_MAGICAL_LEAF2" },
+      { f = 18, t = 0, se = "NDX_ESS_PRSFX_MAGICAL_LEAF2" },
+      { f = 20, t = 0, se = "NDX_ESS_PRSFX_MAGICAL_LEAF2" },
     },
   },
   opp = {
@@ -77,10 +77,10 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}},
     },
     timing = {
-      { f = 0, t = 0, se = "SE_M_POISON_POWDER" },
-      { f = 16, t = 0, se = "SE_M_RAZOR_WIND2" },
-      { f = 18, t = 0, se = "SE_M_RAZOR_WIND2" },
-      { f = 20, t = 0, se = "SE_M_RAZOR_WIND2" },
+      { f = 0, t = 0, se = "NDX_ESS_PRSFX_MAGICAL_LEAF1_V100_P90" },
+      { f = 16, t = 0, se = "NDX_ESS_PRSFX_MAGICAL_LEAF2" },
+      { f = 18, t = 0, se = "NDX_ESS_PRSFX_MAGICAL_LEAF2" },
+      { f = 20, t = 0, se = "NDX_ESS_PRSFX_MAGICAL_LEAF2" },
     },
   },
 }

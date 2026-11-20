@@ -51,7 +51,7 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}},
     },
     timing = {
-      { f = 0, t = 0, se = "SE_M_SURF" },
+      { f = 0, t = 0, se = "NDX_ESS_PRSFX_SURF" },
     },
   },
   opp = {
@@ -102,7 +102,7 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}},
     },
     timing = {
-      { f = 0, t = 0, se = "SE_M_SURF" },
+      { f = 0, t = 0, se = "NDX_ESS_PRSFX_SURF" },
       { f = 0, t = 3, bg = "pras_surf_fg_opp", x = -88, y = -100, o = 0, c = {0, 0, 0, 0} },
       { f = 1, t = 4, d = 5, o = 200 },
       { f = 6, t = 4, d = 23, x = 0, y = 420 },

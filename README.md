@@ -35,7 +35,7 @@ is missing, up to Pecharunt, with today's moves, abilities, items and types to g
 
 ### In Battle
 
-- 🎬 **Animations from the Gen 9 Move Animation Project** for the newer moves and the original ones (FireRed to Emerald)
+- 🎬 **Animations from the Gen 9 Move Animation Project** for the newer moves and the original ones, on every game
 - 🏷️ **Type badges** beside each HP box
 - 📊 **Stat Hints** show each stat change and what it multiplies by ("ATK 2x")
 

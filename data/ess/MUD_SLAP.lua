@@ -26,8 +26,8 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}},
     },
     timing = {
-      { f = 9, t = 0, se = "SE_M_SAND_ATTACK" },
-      { f = 14, t = 0, se = "SE_M_SAND_ATTACK" },
+      { f = 9, t = 0, se = "NDX_ESS_PRSFX_MUD_SLAP_V100_P110" },
+      { f = 14, t = 0, se = "NDX_ESS_PRSFX_MUD_SLAP" },
     },
   },
 }

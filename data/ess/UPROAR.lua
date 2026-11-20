@@ -35,10 +35,10 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}},
     },
     timing = {
-      { f = 0, t = 0, se = "SE_M_UPROAR" },
-      { f = 0, t = 0, se = "SE_M_UPROAR" },
-      { f = 13, t = 0, se = "SE_M_UPROAR" },
-      { f = 13, t = 0, se = "SE_M_UPROAR" },
+      { f = 0, t = 0, se = "NDX_ESS_PRSFX_UPROAR1_V100_P80" },
+      { f = 0, t = 0, se = "NDX_ESS_PRSFX_UPROAR2_V100_P85" },
+      { f = 13, t = 0, se = "NDX_ESS_PRSFX_UPROAR1_V100_P80" },
+      { f = 13, t = 0, se = "NDX_ESS_PRSFX_UPROAR2_V100_P85" },
     },
   },
 }

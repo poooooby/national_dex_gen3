@@ -23,7 +23,7 @@ return {
       {{-1, 128, 224, 3}, {-2, 384, 96, 3}},
     },
     timing = {
-      { f = 6, t = 0, se = "SE_M_MEGA_KICK" },
+      { f = 6, t = 0, se = "NDX_ESS_PRSFX_MEGA_PUNCH1" },
     },
   },
 }

@@ -38,7 +38,7 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}},
     },
     timing = {
-      { f = 0, t = 0, se = "SE_M_DOUBLE_TEAM" },
+      { f = 0, t = 0, se = "NDX_ESS_PRSFX_SMOKESCREEN" },
       { f = 0, t = 1, x = 0, y = 0, o = 0, c = {255, 255, 255, 0} },
       { f = 0, t = 2, d = 5, o = 165 },
       { f = 24, t = 2, d = 5, o = 0 },

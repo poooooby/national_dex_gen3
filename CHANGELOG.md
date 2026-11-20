@@ -3,6 +3,24 @@
 All notable changes to this mod are documented here, in
 [keep a changelog](https://keepachangelog.com/en/1.1.0/) format.
 
+## [Unreleased]
+
+### Added
+
+- **The Gen 9 Move Animation Project's animations on Red, Blue, Yellow, Gold, Silver and Crystal**:
+  the same animations as FireRed to Emerald, with their sounds, sized for the Game Boy screen. Every
+  newer move and every original move the project animates plays its animation, and so do being
+  poisoned, burned, asleep or confused (and, on Gold, Silver and Crystal, the sandstorm and Leech
+  Seed's drain). Fly, Dig and the other two-turn moves keep the game's own first turn. Bide, Curse,
+  Transform, Substitute and Beat Up keep the game's animations. Both battle layouts are covered.
+
+### Changed
+
+- **The Gen 9 Move Animation Project's own sounds on FireRed to Emerald too.** Its animations used to
+  play the game's own sound for an original move, but those sounds were made for the game's
+  animations and often got cut short: Dragon Breath's was all but silent. Every animation now plays
+  the sounds made for it.
+
 ## [1.18.0] - 2026-11-19
 
 ### Added

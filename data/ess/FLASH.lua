@@ -30,7 +30,7 @@ return {
     timing = {
       { f = 0, t = 3, bg = "pras_black_bg", x = 0, y = 0, o = 0, c = {0, 0, 0, 0} },
       { f = 0, t = 4, d = 9, o = 255 },
-      { f = 10, t = 0, se = "SE_M_LEER" },
+      { f = 10, t = 0, se = "NDX_ESS_PRSFX_FLASH" },
       { f = 10, t = 3, bg = "pras_flash_fg", x = 0, y = 0, o = 200, c = {0, 0, 0, 0} },
       { f = 11, t = 4, d = 3, o = 0 },
     },

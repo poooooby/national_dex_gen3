@@ -19,9 +19,9 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}},
     },
     timing = {
-      { f = 0, t = 0, se = "SE_M_HARDEN" },
-      { f = 3, t = 0, se = "SE_M_HARDEN" },
-      { f = 7, t = 0, se = "SE_M_HARDEN" },
+      { f = 0, t = 0, se = "NDX_ESS_PRSFX_HARDEN" },
+      { f = 3, t = 0, se = "NDX_ESS_PRSFX_HARDEN_V65_P140" },
+      { f = 7, t = 0, se = "NDX_ESS_PRSFX_HARDEN_V40_P180" },
     },
   },
 }

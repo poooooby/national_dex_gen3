@@ -33,135 +33,27 @@
 -- task still takes its time.
 local EssAnims = {}
 
-local TICKS = 3                        -- 60 a second; Essentials plays 20 frames a second
-local SRC_UX, SRC_UY, SRC_TX, SRC_TY = 128, 224, 384, 96   -- Essentials' FOCUSUSER / FOCUSTARGET
-local SCREEN_X, SCREEN_Y = 240 / 512, 160 / 384
-
--- a cel: pattern, x, y, focus, zoom x, zoom y, angle, opacity, blend, mirror, priority,
--- colour r g b a, tone r g b gray (data/ess/*.lua leaves trailing defaults off)
-local P, CX, CY, FOCUS, ZX, ZY, ANGLE, OPACITY, BLEND, MIRROR, PRIO = 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11
-local CR, CG, CB, CA, TR, TG, TB, TGRAY = 12, 13, 14, 15, 16, 17, 18, 19
-
--- Essentials' subtract blend (the screen minus the cel), as the cel's inverse drawn over it: what
--- subtracting gives on Gen 3's light battle backgrounds (the battle's canvas holds no backdrop to
--- subtract from, so LOVE's subtract and multiply leave nothing)
-local SUB_SHADER = [[
-extern vec4 ecol;
-extern vec4 etone;
-vec4 effect(vec4 color, Image tex, vec2 uv, vec2 sc) {
-  vec4 p = Texel(tex, uv);
-  vec3 c = p.rgb;
-  float g = dot(c, vec3(0.299, 0.587, 0.114));
-  c = mix(c, vec3(g), etone.a);
-  c = clamp(c + etone.rgb, 0.0, 1.0);
-  c = mix(c, ecol.rgb, ecol.a);
-  return vec4(vec3(1.0) - c, p.a) * color;
-}
-]]
-
-local TINT_SHADER = [[
-extern vec4 ecol;
-extern vec4 etone;
-vec4 effect(vec4 color, Image tex, vec2 uv, vec2 sc) {
-  vec4 p = Texel(tex, uv);
-  vec3 c = p.rgb;
-  float g = dot(c, vec3(0.299, 0.587, 0.114));
-  c = mix(c, vec3(g), etone.a);
-  c = clamp(c + etone.rgb, 0.0, 1.0);
-  c = mix(c, ecol.rgb, ecol.a);
-  return vec4(c, p.a) * color;
-}
-]]
+-- The shared part (src/ess_core.lua: the data, the atlas, placing and drawing cels, the pack's
+-- sounds) is EssAnims.Core, which main.lua sets after loading both.
+EssAnims.Core = nil
 
 -- ---------- the pack's sounds ----------------------------------------------------------------
--- data.soundFile holds every pack sound as a whole ogg, end to end (one file shipped, not hundreds);
--- data.sounds[id] = { byte offset, length }. A sound is decoded from its own bytes the first time it
--- plays, or ahead of time on the engine's warm queue (src/core/game3/warm.lua, a little each frame):
--- battle.started queues the sounds of every move in both parties and the common animations',
--- battle.move_used the move about to animate. Decoded sounds are widened to stereo, as the engine
--- widens its mono ones (Sound.lua's widenMono), and kept until the battle ends. They play as the
--- engine plays a mod sound: 0.8 x the sound volume option, at the engine's sound rate, and not while
--- the audio device is suspended.
-local BASE_VOLUME = 0.8
-
-local function soundBytes(state)
-  if state.soundBytes == nil then
-    local file, bytes = state.data.soundFile, nil
-    if file and state.mod and state.mod.read then
-      local ok, b = pcall(state.mod.read, state.mod, file)
-      if ok and type(b) == "string" then bytes = b end
-    end
-    if not bytes and file and love and love.filesystem and love.filesystem.read then
-      local ok, b = pcall(love.filesystem.read, state.root .. "/" .. file)
-      if ok and type(b) == "string" then bytes = b end
-    end
-    if not bytes and file and state.log then state.log:warn("could not read %s", tostring(file)) end
-    state.soundBytes = bytes or false
-  end
-  return state.soundBytes or nil
-end
+-- (src/ess_core.lua decodes and plays them.) Here they warm on the engine's own queue
+-- (src/core/game3/warm.lua, a little each frame): battle.started queues the sounds of every move in
+-- both parties and the common animations', battle.move_used the move about to animate; battle.ended
+-- drops them. The volume is the engine's for a mod sound (0.8 x Audio._sfxVolume, the sound volume
+-- option), at Sound.rate(), and nothing while ChipAudio is suspended.
 
 -- the sound's Source, decoded now if it isn't yet; nil without audio or when it can't be
 function EssAnims.soundSource(state, id)
-  local src = state.sources[id]
-  if src ~= nil then return src or nil end
-  src = false
-  local at = state.data.sounds and state.data.sounds[id]
-  if at and love and love.sound and love.sound.newSoundData and love.audio and love.audio.newSource
-      and love.filesystem and love.filesystem.newFileData then
-    local bytes = soundBytes(state)
-    if bytes then
-      local ok, made = pcall(function()
-        local fd = love.filesystem.newFileData(bytes:sub(at[1] + 1, at[1] + at[2]), id .. ".ogg")
-        local sd = love.sound.newSoundData(fd)
-        if sd:getChannelCount() == 1 then
-          local n = sd:getSampleCount()
-          local st = love.sound.newSoundData(n, sd:getSampleRate(), 16, 2)
-          for i = 0, n - 1 do
-            local v = sd:getSample(i)
-            st:setSample(i, 1, v)
-            st:setSample(i, 2, v)
-          end
-          sd = st
-        end
-        return love.audio.newSource(sd, "static")
-      end)
-      if ok and made then
-        src = made
-      elseif state.log then
-        state.log:warn("could not decode sound %s: %s", tostring(id), tostring(made))
-      end
-    end
-  end
-  state.sources[id] = src
-  return src or nil
+  return EssAnims.Core.soundSource(state, id)
 end
 
 -- decode these sounds ahead of time on the engine's warm queue (lower priority runs sooner)
 function EssAnims.prewarm(state, ids, priority)
-  if not (state and type(ids) == "table" and state.data.sounds) then return 0 end
-  local ok, Warm = pcall(state.require or require, "src.core.game3.warm")
+  local ok, Warm = pcall(state and state.require or require, "src.core.game3.warm")
   if not (ok and type(Warm) == "table" and Warm.add) then return 0 end
-  local n = 0
-  for _, id in ipairs(ids) do
-    if state.sources[id] == nil and state.data.sounds[id] then
-      Warm.add("ndxess:" .. id, function() EssAnims.soundSource(state, id) end, priority)
-      n = n + 1
-    end
-  end
-  return n
-end
-
--- the pack sounds of these move numbers (nil, or not ours: none)
-local function moveSounds(state, nums, out)
-  out = out or {}
-  for _, num in ipairs(nums) do
-    if type(num) == "table" then num = num.id or num.move or num.num end
-    local name = state.byNum and state.byNum[tonumber(num)]
-    local m = name and state.data.moves[name]
-    for _, id in ipairs(m and m.se or {}) do out[#out + 1] = id end
-  end
-  return out
+  return EssAnims.Core.prewarm(state, ids, priority, Warm.add)
 end
 
 -- battle.started: every move in both parties, and the common animations' sounds
@@ -170,7 +62,7 @@ function EssAnims.prewarmBattle(state, battle)
   local ids = {}
   for _, party in ipairs({ battle and battle.playerParty or {}, battle and battle.foeParty or {} }) do
     for _, mon in ipairs(party) do
-      if type(mon) == "table" and type(mon.moves) == "table" then moveSounds(state, mon.moves, ids) end
+      if type(mon) == "table" and type(mon.moves) == "table" then EssAnims.Core.moveSounds(state, mon.moves, ids) end
     end
   end
   for _, id in ipairs(state.data.commonSounds or {}) do ids[#ids + 1] = id end
@@ -181,21 +73,16 @@ end
 function EssAnims.playSound(state, id, require)
   if not (state and state.data and state.data.sounds and state.data.sounds[id]) then return false end
   local okC, ChipAudio = pcall(require, "src.core.ChipAudio")
+  local suspended = false
   if okC and type(ChipAudio) == "table" and ChipAudio.isSuspended then
     local okS, susp = pcall(ChipAudio.isSuspended)
-    if okS and susp then return true end
+    suspended = okS and susp and true or false
   end
-  local src = EssAnims.soundSource(state, id)
-  if not src then return true end
   local okA, Audio = pcall(require, "src.core.game3.audio")
   local level = okA and type(Audio) == "table" and tonumber(Audio._sfxVolume) or 1
   local okR, Sound = pcall(require, "src.core.Sound")
   local rate = okR and type(Sound) == "table" and Sound.rate and tonumber(Sound.rate()) or 1
-  pcall(src.stop, src)
-  pcall(src.setVolume, src, BASE_VOLUME * level)
-  pcall(src.setPitch, src, rate)
-  pcall(src.play, src)
-  return true
+  return EssAnims.Core.playSound(state, id, level, rate, suspended)
 end
 
 -- the battle events that warm and drop the sounds; once per mod load, from main.lua
@@ -213,15 +100,11 @@ function EssAnims.listen(mod, require)
   end)
   events:on("battle.move_used", function(ev)
     local st = state()
-    if st and ev and ev.moveNum then EssAnims.prewarm(st, moveSounds(st, { ev.moveNum }), 1) end
+    if st and ev and ev.moveNum then EssAnims.prewarm(st, EssAnims.Core.moveSounds(st, { ev.moveNum }), 1) end
   end)
   events:on("battle.ended", function()
     local st = state()
-    if not st then return end
-    for _, src in pairs(st.sources) do
-      if src then pcall(src.stop, src) end
-    end
-    st.sources = {}
+    if st then EssAnims.Core.dropSounds(st) end
   end)
   return true
 end
@@ -232,7 +115,12 @@ local PREFIX = "national_dex_gen3:ess:"
 -- (src/moves.lua's registered rows: id, index), require, log }; after src/anims.lua's install
 function EssAnims.install(opts)
   local require, log, data = opts.require, opts.log, opts.data
+  local Core = EssAnims.Core
   if type(data) ~= "table" or type(data.moves) ~= "table" or type(data.sheets) ~= "table" then return false end
+  if type(Core) ~= "table" then
+    if log then log:warn("Gen 9 project move animations are off: src/ess_core.lua did not load") end
+    return false
+  end
   local okT, AnimTasks = pcall(require, "src.core.game3.battle.anim_tasks")
   local okA, Anim = pcall(require, "src.core.game3.battle.anim")
   if not (okT and okA and type(AnimTasks) == "table" and type(AnimTasks.REGISTRY) == "table") then
@@ -248,10 +136,7 @@ function EssAnims.install(opts)
     state = {}
     AnimTasks.__ndxEss = state
   end
-  if state.data ~= data then state.images, state.moves, state.sources, state.soundBytes = {}, {}, {}, nil end
-  state.sources = state.sources or {}
-  state.data, state.read, state.root, state.log = data, opts.read, opts.mod and opts.mod.path or "", log
-  state.mod, state.require = opts.mod, require
+  Core.setData(state, opts)
   -- the running game's move numbers: the newer moves' slots, the carts' own numbers
   state.byNum = {}
   for _, r in ipairs(opts.moves or {}) do
@@ -261,11 +146,6 @@ function EssAnims.install(opts)
     if m.num then state.byNum[m.num] = name end
   end
   state.scripts = setmetatable({}, { __mode = "k" })   -- pack -> name -> script
-  -- the data/ess files there are: the moves', the common animations'
-  state.known = {}
-  for name in pairs(data.moves) do state.known[name] = true end
-  for _, t in pairs(data.commons or {}) do for _, name in pairs(t) do state.known[name] = true end end
-  for _, name in pairs(data.trap or {}) do state.known[name] = true end
   EssAnims.wrap(state, Anim, require)
   if state.task then
     AnimTasks.REGISTRY.NdxEss = state.task
@@ -273,62 +153,10 @@ function EssAnims.install(opts)
     return true
   end
 
-  local hasLove = love and love.graphics and love.graphics.newImage and true or false
-  local S = tonumber(data.scale) or 0.375
+  local hasLove = Core.hasLove()
+  local C = Core.CEL
 
-  local function moveData(move)
-    local m = state.moves[move]
-    if m == nil then
-      m = false
-      if state.read and state.known[move] then
-        local ok, t = pcall(state.read, "data/ess/" .. move .. ".lua")
-        if ok and type(t) == "table" and type(t.move) == "table" then m = t end
-      end
-      state.moves[move] = m
-    end
-    return m or nil
-  end
-
-  -- an image from the mod's folder, or false
-  local function image(file)
-    local img = state.images[file]
-    if img ~= nil then return img end
-    img = false
-    if hasLove then
-      local ok, im = pcall(love.graphics.newImage, state.root .. "/" .. file)
-      if ok and im then
-        im:setFilter("nearest", "nearest")
-        img = im
-      elseif state.log then
-        state.log:warn("could not load %s: %s", tostring(file), tostring(im))
-      end
-    end
-    state.images[file] = img
-    return img
-  end
-
-  -- an atlas page (data.pages[n]), or false
-  local function page(n)
-    local pg = n and state.data.pages and state.data.pages[n]
-    return pg and image(pg.file) or nil
-  end
-
-  local function shader()
-    if state.shader == nil then
-      local ok, sh = false, nil
-      if hasLove and love.graphics.newShader then ok, sh = pcall(love.graphics.newShader, TINT_SHADER) end
-      state.shader = ok and sh or false
-    end
-    return state.shader or nil
-  end
-  local function subShader()
-    if state.subShader == nil then
-      local ok, sh = false, nil
-      if hasLove and love.graphics.newShader then ok, sh = pcall(love.graphics.newShader, SUB_SHADER) end
-      state.subShader = ok and sh or false
-    end
-    return state.subShader or nil
-  end
+  local function moveData(move) return Core.moveData(state, move) end
 
   local function sideOf(id, fallback)
     if AnimCoords and AnimCoords.sideOf and id ~= nil then
@@ -341,97 +169,9 @@ function EssAnims.install(opts)
   -- the battlers' `present` fields this task changes, to put back
   local KEEP = { "ox", "oy", "sx", "sy", "rotation", "alpha", "palAffine" }
 
-  local function start(t, vm)
-    local move = tostring(t.data[0] or ""):gsub("^ESS:", "")
-    if move == "@TRAP" then
-      move = (state.data.trap or {})[tonumber(vm.args and vm.args[0]) or 0] or ""
-    end
-    local md = moveData(move)
-    if not md then return nil end
-    local mode = tonumber(t.data[1]) or 0
-    local foe = vm.isReversed and true or false
-    if not foe and vm.attackerSide then foe = vm:attackerSide() ~= "player" end
-    local anim, opp = md.move, false
-    if foe and md.opp then anim, opp = md.opp, true end
-    -- a two-turn move's first turn (the cart's choosetwoturnanim: an even turn)
-    if mode == 1 and md.charge and (tonumber(vm._turn) or 0) % 2 == 0 then
-      anim, opp = md.charge, false
-      if foe and md.charge_opp then anim, opp = md.charge_opp, true end
-    end
-    if mode == 2 then
-      -- its user comes back from where the cart's first turn hid it
-      local p = Anim.present(vm:attackerId())
-      if p then p.invisible = false end
-    end
-    -- the animation's "user" and "target": an OppMove version is made with the roles swapped
-    local uKey, tKey = "attacker", "target"
-    if opp then uKey, tKey = "target", "attacker" end
-    if (tonumber(t.data[2]) or 0) == 1 then uKey, tKey = "attacker", "attacker" end   -- a move on its user
-    local ux, uy = vm:battlerCenter(uKey)
-    local tx, ty = vm:battlerCenter(tKey)
-    local uId = uKey == "attacker" and vm:attackerId() or vm:targetId()
-    local tId = tKey == "attacker" and vm:attackerId() or vm:targetId()
-    local uSide = sideOf(uId, uKey == "attacker" and vm:attackerSide() or vm:targetSide())
-    local tSide = sideOf(tId, tKey == "attacker" and vm:attackerSide() or vm:targetSide())
-    local st = {
-      move = move, anim = anim, frame = -1, tick = 0, last = #anim.frames,
-      ux = ux, uy = uy, tx = tx, ty = ty, uSide = uSide, tSide = tSide,
-      reversed = ux > tx,   -- Essentials' isReversed for the line between them
-      vm = vm,
-      lineX = math.max(1, math.abs(tx - ux) / (SRC_TX - SRC_UX) / S),
-      lineY = math.max(1, math.abs(ty - uy) / (SRC_UY - SRC_TY) / S),
-      cels = { {}, {}, {} },  -- this frame's cels by layer: behind the enemy, between, in front
-      bg = { o = 0, x = 0, y = 0, c = { 0, 0, 0, 0 } }, fg = { o = 0, x = 0, y = 0, c = { 0, 0, 0, 0 } },
-      oldbg = {}, oldfo = {},
-      mons = {},
-    }
-    -- the battlers' pictures: what to put back
-    local function mon(id)
-      if id == nil or st.mons[id] then return end
-      local p = Anim.present(id)
-      if not p then return end
-      local keep = {}
-      for _, k in ipairs(KEEP) do keep[k] = p[k] end
-      st.mons[id] = { p = p, keep = keep }
-    end
-    mon(uId)
-    mon(tId)
-    st.uId, st.tId = uId, tId
-    st.sheet = anim.sheet and data.sheets[anim.sheet] or nil
-    return st
-  end
-
-  -- a cel's place on the Gen 3 screen
-  local function place(st, c)
-    local x, y, f = c[CX], c[CY], c[FOCUS]
-    if f == 1 then
-      return st.tx + (x - SRC_TX) * S, st.ty + (y - SRC_TY) * S
-    elseif f == 2 then
-      return st.ux + (x - SRC_UX) * S, st.uy + (y - SRC_UY) * S
-    elseif f == 3 then
-      local fx = (x - SRC_UX) / (SRC_TX - SRC_UX)
-      local fy = (y - SRC_UY) / (SRC_TY - SRC_UY)
-      return st.ux + fx * (st.tx - st.ux), st.uy + fy * (st.ty - st.uy)
-    end
-    return x * SCREEN_X, y * SCREEN_Y
-  end
-
-  -- which band: 1 behind the enemy, 2 between the battlers, 3 in front of the player
-  local function layerOf(st, c)
-    local pr, f = c[PRIO] or 1, c[FOCUS]
-    if pr == 0 then return 1 end
-    local side = (f == 1 and st.tSide) or (f == 2 and st.uSide) or nil
-    if pr == 2 then
-      if side == "player" then return 2 end
-      return 1
-    elseif pr == 3 then
-      if side == "enemy" then return 2 end
-      return 3
-    end
-    return 3
-  end
-
-  local function setMon(st, id, home, c)
+  -- a battler's own cel: its picture's `present` offsets, tone and colour
+  local function setMon(st, which, c)
+    local id = which == "user" and st.uId or st.tId
     local m = id ~= nil and st.mons[id]
     if not m then return end
     local p = m.p
@@ -439,21 +179,15 @@ function EssAnims.install(opts)
       p.alpha = 0   -- Essentials hides a battler with no cel in the frame
       return
     end
-    local x, y = place(st, c)
-    p.ox = math.floor(x - home[1] + 0.5)
-    p.oy = math.floor(y - home[2] + 0.5)
-    p.sx = (c[ZX] or 100) / 100
-    p.sy = (c[ZY] or 100) / 100
-    p.rotation = -math.rad(c[ANGLE] or 0)
-    p.alpha = (c[OPACITY] or 255) / 255
+    p.ox, p.oy, p.sx, p.sy, p.rotation, p.alpha = Core.monPose(st, which, c)
     -- Essentials' tone (added to each channel) then colour (mixed in by its alpha), as the battle's
     -- palette affine (each channel times m, plus an offset): exact, gray aside
-    local a = (c[CA] or 0) / 255
-    local tr, tg, tb = (c[TR] or 0) / 255, (c[TG] or 0) / 255, (c[TB] or 0) / 255
+    local a = (c[C.CA] or 0) / 255
+    local tr, tg, tb = (c[C.TR] or 0) / 255, (c[C.TG] or 0) / 255, (c[C.TB] or 0) / 255
     if a > 0 or tr ~= 0 or tg ~= 0 or tb ~= 0 then
       local k = 1 - a
       p.palAffine = { m = k,
-        r = tr * k + (c[CR] or 0) / 255 * a, g = tg * k + (c[CG] or 0) / 255 * a, b = tb * k + (c[CB] or 0) / 255 * a }
+        r = tr * k + (c[C.CR] or 0) / 255 * a, g = tg * k + (c[C.CG] or 0) / 255 * a, b = tb * k + (c[C.CB] or 0) / 255 * a }
     else
       p.palAffine = nil
     end
@@ -485,7 +219,10 @@ function EssAnims.install(opts)
     return sp
   end
 
-  local function play(se, st)
+  -- a sound timing: the cart's sound by name, the pack's, or (no name) the attacker's cry
+  local function play(e, st)
+    local se = e.se
+    if not se then return end
     local ok, Audio = pcall(require, "src.core.game3.audio")
     if not (ok and Audio) then return end
     if se == "CRY" then
@@ -502,114 +239,9 @@ function EssAnims.install(opts)
     if Audio.playSe then pcall(Audio.playSe, se, { pan = 0 }) end
   end
 
-  -- Essentials' playTiming (the background's ox moves by bgX's change, as there)
-  local function plane(st, kind)
-    return kind == "bg" and st.bg or st.fg
-  end
-  local function timings(st, frame)
-    for _, e in ipairs(st.anim.timing or {}) do
-      local d = e.d or 0
-      if (e.t == 2 or e.t == 4) and d > 0 and frame > e.f and frame <= e.f + d then
-        local fr = (frame - e.f) / d
-        local pl = plane(st, e.t == 2 and "bg" or "fg")
-        local old = e.t == 2 and st.oldbg or st.oldfo
-        if old.o then
-          if pl.img then
-            if e.x then pl.x = old.x - (e.x - old.x) * fr end
-            if e.y then pl.y = old.y - (e.y - old.y) * fr end
-          end
-          if e.o then pl.o = old.o + (e.o - old.o) * fr end
-          if e.c then
-            for i = 1, 4 do
-              if e.c[i] and e.c[i] >= 0 then pl.c[i] = old.c[i] + (e.c[i] - old.c[i]) * fr end
-            end
-          end
-        end
-      end
-    end
-    for _, e in ipairs(st.anim.timing or {}) do
-      if e.f == frame then
-        if e.t == 0 then
-          if e.se then play(e.se, st) end
-        elseif e.t == 1 or e.t == 3 then
-          local pl = plane(st, e.t == 1 and "bg" or "fg")
-          local b = e.bg and data.bgs and data.bgs[e.bg]
-          pl.img = b and page(b.page) or nil
-          pl.rect = b
-          pl.x, pl.y = -(e.x or 0), -(e.y or 0)
-          pl.o = e.o or 0
-          pl.c = { e.c and e.c[1] or 0, e.c and e.c[2] or 0, e.c and e.c[3] or 0, e.c and e.c[4] or 0 }
-          pl.solid = not e.bg
-        elseif e.t == 2 or e.t == 4 then
-          local pl = plane(st, e.t == 2 and "bg" or "fg")
-          local old = e.t == 2 and st.oldbg or st.oldfo
-          old.x, old.y, old.o = pl.img and pl.x or 0, pl.img and pl.y or 0, pl.o or 0
-          old.c = { pl.c[1], pl.c[2], pl.c[3], pl.c[4] }
-        end
-      end
-    end
-  end
-
-  local function step(st, frame)
-    local cels = st.anim.frames[frame + 1] or {}
-    local layers = { {}, {}, {} }
-    local user, target
-    for _, c in ipairs(cels) do
-      local p = c[P]
-      if p == -1 then
-        user = c
-      elseif p == -2 then
-        target = c
-      elseif p >= 0 or p <= -3 then
-        local l = layers[layerOf(st, c)]
-        l[#l + 1] = c
-      end
-    end
-    -- the user, then the target: when it is the user too (a status, a move on itself), the target's
-    -- cel wins, as in Essentials (cel 1 after cel 0 on the one picture)
-    setMon(st, st.uId, { st.ux, st.uy }, user)
-    setMon(st, st.tId, { st.tx, st.ty }, target)
-    st.cels = layers
-    timings(st, frame)
-  end
-
-  local function drawPlane(pl)
-    if not pl or (pl.o or 0) <= 0 then return end
-    local a = pl.o / 255
-    if pl.img and pl.rect then
-      -- Essentials' plane repeats its picture across the screen, shifted by (x, y): the copies
-      -- that cover 240 x 160
-      local r = pl.rect
-      local q = state.planeQuad
-      local iw, ih = pl.img:getDimensions()
-      if not q then
-        q = love.graphics.newQuad(r.x, r.y, r.w, r.h, iw, ih)
-        state.planeQuad = q
-      end
-      q:setViewport(r.x, r.y, r.w, r.h, iw, ih)
-      local sh = (pl.c[4] or 0) > 0 and shader() or nil
-      if sh then
-        love.graphics.setShader(sh)
-        sh:send("ecol", { pl.c[1] / 255, pl.c[2] / 255, pl.c[3] / 255, pl.c[4] / 255 })
-        sh:send("etone", { 0, 0, 0, 0 })
-      end
-      love.graphics.setColor(1, 1, 1, a)
-      local x0 = -(math.floor((pl.x or 0) * SCREEN_X) % r.w)
-      local y0 = -(math.floor((pl.y or 0) * SCREEN_Y) % r.h)
-      for y = y0, 159, r.h do
-        for x = x0, 239, r.w do
-          love.graphics.draw(pl.img, q, x, y)
-        end
-      end
-      if sh then love.graphics.setShader() end
-    elseif pl.solid then
-      love.graphics.setColor(pl.c[1] / 255, pl.c[2] / 255, pl.c[3] / 255, a * ((pl.c[4] or 0) / 255))
-      love.graphics.rectangle("fill", 0, 0, 240, 160)
-    end
-  end
-
-  -- a battler's picture as the battle shows it (Ui.battlerPic), once per animation, or false
-  local function monPic(st, id)
+  -- a battler's picture as the battle shows it (Ui.battlerPic), once per animation: 64 px wide
+  local function copyPic(st, which)
+    local id = which == "user" and st.uId or st.tId
     st.pics = st.pics or {}
     local pic = st.pics[id]
     if pic == nil then
@@ -621,93 +253,64 @@ function EssAnims.install(opts)
       end
       st.pics[id] = pic
     end
-    return pic or nil
+    if not pic then return nil end
+    return pic, 64 / pic:getWidth()
   end
 
-  local function drawCels(st, list)
-    if #list == 0 then return end
-    local sheet = st.sheet
-    local rects = sheet and sheet.r
-    local half = sheet and sheet.cell / 2 or 0
-    local q = state.celQuad
-    if not q and love.graphics.newQuad then
-      q = love.graphics.newQuad(0, 0, 1, 1, 1, 1)
-      state.celQuad = q
+  local function start(t, vm)
+    local move = tostring(t.data[0] or ""):gsub("^ESS:", "")
+    if move == "@TRAP" then
+      move = (state.data.trap or {})[tonumber(vm.args and vm.args[0]) or 0] or ""
     end
-    for _, c in ipairs(list) do
-      local n = c[P]
-      -- what to draw: a cel of the sheet (its rect on an atlas page, trimmed: centred where it sat in
-      -- its cell), or a copy of a battler's picture (-3 the user's, -4 the target's; 64 px as the
-      -- battle draws it)
-      local src, quad, ox, oy, k = nil, nil, 0, 0, 1
-      if n < 0 then
-        src = monPic(st, n == -3 and st.uId or st.tId)
-        if src then
-          local pw, ph = src:getDimensions()
-          ox, oy, k = pw / 2, ph / 2, 64 / pw
-        end
-      elseif rects then
-        local b = n * 7
-        src = page(rects[b + 1])
-        if src then
-          local iw, ih = src:getDimensions()
-          q:setViewport(rects[b + 2], rects[b + 3], rects[b + 4], rects[b + 5], iw, ih)
-          quad, ox, oy = q, half - rects[b + 6], half - rects[b + 7]
-        end
-      end
-      if not src then goto continue end
-      local x, y = place(st, c)
-      local sx, sy = (c[ZX] or 100) / 100 * k, (c[ZY] or 100) / 100 * k
-      -- a cel placed on the line or the screen spreads by that axis's scale, wider than the sheets'
-      -- (0.406 across the line, 0.469 across the screen): grown to match, so tiled pieces still meet
-      local f = c[FOCUS]
-      if f == 3 then
-        sx, sy = sx * st.lineX, sy * st.lineY
-      elseif f == 4 then
-        sx, sy = sx * math.max(1, SCREEN_X / S), sy * math.max(1, SCREEN_Y / S)
-      end
-      local mirror = (c[MIRROR] or 0) > 0
-      if c[FOCUS] == 3 and st.reversed then mirror = not mirror end
-      if mirror then sx = -sx end
-      local blend = c[BLEND] or 0
-      local ca, tr, tg, tb, tgray = c[CA] or 0, c[TR] or 0, c[TG] or 0, c[TB] or 0, c[TGRAY] or 0
-      local sh = (ca > 0 or tr ~= 0 or tg ~= 0 or tb ~= 0 or tgray > 0) and shader() or nil
-      if blend == 2 and subShader() then
-        sh = subShader()
-        love.graphics.setBlendMode("alpha", "alphamultiply")
-      elseif blend == 1 then
-        love.graphics.setBlendMode("add", "alphamultiply")
-      else
-        love.graphics.setBlendMode("alpha", "alphamultiply")
-      end
-      if sh then
-        love.graphics.setShader(sh)
-        sh:send("ecol", { (c[CR] or 0) / 255, (c[CG] or 0) / 255, (c[CB] or 0) / 255, ca / 255 })
-        sh:send("etone", { tr / 255, tg / 255, tb / 255, tgray / 255 })
-      end
-      love.graphics.setColor(1, 1, 1, (c[OPACITY] or 255) / 255)
-      local rx, ry, rot = math.floor(x + 0.5), math.floor(y + 0.5), -math.rad(c[ANGLE] or 0)
-      if quad then
-        love.graphics.draw(src, quad, rx, ry, rot, sx, sy, ox, oy)
-      else
-        love.graphics.draw(src, rx, ry, rot, sx, sy, ox, oy)
-      end
-      if sh then love.graphics.setShader() end
-      ::continue::
+    local md = moveData(move)
+    if not md then return nil end
+    local mode = tonumber(t.data[1]) or 0
+    local foe = vm.isReversed and true or false
+    if not foe and vm.attackerSide then foe = vm:attackerSide() ~= "player" end
+    local anim, opp = md.move, false
+    if foe and md.opp then anim, opp = md.opp, true end
+    -- a two-turn move's first turn (the cart's choosetwoturnanim: an even turn)
+    if mode == 1 and md.charge and (tonumber(vm._turn) or 0) % 2 == 0 then
+      anim, opp = md.charge, false
+      if foe and md.charge_opp then anim, opp = md.charge_opp, true end
     end
-    love.graphics.setBlendMode("alpha", "alphamultiply")
-  end
-
-  local function drawLayer(st, k)
-    if k == 1 then drawPlane(st.bg) end
-    drawCels(st, st.cels[k] or {})
-    if k == 3 then drawPlane(st.fg) end
-    love.graphics.setColor(1, 1, 1, 1)
+    if mode == 2 then
+      -- its user comes back from where the cart's first turn hid it
+      local p = Anim.present(vm:attackerId())
+      if p then p.invisible = false end
+    end
+    -- the animation's "user" and "target": an OppMove version is made with the roles swapped
+    local uKey, tKey = "attacker", "target"
+    if opp then uKey, tKey = "target", "attacker" end
+    if (tonumber(t.data[2]) or 0) == 1 then uKey, tKey = "attacker", "attacker" end   -- a move on its user
+    local ux, uy = vm:battlerCenter(uKey)
+    local tx, ty = vm:battlerCenter(tKey)
+    local uId = uKey == "attacker" and vm:attackerId() or vm:targetId()
+    local tId = tKey == "attacker" and vm:attackerId() or vm:targetId()
+    local st = Core.start(state, anim, {
+      ux = ux, uy = uy, tx = tx, ty = ty, w = 240, h = 160,
+      uSide = sideOf(uId, uKey == "attacker" and vm:attackerSide() or vm:targetSide()),
+      tSide = sideOf(tId, tKey == "attacker" and vm:attackerSide() or vm:targetSide()),
+      setMon = setMon, play = play, copyPic = copyPic,
+    })
+    st.move, st.vm, st.mons, st.uId, st.tId = move, vm, {}, uId, tId
+    -- the battlers' pictures: what to put back
+    local function mon(id)
+      if id == nil or st.mons[id] then return end
+      local p = Anim.present(id)
+      if not p then return end
+      local keep = {}
+      for _, k in ipairs(KEEP) do keep[k] = p[k] end
+      st.mons[id] = { p = p, keep = keep }
+    end
+    mon(uId)
+    mon(tId)
+    return st
   end
 
   local function drawMain(t)
     local st = t._ndxEss
-    if st then drawLayer(st, 1) end
+    if st then Core.drawLayer(state, st, 1) end
   end
 
   local function layer(t, vm)
@@ -716,7 +319,7 @@ function EssAnims.install(opts)
   end
   local function drawHelper(t)
     local st = t._ndxEssState
-    if st then drawLayer(st, t._ndxEssLayer) end
+    if st then Core.drawLayer(state, st, t._ndxEssLayer) end
   end
 
   local function task(t, vm)
@@ -739,11 +342,11 @@ function EssAnims.install(opts)
         end
       end
       st.frame = 0
-      step(st, 0)
+      Core.step(state, st, 0)
       return
     end
     st.tick = st.tick + 1
-    local frame = math.floor(st.tick / TICKS)
+    local frame = math.floor(st.tick / Core.TICKS)
     if frame >= st.last then
       restore(st)
       t._ndxEss = nil
@@ -752,7 +355,7 @@ function EssAnims.install(opts)
     end
     if frame ~= st.frame then
       st.frame = frame
-      step(st, frame)
+      Core.step(state, st, frame)
     end
   end
 
@@ -770,6 +373,7 @@ function EssAnims.install(opts)
   end
   return true
 end
+
 
 -- the scripts that start the task
 local function rows(name, mode, onUser)

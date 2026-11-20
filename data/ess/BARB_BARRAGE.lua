@@ -37,7 +37,7 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}},
     },
     timing = {
-      { f = 0, t = 0, se = "SE_M_SWAGGER" },
+      { f = 0, t = 0, se = "NDX_ESS_PRSFX_WEATHER_BALL3_V80_P100" },
       { f = 7, t = 0, se = "NDX_ESS_TWINE_V80_P100" },
       { f = 21, t = 0, se = "NDX_ESS_PRSFX_TOXIC2_V80_P100" },
     },

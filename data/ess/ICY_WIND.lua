@@ -26,10 +26,10 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}, {14, 345, 87, 3, 100, 100, 0, 150}, {14, 372, 114, 3, 100, 100, 0, 150}},
     },
     timing = {
-      { f = 0, t = 0, se = "SE_M_ICY_WIND" },
+      { f = 0, t = 0, se = "NDX_ESS_PRSFX_ICY_WIND1_V100_P120" },
       { f = 0, t = 1, bg = "pras_ice_cave_bg", x = 0, y = 0, o = 0, c = {0, 0, 0, 0} },
       { f = 0, t = 2, d = 3, o = 255 },
-      { f = 10, t = 0, se = "SE_M_GUST" },
+      { f = 10, t = 0, se = "NDX_ESS_PRSFX_ICY_WIND2" },
       { f = 14, t = 2, d = 3, o = 0 },
     },
   },

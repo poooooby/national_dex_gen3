@@ -49,7 +49,7 @@ return {
     },
     timing = {
       { f = 0, t = 2, d = 5, o = 175 },
-      { f = 5, t = 0, se = "SE_M_BIND" },
+      { f = 5, t = 0, se = "NDX_ESS_PRSFX_EXTRASENSORY_V100_P85" },
       { f = 34, t = 2, d = 5, o = 0 },
     },
   },

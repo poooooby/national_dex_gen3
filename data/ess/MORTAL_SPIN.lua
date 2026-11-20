@@ -38,9 +38,9 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}},
     },
     timing = {
-      { f = 0, t = 0, se = "SE_M_PSYBEAM" },
+      { f = 0, t = 0, se = "NDX_ESS_PRSFX_MEMENTO1_V80_P100" },
       { f = 17, t = 0, se = "NDX_ESS_BLOW4_V80_P100" },
-      { f = 19, t = 0, se = "SE_M_HARDEN" },
+      { f = 19, t = 0, se = "NDX_ESS_PRSFX_POISON_TAIL1_V80_P100" },
     },
   },
   opp = {
@@ -78,9 +78,9 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}},
     },
     timing = {
-      { f = 0, t = 0, se = "SE_M_PSYBEAM" },
+      { f = 0, t = 0, se = "NDX_ESS_PRSFX_MEMENTO1_V80_P100" },
       { f = 17, t = 0, se = "NDX_ESS_BLOW4_V80_P100" },
-      { f = 19, t = 0, se = "SE_M_HARDEN" },
+      { f = 19, t = 0, se = "NDX_ESS_PRSFX_POISON_TAIL1_V80_P100" },
     },
   },
 }

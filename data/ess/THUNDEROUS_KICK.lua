@@ -41,7 +41,7 @@ return {
     },
     timing = {
       { f = 0, t = 1, bg = "gen8_thunderous_kick_bg", x = 0, y = 0, o = 120, c = {0, 0, 0, 0} },
-      { f = 0, t = 0, se = "SE_M_THUNDER_WAVE" },
+      { f = 0, t = 0, se = "NDX_ESS_PRSFX_THUNDER_V80_P100" },
       { f = 21, t = 0, se = "NDX_ESS_BLOW3_V80_P100" },
     },
   },

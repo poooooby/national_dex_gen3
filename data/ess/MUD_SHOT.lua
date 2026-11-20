@@ -38,7 +38,7 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}, {0, 376, 99, 3, 100, 100, 0, 200}},
     },
     timing = {
-      { f = 0, t = 0, se = "SE_M_WHIRLPOOL" },
+      { f = 0, t = 0, se = "NDX_ESS_PRSFX_MUD_SHOT" },
     },
   },
   opp = {
@@ -76,7 +76,7 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}, {0, 136, 219, 3, 100, 100, 0, 200, 0, 0, 0}},
     },
     timing = {
-      { f = 0, t = 0, se = "SE_M_WHIRLPOOL" },
+      { f = 0, t = 0, se = "NDX_ESS_PRSFX_MUD_SHOT" },
     },
   },
 }

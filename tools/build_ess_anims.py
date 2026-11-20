@@ -17,13 +17,15 @@ Gen 1-3 moves the carts have (CART_KEEPS aside), their charging turn for two-tur
                            and trimmed, on pages up to 1024 square, 256 colours each
   assets/ess/bgs_N.png     background and foreground pictures, scaled to the 240 x 160 screen, on
                            pages up to 1024 square, 256 colours each
-  assets/ess/sounds.ogg    the pack's sounds that have no close Gen 3 match (mono, 22 kHz): each
+  assets/ess/sounds.ogg    the pack's sounds (mono, 22 kHz), on every game: each
                            one a whole ogg, end to end in one file (a chained Ogg), where the index
                            gives its start and length; converted one by one into tools/.cache/ess_se
 
-A sound is a Gen 3 cart sound when it is the pack's recording of a Gen 1-3 move's sound
-("PRSFX- Thunder Punch2" -> the second sound in Thunder Punch's script, from pokeemerald-expansion's
-data/battle_anim_scripts.s); every other sound is the pack's own, converted with ffmpeg.
+Every sound is the pack's own recording, converted with ffmpeg (owner, 2026-11-20: the cart sounds
+it once swapped in on Gen 3 lost their timing; Dragon Breath's Flame Wheel crackle was cut off by
+the hit). One the pack lacks falls back, for a Gen 1-3 move's recording ("PRSFX- Baton Pass"), to
+that move's Gen 3 cart sound (the matching sound in its script, from pokeemerald-expansion's
+data/battle_anim_scripts.s), which Gen 1/2 cannot play.
 
     python tools/build_ess_anims.py [--pack <Gen 9 Move Animation Project>] [--no-sounds]
 
@@ -184,6 +186,13 @@ def read_moves():
     for name, num in re.findall(r"^\s*MOVE_(\w+) = (\d+),", text, re.M):
         if 1 <= int(num) <= 354:
             cart[name] = int(num)
+    # the carts' own moves on their user (pokeemerald-expansion's TARGET_USER): Gen 1/2 have no
+    # target to read (Gen 3 reads its cart's)
+    info = (EXPANSION / "src" / "data" / "moves_info.h").read_text(encoding="utf-8")
+    read_moves.cart_user = set()
+    for name, body in re.findall(r"\[MOVE_(\w+)\]\s*=\s*\{(.*?)\n    \},", info, re.S):
+        if name in cart and re.search(r"\.target\s*=\s*TARGET_USER\b", body):
+            read_moves.cart_user.add(name)
     return new, cart
 
 
@@ -493,15 +502,10 @@ def convert(an, sheets: Sheets, bgs: dict, sounds: dict, carts, pack: Path, stat
             if not name:
                 row["se"] = "CRY"
             else:
-                se = cart_match(name, carts)
-                if se:
-                    row["se"] = se
-                    stats["cart_se"] += 1
-                else:
-                    path = find_file(pack / "Audio" / "SE" / "Anim", name, (".wav", ".ogg", ".mp3", ".WAV"))
-                    if not path:
-                        stats["missing_se"].add(name)
-                        continue
+                # the pack's own recording, timed for its animation; a recording the pack lacks
+                # falls back to the Gen 3 cart's sound for that move ("PRSFX- Baton Pass")
+                path = find_file(pack / "Audio" / "SE" / "Anim", name, (".wav", ".ogg", ".mp3", ".WAV"))
+                if path:
                     vol, pitch = int(t.get("volume") or 100), int(t.get("pitch") or 100)
                     sid = "NDX_ESS_" + slug(path.name).upper()
                     if vol != 100 or pitch != 100:
@@ -509,6 +513,13 @@ def convert(an, sheets: Sheets, bgs: dict, sounds: dict, carts, pack: Path, stat
                     sounds[sid] = (path, vol, pitch)
                     row["se"] = sid
                     stats["pack_se"] += 1
+                else:
+                    se = cart_match(name, carts)
+                    if not se:
+                        stats["missing_se"].add(name)
+                        continue
+                    row["se"] = se
+                    stats["cart_se"] += 1
         elif tt in (1, 3):
             name = t.get("name") or ""
             if name:
@@ -694,7 +705,7 @@ def main():
     SOUND_FILE = "assets/ess/sounds.ogg"
     (ROOT / SOUND_FILE).write_bytes(bytes(blob))
 
-    # the pack sounds each animation plays (src/ess_anims.lua decodes them ahead of time)
+    # the pack sounds each animation plays (decoded ahead of time)
     def pack_sounds(d):
         out = []
         for a in d.values():
@@ -758,7 +769,8 @@ def main():
     lines.append("  -- the pack sounds the common animations play")
     lines.append("  commonSounds = %s," % lua(sorted(common_se)))
     lines.append("  -- move -> its frame counts (opp: the foe's version; charge: the charging turn), the cart's")
-    lines.append("  -- number for a Gen 1-3 move, how a two-turn move plays (turns), and the pack sounds it plays (se)")
+    lines.append("  -- number for a Gen 1-3 move, how a two-turn move plays (turns), the pack sounds it plays (se),")
+    lines.append("  -- and whether it is played on its user (user: a newer move; cartUser: a Gen 1-3 move, for Gen 1/2)")
     lines.append("  moves = {")
     for move, d in converted.items():
         if move.startswith("C_"):
@@ -780,6 +792,8 @@ def main():
         se = pack_sounds(d)
         if se:
             row["se"] = se
+        if move in cart and move in read_moves.cart_user:
+            row["cartUser"] = True
         lines.append("    %s = %s," % (move, lua(row)))
     lines.append("  },")
     lines.append("  -- the cart's table animations (Anim.tableScript kind, name) -> a data/ess file")

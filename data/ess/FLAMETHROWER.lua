@@ -27,9 +27,9 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}},
     },
     timing = {
-      { f = 0, t = 0, se = "SE_M_FLAMETHROWER" },
-      { f = 2, t = 0, se = "SE_M_FLAMETHROWER" },
-      { f = 4, t = 0, se = "SE_M_FLAMETHROWER" },
+      { f = 0, t = 0, se = "NDX_ESS_PRSFX_FLAMETHROWER" },
+      { f = 2, t = 0, se = "NDX_ESS_PRSFX_FLAMETHROWER_V100_P105" },
+      { f = 4, t = 0, se = "NDX_ESS_PRSFX_FLAMETHROWER_V100_P95" },
     },
   },
   opp = {
@@ -57,9 +57,9 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}},
     },
     timing = {
-      { f = 0, t = 0, se = "SE_M_FLAMETHROWER" },
-      { f = 2, t = 0, se = "SE_M_FLAMETHROWER" },
-      { f = 4, t = 0, se = "SE_M_FLAMETHROWER" },
+      { f = 0, t = 0, se = "NDX_ESS_PRSFX_FLAMETHROWER" },
+      { f = 2, t = 0, se = "NDX_ESS_PRSFX_FLAMETHROWER_V100_P105" },
+      { f = 4, t = 0, se = "NDX_ESS_PRSFX_FLAMETHROWER_V100_P95" },
     },
   },
 }

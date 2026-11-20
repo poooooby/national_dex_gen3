@@ -34,7 +34,7 @@ return {
     },
     timing = {
       { f = 0, t = 0, se = "NDX_ESS_PRSFX_PLAY_ROUGH1_V80_P100" },
-      { f = 20, t = 0, se = "SE_M_VITAL_THROW" },
+      { f = 20, t = 0, se = "NDX_ESS_PRSFX_FALSE_SWIPE" },
     },
   },
 }

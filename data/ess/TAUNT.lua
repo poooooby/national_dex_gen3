@@ -42,11 +42,11 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}},
     },
     timing = {
-      { f = 4, t = 0, se = "SE_M_METRONOME" },
-      { f = 14, t = 0, se = "SE_M_TAIL_WHIP" },
-      { f = 22, t = 0, se = "SE_M_SWAGGER2" },
-      { f = 24, t = 0, se = "SE_M_TAIL_WHIP" },
-      { f = 30, t = 0, se = "SE_M_SWAGGER2" },
+      { f = 4, t = 0, se = "NDX_ESS_PRSFX_TAUNT1" },
+      { f = 14, t = 0, se = "NDX_ESS_PRSFX_TAUNT2" },
+      { f = 22, t = 0, se = "NDX_ESS_PRSFX_TAUNT3" },
+      { f = 24, t = 0, se = "NDX_ESS_PRSFX_TAUNT2" },
+      { f = 30, t = 0, se = "NDX_ESS_PRSFX_TAUNT3" },
     },
   },
   opp = {
@@ -88,11 +88,11 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}},
     },
     timing = {
-      { f = 4, t = 0, se = "SE_M_METRONOME" },
-      { f = 14, t = 0, se = "SE_M_TAIL_WHIP" },
-      { f = 22, t = 0, se = "SE_M_SWAGGER2" },
-      { f = 24, t = 0, se = "SE_M_TAIL_WHIP" },
-      { f = 30, t = 0, se = "SE_M_SWAGGER2" },
+      { f = 4, t = 0, se = "NDX_ESS_PRSFX_TAUNT1" },
+      { f = 14, t = 0, se = "NDX_ESS_PRSFX_TAUNT2" },
+      { f = 22, t = 0, se = "NDX_ESS_PRSFX_TAUNT3" },
+      { f = 24, t = 0, se = "NDX_ESS_PRSFX_TAUNT2" },
+      { f = 30, t = 0, se = "NDX_ESS_PRSFX_TAUNT3" },
     },
   },
 }

@@ -48,10 +48,10 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}},
     },
     timing = {
-      { f = 6, t = 0, se = "SE_M_SKETCH" },
-      { f = 16, t = 0, se = "SE_M_SKETCH" },
-      { f = 27, t = 0, se = "SE_M_SKETCH" },
-      { f = 34, t = 0, se = "SE_M_SKETCH" },
+      { f = 6, t = 0, se = "NDX_ESS_PRSFX_FORESIGHT1" },
+      { f = 16, t = 0, se = "NDX_ESS_PRSFX_FORESIGHT1" },
+      { f = 27, t = 0, se = "NDX_ESS_PRSFX_FORESIGHT1" },
+      { f = 34, t = 0, se = "NDX_ESS_PRSFX_FORESIGHT2" },
     },
   },
 }

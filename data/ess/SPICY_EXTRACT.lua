@@ -36,7 +36,7 @@ return {
     },
     timing = {
       { f = 0, t = 0, se = "NDX_ESS_PRSFX_ACID_SPRAY" },
-      { f = 11, t = 0, se = "SE_M_EXPLOSION" },
+      { f = 11, t = 0, se = "NDX_ESS_PRSFX_ERUPTION1_V80_P100" },
     },
   },
   opp = {
@@ -72,7 +72,7 @@ return {
     },
     timing = {
       { f = 0, t = 0, se = "NDX_ESS_PRSFX_ACID_SPRAY" },
-      { f = 11, t = 0, se = "SE_M_EXPLOSION" },
+      { f = 11, t = 0, se = "NDX_ESS_PRSFX_ERUPTION1_V80_P100" },
     },
   },
 }

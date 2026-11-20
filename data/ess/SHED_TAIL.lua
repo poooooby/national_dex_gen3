@@ -28,8 +28,8 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}},
     },
     timing = {
-      { f = 0, t = 0, se = "SE_M_ATTRACT" },
-      { f = 12, t = 0, se = "SE_M_ATTRACT" },
+      { f = 0, t = 0, se = "NDX_ESS_PRSFX_SUBSTITUTE2_V80_P100" },
+      { f = 12, t = 0, se = "NDX_ESS_PRSFX_SUBSTITUTE1_V80_P100" },
     },
   },
   opp = {
@@ -57,8 +57,8 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}},
     },
     timing = {
-      { f = 0, t = 0, se = "SE_M_ATTRACT" },
-      { f = 12, t = 0, se = "SE_M_ATTRACT" },
+      { f = 0, t = 0, se = "NDX_ESS_PRSFX_SUBSTITUTE2_V80_P100" },
+      { f = 12, t = 0, se = "NDX_ESS_PRSFX_SUBSTITUTE1_V80_P100" },
     },
   },
 }

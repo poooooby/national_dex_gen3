@@ -39,7 +39,7 @@ return {
     },
     timing = {
       { f = 1, t = 2, d = 3, o = 78, c = {255, 255, 255, -1} },
-      { f = 4, t = 0, se = "SE_M_DETECT" },
+      { f = 4, t = 0, se = "NDX_ESS_PRSFX_DISABLE" },
       { f = 24, t = 2, d = 4, o = 0 },
     },
   },
@@ -79,7 +79,7 @@ return {
     },
     timing = {
       { f = 1, t = 2, d = 3, o = 78, c = {255, 255, 255, -1} },
-      { f = 4, t = 0, se = "SE_M_DETECT" },
+      { f = 4, t = 0, se = "NDX_ESS_PRSFX_DISABLE" },
       { f = 24, t = 2, d = 4, o = 0 },
     },
   },

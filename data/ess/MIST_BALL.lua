@@ -38,11 +38,11 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}},
     },
     timing = {
-      { f = 2, t = 0, se = "SE_M_STRING_SHOT" },
+      { f = 2, t = 0, se = "NDX_ESS_PRSFX_MIST_BALL1" },
       { f = 6, t = 3, bg = "pras_mist_fg", x = 0, y = 0, o = 0, c = {0, 0, 0, 0} },
       { f = 6, t = 4, d = 5, o = 120 },
       { f = 6, t = 4, d = 23, x = 350 },
-      { f = 9, t = 0, se = "SE_M_SAND_ATTACK" },
+      { f = 9, t = 0, se = "NDX_ESS_PRSFX_MIST_BALL2" },
       { f = 22, t = 4, d = 7, o = 0 },
     },
   },

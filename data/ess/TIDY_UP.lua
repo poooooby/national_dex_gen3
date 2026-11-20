@@ -40,7 +40,7 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}},
     },
     timing = {
-      { f = 0, t = 0, se = "SE_M_FAINT_ATTACK" },
+      { f = 0, t = 0, se = "NDX_ESS_PRSFX_CAMOUFLAGE_V80_P100" },
       { f = 8, t = 0, se = "NDX_ESS_WIND7_V80_P100" },
       { f = 12, t = 0, se = "NDX_ESS_WIND7_V80_P100" },
       { f = 16, t = 0, se = "NDX_ESS_WIND7_V80_P100" },

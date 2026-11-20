@@ -22,7 +22,7 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}, {7, 456, 24, 1, 100, 100, 0, 75}},
     },
     timing = {
-      { f = 0, t = 0, se = "SE_M_RAZOR_WIND2" },
+      { f = 0, t = 0, se = "NDX_ESS_PRSFX_AERIAL_ACE" },
     },
   },
 }

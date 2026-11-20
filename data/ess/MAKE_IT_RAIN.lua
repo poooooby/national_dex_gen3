@@ -33,7 +33,7 @@ return {
     },
     timing = {
       { f = 0, t = 0, se = "NDX_ESS_PRSFX_ZING_ZAP3_V80_P100" },
-      { f = 17, t = 0, se = "SE_M_PAY_DAY" },
+      { f = 17, t = 0, se = "NDX_ESS_PRSFX_PAY_DAY2" },
     },
   },
 }

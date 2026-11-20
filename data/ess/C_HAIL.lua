@@ -40,9 +40,9 @@ return {
     timing = {
       { f = 0, t = 0, se = "NDX_ESS_ICE8_V100_P101" },
       { f = 0, t = 2, d = 3, o = 128, c = {0, 0, 0, -1} },
-      { f = 7, t = 0, se = "SE_M_HAIL" },
+      { f = 7, t = 0, se = "NDX_ESS_PRSFX_HAIL_V100_P102" },
       { f = 15, t = 0, se = "NDX_ESS_ICE8" },
-      { f = 23, t = 0, se = "SE_M_HAIL" },
+      { f = 23, t = 0, se = "NDX_ESS_PRSFX_HAIL_V100_P102" },
       { f = 26, t = 2, d = 3, o = 0, c = {0, 0, 0, -1} },
     },
   },

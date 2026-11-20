@@ -31,8 +31,8 @@ return {
       {{-1, 128, 224, 3}, {-2, 384, 96, 1}},
     },
     timing = {
-      { f = 0, t = 0, se = "SE_M_THUNDERBOLT2" },
-      { f = 12, t = 0, se = "SE_M_THUNDERBOLT2" },
+      { f = 0, t = 0, se = "NDX_ESS_PRSFX_SPARK1" },
+      { f = 12, t = 0, se = "NDX_ESS_PRSFX_SPARK2_V100_P120" },
     },
   },
 }

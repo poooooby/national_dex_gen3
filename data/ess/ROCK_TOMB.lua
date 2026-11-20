@@ -49,11 +49,11 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}},
     },
     timing = {
-      { f = 0, t = 0, se = "SE_M_STRENGTH" },
-      { f = 6, t = 0, se = "SE_M_STRENGTH" },
-      { f = 12, t = 0, se = "SE_M_STRENGTH" },
-      { f = 18, t = 0, se = "SE_M_STRENGTH" },
-      { f = 24, t = 0, se = "SE_M_STRENGTH" },
+      { f = 0, t = 0, se = "NDX_ESS_PRSFX_ROCK_TOMB" },
+      { f = 6, t = 0, se = "NDX_ESS_PRSFX_ROCK_TOMB" },
+      { f = 12, t = 0, se = "NDX_ESS_PRSFX_ROCK_TOMB" },
+      { f = 18, t = 0, se = "NDX_ESS_PRSFX_ROCK_TOMB" },
+      { f = 24, t = 0, se = "NDX_ESS_PRSFX_ROCK_TOMB" },
     },
   },
 }

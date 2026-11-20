@@ -39,9 +39,9 @@ return {
     },
     timing = {
       { f = 0, t = 0, se = "NDX_ESS_PRSFX_RAGE_POWDER" },
-      { f = 0, t = 0, se = "SE_M_SWAGGER" },
+      { f = 0, t = 0, se = "NDX_ESS_PRSFX_SWAGGER1" },
       { f = 15, t = 0, se = "NDX_ESS_PRSFX_RAGE_POWDER" },
-      { f = 15, t = 0, se = "SE_M_SWAGGER" },
+      { f = 15, t = 0, se = "NDX_ESS_PRSFX_SWAGGER1" },
     },
   },
 }

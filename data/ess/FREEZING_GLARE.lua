@@ -64,8 +64,8 @@ return {
     },
     timing = {
       { f = 0, t = 1, bg = "gen8_freezingglare_bg", x = 0, y = 0, o = 100, c = {0, 0, 0, 0} },
-      { f = 0, t = 0, se = "SE_M_BUBBLE_BEAM2" },
-      { f = 12, t = 0, se = "SE_M_COMET_PUNCH" },
+      { f = 0, t = 0, se = "NDX_ESS_PRSFX_ICE_BEAM_V80_P100" },
+      { f = 12, t = 0, se = "NDX_ESS_PRSFX_ICE_PUNCH2_V80_P100" },
       { f = 45, t = 0, se = "NDX_ESS_PRSFX_FREEZE_DRY3_V80_P100" },
     },
   },

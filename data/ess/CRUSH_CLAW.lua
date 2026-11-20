@@ -38,9 +38,9 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}},
     },
     timing = {
-      { f = 0, t = 0, se = "SE_M_RAZOR_WIND" },
-      { f = 7, t = 0, se = "SE_M_RAZOR_WIND" },
-      { f = 14, t = 0, se = "SE_M_RAZOR_WIND" },
+      { f = 0, t = 0, se = "NDX_ESS_PRSFX_CRUSH_CLAW_V100_P135" },
+      { f = 7, t = 0, se = "NDX_ESS_PRSFX_CRUSH_CLAW_V100_P135" },
+      { f = 14, t = 0, se = "NDX_ESS_PRSFX_CRUSH_CLAW" },
     },
   },
   opp = {
@@ -78,9 +78,9 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}},
     },
     timing = {
-      { f = 0, t = 0, se = "SE_M_RAZOR_WIND" },
-      { f = 7, t = 0, se = "SE_M_RAZOR_WIND" },
-      { f = 14, t = 0, se = "SE_M_RAZOR_WIND" },
+      { f = 0, t = 0, se = "NDX_ESS_PRSFX_CRUSH_CLAW_V100_P135" },
+      { f = 7, t = 0, se = "NDX_ESS_PRSFX_CRUSH_CLAW_V100_P135" },
+      { f = 14, t = 0, se = "NDX_ESS_PRSFX_CRUSH_CLAW" },
     },
   },
 }

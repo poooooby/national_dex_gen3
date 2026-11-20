@@ -31,7 +31,7 @@ return {
     },
     timing = {
       { f = 0, t = 0, se = "NDX_ESS_PRSFX_STICKY_WEB_V80_P100" },
-      { f = 5, t = 0, se = "SE_M_REFLECT" },
+      { f = 5, t = 0, se = "NDX_ESS_PRSFX_PROTECT_V80_P100" },
     },
   },
 }

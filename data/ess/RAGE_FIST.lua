@@ -58,13 +58,13 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}},
     },
     timing = {
-      { f = 4, t = 0, se = "SE_M_TAIL_WHIP" },
-      { f = 9, t = 0, se = "SE_M_TAIL_WHIP" },
-      { f = 14, t = 0, se = "SE_M_TAIL_WHIP" },
-      { f = 19, t = 0, se = "SE_M_TAIL_WHIP" },
+      { f = 4, t = 0, se = "NDX_ESS_PRSFX_TAUNT2_V80_P100" },
+      { f = 9, t = 0, se = "NDX_ESS_PRSFX_TAUNT2_V80_P100" },
+      { f = 14, t = 0, se = "NDX_ESS_PRSFX_TAUNT2_V80_P100" },
+      { f = 19, t = 0, se = "NDX_ESS_PRSFX_TAUNT2_V80_P100" },
       { f = 28, t = 0, se = "NDX_ESS_PRSFX_SKY_ATTACK1_V80_P100" },
       { f = 32, t = 0, se = "NDX_ESS_PRSFX_FOCUS_PUNCH2_V80_P100" },
-      { f = 33, t = 0, se = "SE_M_SAND_ATTACK" },
+      { f = 33, t = 0, se = "NDX_ESS_PRSFX_SHADOW_BALL2_V80_P100" },
     },
   },
 }

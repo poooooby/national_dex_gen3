@@ -33,7 +33,7 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}},
     },
     timing = {
-      { f = 0, t = 0, se = "SE_M_PSYBEAM" },
+      { f = 0, t = 0, se = "NDX_ESS_PRSFX_PSYBEAM_V100_P130" },
       { f = 0, t = 2, d = 3, o = 255, c = {-1, -1, -1, 255} },
       { f = 0, t = 1, bg = "pras_psychic_bg", x = 0, y = 0, o = 0, c = {0, 0, 0, 0} },
       { f = 0, t = 2, d = 18, x = 264 },
@@ -70,7 +70,7 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}},
     },
     timing = {
-      { f = 0, t = 0, se = "SE_M_PSYBEAM" },
+      { f = 0, t = 0, se = "NDX_ESS_PRSFX_PSYBEAM_V100_P130" },
       { f = 0, t = 2, d = 3, o = 255, c = {-1, -1, -1, 255} },
       { f = 0, t = 1, bg = "pras_psychic_bg", x = 0, y = 0, o = 0, c = {0, 0, 0, 0} },
       { f = 0, t = 2, d = 18, x = 264 },

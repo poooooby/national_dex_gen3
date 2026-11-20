@@ -23,8 +23,8 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}},
     },
     timing = {
-      { f = 0, t = 0, se = "SE_M_CUT" },
-      { f = 6, t = 0, se = "SE_M_CUT" },
+      { f = 0, t = 0, se = "NDX_ESS_PRSFX_AIR_CUTTER1" },
+      { f = 6, t = 0, se = "NDX_ESS_PRSFX_AIR_CUTTER2" },
     },
   },
 }

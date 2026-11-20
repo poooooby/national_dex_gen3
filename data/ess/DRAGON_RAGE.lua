@@ -31,9 +31,9 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}},
     },
     timing = {
-      { f = 0, t = 0, se = "SE_M_DRAGON_RAGE" },
-      { f = 2, t = 0, se = "SE_M_DRAGON_RAGE" },
-      { f = 6, t = 0, se = "SE_M_DRAGON_RAGE" },
+      { f = 0, t = 0, se = "NDX_ESS_PRSFX_DRAGON_RAGE" },
+      { f = 2, t = 0, se = "NDX_ESS_PRSFX_DRAGON_RAGE_V100_P105" },
+      { f = 6, t = 0, se = "NDX_ESS_PRSFX_DRAGON_RAGE_V100_P95" },
     },
   },
 }

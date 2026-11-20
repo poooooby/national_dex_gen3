@@ -52,7 +52,7 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}},
     },
     timing = {
-      { f = 4, t = 0, se = "SE_M_MEGA_KICK2" },
+      { f = 4, t = 0, se = "NDX_ESS_PRSFX_ROLLOUT1_V80_P100" },
     },
   },
 }

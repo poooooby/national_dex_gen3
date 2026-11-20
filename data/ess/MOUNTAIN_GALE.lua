@@ -41,9 +41,9 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}},
     },
     timing = {
-      { f = 0, t = 0, se = "SE_M_ROCK_THROW" },
-      { f = 9, t = 0, se = "SE_M_ROCK_THROW" },
-      { f = 16, t = 0, se = "SE_M_ROCK_THROW" },
+      { f = 0, t = 0, se = "NDX_ESS_PRSFX_ROCK_SLIDE_V100_P90" },
+      { f = 9, t = 0, se = "NDX_ESS_PRSFX_ROCK_SLIDE" },
+      { f = 16, t = 0, se = "NDX_ESS_PRSFX_ROCK_SLIDE_V100_P110" },
     },
   },
 }

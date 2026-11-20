@@ -34,8 +34,8 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}, {3, 376, 107, 1, 100, 100, 0, 140}},
     },
     timing = {
-      { f = 0, t = 0, se = "SE_M_MEGA_KICK" },
-      { f = 20, t = 0, se = "SE_M_EARTHQUAKE" },
+      { f = 0, t = 0, se = "NDX_ESS_PRSFX_SUPERPOWER1" },
+      { f = 20, t = 0, se = "NDX_ESS_PRSFX_SUPERPOWER2" },
     },
   },
 }

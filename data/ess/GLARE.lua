@@ -42,7 +42,7 @@ return {
     timing = {
       { f = 0, t = 1, bg = "pras_glare_bg", x = 0, y = 0, o = 0, c = {0, 0, 0, 0} },
       { f = 0, t = 2, d = 4, o = 255 },
-      { f = 6, t = 0, se = "SE_M_PSYBEAM2" },
+      { f = 6, t = 0, se = "NDX_ESS_PRSFX_GLARE_V100_P90" },
       { f = 26, t = 2, d = 6, o = 0 },
     },
   },
@@ -85,7 +85,7 @@ return {
     timing = {
       { f = 0, t = 1, bg = "pras_glare_bg", x = 0, y = 0, o = 0, c = {0, 0, 0, 0} },
       { f = 0, t = 2, d = 4, o = 255 },
-      { f = 6, t = 0, se = "SE_M_PSYBEAM2" },
+      { f = 6, t = 0, se = "NDX_ESS_PRSFX_GLARE_V100_P90" },
       { f = 26, t = 2, d = 5, o = 0 },
     },
   },

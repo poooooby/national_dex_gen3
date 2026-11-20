@@ -24,7 +24,7 @@ return {
     timing = {
       { f = 0, t = 2, d = 4, o = 255 },
       { f = 0, t = 1, bg = "pras_shadow_bone_bg", x = 0, y = 0, o = 0, c = {0, 0, 0, 0} },
-      { f = 3, t = 0, se = "SE_M_SAND_ATTACK" },
+      { f = 3, t = 0, se = "NDX_ESS_PRSFX_SHADOW_BALL2_V80_P100" },
       { f = 11, t = 2, d = 2, o = 0 },
     },
   },

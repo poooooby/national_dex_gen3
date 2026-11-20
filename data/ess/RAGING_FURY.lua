@@ -38,9 +38,9 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}},
     },
     timing = {
-      { f = 7, t = 0, se = "SE_M_VITAL_THROW2" },
-      { f = 15, t = 0, se = "SE_M_VITAL_THROW2" },
-      { f = 23, t = 0, se = "SE_M_VITAL_THROW2" },
+      { f = 7, t = 0, se = "NDX_ESS_PRSFX_THRASH2_V100_P85" },
+      { f = 15, t = 0, se = "NDX_ESS_PRSFX_THRASH2_V100_P85" },
+      { f = 23, t = 0, se = "NDX_ESS_PRSFX_THRASH2_V100_P85" },
     },
   },
 }

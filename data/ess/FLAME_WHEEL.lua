@@ -33,8 +33,8 @@ return {
       {{-1, 128, 224, 3}, {-2, 384, 96, 3}},
     },
     timing = {
-      { f = 0, t = 0, se = "SE_M_FLAME_WHEEL" },
-      { f = 16, t = 0, se = "SE_M_FLAME_WHEEL" },
+      { f = 0, t = 0, se = "NDX_ESS_PRSFX_FLAME_WHEEL1" },
+      { f = 16, t = 0, se = "NDX_ESS_PRSFX_FLAME_WHEEL2" },
     },
   },
   opp = {
@@ -67,8 +67,8 @@ return {
       {{-1, 128, 224, 3}, {-2, 384, 96, 3}},
     },
     timing = {
-      { f = 0, t = 0, se = "SE_M_FLAME_WHEEL" },
-      { f = 16, t = 0, se = "SE_M_FLAME_WHEEL" },
+      { f = 0, t = 0, se = "NDX_ESS_PRSFX_FLAME_WHEEL1" },
+      { f = 16, t = 0, se = "NDX_ESS_PRSFX_FLAME_WHEEL2" },
     },
   },
 }

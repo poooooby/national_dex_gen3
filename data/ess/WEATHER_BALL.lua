@@ -48,9 +48,9 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}},
     },
     timing = {
-      { f = 0, t = 0, se = "SE_M_DETECT" },
-      { f = 12, t = 0, se = "SE_M_SWAGGER" },
-      { f = 23, t = 0, se = "SE_M_SWAGGER" },
+      { f = 0, t = 0, se = "NDX_ESS_PRSFX_WEATHER_BALL2" },
+      { f = 12, t = 0, se = "NDX_ESS_PRSFX_WEATHER_BALL1_V100_P150" },
+      { f = 23, t = 0, se = "NDX_ESS_PRSFX_WEATHER_BALL1_V100_P70" },
     },
   },
 }

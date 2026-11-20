@@ -65,7 +65,7 @@ return {
     timing = {
       { f = 0, t = 1, bg = "pras_hyper_beam_bg", x = 0, y = 0, o = 0, c = {0, 0, 0, 0} },
       { f = 0, t = 2, d = 5, o = 255 },
-      { f = 0, t = 0, se = "SE_M_HYPER_BEAM" },
+      { f = 0, t = 0, se = "NDX_ESS_PRSFX_HYPER_BEAM_V100_P75" },
       { f = 49, t = 2, d = 5, o = 0 },
     },
   },
@@ -131,7 +131,7 @@ return {
     timing = {
       { f = 0, t = 1, bg = "pras_hyper_beam_bg", x = 0, y = 0, o = 0, c = {0, 0, 0, 0} },
       { f = 0, t = 2, d = 5, o = 255 },
-      { f = 0, t = 0, se = "SE_M_HYPER_BEAM" },
+      { f = 0, t = 0, se = "NDX_ESS_PRSFX_HYPER_BEAM_V100_P75" },
       { f = 49, t = 2, d = 5, o = 0 },
     },
   },

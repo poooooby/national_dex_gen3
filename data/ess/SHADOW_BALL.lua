@@ -48,8 +48,8 @@ return {
       {{-1, 128, 224, 3}, {-2, 384, 96, 3}},
     },
     timing = {
-      { f = 0, t = 0, se = "SE_M_MIST" },
-      { f = 20, t = 0, se = "SE_M_SAND_ATTACK" },
+      { f = 0, t = 0, se = "NDX_ESS_PRSFX_SHADOW_BALL1" },
+      { f = 20, t = 0, se = "NDX_ESS_PRSFX_SHADOW_BALL2" },
     },
   },
   opp = {
@@ -97,8 +97,8 @@ return {
       {{-1, 128, 224, 3}, {-2, 384, 96, 3}},
     },
     timing = {
-      { f = 0, t = 0, se = "SE_M_MIST" },
-      { f = 20, t = 0, se = "SE_M_SAND_ATTACK" },
+      { f = 0, t = 0, se = "NDX_ESS_PRSFX_SHADOW_BALL1" },
+      { f = 20, t = 0, se = "NDX_ESS_PRSFX_SHADOW_BALL2" },
     },
   },
 }

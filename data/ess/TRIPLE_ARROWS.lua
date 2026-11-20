@@ -33,8 +33,8 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}},
     },
     timing = {
-      { f = 7, t = 0, se = "SE_M_COMET_PUNCH" },
-      { f = 8, t = 0, se = "SE_M_COMET_PUNCH" },
+      { f = 7, t = 0, se = "NDX_ESS_PRSFX_JUMP_KICK2" },
+      { f = 8, t = 0, se = "NDX_ESS_PRSFX_JUMP_KICK2_V100_P70" },
       { f = 18, t = 0, se = "NDX_ESS_PRSFX_ACROBATICS3_V80_P100" },
     },
   },
@@ -68,8 +68,8 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}},
     },
     timing = {
-      { f = 7, t = 0, se = "SE_M_COMET_PUNCH" },
-      { f = 8, t = 0, se = "SE_M_COMET_PUNCH" },
+      { f = 7, t = 0, se = "NDX_ESS_PRSFX_JUMP_KICK2" },
+      { f = 8, t = 0, se = "NDX_ESS_PRSFX_JUMP_KICK2_V100_P70" },
       { f = 18, t = 0, se = "NDX_ESS_PRSFX_ACROBATICS3_V80_P100" },
     },
   },

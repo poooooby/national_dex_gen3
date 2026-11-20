@@ -93,7 +93,7 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}},
     },
     timing = {
-      { f = 0, t = 0, se = "SE_M_RAZOR_WIND" },
+      { f = 0, t = 0, se = "NDX_ESS_PRSFX_AEROBLAST" },
       { f = 0, t = 1, bg = "pras_thunder_bg", x = 0, y = 0, o = 0, c = {0, 0, 0, 0} },
       { f = 0, t = 2, d = 5, o = 255 },
       { f = 66, t = 3, bg = "pras_flash_fg", x = 0, y = 0, o = 0, c = {0, 0, 0, 0} },
@@ -195,7 +195,7 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}},
     },
     timing = {
-      { f = 0, t = 0, se = "SE_M_RAZOR_WIND" },
+      { f = 0, t = 0, se = "NDX_ESS_PRSFX_AEROBLAST" },
       { f = 66, t = 3, bg = "pras_flash_fg", x = 0, y = 0, o = 0, c = {0, 0, 0, 0} },
       { f = 66, t = 2, d = 3, o = 255 },
       { f = 66, t = 4, d = 3, o = 255 },

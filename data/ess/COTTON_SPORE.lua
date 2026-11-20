@@ -55,11 +55,11 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}, {0, 388, 173, 1, 100, 100, 0, 150}, {0, 470, 173, 1, 100, 100, 0, 150}},
     },
     timing = {
-      { f = 0, t = 0, se = "SE_M_POISON_POWDER" },
-      { f = 2, t = 0, se = "SE_M_POISON_POWDER" },
-      { f = 6, t = 0, se = "SE_M_POISON_POWDER" },
-      { f = 10, t = 0, se = "SE_M_POISON_POWDER" },
-      { f = 13, t = 0, se = "SE_M_POISON_POWDER" },
+      { f = 0, t = 0, se = "NDX_ESS_PRSFX_COTTON_SPORE" },
+      { f = 2, t = 0, se = "NDX_ESS_PRSFX_COTTON_SPORE" },
+      { f = 6, t = 0, se = "NDX_ESS_PRSFX_COTTON_SPORE" },
+      { f = 10, t = 0, se = "NDX_ESS_PRSFX_COTTON_SPORE" },
+      { f = 13, t = 0, se = "NDX_ESS_PRSFX_COTTON_SPORE" },
     },
   },
 }

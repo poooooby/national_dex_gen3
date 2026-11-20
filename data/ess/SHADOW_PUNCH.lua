@@ -25,8 +25,8 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}, {2, 384, 96, 3, 350, 350, 0, 20, 2, 0, 3}},
     },
     timing = {
-      { f = 4, t = 0, se = "SE_M_COMET_PUNCH" },
-      { f = 5, t = 0, se = "SE_M_JUMP_KICK" },
+      { f = 4, t = 0, se = "NDX_ESS_PRSFX_SHADOW_PUNCH2" },
+      { f = 5, t = 0, se = "NDX_ESS_PRSFX_SHADOW_PUNCH1" },
     },
   },
 }

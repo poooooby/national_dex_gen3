@@ -28,9 +28,9 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}},
     },
     timing = {
-      { f = 0, t = 0, se = "SE_M_MEGA_KICK" },
-      { f = 13, t = 0, se = "SE_M_RAZOR_WIND" },
-      { f = 14, t = 0, se = "SE_M_RAZOR_WIND" },
+      { f = 0, t = 0, se = "NDX_ESS_PRSFX_CROSS_CHOP1_V100_P120" },
+      { f = 13, t = 0, se = "NDX_ESS_PRSFX_CROSS_CHOP2" },
+      { f = 14, t = 0, se = "NDX_ESS_PRSFX_CROSS_CHOP2_V100_P90" },
     },
   },
 }

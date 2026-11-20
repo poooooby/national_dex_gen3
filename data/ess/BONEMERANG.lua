@@ -24,8 +24,8 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}},
     },
     timing = {
-      { f = 0, t = 0, se = "SE_M_BONEMERANG" },
-      { f = 8, t = 0, se = "SE_M_HORN_ATTACK" },
+      { f = 0, t = 0, se = "NDX_ESS_PRSFX_BONEMERANG1" },
+      { f = 8, t = 0, se = "NDX_ESS_PRSFX_BONEMERANG2_V100_P70" },
     },
   },
   opp = {
@@ -47,8 +47,8 @@ return {
       {{-1, 128, 228, 2, 100, 95}, {-2, 384, 96, 1}, {7, 128, 228, 2, 120, 120, 0, 180}, {2, 8, 328, 3}},
     },
     timing = {
-      { f = 0, t = 0, se = "SE_M_BONEMERANG" },
-      { f = 7, t = 0, se = "SE_M_HORN_ATTACK" },
+      { f = 0, t = 0, se = "NDX_ESS_PRSFX_BONEMERANG1" },
+      { f = 7, t = 0, se = "NDX_ESS_PRSFX_BONEMERANG2_V100_P70" },
     },
   },
 }

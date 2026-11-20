@@ -22,7 +22,7 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}},
     },
     timing = {
-      { f = 4, t = 0, se = "SE_M_WING_ATTACK" },
+      { f = 4, t = 0, se = "NDX_ESS_PRSFX_WING_ATTACK1_V100_P80" },
       { f = 6, t = 0, se = "NDX_ESS_BLOW3_V80_P100" },
     },
   },
@@ -45,7 +45,7 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}},
     },
     timing = {
-      { f = 4, t = 0, se = "SE_M_WING_ATTACK" },
+      { f = 4, t = 0, se = "NDX_ESS_PRSFX_WING_ATTACK1_V100_P80" },
       { f = 6, t = 0, se = "NDX_ESS_BLOW3_V80_P100" },
     },
   },

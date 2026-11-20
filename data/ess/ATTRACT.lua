@@ -47,8 +47,8 @@ return {
     timing = {
       { f = 0, t = 1, bg = "pras_attract_bg", x = 0, y = 0, o = 0, c = {0, 0, 0, 0} },
       { f = 0, t = 2, d = 5, o = 255 },
-      { f = 0, t = 0, se = "SE_M_CHARM" },
-      { f = 18, t = 0, se = "SE_M_ATTRACT" },
+      { f = 0, t = 0, se = "NDX_ESS_PRSFX_ATTRACT1_V100_P89" },
+      { f = 18, t = 0, se = "NDX_ESS_PRSFX_ATTRACT2" },
       { f = 31, t = 2, d = 5, o = 0 },
     },
   },
@@ -96,8 +96,8 @@ return {
     timing = {
       { f = 0, t = 1, bg = "pras_attract_bg", x = 0, y = 0, o = 0, c = {0, 0, 0, 0} },
       { f = 0, t = 2, d = 5, o = 255 },
-      { f = 0, t = 0, se = "SE_M_CHARM" },
-      { f = 18, t = 0, se = "SE_M_ATTRACT" },
+      { f = 0, t = 0, se = "NDX_ESS_PRSFX_ATTRACT1_V100_P89" },
+      { f = 18, t = 0, se = "NDX_ESS_PRSFX_ATTRACT2" },
       { f = 31, t = 2, d = 5, o = 0 },
     },
   },

@@ -37,10 +37,10 @@ return {
     timing = {
       { f = 0, t = 1, bg = "pras_black_bg", x = 0, y = 0, o = 0, c = {0, 0, 0, 0} },
       { f = 0, t = 2, d = 5, o = 255 },
-      { f = 1, t = 0, se = "SE_M_THUNDERBOLT" },
+      { f = 1, t = 0, se = "NDX_ESS_PRSFX_THUNDERBOLT2_V70_P100" },
       { f = 12, t = 3, bg = "pras_flash_fg", x = 0, y = 0, o = 120, c = {0, 0, 0, 0} },
       { f = 13, t = 4, d = 1, o = 0 },
-      { f = 14, t = 0, se = "SE_M_THUNDERBOLT" },
+      { f = 14, t = 0, se = "NDX_ESS_PRSFX_THUNDERBOLT1" },
       { f = 23, t = 2, d = 3, o = 0 },
     },
   },

@@ -38,7 +38,7 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}},
     },
     timing = {
-      { f = 0, t = 0, se = "SE_M_HEAT_WAVE" },
+      { f = 0, t = 0, se = "NDX_ESS_PRSFX_HEAT_WAVE" },
       { f = 0, t = 3, bg = "pras_heat_wave", x = 0, y = 0, o = 0, c = {0, 0, 0, 0} },
       { f = 0, t = 4, d = 5, o = 150 },
       { f = 0, t = 4, d = 30, x = 440 },
@@ -80,7 +80,7 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}},
     },
     timing = {
-      { f = 0, t = 0, se = "SE_M_HEAT_WAVE" },
+      { f = 0, t = 0, se = "NDX_ESS_PRSFX_HEAT_WAVE" },
       { f = 0, t = 3, bg = "pras_heat_wave", x = 0, y = 0, o = 0, c = {0, 0, 0, 0} },
       { f = 0, t = 4, d = 5, o = 150 },
       { f = 0, t = 4, d = 30, x = -440 },

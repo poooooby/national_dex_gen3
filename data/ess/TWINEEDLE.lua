@@ -31,8 +31,8 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}},
     },
     timing = {
-      { f = 9, t = 0, se = "SE_M_RAZOR_WIND2" },
-      { f = 14, t = 0, se = "SE_M_RAZOR_WIND2" },
+      { f = 9, t = 0, se = "NDX_ESS_PRSFX_TWINEEDLE1" },
+      { f = 14, t = 0, se = "NDX_ESS_PRSFX_TWINEEDLE1" },
     },
   },
   opp = {
@@ -63,8 +63,8 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}},
     },
     timing = {
-      { f = 12, t = 0, se = "SE_M_RAZOR_WIND2" },
-      { f = 17, t = 0, se = "SE_M_RAZOR_WIND2" },
+      { f = 12, t = 0, se = "NDX_ESS_PRSFX_TWINEEDLE1" },
+      { f = 17, t = 0, se = "NDX_ESS_PRSFX_TWINEEDLE1" },
     },
   },
 }

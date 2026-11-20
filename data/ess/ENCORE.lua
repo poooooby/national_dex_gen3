@@ -33,7 +33,7 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}},
     },
     timing = {
-      { f = 0, t = 0, se = "SE_M_ENCORE2" },
+      { f = 0, t = 0, se = "NDX_ESS_PRSFX_ENCORE" },
     },
   },
   opp = {
@@ -66,7 +66,7 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}, {0, 326, 92, 2, 100, 100, 0, 150}},
     },
     timing = {
-      { f = 0, t = 0, se = "SE_M_ENCORE2" },
+      { f = 0, t = 0, se = "NDX_ESS_PRSFX_ENCORE" },
     },
   },
 }

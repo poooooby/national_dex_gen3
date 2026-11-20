@@ -39,8 +39,8 @@ return {
       {{-1, -72, 224, 2, 100, 100, 0, 0}, {-2, 384, 96, 1}},
     },
     timing = {
-      { f = 3, t = 0, se = "SE_M_BATON_PASS" },
-      { f = 17, t = 0, se = "SE_M_BATON_PASS" },
+      { f = 3, t = 0, se = "NDX_ESS_PRSFX_BATON_PASS1" },
+      { f = 17, t = 0, se = "NDX_ESS_PRSFX_BATON_PASS2" },
     },
   },
   opp = {
@@ -84,7 +84,7 @@ return {
     },
     timing = {
       { f = 3, t = 0, se = "SE_M_BATON_PASS" },
-      { f = 17, t = 0, se = "SE_M_BATON_PASS" },
+      { f = 17, t = 0, se = "NDX_ESS_PRSFX_BATON_PASS1" },
     },
   },
 }

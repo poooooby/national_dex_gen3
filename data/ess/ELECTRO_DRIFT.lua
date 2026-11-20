@@ -71,9 +71,9 @@ return {
       { f = 4, t = 0, se = "CRY" },
       { f = 10, t = 0, se = "NDX_ESS_PRSFX_SKY_ATTACK1_V80_P100" },
       { f = 37, t = 0, se = "NDX_ESS_PRSFX_EXTREMESPEED2_V80_P100" },
-      { f = 42, t = 0, se = "SE_M_THUNDER_WAVE" },
-      { f = 44, t = 0, se = "SE_M_THUNDER_WAVE" },
-      { f = 46, t = 0, se = "SE_M_THUNDER_WAVE" },
+      { f = 42, t = 0, se = "NDX_ESS_PRSFX_THUNDER_V80_P100" },
+      { f = 44, t = 0, se = "NDX_ESS_PRSFX_THUNDER_V80_P100" },
+      { f = 46, t = 0, se = "NDX_ESS_PRSFX_THUNDER_V80_P100" },
     },
   },
 }

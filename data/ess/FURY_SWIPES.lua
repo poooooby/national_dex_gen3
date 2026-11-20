@@ -22,8 +22,8 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}},
     },
     timing = {
-      { f = 1, t = 0, se = "SE_M_SCRATCH" },
-      { f = 7, t = 0, se = "SE_M_SCRATCH" },
+      { f = 1, t = 0, se = "NDX_ESS_PRSFX_FURY_SWIPES" },
+      { f = 7, t = 0, se = "NDX_ESS_PRSFX_FURY_SWIPES" },
     },
   },
 }

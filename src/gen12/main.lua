@@ -125,6 +125,35 @@ return function(mod, loadSibling)
     end
   end
 
+  -- the Gen 9 Move Animation Project's animations (src/gen12/ess_anims.lua over src/ess_core.lua),
+  -- over the borrowed looks and the carts' own: their timing animations now, the drawing on game.ready
+  do
+    local Ess12 = loadSibling(mod, "src/gen12/ess_anims.lua")
+    local EssCore = Ess12 and loadSibling(mod, "src/ess_core.lua")
+    local essData = EssCore and loadSibling(mod, "data/ess_anims.lua")
+    if Ess12 and EssCore and type(essData) == "table" then
+      -- (the newer moves this mod registered: what their borrowed look does no longer matters)
+      local newer = {}
+      for _, id in pairs(moveState and moveState.byNumber or {}) do newer[id] = true end
+      local okE, essState = pcall(Ess12.register, { mod = mod, generation = generation, data = essData,
+        read = function(path) return loadSibling(mod, path) end, Core = EssCore, require = require,
+        newer = newer, log = mod.log })
+      if okE and essState.count > 0 then
+        mod.exports._ess = essState
+        if generation == 1 then
+          pcall(function() mod.hooks:wrap("battle.overlay", Ess12.overlayHook(require)) end)
+        end
+        mod.events:on("game.ready", function()
+          local okI, errI = pcall(Ess12.install, { state = essState, Core = EssCore, require = require,
+            mod = mod, log = mod.log })
+          if not okI then mod.log:warn("Gen 9 project animations are off: %s", tostring(errI)) end
+        end, 1)
+      elseif not okE then
+        mod.log:warn("Gen 9 project animations are off: %s", tostring(essState))
+      end
+    end
+  end
+
   -- Red: today's battle rules and critical hits (src/gen12/modern_rules.lua, option modern_rules)
   if generation == 1 then
     local ModernRules = loadSibling(mod, "src/gen12/modern_rules.lua")

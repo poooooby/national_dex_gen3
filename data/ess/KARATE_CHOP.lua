@@ -23,8 +23,8 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}, {0, 376, 110, 1, 100, 100, 0, 55}},
     },
     timing = {
-      { f = 2, t = 0, se = "SE_M_DOUBLE_TEAM" },
-      { f = 6, t = 0, se = "SE_M_COMET_PUNCH" },
+      { f = 2, t = 0, se = "NDX_ESS_PRSFX_KARATE_CHOP1_V80_P100" },
+      { f = 6, t = 0, se = "NDX_ESS_PRSFX_KARATE_CHOP2" },
     },
   },
 }

@@ -25,8 +25,8 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}, {0, 384, 97, 1, 100, 100, 0, 60}, {1, 384, 102, 1, 100, 100, 0, 60}},
     },
     timing = {
-      { f = 0, t = 0, se = "SE_M_DRAGON_RAGE" },
-      { f = 7, t = 0, se = "SE_M_EARTHQUAKE" },
+      { f = 0, t = 0, se = "NDX_ESS_PRSFX_SUPER_FANG1" },
+      { f = 7, t = 0, se = "NDX_ESS_PRSFX_SUPERPOWER2_V100_P110" },
     },
   },
 }

@@ -48,9 +48,9 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}},
     },
     timing = {
-      { f = 4, t = 0, se = "SE_M_SWAGGER" },
-      { f = 30, t = 0, se = "SE_M_SWAGGER" },
-      { f = 36, t = 0, se = "SE_M_SWAGGER" },
+      { f = 4, t = 0, se = "NDX_ESS_PRSFX_SWAGGER2_V100_P84" },
+      { f = 30, t = 0, se = "NDX_ESS_PRSFX_SWAGGER1" },
+      { f = 36, t = 0, se = "NDX_ESS_PRSFX_SWAGGER1" },
     },
   },
   opp = {
@@ -98,9 +98,9 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}},
     },
     timing = {
-      { f = 4, t = 0, se = "SE_M_SWAGGER" },
-      { f = 30, t = 0, se = "SE_M_SWAGGER" },
-      { f = 36, t = 0, se = "SE_M_SWAGGER" },
+      { f = 4, t = 0, se = "NDX_ESS_PRSFX_SWAGGER2_V100_P84" },
+      { f = 30, t = 0, se = "NDX_ESS_PRSFX_SWAGGER1" },
+      { f = 36, t = 0, se = "NDX_ESS_PRSFX_SWAGGER1" },
     },
   },
 }

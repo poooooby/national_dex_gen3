@@ -26,10 +26,10 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}},
     },
     timing = {
-      { f = 0, t = 0, se = "SE_M_COMET_PUNCH" },
-      { f = 6, t = 0, se = "SE_M_COMET_PUNCH" },
-      { f = 8, t = 0, se = "SE_M_COMET_PUNCH" },
-      { f = 10, t = 0, se = "SE_M_COMET_PUNCH" },
+      { f = 0, t = 0, se = "NDX_ESS_PRSFX_ICE_PUNCH1" },
+      { f = 6, t = 0, se = "NDX_ESS_PRSFX_ICE_PUNCH2" },
+      { f = 8, t = 0, se = "NDX_ESS_PRSFX_ICE_PUNCH2_V100_P105" },
+      { f = 10, t = 0, se = "NDX_ESS_PRSFX_ICE_PUNCH2_V100_P95" },
     },
   },
 }

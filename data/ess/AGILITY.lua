@@ -23,7 +23,7 @@ return {
       {{-1, 128, 224, 2}, {-2, 384, 96, 1}},
     },
     timing = {
-      { f = 0, t = 0, se = "SE_M_DOUBLE_TEAM" },
+      { f = 0, t = 0, se = "NDX_ESS_PRSFX_AGILITY" },
       { f = 0, t = 1, bg = "pras_speed_bg", x = 0, y = 0, o = 0, c = {0, 0, 0, 0} },
       { f = 0, t = 2, d = 3, o = 255 },
       { f = 2, t = 2, d = 12, x = 500 },
