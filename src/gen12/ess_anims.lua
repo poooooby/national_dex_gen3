@@ -359,7 +359,7 @@ function Ess12.install(opts)
     local st = Core.start(state, anim, {
       ux = ux, uy = uy, tx = tx, ty = ty, uSide = uSide, tSide = tSide, w = wide and W.w or 160, h = 144,
       scale = (tonumber(state.data.scale) or 0.375) * Ess12.CEL_SCALE, celScale = Ess12.CEL_SCALE,
-      setMon = setMon, play = play, drawCopy = hub.drawCopy,
+      setMon = setMon, play = play, drawCopy = hub.drawCopy, onUser = l.user and true or nil,
     })
     st.b, st.key, st.attacker, st.sideInfo, st.pose, st.lastTicks = b, key, attacker, info, {}, -1
     st.hideMove, st.wide = l.turns == "hide", wide

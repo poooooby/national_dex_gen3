@@ -2,7 +2,9 @@
 """A review page for the Gen 9 Move Animation Project animations, from tests/drivers/ess_anims_probe.lua's
 shots: one GIF per move and side.
 
-    python tools/ess_gallery.py <SHOT_DIR> [--out <dir>]   (default: tools/.cache/ess_gallery)
+    python tools/ess_gallery.py <SHOT_DIR> [--out <dir>] [--title <text>]   (default: tools/.cache/ess_gallery)
+
+The shots may come from tests/drivers/gen12_ess_probe.lua too (Red, Gold).
 
 Writes <out>/index.html and <out>/gif/*.gif. Each shot is the game's window; the battle (its top
 two thirds) is kept and halved.
@@ -25,6 +27,7 @@ def main():
     ap.add_argument("shots", type=Path)
     ap.add_argument("--out", type=Path, default=ROOT / "tools" / ".cache" / "ess_gallery")
     ap.add_argument("--every", type=int, default=6, help="SHOT_EVERY the driver ran with (frames)")
+    ap.add_argument("--title", default="Gen 9 Move Animation Project on Gen 3")
     args = ap.parse_args()
     groups = defaultdict(list)
     for p in sorted(args.shots.glob("*.png")):
@@ -58,7 +61,7 @@ def main():
                     f'<div class="row">{"".join(cells)}</div></section>')
     page = f"""<!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Gen 9 move animations</title>
+<title>{html.escape(args.title)}</title>
 <style>
 :root {{ --bg: #f4f4f1; --fg: #1d1d1b; --muted: #6b6b66; --card: #ffffff; }}
 @media (prefers-color-scheme: dark) {{ :root {{ --bg: #161615; --fg: #ececea; --muted: #9a9a94; --card: #22221f; }} }}
@@ -69,7 +72,7 @@ section {{ background: var(--card); border-radius: 8px; padding: 10px 12px; marg
 figure {{ margin: 0; }} img {{ max-width: 100%; image-rendering: pixelated; display: block; }}
 figcaption {{ color: var(--muted); font-size: 13px; }}
 </style></head><body>
-<h1>Gen 9 Move Animation Project on Gen 3 ({len(moves)} moves)</h1>
+<h1>{html.escape(args.title)} ({len(moves)} moves)</h1>
 {"".join(rows)}
 </body></html>"""
     (args.out / "index.html").write_text(page, encoding="utf-8")

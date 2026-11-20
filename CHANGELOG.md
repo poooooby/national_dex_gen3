@@ -21,6 +21,13 @@ All notable changes to this mod are documented here, in
   animations and often got cut short: Dragon Breath's was all but silent. Every animation now plays
   the sounds made for it.
 
+### Fixed
+
+- **Moves used on oneself move their user again** in the Gen 9 Move Animation Project's animations:
+  Meditate, Agility, Bulk Up, Dragon Dance, Minimize, Withdraw, Work Up and about 30 others left
+  their user standing still. **Future Sight and the other animations that darken the screen** now
+  do.
+
 ## [1.18.0] - 2026-11-19
 
 ### Added

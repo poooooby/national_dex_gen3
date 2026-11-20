@@ -328,11 +328,17 @@ right to left), focus 4 on the screen; a line or screen cel is grown by that axi
 (1.08 across the line, 1.25 / 1.11 on the screen), so tiled pieces still meet. A foe's move plays
 the `opp` version with the roles swapped. A move on its user (`MOVE_TARGET_USER`, 16: Minimize, Swords Dance; the
 carts' move rows, `user` in the index for the newer ones) plays with the user as its target too, as
-Essentials plays it, whatever target the battle names: the third task argument. Cels 0 and 1 move, zoom, turn and fade the battlers
+Essentials plays it, whatever target the battle names: the third task argument. Such a move has no
+target in Essentials (`pbFindTargets` names none for `:User` / side / field targets, so the player's
+target sprite is nil): its cel 1 is skipped (`stage.onUser`); the pack animates both cels alike for
+most, but Meditate, Work Up, Endure and 35 others move only cel 0, which cel 1 used to put back. A
+common animation on one battler (`pbCommonAnimation`: `target || user`) applies both, cel 1 last. Cels 0 and 1 move, zoom, turn and fade the battlers
 through their `present` fields; tone and colour become the battle's `palAffine` (each channel times
 1 - alpha plus tone and colour: exact, gray aside); all put back at the end. One task draws only at
 one z, so `NdxEss` (z 50: background, back cels, cels behind the enemy) spawns two `NdxEssLayer`
-helpers (z 150 between the battlers, z 500 in front, with the foreground). Add blends add; subtract
+helpers (z 150 between the battlers, z 500 in front, with the foreground). The background and
+foreground start as Essentials' colour planes, black at opacity 0, so a timing that only fades one
+in (Future Sight) darkens the screen. Add blends add; subtract
 draws the cel's inverse over the screen (the battle's canvas holds no backdrop to subtract from,
 and a colour mask misdraws there).
 

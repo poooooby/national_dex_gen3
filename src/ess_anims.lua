@@ -282,7 +282,8 @@ function EssAnims.install(opts)
     -- the animation's "user" and "target": an OppMove version is made with the roles swapped
     local uKey, tKey = "attacker", "target"
     if opp then uKey, tKey = "target", "attacker" end
-    if (tonumber(t.data[2]) or 0) == 1 then uKey, tKey = "attacker", "attacker" end   -- a move on its user
+    local onUser = (tonumber(t.data[2]) or 0) == 1
+    if onUser then uKey, tKey = "attacker", "attacker" end   -- a move on its user
     local ux, uy = vm:battlerCenter(uKey)
     local tx, ty = vm:battlerCenter(tKey)
     local uId = uKey == "attacker" and vm:attackerId() or vm:targetId()
@@ -291,7 +292,7 @@ function EssAnims.install(opts)
       ux = ux, uy = uy, tx = tx, ty = ty, w = 240, h = 160,
       uSide = sideOf(uId, uKey == "attacker" and vm:attackerSide() or vm:targetSide()),
       tSide = sideOf(tId, tKey == "attacker" and vm:attackerSide() or vm:targetSide()),
-      setMon = setMon, play = play, copyPic = copyPic,
+      setMon = setMon, play = play, copyPic = copyPic, onUser = onUser,
     })
     st.move, st.vm, st.mons, st.uId, st.tId = move, vm, {}, uId, tId
     -- the battlers' pictures: what to put back

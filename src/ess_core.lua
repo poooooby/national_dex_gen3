@@ -143,9 +143,13 @@ function Core.start(state, anim, stage)
     w = stage.w or 240, h = stage.h or 160, S = S, celScale = stage.celScale or 1,
     reversed = stage.ux > stage.tx,   -- Essentials' isReversed for the line between them
     cels = { {}, {}, {} },  -- this frame's cels by layer: behind the enemy, between, in front
-    bg = { o = 0, x = 0, y = 0, c = { 0, 0, 0, 0 } }, fg = { o = 0, x = 0, y = 0, c = { 0, 0, 0, 0 } },
+    -- (Essentials' colour planes start black, unseen: an animation that only fades one in, as Future
+    -- Sight's background does, darkens the screen)
+    bg = { o = 0, x = 0, y = 0, c = { 0, 0, 0, 255 }, solid = true },
+    fg = { o = 0, x = 0, y = 0, c = { 0, 0, 0, 255 }, solid = true },
     oldbg = {}, oldfo = {},
     setMon = stage.setMon, play = stage.play, copyPic = stage.copyPic, drawCopy = stage.drawCopy,
+    onUser = stage.onUser,
   }
   st.screenX, st.screenY = st.w / 512, st.h / 384
   st.lineX = math.max(1, math.abs(st.tx - st.ux) / (SRC_TX - SRC_UX) / S)
@@ -248,11 +252,13 @@ function Core.step(state, st, frame)
       l[#l + 1] = c
     end
   end
-  -- the user, then the target: when it is the user too (a status, a move on itself), the target's
-  -- cel wins, as in Essentials (cel 1 after cel 0 on the one picture)
+  -- the user, then the target. A move on its user (Meditate, Swords Dance) has no target in
+  -- Essentials (pbFindTargets names none; its target sprite is nil), so its target cel moves nothing;
+  -- a common animation on one battler (pbCommonAnimation: target || user) applies both to the one
+  -- picture, the target's last
   if st.setMon then
     st.setMon(st, "user", user)
-    st.setMon(st, "target", target)
+    if not st.onUser then st.setMon(st, "target", target) end
   end
   st.cels = layers
   Core.timings(state, st, frame)

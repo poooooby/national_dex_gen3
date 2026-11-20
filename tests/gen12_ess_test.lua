@@ -136,6 +136,28 @@ for _, version in ipairs(H.versions()) do
         if p and (p.dx ~= 0 or p.dy ~= 0) then moved = true end
       end
       T.check(moved, version .. ": its user lunges")
+      -- a move on its user (Meditate): no target in Essentials, so the target cel doesn't put the
+      -- user back where it stands; the user is squashed
+      b = gen == 1 and { animPlaying = true, animName = "MEDITATE", animPlayer = { elapsed = 0 }, animAttackerIsPlayer = true,
+          player = b.player, enemy = b.enemy, wideLayout = b.wideLayout }
+        or { anim = { __ndxKey = "ndx:MEDITATE", frames = 0, env = { battleTurn = 0 } }, battle = b.battle }
+      local squashed = false
+      for t = 1, ticks("MEDITATE") - 1 do
+        local s = at(t)
+        local p = s and s.pose.player
+        if p and p.sy < 0.9 then squashed = true end
+      end
+      T.check(squashed, version .. ": Meditate squashes its user")
+      -- Future Sight only fades the background in: Essentials' colour plane, black
+      b = gen == 1 and { animPlaying = true, animName = "FUTURE_SIGHT", animPlayer = { elapsed = 0 }, animAttackerIsPlayer = true,
+          player = b.player, enemy = b.enemy, wideLayout = b.wideLayout }
+        or { anim = { __ndxKey = "ndx:FUTURE_SIGHT", frames = 0, env = { battleTurn = 0 } }, battle = b.battle }
+      local dark = false
+      for t = 1, ticks("FUTURE_SIGHT") - 1 do
+        local s = at(t)
+        if s and s.bg.solid and s.bg.o > 128 and s.bg.c[4] == 255 then dark = true end
+      end
+      T.check(dark, version .. ": Future Sight darkens the background")
       if gen == 1 then b.animPlaying = false else b.anim.stopped = true end
       T.eq(hub.current(b), nil, version .. ": nothing plays once the cart animation ends")
       T.eq(hub.st, nil, version .. ": and nothing is kept")
