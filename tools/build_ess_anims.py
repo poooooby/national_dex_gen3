@@ -13,8 +13,10 @@ Gen 1-3 moves the carts have (CART_KEEPS aside), their charging turn for two-tur
   data/ess_anims.lua       the index: sheets, backgrounds, sounds, moves and common animations
   data/ess/<MOVE>.lua      a move's frames and timings (its OppMove version and charging turn too),
                            loaded when it plays
-  assets/ess/*.png         the cels each move uses, scaled to the Gen 3 battle (SCALE), in a grid
-  assets/ess/bg/*.png      background and foreground pictures, scaled to the 240 x 160 screen
+  assets/ess/cels_N.png    the atlas: every cel the moves use, scaled to the Gen 3 battle (SCALE)
+                           and trimmed, on pages up to 1024 square, 256 colours each
+  assets/ess/bgs_N.png     background and foreground pictures, scaled to the 240 x 160 screen, on
+                           pages up to 1024 square, 256 colours each
   assets/ess/se/*.ogg      the pack's sounds that have no close Gen 3 match (mono, 22 kHz)
 
 A sound is a Gen 3 cart sound when it is the pack's recording of a Gen 1-3 move's sound
@@ -30,6 +32,7 @@ make a review page from the real game.
 from __future__ import annotations
 
 import argparse
+import colorsys
 import json
 import math
 import os
@@ -53,6 +56,10 @@ EXPANSION = ROOT.parent / "pokeemerald-expansion"
 # Essentials' battle (512 x 384) to Gen 3's (240 x 160): the user -> target line is 286 px there,
 # (72,80) -> (176,40) = 111 px here, and Essentials draws battlers at twice a 96 px sprite (64 here)
 SCALE = 0.375
+# atlas pages: no side over 1024 (well inside the 2048 every Android GPU takes), so each page's 256
+# colours cover fewer, more alike pictures
+CEL_PAGE = 1024
+BG_PAGE = 1024
 CEL = 192
 CELS_PER_ROW = 5
 CELL = round(CEL * SCALE)
@@ -364,25 +371,75 @@ class Sheets:
                 used[pattern] = crop
         return pattern if used[pattern] is not None else None
 
-    def write(self, out: Path):
-        """-> {key: {file, cell, cols, map}} with map: pattern -> index in the grid."""
-        out.mkdir(parents=True, exist_ok=True)
+    def cels(self):
+        """-> {key: {map: pattern -> n, cels: [(image trimmed to what it draws, ox, oy)]}}: each used
+        pattern shrunk to CELL, numbered in pattern order; (ox, oy) is where the trimmed image sat."""
         index = {}
         for k in sorted(self.sheets):
             used = {p: c for p, c in sorted(self.sheets[k]["used"].items()) if c is not None}
             if not used:
                 continue
-            cols = min(len(used), 8)
-            rows = math.ceil(len(used) / cols)
-            grid = Image.new("RGBA", (cols * CELL, rows * CELL), (0, 0, 0, 0))
-            mapping = {}
+            mapping, cels = {}, []
             for n, (p, crop) in enumerate(used.items()):
                 small = shrink(crop, CELL)
-                grid.paste(small, ((n % cols) * CELL, (n // cols) * CELL))
+                bb = small.getchannel("A").getbbox() or (0, 0, 1, 1)
+                cels.append((small.crop(bb), bb[0], bb[1]))
                 mapping[p] = n
-            grid.save(out / (k + ".png"), optimize=True)
-            index[k] = {"file": "assets/ess/%s.png" % k, "cell": CELL, "cols": cols, "map": mapping}
+            index[k] = {"map": mapping, "cels": cels}
         return index
+
+
+# ---------- the atlas -------------------------------------------------------------------------
+
+PAD = 1   # transparent pixels between pictures
+
+
+def pack_pages(items, limit):
+    """Shelf-packs [(key, image)] in the order given into pages no larger than limit x limit.
+    -> pages [(width, height)], places {key: (page, x, y)}"""
+    pages, places = [], {}
+    x = y = shelf = 0
+    used_w = 0
+    page = -1
+
+    def new_page():
+        nonlocal page, x, y, shelf, used_w
+        if page >= 0:
+            pages.append((used_w, y + shelf))
+        page += 1
+        x = y = shelf = used_w = 0
+
+    new_page()
+    for key, img in items:
+        w, h = img.size
+        if w > limit or h > limit:
+            raise ValueError("%s is %dx%d, larger than a page" % (key, w, h))
+        if x + w > limit:
+            x, y, shelf = 0, y + shelf + PAD, 0
+        if y + h > limit:
+            new_page()
+        places[key] = (page, x, y)
+        x += w + PAD
+        shelf = max(shelf, h)
+        used_w = max(used_w, x - PAD)
+    pages.append((used_w, y + shelf))
+    return pages, places
+
+
+def write_pages(prefix, items, places, sizes, out: Path):
+    """Pastes each page, quantizes it to 256 colours (tools/ess_quant.py), saves <prefix>_<n>.png."""
+    import ess_quant
+    files = []
+    for n, (w, h) in enumerate(sizes):
+        page = Image.new("RGBA", (max(1, w), max(1, h)), (0, 0, 0, 0))
+        for key, img in items:
+            pg, x, y = places[key]
+            if pg == n:
+                page.paste(img, (x, y))
+        name = "%s_%d.png" % (prefix, n + 1)
+        ess_quant.quantize(page, 256).save(out / name, optimize=True)
+        files.append({"file": "assets/ess/" + name, "w": page.width, "h": page.height})
+    return files
 
 
 # ---------- conversion ------------------------------------------------------------------------
@@ -553,23 +610,67 @@ def main():
         converted[move] = {k: convert(an, sheets, bgs, sounds, carts, pack, stats) for k, an in d.items()}
 
     assets = ROOT / "assets" / "ess"
-    for sub in ("bg",):
-        shutil.rmtree(assets / sub, ignore_errors=True)
+    assets.mkdir(parents=True, exist_ok=True)
+    shutil.rmtree(assets / "bg", ignore_errors=True)
     for p in assets.glob("*.png"):
         p.unlink()
-    index = sheets.write(assets)
+    index = sheets.cels()
     for d in converted.values():
         for a in d.values():
             remap(a, index)
 
-    # backgrounds: the 512 x 384 screen onto 240 x 160
-    (assets / "bg").mkdir(parents=True, exist_ok=True)
-    bg_index = {}
+    # the atlas: a page's 256 colours serve best when its pictures are alike, so the sheets go by
+    # hue, a page's worth at a time (each page's cels tallest first), on pages up to CEL_PAGE square;
+    # the backgrounds (the 512 x 384 screen onto 240 x 160) the same on their own pages up to BG_PAGE
+    def hue(img):
+        a = np.asarray(img.convert("RGBA")).astype(np.float32) / 255
+        w = a[..., 3].sum() or 1
+        r, g, b = [(a[..., i] * a[..., 3]).sum() / w for i in range(3)]
+        h, sat, v = colorsys.rgb_to_hsv(r, g, b)
+        return (0 if sat > 0.15 else 1, h, v)   # the grays and whites after the colours
+
+    def grouped(items_by_hue, limit):
+        """Packs [(key, image)] (already by hue) onto pages filled one at a time: each takes the
+        next pictures while they still fit on one page (tallest first) -> sizes, places."""
+        sizes, places = [], {}
+        rest = list(items_by_hue)
+        while rest:
+            lo, hi = 1, len(rest)          # the most of `rest` that fits one page
+            while lo < hi:
+                mid = (lo + hi + 1) // 2
+                group = sorted(rest[:mid], key=lambda it: (-it[1].height, -it[1].width))
+                if len(pack_pages(group, limit)[0]) == 1:
+                    lo = mid
+                else:
+                    hi = mid - 1
+            group = sorted(rest[:lo], key=lambda it: (-it[1].height, -it[1].width))
+            gs, gp = pack_pages(group, limit)
+            for key, (pg, x, y) in gp.items():
+                places[key] = (len(sizes) + pg, x, y)
+            sizes.extend(gs)
+            rest = rest[lo:]
+        return sizes, places
+
+    sheet_order = sorted(index, key=lambda k: hue(max((c[0] for c in index[k]["cels"]), key=lambda i: i.width * i.height)))
+    cel_items = [((k, n), img) for k in sheet_order for n, (img, _, _) in enumerate(index[k]["cels"])]
+    cel_sizes, cel_places = grouped(cel_items, CEL_PAGE)
+    cel_pages = write_pages("cels", cel_items, cel_places, cel_sizes, assets)
+
+    bg_items = []
     for k, path in sorted(bgs.items()):
         img = Image.open(path).convert("RGBA")
         w, h = max(1, round(img.width * 240 / 512)), max(1, round(img.height * 160 / 384))
-        img.resize((w, h), Image.LANCZOS).save(assets / "bg" / (k + ".png"), optimize=True)
-        bg_index[k] = {"file": "assets/ess/bg/%s.png" % k, "w": w, "h": h}
+        bg_items.append((k, img.resize((w, h), Image.LANCZOS)))
+
+    bg_items.sort(key=lambda it: hue(it[1]))
+    bg_sizes, bg_places = grouped(bg_items, BG_PAGE)
+    bg_pages = write_pages("bgs", bg_items, bg_places, bg_sizes, assets)
+
+    pages = cel_pages + bg_pages
+    bg_index = {}
+    for k, img in bg_items:
+        pg, x, y = bg_places[k]
+        bg_index[k] = {"page": len(cel_pages) + pg + 1, "x": x, "y": y, "w": img.width, "h": img.height}
 
     # sounds
     se_dir = assets / "se"
@@ -602,15 +703,25 @@ def main():
         "  source = %s," % lua(source),
         "  built = %s," % lua(date.today().isoformat()),
         "  scale = %s," % lua(SCALE),
-        "  sheets = {",
+        "  -- the atlas pages (256 colours each); a sheet's cels are rects on them: page, x, y, w, h and",
+        "  -- where the rect sits in its cell (ox, oy), 7 numbers a cel; a background is one rect",
+        "  pages = {",
     ]
+    for pg in pages:
+        lines.append("    { file = %s, w = %d, h = %d }," % (lua(pg["file"]), pg["w"], pg["h"]))
+    lines.append("  },")
+    lines.append("  sheets = {")
     for k, s in index.items():
-        lines.append("    %s = { file = %s, cell = %d, cols = %d, count = %d }," % (
-            key(k), lua(s["file"]), s["cell"], s["cols"], len(s["map"])))
+        r = []
+        for n, (img, ox, oy) in enumerate(s["cels"]):
+            pg, x, y = cel_places[(k, n)]
+            r += [pg + 1, x, y, img.width, img.height, ox, oy]
+        lines.append("    %s = { cell = %d, count = %d, r = %s }," % (key(k), CELL, len(s["cels"]), lua(r)))
     lines.append("  },")
     lines.append("  bgs = {")
     for k, b in bg_index.items():
-        lines.append("    %s = { file = %s, w = %d, h = %d }," % (key(k), lua(b["file"]), b["w"], b["h"]))
+        lines.append("    %s = { page = %d, x = %d, y = %d, w = %d, h = %d }," % (
+            key(k), b["page"], b["x"], b["y"], b["w"], b["h"]))
     lines.append("  },")
     lines.append("  sounds = {")
     for sid, f in se_index.items():
@@ -657,8 +768,9 @@ def main():
         sum(1 for m in moves if m in new), sum(1 for m in moves if m in cart),
         sum(1 for m in moves if "opp" in converted[m]), sum(1 for m in moves if "charge" in converted[m]),
         len(converted) - len(moves)))
-    print("sheets: %d (%.1f MB), backgrounds: %d, pack sounds: %d (%.1f MB), cart sounds used: %d" % (
-        len(index), size(assets) / 1e6 - size(se_dir) / 1e6, len(bg_index), len(se_index), size(se_dir) / 1e6, stats["cart_se"]))
+    print("sheets: %d, backgrounds: %d, on %d atlas pages (%s; %.1f MB), pack sounds: %d (%.1f MB), cart sounds used: %d" % (
+        len(index), len(bg_index), len(pages), ", ".join("%dx%d" % (pg["w"], pg["h"]) for pg in pages),
+        size(assets) / 1e6 - size(se_dir) / 1e6, len(se_index), size(se_dir) / 1e6, stats["cart_se"]))
     print("data/ess: %.1f MB" % (size(move_dir) / 1e6))
     for k in ("missing_sheet", "missing_se", "missing_bg"):
         if stats[k]:

@@ -147,7 +147,7 @@ function EssAnims.install(opts)
   end
 
   -- an image from the mod's folder, or false
-  local function image(file, wrap)
+  local function image(file)
     local img = state.images[file]
     if img ~= nil then return img end
     img = false
@@ -155,7 +155,6 @@ function EssAnims.install(opts)
       local ok, im = pcall(love.graphics.newImage, state.root .. "/" .. file)
       if ok and im then
         im:setFilter("nearest", "nearest")
-        if wrap then pcall(im.setWrap, im, "repeat", "repeat") end
         img = im
       elseif state.log then
         state.log:warn("could not load %s: %s", tostring(file), tostring(im))
@@ -163,6 +162,12 @@ function EssAnims.install(opts)
     end
     state.images[file] = img
     return img
+  end
+
+  -- an atlas page (data.pages[n]), or false
+  local function page(n)
+    local pg = n and state.data.pages and state.data.pages[n]
+    return pg and image(pg.file) or nil
   end
 
   local function shader()
@@ -385,7 +390,8 @@ function EssAnims.install(opts)
         elseif e.t == 1 or e.t == 3 then
           local pl = plane(st, e.t == 1 and "bg" or "fg")
           local b = e.bg and data.bgs and data.bgs[e.bg]
-          pl.img = b and image(b.file, true) or nil
+          pl.img = b and page(b.page) or nil
+          pl.rect = b
           pl.x, pl.y = -(e.x or 0), -(e.y or 0)
           pl.o = e.o or 0
           pl.c = { e.c and e.c[1] or 0, e.c and e.c[2] or 0, e.c and e.c[3] or 0, e.c and e.c[4] or 0 }
@@ -426,14 +432,17 @@ function EssAnims.install(opts)
   local function drawPlane(pl)
     if not pl or (pl.o or 0) <= 0 then return end
     local a = pl.o / 255
-    if pl.img then
+    if pl.img and pl.rect then
+      -- Essentials' plane repeats its picture across the screen, shifted by (x, y): the copies
+      -- that cover 240 x 160
+      local r = pl.rect
       local q = state.planeQuad
+      local iw, ih = pl.img:getDimensions()
       if not q then
-        q = love.graphics.newQuad(0, 0, 240, 160, 1, 1)
+        q = love.graphics.newQuad(r.x, r.y, r.w, r.h, iw, ih)
         state.planeQuad = q
       end
-      local w, h = pl.img:getDimensions()
-      q:setViewport((pl.x or 0) * SCREEN_X, (pl.y or 0) * SCREEN_Y, 240, 160, w, h)
+      q:setViewport(r.x, r.y, r.w, r.h, iw, ih)
       local sh = (pl.c[4] or 0) > 0 and shader() or nil
       if sh then
         love.graphics.setShader(sh)
@@ -441,7 +450,13 @@ function EssAnims.install(opts)
         sh:send("etone", { 0, 0, 0, 0 })
       end
       love.graphics.setColor(1, 1, 1, a)
-      love.graphics.draw(pl.img, q, 0, 0)
+      local x0 = -(math.floor((pl.x or 0) * SCREEN_X) % r.w)
+      local y0 = -(math.floor((pl.y or 0) * SCREEN_Y) % r.h)
+      for y = y0, 159, r.h do
+        for x = x0, 239, r.w do
+          love.graphics.draw(pl.img, q, x, y)
+        end
+      end
       if sh then love.graphics.setShader() end
     elseif pl.solid then
       love.graphics.setColor(pl.c[1] / 255, pl.c[2] / 255, pl.c[3] / 255, a * ((pl.c[4] or 0) / 255))
@@ -468,31 +483,33 @@ function EssAnims.install(opts)
   local function drawCels(st, list)
     if #list == 0 then return end
     local sheet = st.sheet
-    local img = sheet and image(sheet.file) or nil
-    local iw, ih, cell, cols, q, half
-    if img then
-      iw, ih = img:getDimensions()
-      cell, cols = sheet.cell, sheet.cols
-      q = state.celQuad
-      if not q then
-        q = love.graphics.newQuad(0, 0, cell, cell, iw, ih)
-        state.celQuad = q
-      end
-      half = cell / 2
+    local rects = sheet and sheet.r
+    local half = sheet and sheet.cell / 2 or 0
+    local q = state.celQuad
+    if not q and love.graphics.newQuad then
+      q = love.graphics.newQuad(0, 0, 1, 1, 1, 1)
+      state.celQuad = q
     end
     for _, c in ipairs(list) do
       local n = c[P]
-      -- what to draw: a cel of the sheet, or a copy of a battler's picture (-3 the user's, -4 the
-      -- target's; 64 px as the battle draws it)
-      local src, quad, ox, oy, k = img, q, half, half, 1
+      -- what to draw: a cel of the sheet (its rect on an atlas page, trimmed: centred where it sat in
+      -- its cell), or a copy of a battler's picture (-3 the user's, -4 the target's; 64 px as the
+      -- battle draws it)
+      local src, quad, ox, oy, k = nil, nil, 0, 0, 1
       if n < 0 then
         src = monPic(st, n == -3 and st.uId or st.tId)
         if src then
           local pw, ph = src:getDimensions()
-          quad, ox, oy, k = nil, pw / 2, ph / 2, 64 / pw
+          ox, oy, k = pw / 2, ph / 2, 64 / pw
         end
-      elseif img then
-        q:setViewport((n % cols) * cell, math.floor(n / cols) * cell, cell, cell, iw, ih)
+      elseif rects then
+        local b = n * 7
+        src = page(rects[b + 1])
+        if src then
+          local iw, ih = src:getDimensions()
+          q:setViewport(rects[b + 2], rects[b + 3], rects[b + 4], rects[b + 5], iw, ih)
+          quad, ox, oy = q, half - rects[b + 6], half - rects[b + 7]
+        end
       end
       if not src then goto continue end
       local x, y = place(st, c)

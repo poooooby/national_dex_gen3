@@ -6,7 +6,7 @@
 -- resolves on this cart to our NdxEss task and plays to the end from either side in the engine's
 -- animation player for as long as its frames last, putting the battlers back; two-turn moves charge
 -- and hide as they should; the cart's status, weather and trap animations play the pack's; Curse and
--- contests keep the cart's; every sheet, cel, background and sound it names ships.
+-- contests keep the cart's; every atlas page, cel, background and sound it names ships.
 package.path = "./?.lua;./?/init.lua;" .. package.path
 
 local T = require("tests.modkit")
@@ -104,10 +104,43 @@ for _, name in ipairs(files) do
 end
 T.eq(#badData, 0, "every animation's data is whole (" .. table.concat(badData, "; "):sub(1, 400) .. ")")
 local missing = {}
-for _, s in pairs(ess.sheets) do if not exists(s.file) then missing[#missing + 1] = s.file end end
-for _, b in pairs(ess.bgs) do if not exists(b.file) then missing[#missing + 1] = b.file end end
+for _, pg in ipairs(ess.pages) do if not exists(pg.file) then missing[#missing + 1] = pg.file end end
 for _, file in pairs(ess.sounds) do if not exists(file) then missing[#missing + 1] = file end end
-T.eq(#missing, 0, "every sheet, background and sound ships (" .. table.concat(missing, ", "):sub(1, 300) .. ")")
+T.eq(#missing, 0, "every atlas page and sound ships (" .. table.concat(missing, ", "):sub(1, 300) .. ")")
+
+-- the atlas: a few pages (not hundreds of files), none over 2048 a side (Android), each a 256-colour
+-- PNG (colour type 3) the size the index says; every cel and background a rect inside its page
+do
+  local function be32(str, i) return ((str:byte(i) * 256 + str:byte(i + 1)) * 256 + str:byte(i + 2)) * 256 + str:byte(i + 3) end
+  T.check(#ess.pages > 0 and #ess.pages <= 16, ("%d atlas pages"):format(#ess.pages))
+  local bad = {}
+  for n, pg in ipairs(ess.pages) do
+    local f = io.open(ROOT .. pg.file, "rb")
+    local head = f and f:read(26)
+    if f then f:close() end
+    if not head or be32(head, 17) ~= pg.w or be32(head, 21) ~= pg.h then bad[#bad + 1] = pg.file .. " size"
+    elseif pg.w > 2048 or pg.h > 2048 then bad[#bad + 1] = pg.file .. " over 2048"
+    elseif head:byte(26) ~= 3 then bad[#bad + 1] = pg.file .. " not 256 colours" end
+  end
+  local function inside(pgN, x, y, w, h)
+    local pg = ess.pages[pgN]
+    return pg and x >= 0 and y >= 0 and x + w <= pg.w and y + h <= pg.h
+  end
+  for name, sh in pairs(ess.sheets) do
+    if #sh.r ~= sh.count * 7 then bad[#bad + 1] = name .. " rects" end
+    for i = 0, sh.count - 1 do
+      local b = i * 7
+      if not inside(sh.r[b + 1], sh.r[b + 2], sh.r[b + 3], sh.r[b + 4], sh.r[b + 5]) then
+        bad[#bad + 1] = name .. " cel " .. i
+        break
+      end
+    end
+  end
+  for name, bg in pairs(ess.bgs) do
+    if not inside(bg.page, bg.x, bg.y, bg.w, bg.h) then bad[#bad + 1] = "background " .. name end
+  end
+  T.eq(#bad, 0, "each page is right and every rect lies inside it (" .. table.concat(bad, ", "):sub(1, 300) .. ")")
+end
 
 -- the cart sounds it names are this cart's
 do

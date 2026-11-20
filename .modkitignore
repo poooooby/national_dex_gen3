@@ -124,3 +124,4 @@ tests/drivers/ess_anims_probe.lua
 tools/build_ess_anims.py
 tools/ess_marshal.py
 tools/ess_gallery.py
+tools/ess_quant.py

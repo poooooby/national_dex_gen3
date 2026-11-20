@@ -271,14 +271,21 @@ constants (pokeemerald-expansion's `include/constants/moves.h`, 1-354), keeps th
   timings (sounds; background and foreground set/change). `opp` is the foe's version when the pack
   has one; `charge` / `charge_opp` a two-turn move's charging turn ("Fly charging", "Common:Dig
   charging"...). `C_<NAME>` files are the common animations. Loaded the first time one plays.
-- `assets/ess/<sheet>.png`: only the 192 px cels used, shrunk to `SCALE` 0.375 (Essentials' user ->
-  target line is 286 px, Gen 3's 111) with their colours weighted by alpha and alpha raised 1.4x (a
-  thin stroke would fade to nothing), in a grid; `bg/` the background pictures, scaled to 240 x 160.
+- `assets/ess/cels_N.png` and `bgs_N.png`, the atlas: only the 192 px cels used, shrunk to `SCALE`
+  0.375 (Essentials' user -> target line is 286 px, Gen 3's 111) with their colours weighted by alpha
+  and alpha raised 1.4x (a thin stroke would fade to nothing), each trimmed to what it draws; and the
+  background pictures, scaled to 240 x 160. Pages are at most 1024 a side (`CEL_PAGE`, `BG_PAGE`;
+  Android GPUs all take 2048), filled one at a time with the pictures in hue order (each page's own
+  shelf-packed tallest first, 1 px apart), and saved as 256-colour PNGs: `tools/ess_quant.py` refines
+  Pillow's octree palette with k-means over the drawn pixels (premultiplied, so faint edges don't
+  take entries from what shows); the octree alone bands gradients. About ten files, 1.2 MB.
 - `assets/ess/se/*.ogg`: the pack's sounds, mono 22 kHz, a file per volume/pitch used. A
   `PRSFX- <Move>N` sound of a Gen 1-3 move is that move's Nth cart sound instead (from
   pokeemerald-expansion's scripts).
-- `data/ess_anims.lua`: the sheets, backgrounds, sounds (registered as mod sounds at load, with the
-  mod's path); `moves` (frame counts, `num` for a cart move, `turns` for a two-turn one, `from` for
+- `data/ess_anims.lua`: the atlas `pages`; each sheet's cels as rects on them (`r`: page, x, y, w, h
+  and where the rect sat in its 72 px cell, 7 numbers a cel); each background as one rect (drawn
+  repeated by hand to cover the screen, as Essentials' plane does: a rect of an atlas can't wrap);
+  the sounds (registered as mod sounds at load, with the mod's path); `moves` (frame counts, `num` for a cart move, `turns` for a two-turn one, `from` for
   a borrowed one); `commons` (`Anim.tableScript` kind -> cart name -> file) and `trap`.
 
 The tool's tables: `SKIP` (vetoes), `CART_KEEPS` (Curse and Bide: the cart picks their version by
