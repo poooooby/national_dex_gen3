@@ -266,7 +266,8 @@ constants (pokeemerald-expansion's `include/constants/moves.h`, 1-354), keeps th
 (more than one frame, something visible), and writes:
 
 - `data/ess/<NAME>.lua`: the frames, each a list of cels (pattern, x, y, focus, zoom x/y, angle,
-  opacity, blend, mirror, priority, colour rgba, tone rgb+gray; trailing defaults dropped), and the
+  opacity, blend, mirror, priority, colour rgba, tone rgb+gray; trailing defaults dropped; pattern
+  -1 / -2 the user / the target themselves, -3 / -4 a copy of their picture), and the
   timings (sounds; background and foreground set/change). `opp` is the foe's version when the pack
   has one; `charge` / `charge_opp` a two-turn move's charging turn ("Fly charging", "Common:Dig
   charging"...). `C_<NAME>` files are the common animations. Loaded the first time one plays.
@@ -302,7 +303,9 @@ ticks each): focus 1/2 cels offset from the target's/user's centre times 0.375, 
 Essentials' per-axis line transform onto the attacker -> target centres (mirrored when the line runs
 right to left), focus 4 on the screen; a line or screen cel is grown by that axis's scale over 0.375
 (1.08 across the line, 1.25 / 1.11 on the screen), so tiled pieces still meet. A foe's move plays
-the `opp` version with the roles swapped. Cels 0 and 1 move, zoom, turn and fade the battlers
+the `opp` version with the roles swapped. A move on its user (`MOVE_TARGET_USER`, 16: Minimize, Swords Dance; the
+carts' move rows, `user` in the index for the newer ones) plays with the user as its target too, as
+Essentials plays it, whatever target the battle names: the third task argument. Cels 0 and 1 move, zoom, turn and fade the battlers
 through their `present` fields; tone and colour become the battle's `palAffine` (each channel times
 1 - alpha plus tone and colour: exact, gray aside); all put back at the end. One task draws only at
 one z, so `NdxEss` (z 50: background, back cels, cels behind the enemy) spawns two `NdxEssLayer`
@@ -310,9 +313,15 @@ helpers (z 150 between the battlers, z 500 in front, with the foreground). Add b
 draws the cel's inverse over the screen (the battle's canvas holds no backdrop to subtract from,
 and a colour mask misdraws there).
 
-Not done: a free cel showing a copy of a battler's picture (14 moves, e.g. Foul Play, Spectral
-Thief; their other cels still play), the user's cry as a sound, the cart's stat-change, item and
-switch animations (no exact counterpart), Double Team, Memento, Nature Power and Secret Power (the
+A free cel showing a copy of a battler's picture (pattern -3 the user's, -4 the target's: Quick
+Attack's afterimages, Foul Play's and Psychic's doubles, 54 animations) draws that battler's picture
+as the battle shows it (`Ui.battlerPic`, 64 px), placed, zoomed, turned, tinted and blended like any
+cel. A sound with no name is the attacker's cry (Essentials plays its user's: the attacker, whichever
+version plays), through `Audio.playCry` with the species the cart's own cry tasks use
+(`vm:speciesForSide`, else the battle's record), panned to the attacker; Gen 3's cries have no free
+pitch, so the pack's pitch is not kept.
+
+Not done: the cart's stat-change, item and switch animations (no exact counterpart), Double Team, Memento, Nature Power and Secret Power (the
 pack has no real one), and Red/Blue/Yellow/Gold/Silver/Crystal, which play their borrowed cart
 animations.
 

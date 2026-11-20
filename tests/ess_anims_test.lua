@@ -265,6 +265,58 @@ do
   T.check(trapAs(0) == false, "Bind's or Wrap's plays the cart's")
 end
 
+-- a move on its user (Minimize) plays with the user as its target: the foe never shrinks
+do
+  local script = Anim.scriptForMove(107)
+  T.eq(script and script[1] and script[1].args and script[1].args[3], 1, "Minimize is a move on its user")
+  local e = Anim.present("enemy")
+  local p = Anim.present("player")
+  if e and p then
+    AnimTasks.reset()
+    local vm = AnimVm.new()
+    vm:setPack(Anim._pack)
+    vm:launch(script, { attackerSide = "player", targetSide = "enemy", isReversed = false })
+    local foeShrank, userShrank = false, false
+    for _ = 1, 600 do
+      if not vm:busy() then break end
+      vm:update(1 / 60)
+      if (e.sx or 1) < 1 then foeShrank = true end
+      if (p.sx or 1) < 1 then userShrank = true end
+    end
+    T.check(userShrank and not foeShrank, "Minimize shrinks its user, not the foe")
+  end
+end
+
+-- copies of a battler's picture: Quick Attack's afterimages are the user's (-3)
+do
+  local md = loaded.QUICK_ATTACK
+  local copies = 0
+  for _, f in ipairs(md and md.move.frames or {}) do
+    for _, c in ipairs(f) do if c[1] == -3 then copies = copies + 1 end end
+  end
+  T.check(copies > 0, ("Quick Attack draws copies of its user (%d cels)"):format(copies))
+end
+
+-- a sound with no name is the attacker's cry: Growl
+do
+  local Audio = require("src.core.game3.audio")
+  local cry, heard = Audio.playCry, nil
+  Audio.playCry = function(sp) heard = sp; return true end
+  local ok = pcall(function()
+    AnimTasks.reset()
+    local vm = AnimVm.new()
+    vm:setPack(Anim._pack)
+    -- (the battle names the attacker's species; there is no battle here)
+    vm:launch(Anim.scriptForMove(45), { attackerSide = "player", isReversed = false, attackerSpecies = 25 })
+    for _ = 1, 600 do
+      if not vm:busy() then break end
+      vm:update(1 / 60)
+    end
+  end)
+  Audio.playCry = cry
+  T.check(ok and heard == 25, "Growl plays the attacker's cry (" .. tostring(heard) .. ")")
+end
+
 -- the battlers are put back: a move that moves its user (Axe Kick lunges) leaves no offset behind
 do
   local p = Anim.present("player")

@@ -9,14 +9,16 @@
 -- An Essentials animation is frames (20 a second) of cels: a 192 x 192 pattern of the move's sheet,
 -- placed relative to the target, the user, the line between them, or the screen, zoomed, turned,
 -- faded, blended and tinted; cel 0 and 1 are the user's and target's own pictures, moved the same
--- way. Timings play sounds and set or change a background and a foreground (a picture or a colour).
+-- way, and a free cel may show a copy of either picture (an afterimage). Timings play sounds (one
+-- with no name: the attacker's cry) and set or change a background and a foreground.
 -- This plays one as a visual task of ours, "NdxEss", the way Essentials' PBAnimationPlayerX does,
 -- with Essentials' 512 x 384 battle mapped onto Gen 3's 240 x 160 (its user -> target line onto the
 -- attacker's and target's centres; the sheets are already scaled by data.scale):
 --
---   createvisualtask NdxEss { "ESS:" .. NAME, mode }
+--   createvisualtask NdxEss { "ESS:" .. NAME, mode, onUser }
 --     mode 0 plain; 1 a two-turn move: its charging animation on the first turn; 2 the second turn of
 --     one that hid its user (Fly, Dig, Dive, Bounce: the cart's own first turn hides it), shown again
+--     onUser 1: a move on its user (Minimize): the user is its target too, as Essentials plays it
 --     "ESS:@TRAP" picks the trap animation by the cart's GetTrappedMoveAnimId task (argument 0)
 --
 -- One wrap of Anim.scriptForMove (outside src/anims.lua's) and one of Anim.tableScript answer with
@@ -216,6 +218,7 @@ function EssAnims.install(opts)
     -- the animation's "user" and "target": an OppMove version is made with the roles swapped
     local uKey, tKey = "attacker", "target"
     if opp then uKey, tKey = "target", "attacker" end
+    if (tonumber(t.data[2]) or 0) == 1 then uKey, tKey = "attacker", "attacker" end   -- a move on its user
     local ux, uy = vm:battlerCenter(uKey)
     local tx, ty = vm:battlerCenter(tKey)
     local uId = uKey == "attacker" and vm:attackerId() or vm:targetId()
@@ -226,6 +229,7 @@ function EssAnims.install(opts)
       move = move, anim = anim, frame = -1, tick = 0, last = #anim.frames,
       ux = ux, uy = uy, tx = tx, ty = ty, uSide = uSide, tSide = tSide,
       reversed = ux > tx,   -- Essentials' isReversed for the line between them
+      vm = vm,
       lineX = math.max(1, math.abs(tx - ux) / (SRC_TX - SRC_UX) / S),
       lineY = math.max(1, math.abs(ty - uy) / (SRC_UY - SRC_TY) / S),
       cels = { {}, {}, {} },  -- this frame's cels by layer: behind the enemy, between, in front
@@ -313,10 +317,40 @@ function EssAnims.install(opts)
     end
   end
 
-  local function play(se)
-    if se == "CRY" then return end   -- the user's cry: Gen 3's moves don't play one
+  local SOUND_PAN_ATTACKER = -64
+
+  -- the attacker's species, as the cart's own cry tasks find it (the battle's record if the
+  -- animation was not told)
+  local function attackerSpecies(vm)
+    local sp
+    if vm.speciesForSide then
+      local side = vm.resolveBattlerSide and vm:resolveBattlerSide(0) or vm:attackerSide()
+      local ok, s = pcall(vm.speciesForSide, vm, side)
+      if ok then sp = s end
+    end
+    if sp == nil and AnimCoords and AnimCoords.battler then
+      local ok, b = pcall(AnimCoords.battler, nil, vm:attackerId())
+      if ok and type(b) == "table" then
+        sp = (b.expTransform and b.expTransform.species) or b.species or (b.mon and (b.mon.species or b.mon.speciesId))
+      end
+    end
+    return sp
+  end
+
+  local function play(se, st)
     local ok, Audio = pcall(require, "src.core.game3.audio")
-    if ok and Audio and Audio.playSe then pcall(Audio.playSe, se, { pan = 0 }) end
+    if not (ok and Audio) then return end
+    if se == "CRY" then
+      -- the attacker's cry (Essentials: the move's user, whichever version plays)
+      local vm = st and st.vm
+      local sp = vm and attackerSpecies(vm)
+      if sp and Audio.playCry then
+        local pan = vm.adjustPanning and vm:adjustPanning(SOUND_PAN_ATTACKER) or SOUND_PAN_ATTACKER
+        pcall(Audio.playCry, sp, { pan = pan })
+      end
+      return
+    end
+    if Audio.playSe then pcall(Audio.playSe, se, { pan = 0 }) end
   end
 
   -- Essentials' playTiming (the background's ox moves by bgX's change, as there)
@@ -347,7 +381,7 @@ function EssAnims.install(opts)
     for _, e in ipairs(st.anim.timing or {}) do
       if e.f == frame then
         if e.t == 0 then
-          if e.se then play(e.se) end
+          if e.se then play(e.se, st) end
         elseif e.t == 1 or e.t == 3 then
           local pl = plane(st, e.t == 1 and "bg" or "fg")
           local b = e.bg and data.bgs and data.bgs[e.bg]
@@ -376,7 +410,7 @@ function EssAnims.install(opts)
         user = c
       elseif p == -2 then
         target = c
-      elseif p >= 0 then
+      elseif p >= 0 or p <= -3 then
         local l = layers[layerOf(st, c)]
         l[#l + 1] = c
       end
@@ -415,24 +449,54 @@ function EssAnims.install(opts)
     end
   end
 
-  local function drawCels(st, list)
-    local sheet = st.sheet
-    if not sheet or #list == 0 then return end
-    local img = image(sheet.file)
-    if not img then return end
-    local iw, ih = img:getDimensions()
-    local cell, cols = sheet.cell, sheet.cols
-    local q = state.celQuad
-    if not q then
-      q = love.graphics.newQuad(0, 0, cell, cell, iw, ih)
-      state.celQuad = q
+  -- a battler's picture as the battle shows it (Ui.battlerPic), once per animation, or false
+  local function monPic(st, id)
+    st.pics = st.pics or {}
+    local pic = st.pics[id]
+    if pic == nil then
+      pic = false
+      local okU, Ui = pcall(require, "src.core.game3.battle.ui")
+      if okU and type(Ui) == "table" and Ui.battlerPic and id ~= nil then
+        local okP, e = pcall(Ui.battlerPic, id)
+        if okP and type(e) == "table" and e.image then pic = e.image end
+      end
+      st.pics[id] = pic
     end
-    local half = cell / 2
+    return pic or nil
+  end
+
+  local function drawCels(st, list)
+    if #list == 0 then return end
+    local sheet = st.sheet
+    local img = sheet and image(sheet.file) or nil
+    local iw, ih, cell, cols, q, half
+    if img then
+      iw, ih = img:getDimensions()
+      cell, cols = sheet.cell, sheet.cols
+      q = state.celQuad
+      if not q then
+        q = love.graphics.newQuad(0, 0, cell, cell, iw, ih)
+        state.celQuad = q
+      end
+      half = cell / 2
+    end
     for _, c in ipairs(list) do
       local n = c[P]
-      q:setViewport((n % cols) * cell, math.floor(n / cols) * cell, cell, cell, iw, ih)
+      -- what to draw: a cel of the sheet, or a copy of a battler's picture (-3 the user's, -4 the
+      -- target's; 64 px as the battle draws it)
+      local src, quad, ox, oy, k = img, q, half, half, 1
+      if n < 0 then
+        src = monPic(st, n == -3 and st.uId or st.tId)
+        if src then
+          local pw, ph = src:getDimensions()
+          quad, ox, oy, k = nil, pw / 2, ph / 2, 64 / pw
+        end
+      elseif img then
+        q:setViewport((n % cols) * cell, math.floor(n / cols) * cell, cell, cell, iw, ih)
+      end
+      if not src then goto continue end
       local x, y = place(st, c)
-      local sx, sy = (c[ZX] or 100) / 100, (c[ZY] or 100) / 100
+      local sx, sy = (c[ZX] or 100) / 100 * k, (c[ZY] or 100) / 100 * k
       -- a cel placed on the line or the screen spreads by that axis's scale, wider than the sheets'
       -- (0.406 across the line, 0.469 across the screen): grown to match, so tiled pieces still meet
       local f = c[FOCUS]
@@ -461,8 +525,14 @@ function EssAnims.install(opts)
         sh:send("etone", { tr / 255, tg / 255, tb / 255, tgray / 255 })
       end
       love.graphics.setColor(1, 1, 1, (c[OPACITY] or 255) / 255)
-      love.graphics.draw(img, q, math.floor(x + 0.5), math.floor(y + 0.5), -math.rad(c[ANGLE] or 0), sx, sy, half, half)
+      local rx, ry, rot = math.floor(x + 0.5), math.floor(y + 0.5), -math.rad(c[ANGLE] or 0)
+      if quad then
+        love.graphics.draw(src, quad, rx, ry, rot, sx, sy, ox, oy)
+      else
+        love.graphics.draw(src, rx, ry, rot, sx, sy, ox, oy)
+      end
       if sh then love.graphics.setShader() end
+      ::continue::
     end
     love.graphics.setBlendMode("alpha", "alphamultiply")
   end
@@ -541,9 +611,9 @@ function EssAnims.install(opts)
 end
 
 -- the scripts that start the task
-local function rows(name, mode)
+local function rows(name, mode, onUser)
   return {
-    { op = "createvisualtask", task = "NdxEss", priority = 2, args = { "ESS:" .. name, mode or 0 } },
+    { op = "createvisualtask", task = "NdxEss", priority = 2, args = { "ESS:" .. name, mode or 0, onUser and 1 or 0 } },
     { op = "waitforvisualfinish" },
     { op = "end" },
   }
@@ -592,15 +662,27 @@ function EssAnims.wrap(state, Anim, require)
     local info = name and st.data.moves[name]
     local pack = Anim._pack
     if not (info and type(pack) == "table") then return fallback end
+    -- a move on its user (MOVE_TARGET_USER: Minimize, Swords Dance) plays with the user as its target,
+    -- as Essentials plays it, whatever target the battle names
+    local onUser = info.user and true or false
+    if not onUser then
+      local okM, Moves = pcall(require, "src.core.game3.battle.moves")
+      local okG, mv = false, nil
+      if okM and Moves.get then okG, mv = pcall(Moves.get, num) end
+      if not (okG and type(mv) == "table") and okM and type(Moves._rom) == "table" then
+        okG, mv = true, Moves._rom[num]   -- (the rows themselves, when names aren't loaded)
+      end
+      onUser = okG and type(mv) == "table" and tonumber(mv.target) == 16 or false
+    end
     return cached(pack, name, function()
       if info.turns == "hide" and type(fallback) == "table" then
         -- the cart's first turn (it hides the user), the pack's second
         pack.labels = pack.labels or {}
         pack.labels[PREFIX .. name .. ":1"] = fallback
-        pack.labels[PREFIX .. name .. ":2"] = rows(name, 2)
+        pack.labels[PREFIX .. name .. ":2"] = rows(name, 2, onUser)
         return { { op = "choosetwoturnanim", label1 = PREFIX .. name .. ":1", label2 = PREFIX .. name .. ":2" } }
       end
-      return rows(name, info.turns == "charge" and 1 or 0)
+      return rows(name, info.turns == "charge" and 1 or 0, onUser)
     end) or fallback
   end
 
