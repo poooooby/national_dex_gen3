@@ -51,7 +51,6 @@ for _, version in ipairs(H.versions()) do
     T.check(ns and ns.highCrit == true, version .. ": Night Slash crits often")
     T.eq(aj and aj.priority, 1, version .. ": Aqua Jet moves first")
     T.check(Damage.isSpecial("DARK"), version .. ": Night Slash hits with Special")
-    -- (Aqua Jet: Night Slash has a pixelfx effect of its own, tests/gen12_fx_test.lua)
     local look = byId.AQUA_JET.look.gen1
     local anims = data.battle_anims and data.battle_anims.moveAnims or {}
     T.check(anims.AQUA_JET ~= nil and #anims.AQUA_JET.seq == #anims[look].seq,

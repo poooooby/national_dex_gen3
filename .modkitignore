@@ -71,8 +71,6 @@ tests/fixtures/tm_item/main.lua
 tests/fixtures/tm_item/manifest.json
 tools/build_modern_learnsets.py
 tools/build_anims.py
-tools/build_fx.mjs
-tools/fx_atlas.py
 tools/anim_known.lua
 
 .claude/skills/lua-developer/SKILL.md
@@ -88,7 +86,6 @@ tests/cart_untouched_test.lua
 tests/vending_test.lua
 tests/type_badges_test.lua
 tests/drivers/vending_probe.lua
-tests/drivers/fx_anims_probe.lua
 tests/drivers/type_badges_probe.lua
 tests/drivers/gen12_probe.lua
 tests/_gen12.lua
@@ -112,7 +109,6 @@ tests/gen12_extras_test.lua
 tools/build_placeholder.py
 tests/gen12_mechanics_test.lua
 tests/gen12_forms_page_test.lua
-tests/gen12_fx_test.lua
 tests/gen12_vending_test.lua
 tools/build_api.py
 tools/ability_behaviour.py
@@ -123,3 +119,8 @@ tests/stat_hints_test.lua
 tests/drivers/stat_hints_probe.lua
 tests/drivers/gen12_stat_hints_probe.lua
 tests/box_shape_test.lua
+tests/ess_anims_test.lua
+tests/drivers/ess_anims_probe.lua
+tools/build_ess_anims.py
+tools/ess_marshal.py
+tools/ess_gallery.py

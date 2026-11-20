@@ -3,6 +3,28 @@
 All notable changes to this mod are documented here, in
 [keep a changelog](https://keepachangelog.com/en/1.1.0/) format.
 
+## [Unreleased]
+
+### Added
+
+- **Battle animations from the Gen 9 Move Animation Project** (https://eeveeexpo.com/resources/1480/)
+  on FireRed, LeafGreen, Ruby, Sapphire and Emerald: every move the project animates now plays its
+  animation in battle, with its own effects, backgrounds and sounds, sized for the Gen 3 screen.
+  That is all 419 newer moves (Axe Kick, Make It Rain, Tera Starstorm...) and 344 of the original
+  moves (Thunderbolt, Surf, Hyper Beam...), plus being poisoned, burned, asleep, paralyzed, frozen,
+  confused, in love or cursed, rain, sun, sandstorm, hail, Leech Seed's drain, Focus Punch's
+  tightening and Fire Spin, Whirlpool, Clamp and Sand Tomb's turns. An original move only plays the
+  animation the project made for that very move; the others keep the game's own. A foe's move plays the version made for the foe's side;
+  two-turn moves charge with their own charging animation (Fly, Dig, Dive and Bounce keep the
+  game's own first turn). Contests, Curse, Bide, Transform and Substitute keep the game's animations. Credited in
+  CREDITS.md and the README.
+
+### Removed
+
+- The pixelfx effects that 20 newer moves used: the Gen 9 Move Animation Project animates them now.
+  On Red, Blue, Yellow, Gold, Silver and Crystal those 18 moves go back to the animation they
+  borrow.
+
 ## [1.17.0] - 2026-11-19
 
 ### Added

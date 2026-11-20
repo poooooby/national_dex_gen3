@@ -113,8 +113,8 @@ return function(mod)
   local BoxShape = loadSibling(mod, "src/box_shape.lua")
   -- optional: without it every new move plays the cart animation named in data/moves.lua
   local MoveAnims = loadSibling(mod, "src/anims.lua")
-  -- optional: without it the moves data/fx.lua draws with pixelfx keep their cart look
-  local FxAnims = loadSibling(mod, "src/fx_anims.lua")
+  -- optional: without it the moves data/ess_anims.lua animates keep their cart look
+  local EssAnims = loadSibling(mod, "src/ess_anims.lua")
   -- the Modern Moves option: the original 386 also learn their newer moves
   local ModernLearnsets = loadSibling(mod, "src/modern_learnsets.lua")
   -- optional: without it the newer moves have no TMs
@@ -191,6 +191,10 @@ return function(mod)
   -- moves newer than Gen 3 that run on a Gen 3 effect (src/moves.lua), before the species,
   -- whose learnsets name them
   local registeredMoves = NewMoves and NewMoves.register(mod, read("data/moves.lua") or {}) or {}
+  -- the Gen 9 Move Animation Project's animations (src/ess_anims.lua): their sounds are mod sounds,
+  -- registered now; the task on game.ready
+  local essData = EssAnims and read("data/ess_anims.lua") or nil
+  if essData then EssAnims.registerSounds(mod, essData) end
   -- TMs for the newer moves (src/tms.lua): items in the TM Case, after the moves they teach
   local moveRowById, moveNumById = {}, {}
   for _, r in ipairs(registeredMoves) do moveRowById[r.id], moveNumById[r.id] = r, r.index end
@@ -355,19 +359,15 @@ return function(mod)
     -- their battle animations from pokeemerald-expansion (src/anims.lua), outside src/moves.lua's
     if NewMoves and MoveAnims then
       local animData = read("data/anims.lua") or {}
-      -- and, for some of the rest, pixelfx's (src/fx_anims.lua)
-      if FxAnims then
-        local fxData = read("data/fx.lua")
-        local okFxA, fxOn = pcall(FxAnims.install, { mod = mod, data = fxData, require = require, log = mod.log })
-        if okFxA and fxOn then
-          FxAnims.merge(animData, fxData)
-        elseif not okFxA then
-          mod.log:warn("pixelfx move animations are off: %s", tostring(fxOn))
-        end
-      end
       local okAn, anErr = pcall(MoveAnims.install, { data = animData, moves = registeredMoves,
         require = require, log = mod.log })
       if not okAn then mod.log:warn("new move animations are off: %s", tostring(anErr)) end
+    end
+    -- the Gen 9 Move Animation Project's, over those and the carts' own (src/ess_anims.lua)
+    if essData then
+      local okEss, essErr = pcall(EssAnims.install, { mod = mod, data = essData, read = read,
+        moves = registeredMoves, require = require, log = mod.log })
+      if not okEss then mod.log:warn("Gen 9 project move animations are off: %s", tostring(essErr)) end
     end
     installModern()
     installTms()

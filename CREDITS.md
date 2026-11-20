@@ -45,11 +45,15 @@ ships are fan-made, and the credits below belong to their authors.
   contributors: <https://github.com/rh-hideout/pokeemerald-expansion/blob/master/CREDITS.md>)
   for their battle animations of the newer moves. The ones this mod borrows are based off
   pokeemerald-expansion 1.17.2, played with the graphics the Gen 3 games already have.
-- The effects in 20 of them (`assets/fx/`, Dragon Pulse's beam, Aura Sphere's orb, Stone Edge's
-  spike ...) are rendered from **pixelfx** by **Patch** and **Hugo Duprez**
-  (<https://github.com/patch-gg/pixelfx>, MIT License; it adapts Sprite Fusion's open-source pixel
-  art VFX, <https://www.spritefusion.com/pixel-art-vfx>), recoloured for each move's type. The
-  licence text is in [LICENSE](LICENSE).
+- The animations of most other newer moves (`data/ess/`, `assets/ess/`) come from the
+  **Gen 9 Move Animation Project** for Pokémon Essentials (<https://eeveeexpo.com/resources/1480/>),
+  converted for the Gen 3 battle screen:
+  - the **Gen 8 Animation Project**, led by **StCooler**, with additional contributions by
+    **DarrylBD99**, **WolfPP**, **ardicoozer**, **riddlemeree** and **Drake Baku**;
+  - the **Gen 9 Animation Project**, led by **KRLW890** and **Nut0066**, with additional
+    contributions by **Toxillian**, **QuahogTheCreator**, **Lcorp** and **Shashu-Greninja**;
+  - their sound effects (`assets/ess/se/`) include **BellBlitzKing**'s *Pokemon Sound Effects
+    Pack: Gen 1 to Gen 7 - All Attacks SFX*. Thank you.
 
 ## Battle data for other mods
 

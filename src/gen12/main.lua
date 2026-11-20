@@ -112,25 +112,6 @@ return function(mod, loadSibling)
       mod.log:info("move mechanics: %d moves run on them, %d without one yet (stand-ins)", fx.registered,
         #fx.missing)
     end
-    -- the pixelfx move animations (src/gen12/fx_anims.lua), over the borrowed ones
-    local FxAnims = loadSibling(mod, "src/gen12/fx_anims.lua")
-    local fxData = FxAnims and loadSibling(mod, "data/fx.lua")
-    if FxAnims and fxData then
-      local looks = {}
-      for _, row in ipairs(moveRows) do
-        if row.look and row.look["gen" .. generation] then looks[row.id] = row.look["gen" .. generation] end
-      end
-      for id, look in pairs(moveState.looks or {}) do looks[id] = look end
-      local okF, fxState = pcall(FxAnims.register, { mod = mod, generation = generation, data = fxData,
-        looks = looks, log = mod.log })
-      if okF and fxState.count > 0 then
-        local hook = FxAnims.overlay({ generation = generation, data = fxData, lines = fxState.lines,
-          root = mod.path, log = mod.log })
-        pcall(function() mod.hooks:wrap("battle.overlay", hook) end)
-        mod.exports._fx = fxState
-        mod.log:info("move animations: %d drawn with pixelfx", fxState.count)
-      end
-    end
     local cartMoves = {}
     for id, rec in mod.content.moves:each() do cartMoves[id] = rec end
     resolveMove, directMove = Moves.resolver(moveState, cartMoves)

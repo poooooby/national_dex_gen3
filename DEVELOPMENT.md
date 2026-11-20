@@ -253,39 +253,75 @@ root; `tools/anim_known.lua` lists what the engine and carts offer). The report
 sprite templates (215), then tasks (32) and its newer backgrounds (24). Test:
 `tests/anims_test.lua [game]` resolves and plays every script headlessly on that cart.
 
-### pixelfx effects
+### Gen 9 Move Animation Project (`src/ess_anims.lua`)
 
-For moves whose expansion script needs graphics no cart has, `tools/build_fx.mjs` renders effects
-from [pixelfx](https://github.com/patch-gg/pixelfx) (MIT; cloned at a pinned commit into
-`tools/.cache/pixelfx_src`) in grays, `tools/fx_atlas.py` packs every frame into one gray + alpha
-atlas (`assets/fx/atlas.png`), and `data/fx.lua` gets the layout, the ramps and the scripts:
+In battle, every move the [Gen 9 Move Animation Project](https://eeveeexpo.com/resources/1480/) names
+plays its animation: all 419 newer moves (over the expansion scripts and borrowed looks above, which
+stay as the fallback and play in contests) and 344 of the carts' own Gen 1-3 moves; so do the cart's
+status, weather, trap, Leech Seed and Focus Punch animations it has a "Common:" one for. It is a
+Pokémon Essentials v21.1 pack (credited in CREDITS.md and LICENSE). `tools/build_ess_anims.py`
+reads its `Data/PkmnAnimations.rxdata` with a small Ruby Marshal reader (`tools/ess_marshal.py`; no
+Ruby needed), matches `Move:` / `OppMove:` names to `data/moves.lua`'s ids and the carts' move
+constants (pokeemerald-expansion's `include/constants/moves.h`, 1-354), keeps those that are real
+(more than one frame, something visible), and writes:
 
-- `SHEETS`: the effect, the seconds kept, a speed-up, a scale (down for the ones made too big for
-  the battle screen, up pixel for pixel), and the pin (the point placed on the battler). The
-  effect's palette is rendered as an even gray ramp, its other colours as their brightness.
-  Pixels fainter than alpha 72 (or a sheet's `cut`) and see-through dark ones are dropped (a soft
-  glow over nothing is a grey box on a bright background); the packer trims each frame to what it
-  draws, keeps 16 grays and alphas and shelf-packs them (`rects`: x, y, w, h, ox, oy a frame).
-- `PAL`: the ramps (8 steps) a move colours with; each sheet also gets its effect's own palette as a
-  ramp of its name, used when a row names none. One effect serves several moves (the orb is Aura
-  Sphere's blue, Focus Blast's orange, Energy Ball's green).
-- `MOVES`: each move's script, as rows for the animation VM: the cart's own sounds, lunge and
-  shake, plus `NdxFx` rows, `{ "FX:" .. sheet, mode, dx, dy, frames, flags, "FX:" .. ramp }`
-  (mode 0 attacker, 1 target, 2 travel, 3 beam; flags 1 feet, 2 aim, 4 behind).
+- `data/ess/<NAME>.lua`: the frames, each a list of cels (pattern, x, y, focus, zoom x/y, angle,
+  opacity, blend, mirror, priority, colour rgba, tone rgb+gray; trailing defaults dropped), and the
+  timings (sounds; background and foreground set/change). `opp` is the foe's version when the pack
+  has one; `charge` / `charge_opp` a two-turn move's charging turn ("Fly charging", "Common:Dig
+  charging"...). `C_<NAME>` files are the common animations. Loaded the first time one plays.
+- `assets/ess/<sheet>.png`: only the 192 px cels used, shrunk to `SCALE` 0.375 (Essentials' user ->
+  target line is 286 px, Gen 3's 111) with their colours weighted by alpha and alpha raised 1.4x (a
+  thin stroke would fade to nothing), in a grid; `bg/` the background pictures, scaled to 240 x 160.
+- `assets/ess/se/*.ogg`: the pack's sounds, mono 22 kHz, a file per volume/pitch used. A
+  `PRSFX- <Move>N` sound of a Gen 1-3 move is that move's Nth cart sound instead (from
+  pokeemerald-expansion's scripts).
+- `data/ess_anims.lua`: the sheets, backgrounds, sounds (registered as mod sounds at load, with the
+  mod's path); `moves` (frame counts, `num` for a cart move, `turns` for a two-turn one, `from` for
+  a borrowed one); `commons` (`Anim.tableScript` kind -> cart name -> file) and `trap`.
 
-`src/fx_anims.lua` registers the `NdxFx` visual task in `AnimTasks.REGISTRY` (once per process,
-`AnimTasks.__ndxFx`) and `FxAnims.merge` adds `data/fx.lua`'s moves and labels to
-`data/anims.lua`'s, so `src/anims.lua` resolves them like its own (`"FX:"` arguments pass through).
-The task draws its frame through `task.draw` (no sprite slot) with a gradient-map shader (the
-gray, bent by a gamma of 1.5 so the glow keeps its colour, looks up an 8 x 1 ramp picture; without
-shaders, a tint), loads the atlas the first time a move plays, and ends after its frames, so a
-missing picture costs nothing but the drawing. A move with
-an expansion script of its own keeps that one.
+The tool's tables: `SKIP` (vetoes), `CART_KEEPS` (Curse and Bide: the cart picks their version by
+the turn number; Transform and Substitute: the cart's animation changes the user's picture for good), `BORROW` (Ivy Cudgel, which the pack lacks, plays Wood Hammer's), `TWO_TURN_CART`
+and `TWO_TURN_EFFECTS` (`charge`: Razor Wind, Solar Beam, Skull Bash, Sky Attack and the newer moves
+on those effects; `hide`: Fly, Dig, Dive, Bounce), `COMMONS` and `TRAP`.
 
-Rebuild with `node tools/build_fx.mjs` (Node 18+, Python with Pillow; `--preview` writes contact
-sheets to `tools/.cache/fx_preview`). Tests: `tests/anims_test.lua [game]` plays each from both
-sides headlessly and checks the atlas (its size, every rect inside it, every ramp named); `tests/drivers/fx_anims_probe.lua` plays them in a
-real battle (shots `FX_SHOTS`, `FX_SHOTS=0` measures garbage instead).
+`EssAnims.install` (after `src/anims.lua`'s, on game.ready) maps the running game's move numbers to
+names and wraps, once per process (`Anim.__ndxEss`, asking the current install's state):
+
+- `Anim.scriptForMove`: a move with an animation answers `createvisualtask NdxEss { "ESS:" .. NAME,
+  mode }` (mode 1 for `charge`: its charging animation on an even turn, as the cart's
+  `choosetwoturnanim`; a `hide` move answers `choosetwoturnanim` between the cart's own script,
+  which hides the user, and mode 2, which shows it again: `present.invisible = false`).
+- `Anim.tableScript`: the `commons`; `TURN_TRAP` keeps the cart's first row (its
+  `GetTrappedMoveAnimId` task sets argument 0) and then `"ESS:@TRAP"`, which picks from `trap`; Bind and
+  Wrap (the cart gives both 0) jump back to the cart's own script, so neither borrows the other's.
+- `Anim.launchMove`: a move launched outside a battle (a contest) plays what lies underneath.
+
+The `NdxEss` task plays the frames as Essentials' `PBAnimationPlayerX` does, at 20 a second (3
+ticks each): focus 1/2 cels offset from the target's/user's centre times 0.375, focus 3 by
+Essentials' per-axis line transform onto the attacker -> target centres (mirrored when the line runs
+right to left), focus 4 on the screen; a line or screen cel is grown by that axis's scale over 0.375
+(1.08 across the line, 1.25 / 1.11 on the screen), so tiled pieces still meet. A foe's move plays
+the `opp` version with the roles swapped. Cels 0 and 1 move, zoom, turn and fade the battlers
+through their `present` fields; tone and colour become the battle's `palAffine` (each channel times
+1 - alpha plus tone and colour: exact, gray aside); all put back at the end. One task draws only at
+one z, so `NdxEss` (z 50: background, back cels, cels behind the enemy) spawns two `NdxEssLayer`
+helpers (z 150 between the battlers, z 500 in front, with the foreground). Add blends add; subtract
+draws the cel's inverse over the screen (the battle's canvas holds no backdrop to subtract from,
+and a colour mask misdraws there).
+
+Not done: a free cel showing a copy of a battler's picture (14 moves, e.g. Foul Play, Spectral
+Thief; their other cels still play), the user's cry as a sound, the cart's stat-change, item and
+switch animations (no exact counterpart), Double Team, Memento, Nature Power and Secret Power (the
+pack has no real one), and Red/Blue/Yellow/Gold/Silver/Crystal, which play their borrowed cart
+animations.
+
+Rebuild with `python tools/build_ess_anims.py [--pack <dir>]` (Pillow, numpy, ffmpeg, and
+pokeemerald-expansion beside this repo; `--no-sounds` keeps the converted sounds). Tests:
+`tests/ess_anims_test.lua [game]` checks every file, sheet, cel, background and sound, resolves and
+plays every move from both sides headlessly, the two-turn ones, the table animations, Curse and a
+contest; `tests/drivers/ess_anims_probe.lua` plays them in a real battle (`MOVES=`, `FOE=1`,
+`TURN=0`) and `tools/ess_gallery.py <shots>` turns the shots into a review page of GIFs.
 
 ## Type badges (option)
 
@@ -1154,7 +1190,7 @@ The owner asked for the Gen 3 extras on Gen 1/2 (2026-11-12). Phase A is the fou
   can't open Gold's pack submenu with A (it never reacts), so it starts the candy at
   `Game2:usePartyItem` and the TM at `PackMenu:openTeachParty`, the calls the pack makes.
 
-### Gen 3 extras on Gen 1/2 (Phase C: `move_fx.lua`, `fx_anims.lua`, `dex_forms.lua`, `vending.lua`)
+### Gen 3 extras on Gen 1/2 (Phase C: `move_fx.lua`, `dex_forms.lua`, `vending.lua`)
 
 - **Move mechanics** (`src/gen12/move_fx.lua`, since folded into the mechanics layer below; this is
   the history): every `data/gen12/moves.lua` row that has no
@@ -1174,17 +1210,9 @@ The owner asked for the Gen 3 extras on Gen 1/2 (2026-11-12). Phase A is the fou
   when aimed); self-only ones join `Effects.NO_CHECKHIT` (Protect lets them through, as Gold's
   stat-ups). Chances roll 0-255 on the battle's RNG. Animation: the first stand-in that is a cart
   move. Hex and Mystical Fire (Gen 3 rules) stay stand-ins.
-- **Animations** (`src/gen12/fx_anims.lua`): no mod code can run inside either game's move
-  animation, so `data/fx.lua`'s labels are read as timelines (`Fx.timeline`: NdxFx tasks, delays,
-  waits) and each move gets a timing-only animation: Red a `battle_anims` record of
-  `SE_DELAY_ANIMATION_10` rows (the first with `sound = <move>`, its own record's borrowed sound;
-  an `override` of the borrowed record), Gold a script `ndx:<id>` (the borrowed script's first
-  `sound` row, `wait`, `ret`) that `moves` names. The effect is drawn from the `battle.overlay`
-  hook while it plays (Red: `animPlaying` / `animName` / `animPlayer.elapsed`, classic layout
-  only; Gold: `anim.animId` / `anim.frames` / `env.battleTurn`), at 0.75 scale, from the
-  battlers' picture centres, clipped above the text box (the clip goes through `transformPoint`:
-  Gold draws the battle through a scaled transform in window space). Same shader and ramps as
-  Gen 3. 18 moves on both games.
+- **Animations**: the newer moves play the cart animation they borrow (`look`). (Until 2026-11-19
+  18 of them drew pixelfx effects over a timing-only animation from the `battle.overlay` hook; the
+  pixelfx effects were removed with the Gen 9 Move Animation Project's arrival on Gen 3.)
 - **FORMS page** (`src/gen12/dex_forms.lua`): Red wraps `DexEntryMenu.update`: on the last page
   with the cry done, A pushes our page (one form at a time: picture via `Sprites.path`, the form's
   words via `src/dex_forms.lua`'s `label`, types, "FORM n/m"; `sgbPalettes` colours the picture),

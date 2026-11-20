@@ -35,7 +35,7 @@ is missing, up to Pecharunt, with today's moves, abilities, items and types to g
 
 ### In Battle
 
-- 🎬 **Animations** for the newer moves
+- 🎬 **Animations from the Gen 9 Move Animation Project** for the newer moves and the original ones (FireRed to Emerald)
 - 🏷️ **Type badges** beside each HP box
 - 📊 **Stat Hints** show each stat change and what it multiplies by ("ATK 2x")
 
@@ -109,7 +109,11 @@ Pick **WOOBLEDEX** in the game's **OPTIONS** menu. Each setting applies to every
 
 - Species data from [PokéAPI](https://pokeapi.co/)
 - Battle animations from RHH's [pokeemerald-expansion](https://github.com/rh-hideout/pokeemerald-expansion/)
-- Move effects from Patch and Hugo Duprez's [pixelfx](https://github.com/patch-gg/pixelfx)
+- Move animations from the [Gen 9 Move Animation Project](https://eeveeexpo.com/resources/1480/):
+  the Gen 8 Animation Project (led by StCooler, with DarrylBD99, WolfPP, ardicoozer, riddlemeree
+  and Drake Baku) and the Gen 9 Animation Project (led by KRLW890 and Nut0066, with Toxillian,
+  QuahogTheCreator, Lcorp and Shashu-Greninja); sounds from BellBlitzKing's Pokemon Sound Effects
+  Pack: Gen 1 to Gen 7 - All Attacks SFX
 - Move and item facts from [Pokémon Showdown](https://github.com/smogon/pokemon-showdown)
 - Cries and item sprites: see [CREDITS.md](CREDITS.md)
 
