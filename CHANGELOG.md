@@ -17,7 +17,9 @@ All notable changes to this mod are documented here, in
   animation the project made for that very move; the others keep the game's own. A foe's move plays the version made for the foe's side;
   two-turn moves charge with their own charging animation (Fly, Dig, Dive and Bounce keep the
   game's own first turn). Contests, Curse, Bide, Transform and Substitute keep the game's animations. Credited in
-  CREDITS.md and the README.
+  CREDITS.md and the README. The pictures ship as ten 256-colour sheets and the sounds as one file,
+  rather than hundreds of loose files; each battle readies its moves' sounds while it starts, so a
+  sound's first play doesn't stall the animation.
 
 ### Removed
 

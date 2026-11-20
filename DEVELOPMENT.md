@@ -279,14 +279,27 @@ constants (pokeemerald-expansion's `include/constants/moves.h`, 1-354), keeps th
   shelf-packed tallest first, 1 px apart), and saved as 256-colour PNGs: `tools/ess_quant.py` refines
   Pillow's octree palette with k-means over the drawn pixels (premultiplied, so faint edges don't
   take entries from what shows); the octree alone bands gradients. About ten files, 1.2 MB.
-- `assets/ess/se/*.ogg`: the pack's sounds, mono 22 kHz, a file per volume/pitch used. A
-  `PRSFX- <Move>N` sound of a Gen 1-3 move is that move's Nth cart sound instead (from
-  pokeemerald-expansion's scripts).
+- `assets/ess/sounds.ogg`: the pack's sounds, mono 22 kHz, one per volume/pitch used, each a whole
+  ogg, end to end in one file (a chained Ogg; converted one by one into `tools/.cache/ess_se`, which
+  `--no-sounds` reuses). A `PRSFX- <Move>N` sound of a Gen 1-3 move is that move's Nth cart sound
+  instead (from pokeemerald-expansion's scripts).
 - `data/ess_anims.lua`: the atlas `pages`; each sheet's cels as rects on them (`r`: page, x, y, w, h
   and where the rect sat in its 72 px cell, 7 numbers a cel); each background as one rect (drawn
   repeated by hand to cover the screen, as Essentials' plane does: a rect of an atlas can't wrap);
-  the sounds (registered as mod sounds at load, with the mod's path); `moves` (frame counts, `num` for a cart move, `turns` for a two-turn one, `from` for
-  a borrowed one); `commons` (`Anim.tableScript` kind -> cart name -> file) and `trap`.
+  `soundFile` and `sounds` (each one's byte offset and length in it); `commonSounds` (the common
+  animations'); `moves` (frame counts, `num` for a cart move, `turns` for a two-turn one, `from` for
+  a borrowed one, `se` the pack sounds it plays); `commons` (`Anim.tableScript` kind -> cart name ->
+  file) and `trap`.
+
+The pack's sounds play through the mod, not the engine's sound registry (which plays a mod sound only
+from a file of its own): `EssAnims.soundSource` decodes one from its bytes (`mod:read` of the file,
+once), widens it to stereo as the engine's `widenMono` does and keeps the Source;
+`EssAnims.playSound` plays it as the engine plays a mod sound (0.8 x `Audio._sfxVolume`, the sound
+volume option; pitch `Sound.rate()`; nothing while `ChipAudio.isSuspended()`). The first play would
+decode (about 1.3 ms on a desktop, measured over all 796), so `EssAnims.listen` (main.lua, at load)
+decodes ahead on the engine's warm queue (`src/core/game3/warm.lua`, 2 ms a frame): `battle.started`
+queues every move of both parties plus `commonSounds`, `battle.move_used` the move about to animate
+(priority 1); `battle.ended` drops them all (memory stays a battle's worth).
 
 The tool's tables: `SKIP` (vetoes), `CART_KEEPS` (Curse and Bide: the cart picks their version by
 the turn number; Transform and Substitute: the cart's animation changes the user's picture for good), `BORROW` (Ivy Cudgel, which the pack lacks, plays Wood Hammer's), `TWO_TURN_CART`

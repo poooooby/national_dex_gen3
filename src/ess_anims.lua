@@ -28,8 +28,9 @@
 -- the player (with the foreground): itself and two helper tasks, one per band the battle draws. A
 -- foe's move plays the pack's OppMove version when it has one (made for the foe's side), else the
 -- Move version, mirrored on the line between them. The battlers' moves, fades and tints are their
--- `present` offsets, put back when it ends. Sounds are the cart's (by name) or the pack's (registered
--- as mod sounds). Without graphics (headless, or a missing file) the task still takes its time.
+-- `present` offsets, put back when it ends. Sounds are the cart's (by name) or the pack's (one file
+-- of them, played here: see "the pack's sounds"). Without graphics (headless, or a missing file) the
+-- task still takes its time.
 local EssAnims = {}
 
 local TICKS = 3                        -- 60 a second; Essentials plays 20 frames a second
@@ -72,17 +73,157 @@ vec4 effect(vec4 color, Image tex, vec2 uv, vec2 sc) {
 }
 ]]
 
--- the pack's sounds as mod sounds; at load (registries are applied before game.ready)
-function EssAnims.registerSounds(mod, ess)
-  local sfx = mod and mod.content and mod.content.sfx
-  if not (sfx and type(ess) == "table" and type(ess.sounds) == "table") then return 0 end
+-- ---------- the pack's sounds ----------------------------------------------------------------
+-- data.soundFile holds every pack sound as a whole ogg, end to end (one file shipped, not hundreds);
+-- data.sounds[id] = { byte offset, length }. A sound is decoded from its own bytes the first time it
+-- plays, or ahead of time on the engine's warm queue (src/core/game3/warm.lua, a little each frame):
+-- battle.started queues the sounds of every move in both parties and the common animations',
+-- battle.move_used the move about to animate. Decoded sounds are widened to stereo, as the engine
+-- widens its mono ones (Sound.lua's widenMono), and kept until the battle ends. They play as the
+-- engine plays a mod sound: 0.8 x the sound volume option, at the engine's sound rate, and not while
+-- the audio device is suspended.
+local BASE_VOLUME = 0.8
+
+local function soundBytes(state)
+  if state.soundBytes == nil then
+    local file, bytes = state.data.soundFile, nil
+    if file and state.mod and state.mod.read then
+      local ok, b = pcall(state.mod.read, state.mod, file)
+      if ok and type(b) == "string" then bytes = b end
+    end
+    if not bytes and file and love and love.filesystem and love.filesystem.read then
+      local ok, b = pcall(love.filesystem.read, state.root .. "/" .. file)
+      if ok and type(b) == "string" then bytes = b end
+    end
+    if not bytes and file and state.log then state.log:warn("could not read %s", tostring(file)) end
+    state.soundBytes = bytes or false
+  end
+  return state.soundBytes or nil
+end
+
+-- the sound's Source, decoded now if it isn't yet; nil without audio or when it can't be
+function EssAnims.soundSource(state, id)
+  local src = state.sources[id]
+  if src ~= nil then return src or nil end
+  src = false
+  local at = state.data.sounds and state.data.sounds[id]
+  if at and love and love.sound and love.sound.newSoundData and love.audio and love.audio.newSource
+      and love.filesystem and love.filesystem.newFileData then
+    local bytes = soundBytes(state)
+    if bytes then
+      local ok, made = pcall(function()
+        local fd = love.filesystem.newFileData(bytes:sub(at[1] + 1, at[1] + at[2]), id .. ".ogg")
+        local sd = love.sound.newSoundData(fd)
+        if sd:getChannelCount() == 1 then
+          local n = sd:getSampleCount()
+          local st = love.sound.newSoundData(n, sd:getSampleRate(), 16, 2)
+          for i = 0, n - 1 do
+            local v = sd:getSample(i)
+            st:setSample(i, 1, v)
+            st:setSample(i, 2, v)
+          end
+          sd = st
+        end
+        return love.audio.newSource(sd, "static")
+      end)
+      if ok and made then
+        src = made
+      elseif state.log then
+        state.log:warn("could not decode sound %s: %s", tostring(id), tostring(made))
+      end
+    end
+  end
+  state.sources[id] = src
+  return src or nil
+end
+
+-- decode these sounds ahead of time on the engine's warm queue (lower priority runs sooner)
+function EssAnims.prewarm(state, ids, priority)
+  if not (state and type(ids) == "table" and state.data.sounds) then return 0 end
+  local ok, Warm = pcall(state.require or require, "src.core.game3.warm")
+  if not (ok and type(Warm) == "table" and Warm.add) then return 0 end
   local n = 0
-  for id, file in pairs(ess.sounds) do
-    -- (a sound file's path is the engine's, not the mod's)
-    local path = (mod.path and mod.path ~= "") and (mod.path .. "/" .. file) or file
-    if pcall(function() sfx:register(id, { file = path }) end) then n = n + 1 end
+  for _, id in ipairs(ids) do
+    if state.sources[id] == nil and state.data.sounds[id] then
+      Warm.add("ndxess:" .. id, function() EssAnims.soundSource(state, id) end, priority)
+      n = n + 1
+    end
   end
   return n
+end
+
+-- the pack sounds of these move numbers (nil, or not ours: none)
+local function moveSounds(state, nums, out)
+  out = out or {}
+  for _, num in ipairs(nums) do
+    if type(num) == "table" then num = num.id or num.move or num.num end
+    local name = state.byNum and state.byNum[tonumber(num)]
+    local m = name and state.data.moves[name]
+    for _, id in ipairs(m and m.se or {}) do out[#out + 1] = id end
+  end
+  return out
+end
+
+-- battle.started: every move in both parties, and the common animations' sounds
+function EssAnims.prewarmBattle(state, battle)
+  if not (state and state.data) then return 0 end
+  local ids = {}
+  for _, party in ipairs({ battle and battle.playerParty or {}, battle and battle.foeParty or {} }) do
+    for _, mon in ipairs(party) do
+      if type(mon) == "table" and type(mon.moves) == "table" then moveSounds(state, mon.moves, ids) end
+    end
+  end
+  for _, id in ipairs(state.data.commonSounds or {}) do ids[#ids + 1] = id end
+  return EssAnims.prewarm(state, ids, 6)
+end
+
+-- play a pack sound; false when the id isn't one
+function EssAnims.playSound(state, id, require)
+  if not (state and state.data and state.data.sounds and state.data.sounds[id]) then return false end
+  local okC, ChipAudio = pcall(require, "src.core.ChipAudio")
+  if okC and type(ChipAudio) == "table" and ChipAudio.isSuspended then
+    local okS, susp = pcall(ChipAudio.isSuspended)
+    if okS and susp then return true end
+  end
+  local src = EssAnims.soundSource(state, id)
+  if not src then return true end
+  local okA, Audio = pcall(require, "src.core.game3.audio")
+  local level = okA and type(Audio) == "table" and tonumber(Audio._sfxVolume) or 1
+  local okR, Sound = pcall(require, "src.core.Sound")
+  local rate = okR and type(Sound) == "table" and Sound.rate and tonumber(Sound.rate()) or 1
+  pcall(src.stop, src)
+  pcall(src.setVolume, src, BASE_VOLUME * level)
+  pcall(src.setPitch, src, rate)
+  pcall(src.play, src)
+  return true
+end
+
+-- the battle events that warm and drop the sounds; once per mod load, from main.lua
+function EssAnims.listen(mod, require)
+  local events = mod and mod.events
+  if not (events and events.on) then return false end
+  local function state()
+    local ok, AnimTasks = pcall(require, "src.core.game3.battle.anim_tasks")
+    local st = ok and type(AnimTasks) == "table" and AnimTasks.__ndxEss or nil
+    return st and st.data and st.sources and st or nil
+  end
+  events:on("battle.started", function(ev)
+    local st = state()
+    if st then EssAnims.prewarmBattle(st, ev and ev.battle) end
+  end)
+  events:on("battle.move_used", function(ev)
+    local st = state()
+    if st and ev and ev.moveNum then EssAnims.prewarm(st, moveSounds(st, { ev.moveNum }), 1) end
+  end)
+  events:on("battle.ended", function()
+    local st = state()
+    if not st then return end
+    for _, src in pairs(st.sources) do
+      if src then pcall(src.stop, src) end
+    end
+    st.sources = {}
+  end)
+  return true
 end
 
 local PREFIX = "national_dex_gen3:ess:"
@@ -107,8 +248,10 @@ function EssAnims.install(opts)
     state = {}
     AnimTasks.__ndxEss = state
   end
-  if state.data ~= data then state.images, state.moves = {}, {} end
+  if state.data ~= data then state.images, state.moves, state.sources, state.soundBytes = {}, {}, {}, nil end
+  state.sources = state.sources or {}
   state.data, state.read, state.root, state.log = data, opts.read, opts.mod and opts.mod.path or "", log
+  state.mod, state.require = opts.mod, require
   -- the running game's move numbers: the newer moves' slots, the carts' own numbers
   state.byNum = {}
   for _, r in ipairs(opts.moves or {}) do
@@ -355,6 +498,7 @@ function EssAnims.install(opts)
       end
       return
     end
+    if EssAnims.playSound(state, se, require) then return end
     if Audio.playSe then pcall(Audio.playSe, se, { pan = 0 }) end
   end
 

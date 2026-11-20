@@ -105,8 +105,45 @@ end
 T.eq(#badData, 0, "every animation's data is whole (" .. table.concat(badData, "; "):sub(1, 400) .. ")")
 local missing = {}
 for _, pg in ipairs(ess.pages) do if not exists(pg.file) then missing[#missing + 1] = pg.file end end
-for _, file in pairs(ess.sounds) do if not exists(file) then missing[#missing + 1] = file end end
-T.eq(#missing, 0, "every atlas page and sound ships (" .. table.concat(missing, ", "):sub(1, 300) .. ")")
+if not exists(ess.soundFile) then missing[#missing + 1] = ess.soundFile end
+T.eq(#missing, 0, "every atlas page and the sound file ship (" .. table.concat(missing, ", "):sub(1, 300) .. ")")
+
+-- the sounds: one file, each sound a whole ogg in it (starting "OggS"), end to end with nothing
+-- between or past them; each move's se list is the pack sounds its timings play
+do
+  local f = io.open(ROOT .. ess.soundFile, "rb")
+  local blob = f and f:read("*a") or ""
+  if f then f:close() end
+  local spans, bad = {}, {}
+  for id, at in pairs(ess.sounds) do
+    spans[#spans + 1] = { at[1], at[2], id }
+    if blob:sub(at[1] + 1, at[1] + 4) ~= "OggS" then bad[#bad + 1] = id .. " not an ogg" end
+  end
+  table.sort(spans, function(a, b) return a[1] < b[1] end)
+  local pos = 0
+  for _, sp in ipairs(spans) do
+    if sp[1] ~= pos then bad[#bad + 1] = sp[3] .. " at " .. sp[1] .. ", not " .. pos end
+    pos = sp[1] + sp[2]
+  end
+  if pos ~= #blob then bad[#bad + 1] = ("the sounds end at %d of %d bytes"):format(pos, #blob) end
+  T.check(#spans > 0 and #bad == 0, ("%d sounds in one file of %d bytes (%s)"):format(#spans, #blob,
+    table.concat(bad, ", "):sub(1, 300)))
+  local wrong = {}
+  for name, info in pairs(ess.moves) do
+    local want, seen = {}, {}
+    for _, a in pairs(loaded[name] or {}) do
+      for _, e in ipairs(a.timing) do
+        if e.se and ess.sounds[e.se] and not seen[e.se] then seen[e.se] = true; want[#want + 1] = e.se end
+      end
+    end
+    local have = {}
+    for _, id in ipairs(info.se or {}) do have[id] = true end
+    local ok = #want == #(info.se or {})
+    for _, id in ipairs(want) do ok = ok and have[id] end
+    if not ok then wrong[#wrong + 1] = name end
+  end
+  T.eq(#wrong, 0, "each move lists the pack sounds it plays (" .. table.concat(wrong, ", "):sub(1, 300) .. ")")
+end
 
 -- the atlas: a few pages (not hundreds of files), none over 2048 a side (Android), each a 256-colour
 -- PNG (colour type 3) the size the index says; every cel and background a rect inside its page
@@ -370,6 +407,89 @@ do
     T.check((p.ox or 0) == 0 and (p.oy or 0) == 0 and (p.alpha or 1) == 1, "and puts it back")
     T.check((e.ox or 0) == 0 and (e.oy or 0) == 0 and (e.alpha or 1) == 1, "and the target")
   end
+end
+
+-- the pack's sounds: decoded from their bytes in the file, played at the engine's mod-sound volume
+-- (0.8 x the sound volume option) and rate; warmed ahead at battle start and on move use, dropped
+-- when the battle ends (a stand-in love.audio records it)
+do
+  local state = AnimTasks.__ndxEss
+  local made, played, decoded = {}, {}, {}
+  local saved = love
+  local function source(sd)
+    local src = { sd = sd }
+    function src:stop() self.stopped = true end
+    function src:setVolume(v) self.volume = v end
+    function src:setPitch(v) self.pitch = v end
+    function src:play() played[#played + 1] = self end
+    made[#made + 1] = src
+    return src
+  end
+  local function soundData(a, rate, bits, ch)
+    local n = type(a) == "number" and a or 4
+    if type(a) ~= "number" then decoded[#decoded + 1] = a end
+    local sd = { n = n, ch = type(a) == "number" and ch or 1, s = {} }
+    function sd:getChannelCount() return self.ch end
+    function sd:getSampleCount() return self.n end
+    function sd:getSampleRate() return 22050 end
+    function sd:getSample(i) return 0.5 end
+    function sd:setSample(i, c, v) self.s[#self.s + 1] = v end
+    return sd
+  end
+  love = setmetatable({
+    audio = { newSource = source },
+    sound = { newSoundData = soundData },
+    filesystem = setmetatable({ newFileData = function(bytes, name) return { bytes = bytes, name = name } end },
+      { __index = saved and saved.filesystem }),
+  }, { __index = saved })
+  local Audio = require("src.core.game3.audio")
+  local Sound = require("src.core.Sound")
+  local vol0 = Audio._sfxVolume
+  Audio._sfxVolume = 4 / 7
+  local mod = { read = function(_, rel)
+    local f = io.open(ROOT .. rel, "rb")
+    local b = f and f:read("*a")
+    if f then f:close() end
+    return b
+  end }
+  state.mod, state.sources, state.soundBytes = mod, {}, nil
+  local Ess = dofile(ROOT .. "src/ess_anims.lua")
+  local id = ess.moves.NIGHT_SLASH.se[1]
+  T.check(Ess.playSound(state, id, require), "a pack sound plays through the mod")
+  local at = ess.sounds[id]
+  local fd = decoded[1] and decoded[1]
+  T.check(fd and fd.bytes and #fd.bytes == at[2] and fd.bytes:sub(1, 4) == "OggS", "decoded from its own bytes")
+  local src = played[1]
+  T.check(src and math.abs(src.volume - 0.8 * 4 / 7) < 1e-9 and src.pitch == (Sound.rate and Sound.rate() or 1),
+    "at the engine's mod-sound volume and rate (" .. tostring(src and src.volume) .. ")")
+  T.check(src and src.sd.ch == 2, "widened to stereo")
+  Ess.playSound(state, id, require)
+  T.check(#made == 1 and #played == 2, "and decoded once")
+  T.check(not Ess.playSound(state, "SE_M_CUT", require), "a cart sound is left to the engine")
+
+  -- warming: battle start queues both parties' moves and the common sounds; the queue decodes them
+  local Warm = require("src.core.game3.warm")
+  Warm.reset()
+  state.sources = {}
+  local n = Ess.prewarmBattle(state, { playerParty = { { moves = { byId.NIGHT_SLASH.index } } }, foeParty = {} })
+  T.check(n == #ess.moves.NIGHT_SLASH.se + #ess.commonSounds, ("battle start warms %d sounds"):format(n))
+  T.check(Warm.pending("ndxess:" .. id), "on the engine's warm queue")
+  for _ = 1, 200 do Warm.step(1) end
+  T.check(not Warm.pending("ndxess:" .. id) and state.sources[id], "which decodes them")
+
+  -- battle.ended drops them (through the listener main.lua sets up)
+  local handlers = {}
+  Ess.listen({ events = { on = function(_, name, fn) handlers[name] = fn end } }, require)
+  T.check(handlers["battle.started"] and handlers["battle.move_used"] and handlers["battle.ended"], "it listens to the battle")
+  handlers["battle.ended"]({})
+  T.check(next(AnimTasks.__ndxEss.sources) == nil, "the battle's end drops the sounds")
+  handlers["battle.move_used"]({ moveNum = byId.NIGHT_SLASH.index })
+  T.check(Warm.pending("ndxess:" .. id), "a move about to animate warms its sounds")
+  Warm.reset()
+
+  Audio._sfxVolume = vol0
+  love = saved
+  state.sources, state.soundBytes = {}, nil
 end
 
 -- an unknown move ends its task at once rather than hang the script

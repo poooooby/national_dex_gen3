@@ -191,10 +191,10 @@ return function(mod)
   -- moves newer than Gen 3 that run on a Gen 3 effect (src/moves.lua), before the species,
   -- whose learnsets name them
   local registeredMoves = NewMoves and NewMoves.register(mod, read("data/moves.lua") or {}) or {}
-  -- the Gen 9 Move Animation Project's animations (src/ess_anims.lua): their sounds are mod sounds,
-  -- registered now; the task on game.ready
+  -- the Gen 9 Move Animation Project's animations (src/ess_anims.lua): the battle events that
+  -- decode their sounds ahead of time now; the task on game.ready
   local essData = EssAnims and read("data/ess_anims.lua") or nil
-  if essData then EssAnims.registerSounds(mod, essData) end
+  if essData then EssAnims.listen(mod, require) end
   -- TMs for the newer moves (src/tms.lua): items in the TM Case, after the moves they teach
   local moveRowById, moveNumById = {}, {}
   for _, r in ipairs(registeredMoves) do moveRowById[r.id], moveNumById[r.id] = r, r.index end

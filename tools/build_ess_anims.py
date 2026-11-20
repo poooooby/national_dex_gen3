@@ -17,7 +17,9 @@ Gen 1-3 moves the carts have (CART_KEEPS aside), their charging turn for two-tur
                            and trimmed, on pages up to 1024 square, 256 colours each
   assets/ess/bgs_N.png     background and foreground pictures, scaled to the 240 x 160 screen, on
                            pages up to 1024 square, 256 colours each
-  assets/ess/se/*.ogg      the pack's sounds that have no close Gen 3 match (mono, 22 kHz)
+  assets/ess/sounds.ogg    the pack's sounds that have no close Gen 3 match (mono, 22 kHz): each
+                           one a whole ogg, end to end in one file (a chained Ogg), where the index
+                           gives its start and length; converted one by one into tools/.cache/ess_se
 
 A sound is a Gen 3 cart sound when it is the pack's recording of a Gen 1-3 move's sound
 ("PRSFX- Thunder Punch2" -> the second sound in Thunder Punch's script, from pokeemerald-expansion's
@@ -672,17 +674,35 @@ def main():
         pg, x, y = bg_places[k]
         bg_index[k] = {"page": len(cel_pages) + pg + 1, "x": x, "y": y, "w": img.width, "h": img.height}
 
-    # sounds
-    se_dir = assets / "se"
+    # sounds: each converted into the cache, then all of them end to end in one file (src/ess_anims.lua
+    # decodes a sound from its own bytes the first time it plays)
+    se_dir = ROOT / "tools" / ".cache" / "ess_se"
     if not args.no_sounds:
         shutil.rmtree(se_dir, ignore_errors=True)
     se_dir.mkdir(parents=True, exist_ok=True)
+    shutil.rmtree(assets / "se", ignore_errors=True)
     se_index = {}
+    blob = bytearray()
     for sid, (path, vol, pitch) in sorted(sounds.items()):
         out = se_dir / (sid.lower() + ".ogg")
         if not out.exists():
             convert_sound(path, out, vol, pitch)
-        se_index[sid] = "assets/ess/se/%s.ogg" % sid.lower()
+        b = out.read_bytes()
+        assert b[:4] == b"OggS", out
+        se_index[sid] = (len(blob), len(b))
+        blob += b
+    SOUND_FILE = "assets/ess/sounds.ogg"
+    (ROOT / SOUND_FILE).write_bytes(bytes(blob))
+
+    # the pack sounds each animation plays (src/ess_anims.lua decodes them ahead of time)
+    def pack_sounds(d):
+        out = []
+        for a in d.values():
+            for e in a.get("timing", []):
+                se = e.get("se")
+                if se in se_index and se not in out:
+                    out.append(se)
+        return out
 
     # the moves
     move_dir = ROOT / "data" / "ess"
@@ -723,12 +743,22 @@ def main():
         lines.append("    %s = { page = %d, x = %d, y = %d, w = %d, h = %d }," % (
             key(k), b["page"], b["x"], b["y"], b["w"], b["h"]))
     lines.append("  },")
+    lines.append("  -- the pack's own sounds: one file of whole oggs end to end; each sound's byte offset and length")
+    lines.append("  soundFile = %s," % lua(SOUND_FILE))
     lines.append("  sounds = {")
-    for sid, f in se_index.items():
-        lines.append("    %s = %s," % (sid, lua(f)))
+    for sid, (off, n) in se_index.items():
+        lines.append("    %s = { %d, %d }," % (sid, off, n))
     lines.append("  },")
+    common_se = []
+    for move, d in converted.items():
+        if move.startswith("C_"):
+            for se in pack_sounds(d):
+                if se not in common_se:
+                    common_se.append(se)
+    lines.append("  -- the pack sounds the common animations play")
+    lines.append("  commonSounds = %s," % lua(sorted(common_se)))
     lines.append("  -- move -> its frame counts (opp: the foe's version; charge: the charging turn), the cart's")
-    lines.append("  -- number for a Gen 1-3 move, and how a two-turn move plays (turns)")
+    lines.append("  -- number for a Gen 1-3 move, how a two-turn move plays (turns), and the pack sounds it plays (se)")
     lines.append("  moves = {")
     for move, d in converted.items():
         if move.startswith("C_"):
@@ -747,6 +777,9 @@ def main():
             row["from"] = BORROW[move]
         if move in read_moves.on_user:
             row["user"] = True   # a newer move on its user (the carts' own say so in their move data)
+        se = pack_sounds(d)
+        if se:
+            row["se"] = se
         lines.append("    %s = %s," % (move, lua(row)))
     lines.append("  },")
     lines.append("  -- the cart's table animations (Anim.tableScript kind, name) -> a data/ess file")
@@ -770,7 +803,7 @@ def main():
         len(converted) - len(moves)))
     print("sheets: %d, backgrounds: %d, on %d atlas pages (%s; %.1f MB), pack sounds: %d (%.1f MB), cart sounds used: %d" % (
         len(index), len(bg_index), len(pages), ", ".join("%dx%d" % (pg["w"], pg["h"]) for pg in pages),
-        size(assets) / 1e6 - size(se_dir) / 1e6, len(se_index), size(se_dir) / 1e6, stats["cart_se"]))
+        size(assets) / 1e6 - len(blob) / 1e6, len(se_index), len(blob) / 1e6, stats["cart_se"]))
     print("data/ess: %.1f MB" % (size(move_dir) / 1e6))
     for k in ("missing_sheet", "missing_se", "missing_bg"):
         if stats[k]:

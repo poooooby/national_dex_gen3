@@ -1,7 +1,8 @@
 -- Driver: the Gen 9 Move Animation Project's animations (src/ess_anims.lua) in a real Gen 3 battle.
 -- A new game, a wild battle, then each move's animation played from the player's side (and the
 -- foe's: FOE=1), a shot every SHOT_EVERY frames into SHOT_DIR (<MOVE>_p_NN.png, <MOVE>_e_NN.png), for
--- tools/ess_gallery.py to turn into a review page. MOVES=AXE_KICK,THUNDERBOLT (default: all of
+-- tools/ess_gallery.py to turn into a review page. The pack's sounds: the battle's start decodes the
+-- party's move sounds ahead (Night Slash's, given to the player's mon), and each move's play. MOVES=AXE_KICK,THUNDERBOLT (default: all of
 -- data/ess_anims.lua's, the newer and the carts' own); TURN=0 plays a two-turn move's first turn. From the gen1recomp root:
 --   SHOT_DIR=<dir> MOVES=... FOE=1 POKEPORT_GAME=emerald POKEPORT_VERSION=emerald \
 --   POKEPORT_DRIVER=mods/national_dex_gen3/tests/drivers/ess_anims_probe.lua love .
@@ -52,6 +53,8 @@ local function body(game, log)
 
   session.party = {}
   Party.giveMon(session, C.species.byName.SPECIES_BLAZIKEN or C.species.byName.SPECIES_CHARIZARD, 50, "HERO")
+  local hero = session.party[1]
+  if hero and type(hero.moves) == "table" then hero.moves[2] = byId.NIGHT_SLASH.index end
   local started, serr = BattleBridge.startWild(Runtime._mod, game,
     { species = C.species.byName.SPECIES_SWAMPERT or C.species.byName.SPECIES_BLASTOISE, level = 50 }, { fade = false })
   check(started == true, "wild battle started " .. tostring(serr or ""))
@@ -62,6 +65,10 @@ local function body(game, log)
   end, 3000)
   check(ok, "battle reached the action menu")
   U.wait(30)
+  local st = AnimTasks.__ndxEss
+  local first = ess.moves.NIGHT_SLASH.se[1]
+  check(waitFor(function() return st and st.sources and st.sources[first] end, 240),
+    "the battle's start decoded the party's move sounds (" .. tostring(st and st.sources and st.sources[first]) .. ")")
 
   -- a newer move by its slot, a cart's by its number; a two-turn move's second turn (TURN=0: its first)
   local turn = tonumber(os.getenv("TURN") or "")
@@ -73,7 +80,12 @@ local function body(game, log)
     Anim.launchMove(num, { attackerSide = foe and "enemy" or "player", targetSide = foe and "player" or "enemy",
       isReversed = foe, moveTurn = turn or (info and info.turns and 1 or 0) })
     local n, ticks = 0, 0
+    local heard, sounds = false, info and info.se or {}
     while Anim.busy() and ticks < 1500 do
+      for _, se in ipairs(sounds) do
+        local src = st and st.sources and st.sources[se]
+        if src and src:isPlaying() then heard = true end
+      end
       if ticks % every == 0 then
         n = n + 1
         U.still(game, ("%s/%s_%s_%02d.png"):format(dir, id, foe and "e" or "p", n))
@@ -86,6 +98,7 @@ local function body(game, log)
       end
     end
     check(saw and not Anim.busy(), ("%s%s: NdxEss played, %d ticks"):format(id, foe and " (foe)" or "", ticks))
+    if #sounds > 0 then check(heard, ("%s: its pack sounds played (%d)"):format(id, #sounds)) end
     U.wait(10)
   end
 
