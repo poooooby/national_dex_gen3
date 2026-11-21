@@ -845,6 +845,53 @@ do
     return list
   end
   local tutorList = { frlg = tutorMoves(tutors.frlg), em = tutorMoves(tutors.em) }
+  -- who teaches each tutor move, by the cart's tutor number (tutor.lua `moves` order). Traced
+  -- 2026-11-21 from the carts' own scripts: the map whose person sets VAR_0x8005 to that number
+  -- before ChooseMonForMoveTutor; Emerald's other 20 are Battle Frontier Lounge 7's two tutors,
+  -- for the Battle Points each move's script sets (VAR_0x8008). Every other tutor teaches once
+  -- (all of FireRed / LeafGreen's: the page says so once).
+  local WHERE = {
+    frlg = {
+      [0] = "Route 4", "Seven Island", "Route 4", "Four Island, in a house",
+      "Victory Road 2F", "Celadon Dept. Store 3F", "Pewter Museum of Science",
+      "Copycat's house 2F, Saffron City", "Pokémon Lab, Cinnabar Island",
+      "Celadon City", "Viridian City", "Silph Co. 2F", "Mt. Ember",
+      "Rock Tunnel B1F", "Fuchsia City",
+    },
+    em = {
+      [0] = "Battle Frontier, Lounge 7: 24 BP", "Battle Frontier, Lounge 7: 48 BP",
+      "Battle Frontier, Lounge 7: 48 BP", "Battle Frontier, Lounge 7: 48 BP",
+      "Sootopolis City Pokémon Center (once)", "Battle Frontier, Lounge 7: 48 BP",
+      "Battle Frontier, Lounge 7: 24 BP", "Lavaridge Town, in a house (once)",
+      "Fallarbor Town Poké Mart (once)", "Battle Frontier, Lounge 7: 16 BP",
+      "Battle Frontier, Lounge 7: 24 BP", "Battle Frontier, Lounge 7: 48 BP",
+      "Pacifidlog Town Pokémon Center (once)", "Battle Frontier, Lounge 7: 48 BP",
+      "Lilycove Dept. Store rooftop (once)", "Mossdeep City (once)", "Mauville City (once)",
+      "Battle Frontier, Lounge 7: 48 BP", "Battle Frontier, Lounge 7: 24 BP",
+      "Battle Frontier, Lounge 7: 24 BP", "Battle Frontier, Lounge 7: 48 BP",
+      "Battle Frontier, Lounge 7: 24 BP", "Battle Frontier, Lounge 7: 48 BP",
+      "Slateport City, Pokémon Fan Club (once)", "Fortree City, in a house (once)",
+      "Battle Frontier, Lounge 7: 24 BP", "Battle Frontier, Lounge 7: 16 BP",
+      "Battle Frontier, Lounge 7: 48 BP", "Battle Frontier, Lounge 7: 48 BP",
+      "Verdanturf Town Pokémon Center (once)",
+    },
+  }
+  -- the move each place teaches (the order above is the carts'; checked against tutor.lua)
+  local EXPECT = {
+    frlg = { [0] = 5, 14, 25, 34, 38, 68, 69, 102, 118, 135, 138, 86, 153, 157, 164 },
+    em = { [0] = 5, 14, 25, 34, 38, 68, 69, 102, 118, 135, 138, 86, 153, 157, 164, 223, 205, 244, 173, 196,
+           203, 189, 8, 207, 214, 129, 111, 9, 7, 210 },
+  }
+  local tutorWhere = { frlg = {}, em = {} }
+  for g, list in pairs(WHERE) do
+    local tut = tutors[g]
+    if tut then
+      for i = 0, #list do
+        assert(tut.moves[i] == EXPECT[g][i], g .. " tutor " .. i .. " is no longer the move this list names")
+        tutorWhere[g][tostring(tut.moves[i])] = list[i]
+      end
+    end
+  end
 
   local function machineOrder(list)
     table.sort(list, function(a, b)
@@ -1040,6 +1087,7 @@ do
   f:write("window.LEARNSETS = {\n")
   f:write('"moves":' .. enc(moveRows) .. ",\n")
   f:write('"machines":' .. enc(machineRows) .. ",\n")
+  f:write('"tutors":' .. enc(tutorWhere) .. ",\n")
   f:write('"mons":[\n' .. table.concat(monLines, ",\n") .. "\n]};\n")
   f:close()
   learnsetCount = #mons

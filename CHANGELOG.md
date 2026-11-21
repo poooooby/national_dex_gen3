@@ -3,6 +3,14 @@
 All notable changes to this mod are documented here, in
 [keep a changelog](https://keepachangelog.com/en/1.1.0/) format.
 
+## [Unreleased]
+
+### Changed
+
+- **The [Learnsets](https://poooooby.github.io/national_dex_gen3/learnsets/) page says where each move tutor
+  is:** the town or building on FireRed / LeafGreen and Emerald, and the Battle Points the Battle
+  Frontier's tutors ask.
+
 ## [1.19.1] - 2026-11-21
 
 ### Added

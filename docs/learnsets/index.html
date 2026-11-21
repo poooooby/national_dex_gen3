@@ -77,6 +77,7 @@ tr.mv { cursor: pointer; }
 tr.mv:hover td { background: var(--hover); }
 tr.desc td { color: var(--muted); font-size: 13px; padding-top: 0; background: var(--hover); }
 td.n, th.n { text-align: right; font-variant-numeric: tabular-nums; }
+.where { color: var(--muted); font-size: 12px; margin-top: 1px; }
 .kind { font-size: 12px; padding: 1px 7px; border-radius: 6px; background: var(--chip); white-space: nowrap; }
 .kind.p { color: #c0392b; } .kind.s { color: #2f6fd6; } .kind.v { color: #8e44ad; }
 @media (prefers-color-scheme: dark) { .kind.p { color: #ff8a7a; } .kind.s { color: #8fb4ff; } .kind.v { color: #d7a6f0; } }
@@ -211,7 +212,9 @@ footer { color: var(--muted); font-size: 13px; padding: 0 16px 24px; max-width: 
       var tr = el("tr", "mv");
       tr.tabIndex = 0;
       if (leadLabel) tr.appendChild(el("td", "n", r.lead));
-      tr.appendChild(el("td", null, mv[0]));
+      var nameCell = el("td", null, mv[0]);
+      if (r.where) nameCell.appendChild(el("div", "where", r.where));
+      tr.appendChild(nameCell);
       var tt = el("td"); tt.appendChild(typeChip(mv[1])); tr.appendChild(tt);
       var k = kindOf(mv);
       var kt = el("td"); kt.appendChild(el("span", "kind " + k, KIND[k])); tr.appendChild(kt);
@@ -297,8 +300,10 @@ footer { color: var(--muted); font-size: 13px; padding: 0 16px 24px; max-width: 
     var lvNote = original ? (modernBox.checked ? "with Modern Moves" : "the game's own (Modern Moves off)") : null;
     frag.appendChild(section("Level up", lvNote, lv.map(function (r) { return { lead: r[0], id: r[1] }; }), "Lv."));
     frag.appendChild(section("TMs and HMs", null, m.tm.map(function (id) { return { lead: L.machines[id] || "", id: id }; }), "TM"));
-    frag.appendChild(section("Move tutors", "FireRed and LeafGreen", m.tf.map(function (id) { return { id: id }; }), null));
-    frag.appendChild(section("Move tutors", "Emerald (Ruby and Sapphire have none)", m.te.map(function (id) { return { id: id }; }), null));
+    var tw = L.tutors || {};
+    var whereOf = function (g) { return function (id) { return { id: id, where: (tw[g] || {})[id] }; }; };
+    frag.appendChild(section("Move tutors", "FireRed and LeafGreen: each tutor teaches one Pokémon", m.tf.map(whereOf("frlg")), null));
+    frag.appendChild(section("Move tutors", "Emerald (Ruby and Sapphire have none)", m.te.map(whereOf("em")), null));
     var egg = (useModern ? m.egg : m.egg0) || [];
     var eggNote = egg.length ? "bred from a parent that knows the move" : "this Pokémon hatches as an earlier one, or not at all";
     if (original && egg.length) eggNote += modernBox.checked ? ", with Modern Moves" : ", Modern Moves off";

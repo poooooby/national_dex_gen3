@@ -1583,7 +1583,11 @@ already has (a saved Pokémon may know it), so its move list only grows.
 `luajit tools/build_docs.lua` writes with the other guides: every Pokémon #1-1025 and every form,
 with level-up (the originals twice: Modern Moves' merge, `lv`, and the cart's own, `lv0`), TM / HM
 (the cart's 58 and the added TM51+), FireRed / LeafGreen and Emerald tutors, and egg moves; each
-move's type, power, accuracy, PP, kind by type and with Move Split, and its text. Links are
+move's type, power, accuracy, PP, kind by type and with Move Split, and its text. Each tutor move
+says who teaches it (`WHERE` in the builder, by the cart's tutor number, traced 2026-11-21 from the
+carts' scripts: the map whose person sets VAR_0x8005 before ChooseMonForMoveTutor; Emerald's other
+20 are Battle Frontier Lounge 7's, at the Battle Points each script puts in VAR_0x8008; the build
+stops if a cart's tutor order ever differs from `EXPECT`). Links are
 `#<key>` (`garchomp`, `vulpix-alola`, `nidoran-f`) or `#<dex>`; the builder asserts every key is
 unique and every listed move has a row. Pages serves `docs/` from `main` (`docs/.nojekyll`,
 `docs/index.html` redirects to the page): https://poooooby.github.io/national_dex_gen3/learnsets/.
