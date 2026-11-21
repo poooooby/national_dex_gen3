@@ -1,0 +1,357 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>WoobleDex Learnsets</title>
+<meta name="description" content="Every Pokémon's level-up, TM, tutor and egg moves in WoobleDex for FireRed, LeafGreen, Ruby, Sapphire and Emerald.">
+<style>
+:root {
+  --bg: #f6f7f9; --panel: #ffffff; --ink: #1c1f24; --muted: #5d6673; --line: #e1e4e9;
+  --accent: #3b6fd8; --accent-ink: #ffffff; --hover: #eef2f8; --chip: #eef0f3; --bar: #3b6fd8;
+  --shadow: 0 1px 2px rgba(0,0,0,.06), 0 2px 8px rgba(0,0,0,.04);
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #14161a; --panel: #1c1f25; --ink: #e8eaee; --muted: #9aa3b0; --line: #2c313a;
+    --accent: #6d9bff; --accent-ink: #0d1117; --hover: #252a33; --chip: #262b34; --bar: #6d9bff;
+    --shadow: none;
+  }
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  background: var(--bg); color: var(--ink);
+  font: 15px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+a { color: var(--accent); }
+header.top {
+  position: sticky; top: 0; z-index: 5; background: var(--panel); border-bottom: 1px solid var(--line);
+  padding: 10px 16px; display: flex; gap: 12px; align-items: center; flex-wrap: wrap;
+}
+header.top h1 { font-size: 17px; margin: 0; white-space: nowrap; }
+header.top h1 span { color: var(--muted); font-weight: 500; }
+.search { position: relative; flex: 1 1 260px; max-width: 520px; }
+.search input {
+  width: 100%; font: inherit; padding: 8px 12px; border-radius: 8px; border: 1px solid var(--line);
+  background: var(--bg); color: var(--ink);
+}
+.search input:focus { outline: 2px solid var(--accent); outline-offset: -1px; }
+.toggles { display: flex; gap: 14px; flex-wrap: wrap; font-size: 14px; color: var(--muted); }
+.toggles label { display: inline-flex; gap: 6px; align-items: center; cursor: pointer; white-space: nowrap; }
+.layout { display: grid; grid-template-columns: 280px minmax(0, 1fr); gap: 16px; padding: 16px; max-width: 1200px; margin: 0 auto; }
+nav.list {
+  background: var(--panel); border: 1px solid var(--line); border-radius: 10px; box-shadow: var(--shadow);
+  height: calc(100vh - 100px); position: sticky; top: 76px; overflow-y: auto;
+}
+nav.list .count { padding: 8px 12px; font-size: 13px; color: var(--muted); border-bottom: 1px solid var(--line); position: sticky; top: 0; background: var(--panel); }
+nav.list button {
+  display: flex; width: 100%; gap: 8px; align-items: baseline; text-align: left; font: inherit; color: inherit;
+  background: none; border: 0; padding: 6px 12px; cursor: pointer;
+}
+nav.list button:hover, nav.list button.sel { background: var(--hover); }
+nav.list button.sel { box-shadow: inset 3px 0 0 var(--accent); }
+nav.list .num { color: var(--muted); font-variant-numeric: tabular-nums; min-width: 42px; font-size: 13px; }
+main { min-width: 0; }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 10px; box-shadow: var(--shadow); padding: 18px 20px; margin-bottom: 16px; }
+.title { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; flex-wrap: wrap; }
+.title h2 { margin: 0; font-size: 26px; line-height: 1.2; }
+.title h2 small { color: var(--muted); font-weight: 500; font-size: 18px; margin-right: 6px; }
+.copy { font: inherit; font-size: 14px; padding: 6px 12px; border-radius: 8px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); cursor: pointer; }
+.copy:hover { background: var(--hover); }
+.facts { display: grid; grid-template-columns: auto 1fr; gap: 6px 14px; margin-top: 14px; align-items: center; }
+.facts dt { color: var(--muted); font-size: 14px; }
+.facts dd { margin: 0; }
+.type { display: inline-block; padding: 1px 9px; border-radius: 999px; font-size: 12px; font-weight: 600; color: #fff; margin-right: 4px; letter-spacing: .02em; text-shadow: 0 1px 0 rgba(0,0,0,.25); }
+.stats { display: grid; grid-template-columns: 56px 34px 1fr; gap: 3px 8px; align-items: center; font-size: 13px; max-width: 420px; }
+.stats .lbl { color: var(--muted); }
+.stats .val { text-align: right; font-variant-numeric: tabular-nums; }
+.stats .bar { height: 8px; border-radius: 4px; background: var(--chip); overflow: hidden; }
+.stats .bar i { display: block; height: 100%; background: var(--bar); border-radius: 4px; }
+h3 { font-size: 16px; margin: 0 0 8px; display: flex; gap: 8px; align-items: baseline; flex-wrap: wrap; }
+h3 .note { font-weight: 400; font-size: 13px; color: var(--muted); }
+table { width: 100%; border-collapse: collapse; font-size: 14px; }
+th { text-align: left; color: var(--muted); font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: .04em; padding: 6px 8px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+td { padding: 6px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+tr.mv { cursor: pointer; }
+tr.mv:hover td { background: var(--hover); }
+tr.desc td { color: var(--muted); font-size: 13px; padding-top: 0; background: var(--hover); }
+td.n, th.n { text-align: right; font-variant-numeric: tabular-nums; }
+.kind { font-size: 12px; padding: 1px 7px; border-radius: 6px; background: var(--chip); white-space: nowrap; }
+.kind.p { color: #c0392b; } .kind.s { color: #2f6fd6; } .kind.v { color: #8e44ad; }
+@media (prefers-color-scheme: dark) { .kind.p { color: #ff8a7a; } .kind.s { color: #8fb4ff; } .kind.v { color: #d7a6f0; } }
+.empty { color: var(--muted); font-size: 14px; margin: 0; }
+.tables { overflow-x: auto; }
+footer { color: var(--muted); font-size: 13px; padding: 0 16px 24px; max-width: 1200px; margin: 0 auto; }
+.welcome p { margin: 0 0 8px; }
+.backlist { display: none; }
+@media (max-width: 760px) {
+  .layout { grid-template-columns: minmax(0, 1fr); padding: 12px 16px; }
+  header.top h1 { flex: 1 0 100%; }
+  .search { flex: 1 1 100%; max-width: none; }
+  nav.list { position: static; height: auto; max-height: 60vh; }
+  body.viewing nav.list { display: none; }
+  body:not(.viewing) main { display: none; }
+  .backlist { display: inline-block; }
+  .card { padding: 14px 14px; }
+  .title h2 { font-size: 22px; }
+  th.hide-s, td.hide-s { display: none; }
+  th, td { padding: 6px 5px; }
+}
+</style>
+</head>
+<body>
+<header class="top">
+  <h1>WoobleDex <span>Learnsets</span></h1>
+  <div class="search"><input id="q" type="search" placeholder="Search a Pokémon by name or number" autocomplete="off" aria-label="Search a Pokémon"></div>
+  <div class="toggles">
+    <label title="The Modern Moves option (on by default): the original 386 learn today's level-up moves too"><input type="checkbox" id="modern"> Modern Moves</label>
+    <label title="The Move Split option (off by default): physical or special by the move itself, as in today's games"><input type="checkbox" id="split"> Move Split</label>
+  </div>
+</header>
+<div class="layout">
+  <nav class="list" id="list" aria-label="Pokémon"></nav>
+  <main id="main"></main>
+</div>
+<footer>
+  The moves in FireRed, LeafGreen, Ruby, Sapphire and Emerald with WoobleDex. Red to Crystal use the same
+  modern level-up lists, but their TMs, tutors and the original Pokémon's own moves are those games' own.
+  Tap a move to read what it does.
+  More guides: <a href="https://github.com/poooooby/national_dex_gen3#-player-guides">WoobleDex player guides</a>.
+</footer>
+<script src="data.js"></script>
+<script>
+(function () {
+  "use strict";
+  var L = window.LEARNSETS;
+  var TYPE_COLORS = {
+    Normal: "#9a9a7a", Fighting: "#b5372e", Flying: "#8f7fe0", Poison: "#9b3f9b", Ground: "#c9a64e",
+    Rock: "#a8913a", Bug: "#93a321", Ghost: "#6b5893", Steel: "#9e9ebd", Fire: "#e8742c", Water: "#5683e8",
+    Grass: "#5fae3c", Electric: "#e2b51b", Psychic: "#ea4f7d", Ice: "#6bc3c3", Dragon: "#6234ef",
+    Dark: "#6b5546", Fairy: "#e17fb2", "???": "#6a9a8d"
+  };
+  var KIND = { p: "Physical", s: "Special", v: "Varies", "-": "Status" };
+  var $ = function (id) { return document.getElementById(id); };
+  var q = $("q"), list = $("list"), main = $("main"), modernBox = $("modern"), splitBox = $("split");
+
+  function store(k, v) { try { if (v === undefined) return localStorage.getItem(k); localStorage.setItem(k, v); } catch (e) { return null; } }
+  modernBox.checked = store("ndx.modern") !== "0";
+  splitBox.checked = store("ndx.split") === "1";
+
+  function norm(s) { return s.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/♀/g, " f").replace(/♂/g, " m").replace(/[^a-z0-9 ]+/g, " "); }
+  var REGION = { alola: "alolan", galar: "galarian", hisui: "hisuian", paldea: "paldean" };
+  L.mons.forEach(function (m) {
+    var s = norm(m.n) + " " + m.k.replace(/-/g, " ") + " " + m.d;
+    Object.keys(REGION).forEach(function (r) { if (s.indexOf(r) >= 0) s += " " + REGION[r]; });
+    m._s = " " + s + " ";
+  });
+  var byKey = {};
+  L.mons.forEach(function (m) { byKey[m.k] = m; });
+
+  function matches(m, query) {
+    var words = norm(query).split(" ").filter(Boolean);
+    return words.every(function (w) {
+      if (/^\d+$/.test(w)) return String(m.d) === String(parseInt(w, 10));
+      return m._s.indexOf(" " + w) >= 0;
+    });
+  }
+
+  var shown = [], current = null;
+  function renderList() {
+    var query = q.value.trim();
+    shown = query ? L.mons.filter(function (m) { return matches(m, query); }) : L.mons;
+    var frag = document.createDocumentFragment();
+    var head = document.createElement("div");
+    head.className = "count";
+    head.textContent = shown.length === L.mons.length ? L.mons.length + " Pokémon and forms" : shown.length + " found";
+    frag.appendChild(head);
+    shown.forEach(function (m) {
+      var b = document.createElement("button");
+      b.type = "button";
+      b.dataset.k = m.k;
+      if (current === m) b.className = "sel";
+      var n = document.createElement("span"); n.className = "num"; n.textContent = "#" + m.d;
+      var t = document.createElement("span"); t.textContent = m.n;
+      b.appendChild(n); b.appendChild(t);
+      frag.appendChild(b);
+    });
+    list.replaceChildren(frag);
+  }
+  list.addEventListener("click", function (e) {
+    var b = e.target.closest("button[data-k]");
+    if (b) go(b.dataset.k);
+  });
+
+  function el(tag, cls, text) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (text != null) e.textContent = text;
+    return e;
+  }
+  function typeChip(t) {
+    var s = el("span", "type", t);
+    s.style.background = TYPE_COLORS[t] || "#777";
+    return s;
+  }
+  function kindOf(mv) { return splitBox.checked ? mv[6] : mv[5]; }
+
+  // one table of moves: rows = [{ lead: "12" | "TM01" | null, id }]
+  function moveTable(rows, leadLabel) {
+    var wrap = el("div", "tables");
+    var t = el("table");
+    var head = el("tr");
+    var cols = [[leadLabel, ""], ["Move", ""], ["Type", ""], ["Kind", ""], ["Power", "n"], ["Acc.", "n hide-s"], ["PP", "n hide-s"]];
+    if (!leadLabel) cols.shift();
+    cols.forEach(function (c) { head.appendChild(el("th", c[1], c[0])); });
+    var thead = el("thead"); thead.appendChild(head); t.appendChild(thead);
+    var body = el("tbody");
+    rows.forEach(function (r) {
+      var mv = L.moves[r.id];
+      if (!mv) return;
+      var tr = el("tr", "mv");
+      tr.tabIndex = 0;
+      if (leadLabel) tr.appendChild(el("td", "n", r.lead));
+      tr.appendChild(el("td", null, mv[0]));
+      var tt = el("td"); tt.appendChild(typeChip(mv[1])); tr.appendChild(tt);
+      var k = kindOf(mv);
+      var kt = el("td"); kt.appendChild(el("span", "kind " + k, KIND[k])); tr.appendChild(kt);
+      tr.appendChild(el("td", "n", mv[2] > 1 ? mv[2] : "—"));
+      tr.appendChild(el("td", "n hide-s", mv[3] > 0 ? mv[3] : "—"));
+      tr.appendChild(el("td", "n hide-s", mv[4]));
+      body.appendChild(tr);
+      var dr = el("tr", "desc");
+      dr.hidden = true;
+      var dd = el("td", null, mv[7] || "");
+      dd.colSpan = cols.length;
+      dr.appendChild(dd);
+      body.appendChild(dr);
+      function toggle() { dr.hidden = !dr.hidden; }
+      tr.addEventListener("click", toggle);
+      tr.addEventListener("keydown", function (e) { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); toggle(); } });
+    });
+    t.appendChild(body);
+    wrap.appendChild(t);
+    return wrap;
+  }
+  function section(title, note, rows, leadLabel) {
+    var c = el("section", "card");
+    var h = el("h3", null, title);
+    if (note) h.appendChild(el("span", "note", note));
+    c.appendChild(h);
+    if (!rows.length) c.appendChild(el("p", "empty", "None."));
+    else c.appendChild(moveTable(rows, leadLabel));
+    return c;
+  }
+
+  function render(m) {
+    current = m;
+    document.body.classList.add("viewing");
+    document.title = m.n + " — WoobleDex Learnsets";
+    var frag = document.createDocumentFragment();
+    var card = el("section", "card");
+    var top = el("div", "title");
+    var h = el("h2");
+    h.appendChild(el("small", null, "#" + m.d));
+    h.appendChild(document.createTextNode(m.n));
+    top.appendChild(h);
+    var btns = el("div");
+    var back = el("button", "copy backlist", "← All Pokémon");
+    back.type = "button";
+    back.addEventListener("click", function () { document.body.classList.remove("viewing"); history.replaceState(null, "", location.pathname); });
+    var copy = el("button", "copy", "Copy link");
+    copy.type = "button";
+    copy.addEventListener("click", function () {
+      var url = location.href.split("#")[0] + "#" + m.k;
+      var done = function () { copy.textContent = "Link copied"; setTimeout(function () { copy.textContent = "Copy link"; }, 1500); };
+      if (navigator.clipboard) navigator.clipboard.writeText(url).then(done, function () { prompt("Copy this link:", url); });
+      else prompt("Copy this link:", url);
+    });
+    btns.appendChild(back); btns.appendChild(document.createTextNode(" ")); btns.appendChild(copy);
+    top.appendChild(btns);
+    card.appendChild(top);
+    var dl = el("dl", "facts");
+    dl.appendChild(el("dt", null, "Type"));
+    var td = el("dd"); m.t.forEach(function (t) { td.appendChild(typeChip(t)); }); dl.appendChild(td);
+    dl.appendChild(el("dt", null, "Ability"));
+    dl.appendChild(el("dd", null, m.a || "—"));
+    dl.appendChild(el("dt", null, "Base stats"));
+    var sd = el("dd"), st = el("div", "stats");
+    var total = 0;
+    ["HP", "Attack", "Defense", "Sp. Atk", "Sp. Def", "Speed"].forEach(function (lbl, i) {
+      var v = m.s[i] || 0; total += v;
+      st.appendChild(el("span", "lbl", lbl));
+      st.appendChild(el("span", "val", v));
+      var bar = el("span", "bar"), fill = el("i");
+      fill.style.width = Math.min(100, v / 2.55) + "%";
+      bar.appendChild(fill); st.appendChild(bar);
+    });
+    st.appendChild(el("span", "lbl", "Total"));
+    st.appendChild(el("span", "val", total));
+    sd.appendChild(st); dl.appendChild(sd);
+    card.appendChild(dl);
+    frag.appendChild(card);
+
+    var original = m.lv0 !== undefined;
+    var useModern = !original || modernBox.checked;
+    var lv = useModern ? m.lv : m.lv0;
+    var lvNote = original ? (modernBox.checked ? "with Modern Moves" : "the game's own (Modern Moves off)") : null;
+    frag.appendChild(section("Level up", lvNote, lv.map(function (r) { return { lead: r[0], id: r[1] }; }), "Lv."));
+    frag.appendChild(section("TMs and HMs", null, m.tm.map(function (id) { return { lead: L.machines[id] || "", id: id }; }), "TM"));
+    frag.appendChild(section("Move tutors", "FireRed and LeafGreen", m.tf.map(function (id) { return { id: id }; }), null));
+    frag.appendChild(section("Move tutors", "Emerald (Ruby and Sapphire have none)", m.te.map(function (id) { return { id: id }; }), null));
+    var egg = (useModern ? m.egg : m.egg0) || [];
+    var eggNote = egg.length ? "bred from a parent that knows the move" : "this Pokémon hatches as an earlier one, or not at all";
+    if (original && egg.length) eggNote += modernBox.checked ? ", with Modern Moves" : ", Modern Moves off";
+    frag.appendChild(section("Egg moves", eggNote, egg.map(function (id) { return { id: id }; }), null));
+    main.replaceChildren(frag);
+    Array.prototype.forEach.call(list.querySelectorAll("button.sel"), function (b) { b.classList.remove("sel"); });
+    var sel = list.querySelector('button[data-k="' + m.k + '"]');
+    if (sel) sel.classList.add("sel");
+  }
+
+  function welcome() {
+    current = null;
+    document.body.classList.remove("viewing");
+    document.title = "WoobleDex Learnsets";
+    var c = el("section", "card welcome");
+    c.appendChild(el("h3", null, "Find a Pokémon"));
+    c.appendChild(el("p", null, "Search by name or Pokédex number, or pick one from the list. Each Pokémon shows every move it can learn: by level, by TM or HM, from a move tutor, and as an egg move."));
+    c.appendChild(el("p", null, "Use Copy link to share a Pokémon's page. The two switches match the game's options: Modern Moves (on by default) and Move Split (off by default)."));
+    main.replaceChildren(c);
+  }
+
+  function find(hash) {
+    var k = decodeURIComponent(hash.replace(/^#/, "")).toLowerCase();
+    if (!k) return null;
+    if (byKey[k]) return byKey[k];
+    if (/^\d+$/.test(k)) {
+      var d = parseInt(k, 10);
+      for (var i = 0; i < L.mons.length; i++) if (L.mons[i].d === d && !L.mons[i].f) return L.mons[i];
+    }
+    return null;
+  }
+  function go(k) {
+    if (location.hash !== "#" + k) history.pushState(null, "", "#" + k);
+    route();
+    window.scrollTo(0, 0);
+  }
+  function route() {
+    var m = find(location.hash);
+    if (m) render(m); else welcome();
+  }
+
+  q.addEventListener("input", renderList);
+  q.addEventListener("keydown", function (e) {
+    if (e.key === "Enter" && shown.length) { go(shown[0].k); q.blur(); }
+  });
+  modernBox.addEventListener("change", function () { store("ndx.modern", modernBox.checked ? "1" : "0"); if (current) render(current); });
+  splitBox.addEventListener("change", function () { store("ndx.split", splitBox.checked ? "1" : "0"); if (current) render(current); });
+  window.addEventListener("popstate", route);
+  window.addEventListener("hashchange", route);
+
+  renderList();
+  route();
+})();
+</script>
+</body>
+</html>

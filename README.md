@@ -23,6 +23,9 @@ is missing, up to Pecharunt, with today's moves, abilities, items and types to g
 
 ## 📚 Player Guides
 
+🔎 **[Learnsets](https://poooooby.github.io/national_dex_gen3/learnsets/)**: search any Pokémon and see every move it
+learns, by level, TM, tutor and egg, with a link to share.
+
 [Pokémon](docs/pokemon.md) · [Forms](docs/pokemon/forms.md) · [Evolutions](docs/evolutions-and-forms.md) ·
 [Moves](docs/moves.md) · [Abilities](docs/abilities.md) · [Fairy types](docs/fairy.md) ·
 [Items](docs/items.md) · [TMs](docs/tms.md)

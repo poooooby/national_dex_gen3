@@ -439,6 +439,9 @@ local I = {
   "FireRed, LeafGreen, Ruby, Sapphire and Emerald. Each entry lists the typing, the abilities it",
   "has in this game, and its level-up learnset (`level move`).",
   "",
+  "**[Search the learnsets](https://poooooby.github.io/national_dex_gen3/learnsets/)** for every Pokémon,",
+  "the originals and forms included: level-up, TM, tutor and egg moves, with a link to share.",
+  "",
   "*Generated from `data/species/` by `tools/build_docs.lua`.*",
   "",
   "## How to read the entries",
@@ -768,6 +771,279 @@ for _, t in ipairs(tms) do
     #s.rse > 0 and join(s.rse, "; ") or "not sold", #t.dex + #t.forms)
 end
 out("docs/tms.md", TM)
+
+-- ---- learnsets: docs/learnsets/data.js for the searchable page (docs/learnsets/index.html, on
+-- GitHub Pages): every Pokemon #1-1025 and every form, with its level-up moves, TMs / HMs, tutor
+-- moves (FireRed / LeafGreen's and Emerald's) and egg moves. The originals' level-up and egg lists
+-- are given twice: with Modern Moves (src/modern_learnsets.lua's merge, the default) and the
+-- game's own (lv0 / egg0).
+local learnsetCount
+do
+  local bit = require("bit")
+  local cartLearnsets = load(cart .. "/learnsets.lua")
+  local cartEggs = load(cart .. "/egg_moves.lua")
+  local cartTypes = load(cart .. "/types.lua")
+  local cartAbilities = load(cart .. "/abilities.lua")
+  local cartStats = load(cart .. "/stats.lua")
+  local tmhm = load(cart .. "/tmhm.lua")
+  local modern = load("data/species/modern.lua")
+  local descriptions = load(cart .. "/descriptions.lua").MOVES or {}
+  local okE, emTutor = pcall(load, (cart:gsub("firered", "emerald")) .. "/tutor.lua")
+  local tutors = { frlg = load(cart .. "/tutor.lua"), em = okE and emTutor or nil }
+
+  -- moves: id -> { name, type, power, accuracy, pp, kind by type, kind with Move Split, text }
+  local fairyMoves = {}
+  for _, id in ipairs(fairy.moves or {}) do fairyMoves[(id:gsub("_", " "))] = true end
+  local function kinds(num, t, power)
+    if power == 0 then return "-", "-" end
+    local byType = BY_ITS_TYPE[num] and "v" or (physical[t] and "p" or "s")
+    return byType, split[num] or byType
+  end
+  local moves = {}
+  for num = 1, 354 do
+    local m = cartMoves[num]
+    local name = moveNames[num]
+    if m and name then
+      local t = fairyMoves[name] and "FAIRY" or (CART_TYPES[m.type] or "NORMAL")
+      if t == "MYSTERY" then t = "???" end
+      local byType, today = kinds(num, t, m.power)
+      -- (the ROM's text keys drop a hyphen: MOVE_DOUBLEEDGE, MOVE_WILLOWISP)
+      local desc = descriptions["MOVE_" .. name:gsub(" ", "_"):gsub("%-", "")] or ""
+      moves[num] = { title(name), title(t), m.power, m.accuracy, m.pp, byType, today, (desc:gsub("%s*\n%s*", " ")) }
+    end
+  end
+  for _, m in ipairs(newMoves) do
+    local byType, today = kinds(m.index, m.type, m.power)
+    moves[m.index] = { m.full or title(m.name), title(m.type), m.power, m.accuracy, m.pp, byType, today,
+                       ((m.rse or m.frlg or ""):gsub("%s*\n%s*", " ")) }
+  end
+
+  -- machines: move id -> "TM01" .. "HM08", then the added TM51+
+  local machines, machineOf = {}, {}
+  for i = 0, 57 do
+    local mv = tmhm.machines[i]
+    if mv then
+      machineOf[mv] = i < 50 and string.format("TM%02d", i + 1) or string.format("HM%02d", i - 49)
+      machines[#machines + 1] = mv
+    end
+  end
+  local addedTms = {}   -- { move index, dex set, form set }
+  for _, t in ipairs(tms) do
+    local m = moveById[t.move]
+    if m then
+      machineOf[m.index] = "TM" .. t.number
+      local dexSet, formSet = {}, {}
+      for _, d in ipairs(t.dex or {}) do dexSet[d] = true end
+      for _, f in ipairs(t.forms or {}) do formSet[f] = true end
+      addedTms[#addedTms + 1] = { m.index, dexSet, formSet }
+    end
+  end
+  local function tutorMoves(tut)
+    local list = {}
+    if not tut then return list end
+    for i = 0, 63 do if tut.moves[i] then list[#list + 1] = tut.moves[i] end end
+    return list
+  end
+  local tutorList = { frlg = tutorMoves(tutors.frlg), em = tutorMoves(tutors.em) }
+
+  local function machineOrder(list)
+    table.sort(list, function(a, b)
+      local x, y = machineOf[a], machineOf[b]
+      local hx, hy = x:sub(1, 2) == "HM", y:sub(1, 2) == "HM"
+      if hx ~= hy then return hy end
+      return tonumber(x:sub(3)) < tonumber(y:sub(3))
+    end)
+    return list
+  end
+  local function addedTmsFor(dex, formId, out)
+    for _, t in ipairs(addedTms) do
+      if (formId and t[3][formId]) or (not formId and t[2][dex]) then out[#out + 1] = t[1] end
+    end
+  end
+  -- ours: `teach` is every move learnable by a TM, HM or tutor in some main game
+  local function teachSplit(r, formId)
+    local set = {}
+    for _, mv in ipairs(r.teach or {}) do set[mv] = true end
+    local tm, tf, te = {}, {}, {}
+    for _, mv in ipairs(machines) do if set[mv] then tm[#tm + 1] = mv end end
+    addedTmsFor(r.dex, formId, tm)
+    for _, mv in ipairs(tutorList.frlg) do if set[mv] then tf[#tf + 1] = mv end end
+    for _, mv in ipairs(tutorList.em) do if set[mv] then te[#te + 1] = mv end end
+    return machineOrder(tm), tf, te
+  end
+  local function rows(list)
+    local out = {}
+    for i, row in ipairs(list or {}) do out[i] = { row[1], row[2] } end
+    return out
+  end
+  -- src/modern_learnsets.lua's merged(): the cart's rows plus today's, a move in both at the earlier level
+  local function merged(base, extra)
+    local out, at = {}, {}
+    for i, row in ipairs(base) do
+      out[i] = row
+      local j = at[row[2]]
+      if j == nil or row[1] < out[j][1] then at[row[2]] = i end
+    end
+    for _, row in ipairs(extra) do
+      local j = at[row[2]]
+      if j == nil then
+        out[#out + 1] = { row[1], row[2] }
+        at[row[2]] = #out
+      elseif row[1] < out[j][1] then
+        out[j] = { row[1], row[2] }
+      end
+    end
+    local order = {}
+    for i, row in ipairs(out) do order[row] = i end
+    table.sort(out, function(a, b)
+      if a[1] ~= b[1] then return a[1] < b[1] end
+      return order[a] < order[b]
+    end)
+    return out
+  end
+  local function key(name)
+    local s = name:lower():gsub("\226\153\128", "-f"):gsub("\226\153\130", "-m"):gsub("\195\169", "e")
+    s = s:gsub("[%.'’:]", ""):gsub("[^%w]+", "-"):gsub("^%-+", ""):gsub("%-+$", "")
+    return s
+  end
+  local function statsOf(b)
+    return { b.hp, b.attack, b.defense, b.specialAttack, b.specialDefense, b.speed }
+  end
+  local function typeList(r)
+    local list = (r.baseSpecies and fairy.forms[r.id]) or (not r.baseSpecies and fairy.species[r.dex]) or r.types or {}
+    local t = {}
+    for i, ty in ipairs(list) do if i == 1 or ty ~= list[1] then t[#t + 1] = title(ty) end end
+    return t
+  end
+
+  local mons = {}
+  -- the originals, by National number
+  local internalOf = {}
+  for internal, dex in pairs(national.toNational) do
+    if dex >= 1 and dex <= 386 and not internalOf[dex] then internalOf[dex] = internal end
+  end
+  for dex = 1, 386 do
+    local sp = internalOf[dex]
+    if sp then
+      local name = title(speciesNames[sp])
+      local tl = {}
+      for i, id in ipairs(cartTypes[sp] or {}) do
+        local t = CART_TYPES[id]
+        if t and (i == 1 or id ~= cartTypes[sp][1]) then tl[#tl + 1] = title(t) end
+      end
+      if fairy.species[dex] then tl = typeList({ dex = dex }) end
+      local an, seen = {}, {}
+      for _, id in ipairs(cartAbilities[sp] or {}) do
+        local n = id > 0 and abilityNames[id]
+        if n and not seen[n] then seen[n] = true; an[#an + 1] = title(n) end
+      end
+      local st = cartStats[sp] or {}
+      local own = rows(cartLearnsets[sp])
+      local add = modern[dex] or {}
+      local lv = merged(rows(cartLearnsets[sp]), add.learnset or {})
+      local egg0 = cartEggs[sp]
+      local egg = egg0
+      if egg0 and add.eggMoves then
+        egg = {}
+        local have = {}
+        for i, mv in ipairs(egg0) do egg[i] = mv; have[mv] = true end
+        for _, mv in ipairs(add.eggMoves) do if not have[mv] then egg[#egg + 1] = mv end end
+      end
+      local tm = {}
+      local set = tmhm.learnsets[sp] or { lo = 0, hi = 0 }
+      for i, mv in ipairs(machines) do
+        local idx = i - 1
+        local word = idx < 32 and set.lo or set.hi
+        if bit.band(bit.tobit(word), bit.lshift(1, idx % 32)) ~= 0 then tm[#tm + 1] = mv end
+      end
+      addedTmsFor(dex, nil, tm)
+      local function tutorFor(g)
+        local tut, out = tutors[g], {}
+        if not tut then return out end
+        local mask = tut.learnsets[sp] or 0
+        for i = 0, 63 do
+          local mv = tut.moves[i]
+          if mv and math.floor(mask / 2 ^ i) % 2 == 1 then out[#out + 1] = mv end
+        end
+        return out
+      end
+      mons[#mons + 1] = { k = key(name), n = name, d = dex, t = tl, a = table.concat(an, " / "),
+        s = { st.hp, st.atk, st.def, st.spa, st.spd, st.spe }, lv = lv, lv0 = own, tm = machineOrder(tm),
+        tf = tutorFor("frlg"), te = tutorFor("em"), egg = egg or {}, egg0 = egg0 or {} }
+    end
+  end
+  for _, r in ipairs(species) do
+    local tm, tf, te = teachSplit(r)
+    local name = title(r.name)
+    mons[#mons + 1] = { k = key(name), n = name, d = r.dex, t = typeList(r), a = abilityText(r),
+      s = statsOf(r.baseStats), lv = rows(r.learnset), tm = tm, tf = tf, te = te, egg = r.eggMoves or {} }
+  end
+  for _, r in ipairs(forms) do
+    local tm, tf, te = teachSplit(r, r.id)
+    mons[#mons + 1] = { k = key((r.id:gsub("_", "-"))), n = formName(r), d = r.baseDex, f = true, t = typeList(r),
+      a = abilityText(r), s = statsOf(r.baseStats), lv = rows(r.learnset), tm = tm, tf = tf, te = te,
+      egg = r.eggMoves or {} }
+  end
+  table.sort(mons, function(a, b)
+    if a.d ~= b.d then return a.d < b.d end
+    if (a.f or false) ~= (b.f or false) then return not a.f end
+    return a.n < b.n
+  end)
+  -- every move a list names must have a row (a missing one would show as a number)
+  for _, m in ipairs(mons) do
+    for _, field in ipairs({ "lv", "lv0" }) do
+      for _, row in ipairs(m[field] or {}) do assert(moves[row[2]], m.n .. ": no move " .. row[2]) end
+    end
+    for _, field in ipairs({ "tm", "tf", "te", "egg", "egg0" }) do
+      for _, mv in ipairs(m[field] or {}) do assert(moves[mv], m.n .. ": no move " .. mv) end
+    end
+  end
+  local seenKey = {}
+  for _, m in ipairs(mons) do
+    assert(not seenKey[m.k], "two Pokemon share the link " .. m.k)
+    seenKey[m.k] = true
+  end
+
+  -- compact JSON
+  local function enc(v)
+    local t = type(v)
+    if t == "string" then
+      return '"' .. v:gsub('[%c"\\]', function(c)
+        if c == '"' then return '\\"' elseif c == "\\" then return "\\\\" elseif c == "\n" then return " " end
+        return string.format("\\u%04x", c:byte())
+      end) .. '"'
+    elseif t == "number" then return tostring(v)
+    elseif t == "boolean" then return v and "true" or "false"
+    elseif t == "nil" then return "null"
+    end
+    if v[1] ~= nil or next(v) == nil then
+      local parts = {}
+      for i = 1, #v do parts[i] = enc(v[i]) end
+      return "[" .. table.concat(parts, ",") .. "]"
+    end
+    local keys = {}
+    for k in pairs(v) do keys[#keys + 1] = k end
+    table.sort(keys, function(a, b) return tostring(a) < tostring(b) end)
+    local parts = {}
+    for _, k in ipairs(keys) do parts[#parts + 1] = enc(tostring(k)) .. ":" .. enc(v[k]) end
+    return "{" .. table.concat(parts, ",") .. "}"
+  end
+  local moveRows = {}
+  for num, row in pairs(moves) do moveRows[tostring(num)] = row end
+  local machineRows = {}
+  for num, label in pairs(machineOf) do machineRows[tostring(num)] = label end
+  local monLines = {}
+  for i, m in ipairs(mons) do monLines[i] = enc(m) end
+  os.execute("mkdir docs\\learnsets 2> nul")
+  local f = assert(io.open("docs/learnsets/data.js", "wb"))
+  f:write("// Generated by tools/build_docs.lua from the mod's data. Do not edit by hand.\n")
+  f:write("window.LEARNSETS = {\n")
+  f:write('"moves":' .. enc(moveRows) .. ",\n")
+  f:write('"machines":' .. enc(machineRows) .. ",\n")
+  f:write('"mons":[\n' .. table.concat(monLines, ",\n") .. "\n]};\n")
+  f:close()
+  learnsetCount = #mons
+end
 
 print(string.format("docs: %d items, %d TMs, %d moves, %d abilities, %d species, %d forms", #items, #tms, #newMoves,
   #(realAbilities.defs or {}), #species, #forms))

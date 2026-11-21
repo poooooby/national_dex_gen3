@@ -4,6 +4,9 @@ WoobleDex adds 639 species, National Dex #387–1025 (Generations 4–9), to
 FireRed, LeafGreen, Ruby, Sapphire and Emerald. Each entry lists the typing, the abilities it
 has in this game, and its level-up learnset (`level move`).
 
+**[Search the learnsets](https://poooooby.github.io/national_dex_gen3/learnsets/)** for every Pokémon,
+the originals and forms included: level-up, TM, tutor and egg moves, with a link to share.
+
 *Generated from `data/species/` by `tools/build_docs.lua`.*
 
 ## How to read the entries

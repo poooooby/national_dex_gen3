@@ -5,6 +5,13 @@ All notable changes to this mod are documented here, in
 
 ## [Unreleased]
 
+### Added
+
+- **[Learnsets](https://poooooby.github.io/national_dex_gen3/learnsets/)**, a page to search any
+  Pokémon, the originals and forms included, and see every move it learns: by level, TM or HM, move
+  tutor and egg, with each move's type, power, physical or special, and what it does. Switches match
+  the Modern Moves and Move Split options, and every Pokémon has a link to share.
+
 ### Changed
 
 - **The move guide explains physical and special:** how the original games decide it, what the

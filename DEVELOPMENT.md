@@ -1571,3 +1571,20 @@ python tools/build_placeholder.py        # assets/gen12 (the Gen 1/2 placeholder
 
 `build_species.py` empties `data/species/` before it writes, which takes `modern.lua` with it
 (`tools/build_modern_learnsets.py` writes that one): rerun that tool afterwards, or restore the file.
+
+Learnsets come from `build_species.VERSION_GROUPS`, newest first, by PokéAPI's version-group names
+exactly (`brilliant-diamond-shining-pearl`, no "and": a misspelt group never matches, and its
+Pokémon fall back to an older game). `build_gen12.py` keeps every move `data/gen12/moves.lua`
+already has (a saved Pokémon may know it), so its move list only grows.
+
+## The learnsets page (GitHub Pages)
+
+`docs/learnsets/index.html` (hand-written) is a search page over `docs/learnsets/data.js`, which
+`luajit tools/build_docs.lua` writes with the other guides: every Pokémon #1-1025 and every form,
+with level-up (the originals twice: Modern Moves' merge, `lv`, and the cart's own, `lv0`), TM / HM
+(the cart's 58 and the added TM51+), FireRed / LeafGreen and Emerald tutors, and egg moves; each
+move's type, power, accuracy, PP, kind by type and with Move Split, and its text. Links are
+`#<key>` (`garchomp`, `vulpix-alola`, `nidoran-f`) or `#<dex>`; the builder asserts every key is
+unique and every listed move has a row. Pages serves `docs/` from `main` (`docs/.nojekyll`,
+`docs/index.html` redirects to the page): https://poooooby.github.io/national_dex_gen3/learnsets/.
+None of it ships in the mod (`.modkitignore`).
