@@ -78,13 +78,13 @@
 
 - Type: Normal
 - Ability: Simple / Unaware
-- Learnset: 1 Tackle · 1 Growl · 5 Defense Curl · 9 Rollout · 13 Headbutt · 17 Hyper Fang · 21 Yawn · 25 Crunch · 29 Take Down · 33 Super Fang · 37 Swords Dance · 41 Amnesia · 45 Superpower · 49 Curse
+- Learnset: 1 Tackle · 1 Growl · 5 Defense Curl · 9 Rollout · 13 Headbutt · 17 Taunt · 21 Yawn · 25 Crunch · 29 Take Down · 33 Super Fang · 37 Swords Dance · 41 Amnesia · 45 Superpower · 49 Curse
 
 ### #400 Bibarel
 
 - Type: Normal / Water
 - Ability: Simple / Unaware
-- Learnset: 1 Tackle · 1 Growl · 1 Water Gun · 1 Aqua Jet · 1 Rototiller · 5 Defense Curl · 9 Rollout · 13 Headbutt · 18 Hyper Fang · 23 Yawn · 28 Crunch · 33 Take Down · 38 Super Fang · 43 Swords Dance · 48 Amnesia · 53 Superpower · 58 Curse
+- Learnset: 1 Tackle · 1 Growl · 1 Water Gun · 1 Aqua Jet · 5 Defense Curl · 9 Rollout · 13 Headbutt · 18 Taunt · 23 Yawn · 28 Crunch · 33 Take Down · 38 Super Fang · 43 Swords Dance · 48 Amnesia · 53 Superpower · 58 Curse
 
 ### #401 Kricketot
 
@@ -156,19 +156,19 @@
 
 - Type: Bug
 - Ability: Shed Skin
-- Learnset: 1 Protect · 10 Tackle · 15 Bug Bite · 20 Hidden Power
+- Learnset: 1 Protect · 10 Tackle · 15 Bug Bite · 20 String Shot
 
 ### #413 Wormadam
 
 - Type: Bug / Grass
 - Ability: Anticipation
-- Learnset: 1 Tackle · 1 Protect · 1 Sucker Punch · 1 Bug Bite · 1 Quiver Dance · 10 Protect · 15 Bug Bite · 20 Hidden Power · 23 Confusion · 26 Razor Leaf · 29 Growth · 32 Psybeam · 35 Captivate · 38 Flail · 41 Attract · 44 Psychic · 47 Leaf Storm · 50 Bug Buzz
+- Learnset: 1 Tackle · 1 Protect · 1 Sucker Punch · 1 Bug Bite · 1 Quiver Dance · 10 Protect · 15 Bug Bite · 20 String Shot · 23 Confusion · 26 Razor Leaf · 29 Growth · 32 Psybeam · 35 Infestation · 38 Flail · 41 Attract · 44 Psychic · 47 Leaf Storm · 50 Bug Buzz
 
 ### #414 Mothim
 
 - Type: Bug / Flying
 - Ability: Swarm
-- Learnset: 1 Tackle · 1 Protect · 1 Bug Bite · 1 Quiver Dance · 10 Protect · 15 Bug Bite · 20 Hidden Power · 23 Confusion · 26 Gust · 29 Poisonpowder · 32 Psybeam · 35 Camouflage · 38 Silver Wind · 41 Air Slash · 44 Psychic · 47 Lunge · 50 Bug Buzz
+- Learnset: 1 Tackle · 1 Protect · 1 Bug Bite · 1 Quiver Dance · 10 Protect · 15 Bug Bite · 20 String Shot · 23 Confusion · 26 Gust · 29 Poisonpowder · 32 Psybeam · 35 Roost · 38 Struggle Bug · 41 Air Slash · 44 Psychic · 47 Lunge · 50 Bug Buzz
 
 ### #415 Combee
 
@@ -270,13 +270,13 @@
 
 - Type: Normal
 - Ability: Limber / Own Tempo
-- Learnset: 1 Fake Out · 5 Scratch · 8 Growl · 13 Hypnosis · 17 Faint Attack · 20 Fury Swipes · 25 Charm · 29 Assist · 32 Captivate · 37 Slash · 41 Sucker Punch · 44 Attract · 48 Hone Claws · 50 Play Rough
+- Learnset: 1 Fake Out · 5 Scratch · 8 Growl · 13 Hypnosis · 17 Aerial Ace · 20 Fury Swipes · 25 Charm · 29 Taunt · 32 Retaliate · 37 Slash · 41 Sucker Punch · 44 Attract · 48 Hone Claws · 50 Play Rough
 
 ### #432 Purugly
 
 - Type: Normal
 - Ability: Thick Fat / Own Tempo
-- Learnset: 1 Scratch · 1 Growl · 1 Swagger · 1 Fake Out · 5 Scratch · 8 Growl · 13 Hypnosis · 17 Faint Attack · 20 Fury Swipes · 25 Charm · 29 Assist · 32 Captivate · 37 Slash · 45 Body Slam · 52 Attract · 60 Hone Claws
+- Learnset: 1 Scratch · 1 Growl · 1 Swagger · 1 Fake Out · 1 Sucker Punch · 1 Play Rough · 5 Scratch · 8 Growl · 13 Hypnosis · 17 Aerial Ace · 20 Fury Swipes · 25 Charm · 29 Taunt · 32 Retaliate · 37 Slash · 45 Body Slam · 52 Attract · 60 Hone Claws
 
 ### #433 Chingling
 
@@ -330,7 +330,7 @@
 
 - Type: Normal / Flying
 - Ability: Keen Eye / Tangled Feet
-- Learnset: 1 Peck · 1 Taunt · 1 Hyper Voice · 1 Chatter · 1 Confide · 5 Growl · 9 Mirror Move · 13 Sing · 17 Fury Attack · 21 Chatter · 25 Taunt · 29 Round · 33 Mimic · 37 Echoed Voice · 41 Roost · 45 Uproar · 49 Synchronoise · 50 Featherdance · 57 Hyper Voice
+- Learnset: 1 Taunt · 1 Hyper Voice · 1 Chatter · 1 Confide · 5 Peck · 9 Growl · 13 Sing · 17 Fury Attack · 21 Chatter · 25 Taunt · 29 Round · 33 Mimic · 37 Echoed Voice · 41 Roost · 45 Uproar · 49 Parting Shot · 50 Featherdance · 57 Hyper Voice
 
 ### #442 Spiritomb
 
@@ -414,7 +414,7 @@
 
 - Type: Grass
 - Ability: Levitate
-- Learnset: 1 Bind · 1 Growth · 7 Bite · 11 Vine Whip · 17 Sweet Scent · 21 Ingrain · 27 Faint Attack · 31 Leaf Tornado · 37 Stockpile · 37 Spit Up · 37 Swallow · 41 Crunch · 47 Wring Out · 50 Power Whip
+- Learnset: 1 Bind · 1 Growth · 7 Bite · 11 Vine Whip · 17 Sweet Scent · 21 Ingrain · 27 Grass Knot · 31 Leaf Tornado · 37 Stockpile · 37 Spit Up · 37 Swallow · 41 Crunch · 47 Seed Bomb · 50 Power Whip
 
 ### #456 Finneon
 

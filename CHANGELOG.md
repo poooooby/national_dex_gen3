@@ -11,6 +11,13 @@ All notable changes to this mod are documented here, in
   **Move Split** option changes, and the 54 original moves that change with it (Shadow Ball,
   Crunch, Fire Punch...).
 
+### Fixed
+
+- **Learnsets come from the newest game for every Pokémon.** Pokémon whose newest moves are from
+  Brilliant Diamond / Shining Pearl (Bidoof, Burmy, Wormadam, Glameow, Chatot, Carnivine and their
+  evolutions) learned Ultra Sun / Ultra Moon's moves instead; so did Pidgey, Rattata, Spearow,
+  Ledyba, Skitty, Spinda, Kecleon and Clamperl's families with **Modern Moves** on.
+
 ## [1.19.0] - 2026-11-20
 
 ### Added

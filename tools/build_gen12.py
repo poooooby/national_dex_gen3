@@ -731,6 +731,11 @@ def build_moves(api: bs.API, workers: int, carts: dict[int, dict[str, Any]],
         used.update(r["teach"])
         for step in r["evolutions"]:
             used.update((step.get("when") or {}).get("knows", []))
+    # append-only: a move the shipped data has stays, learned or not (a saved Pokemon may know it;
+    # Mirror Shot was only in an older level-up list until BDSP's was read)
+    shipped = ROOT / "data" / "gen12" / "moves.lua"
+    if shipped.exists():
+        used.update(int(n) for n in re.findall(r"\{ n = (\d+),", shipped.read_text(encoding="utf-8")))
     wanted = sorted(n for n in used if n > GENS[1]["moves"])
     ids = sorted(set(range(1, 252)) | set(wanted))
     with concurrent.futures.ThreadPoolExecutor(max_workers=workers) as ex:

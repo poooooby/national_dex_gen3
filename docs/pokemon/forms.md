@@ -101,13 +101,13 @@ form also counts the base Pokémon in your Pokédex.
 
 - Type: Bug / Ground
 - Ability: Anticipation
-- Learnset: 1 Tackle · 1 Protect · 1 Sucker Punch · 1 Bug Bite · 1 Quiver Dance · 10 Protect · 15 Bug Bite · 20 Hidden Power · 23 Confusion · 26 Rock Blast · 29 Harden · 32 Psybeam · 35 Captivate · 38 Flail · 41 Attract · 44 Psychic · 47 Fissure · 50 Bug Buzz
+- Learnset: 1 Tackle · 1 Protect · 1 Sucker Punch · 1 Bug Bite · 1 Quiver Dance · 10 Protect · 15 Bug Bite · 20 String Shot · 23 Confusion · 26 Rock Blast · 29 Harden · 32 Psybeam · 35 Infestation · 38 Flail · 41 Attract · 44 Psychic · 47 Fissure · 50 Bug Buzz
 
 ### Wormadam (Trash) — #413
 
 - Type: Bug / Steel
 - Ability: Anticipation
-- Learnset: 1 Tackle · 1 Protect · 1 Metal Burst · 1 Sucker Punch · 1 Bug Bite · 1 Quiver Dance · 10 Protect · 15 Bug Bite · 20 Hidden Power · 23 Confusion · 26 Mirror Shot · 29 Metal Sound · 32 Psybeam · 35 Captivate · 38 Flail · 41 Attract · 44 Psychic · 47 Iron Head · 50 Bug Buzz
+- Learnset: 1 Tackle · 1 Protect · 1 Metal Burst · 1 Sucker Punch · 1 Bug Bite · 1 Quiver Dance · 10 Protect · 15 Bug Bite · 20 String Shot · 23 Confusion · 26 Metal Burst · 29 Metal Sound · 32 Psybeam · 35 Infestation · 38 Flail · 41 Attract · 44 Psychic · 47 Iron Head · 50 Bug Buzz
 
 ### Rotom (Heat) — #479
 

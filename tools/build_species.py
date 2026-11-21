@@ -58,7 +58,7 @@ MAX_MOVE_ID = 354         # Gen 3's move table
 
 # Newest first. Legends: Arceus is left out: its move system is its own.
 VERSION_GROUPS = [
-    "scarlet-violet", "sword-shield", "brilliant-diamond-and-shining-pearl",
+    "scarlet-violet", "sword-shield", "brilliant-diamond-shining-pearl",
     "ultra-sun-ultra-moon", "sun-moon", "omega-ruby-alpha-sapphire", "x-y",
     "black-2-white-2", "black-white", "heartgold-soulsilver", "platinum",
     "diamond-pearl",
