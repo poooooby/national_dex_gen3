@@ -2,7 +2,8 @@
 -- drift from what the game does:
 --   docs/items.md            the added items: price, where to buy, what evolves with them
 --   docs/tms.md              the added TMs: move, price, where to buy, how many Pokemon learn it
---   docs/moves.md            the added moves: type, power, accuracy, PP, what they do
+--   docs/moves.md            physical / special with and without Move Split (the original moves
+--                            that change), then the added moves: type, power, accuracy, PP, what they do
 --   docs/abilities.md        the added abilities and what they do
 --   docs/fairy.md            every Fairy-type Pokemon, original, added and forms
 --   docs/pokemon.md          index of the added Pokemon
@@ -641,19 +642,69 @@ out("docs/fairy.md", FY)
 
 local physical = { NORMAL = true, FIGHTING = true, FLYING = true, POISON = true, GROUND = true,
                    ROCK = true, BUG = true, GHOST = true, STEEL = true }
+local split = load("data/move_split.lua")
+-- the cart's own moves whose class changes with Move Split (FireRed's table: the five Gen 3
+-- games share it; Red to Crystal use the same modern typing, data/gen12/cart.lua)
+local CART_TYPES = { [0] = "NORMAL", "FIGHTING", "FLYING", "POISON", "GROUND", "ROCK", "BUG", "GHOST", "STEEL",
+                     "MYSTERY", "FIRE", "WATER", "GRASS", "ELECTRIC", "PSYCHIC", "ICE", "DRAGON", "DARK" }
+local BY_ITS_TYPE = { [237] = true, [311] = true }   -- Hidden Power, Weather Ball: their type varies
+local cartMoves = load(cart .. "/battle_moves.lua").moves
+local changed = {}
+for num = 1, 354 do
+  local m, class = cartMoves[num], split[num]
+  if m and class and m.power > 0 then
+    local t = CART_TYPES[m.type] or "NORMAL"
+    local kind = BY_ITS_TYPE[num] and "By its type" or (physical[t] and "Physical" or "Special")
+    local today = class == "p" and "Physical" or "Special"
+    if kind ~= today then
+      changed[#changed + 1] = { name = title(moveNames[num] or tostring(num)), type = BY_ITS_TYPE[num] and "Varies" or title(t), kind = kind,
+                                today = today, power = m.power }
+    end
+  end
+end
+table.sort(changed, function(a, b) return a.name < b.name end)
+
 local M = {
-  "# Added Moves",
+  "# Moves",
+  "",
+  "## Physical and special",
+  "",
+  "In the original games a move's **type** decides whether it is physical or special: Normal,",
+  "Fighting, Flying, Poison, Ground, Rock, Bug, Ghost and Steel moves are physical, every other",
+  "type (Fairy included) is special. Physical moves hit with Attack against Defense, special ones",
+  "with Sp. Atk against Sp. Def.",
+  "",
+  "Turn on the **Move Split** option and the **move itself** decides, as in today's games: Shadow",
+  "Ball and Moonblast are special, Crunch, Shadow Claw and Fire Punch physical. It works on every",
+  "game, Red to Emerald, and changes everything that cares: which stats hit, burns halving",
+  "physical damage, Reflect and Light Screen, and what Counter and Mirror Coat hit back. Link",
+  "battles on FireRed to Emerald always use the game's own rule, so both players' games agree.",
+  "",
+  "### Original moves that change",
+  "",
+  "The " .. #changed .. " moves from Red to Emerald that change with Move Split. Every other original",
+  "move stays as it is. A **—** for power is a move whose damage is worked out another way.",
+  "",
+  "| Move | Type | Without Move Split | With Move Split | Power |",
+  "|---|---|---|---|---|",
+}
+for _, c in ipairs(changed) do
+  M[#M + 1] = string.format("| %s | %s | %s | %s | %s |", c.name, c.type, c.kind, c.today,
+    c.power > 1 and tostring(c.power) or "—")
+end
+for _, line in ipairs({
+  "",
+  "## Added moves",
   "",
   "The " .. #newMoves .. " moves from later generations that work in battle here. Pokémon learn them by",
-  "level-up or as egg moves. The few left (moves that need a partner to act out of turn, such as",
-  "After You and Instruct) are swapped for the closest Gen 3 move. As in Gen 3, a move's type",
-  "decides whether it is physical or special (**Kind**); with the **Move Split** option on, the move",
-  "itself does, as in today's games (**Move Split**).",
+  "level-up, as egg moves or from [TMs](tms.md). The few left (moves that need a partner to act out",
+  "of turn, such as After You and Instruct) are swapped for the closest original move. **Kind** is",
+  "physical or special by the move's type, as these games do; **Move Split** is what the move is",
+  "with that option on.",
   "",
   "| Move | Type | Kind | Move Split | Power | Accuracy | PP | What it does |",
   "|---|---|---|---|---|---|---|---|",
-}
-local split = load("data/move_split.lua")
+}) do M[#M + 1] = line end
 local sortedMoves = {}
 for _, m in ipairs(newMoves) do sortedMoves[#sortedMoves + 1] = m end
 table.sort(sortedMoves, function(a, b) return (a.full or a.name) < (b.full or b.name) end)

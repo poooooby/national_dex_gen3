@@ -1,10 +1,87 @@
-# Added Moves
+# Moves
+
+## Physical and special
+
+In the original games a move's **type** decides whether it is physical or special: Normal,
+Fighting, Flying, Poison, Ground, Rock, Bug, Ghost and Steel moves are physical, every other
+type (Fairy included) is special. Physical moves hit with Attack against Defense, special ones
+with Sp. Atk against Sp. Def.
+
+Turn on the **Move Split** option and the **move itself** decides, as in today's games: Shadow
+Ball and Moonblast are special, Crunch, Shadow Claw and Fire Punch physical. It works on every
+game, Red to Emerald, and changes everything that cares: which stats hit, burns halving
+physical damage, Reflect and Light Screen, and what Counter and Mirror Coat hit back. Link
+battles on FireRed to Emerald always use the game's own rule, so both players' games agree.
+
+### Original moves that change
+
+The 54 moves from Red to Emerald that change with Move Split. Every other original
+move stays as it is. A **—** for power is a move whose damage is worked out another way.
+
+| Move | Type | Without Move Split | With Move Split | Power |
+|---|---|---|---|---|
+| Acid | Poison | Physical | Special | 40 |
+| Aeroblast | Flying | Physical | Special | 100 |
+| Air Cutter | Flying | Physical | Special | 55 |
+| Ancientpower | Rock | Physical | Special | 60 |
+| Beat Up | Dark | Special | Physical | 10 |
+| Bite | Dark | Special | Physical | 60 |
+| Blaze Kick | Fire | Special | Physical | 85 |
+| Bullet Seed | Grass | Special | Physical | 10 |
+| Clamp | Water | Special | Physical | 35 |
+| Crabhammer | Water | Special | Physical | 90 |
+| Crunch | Dark | Special | Physical | 80 |
+| Dive | Water | Special | Physical | 60 |
+| Doom Desire | Steel | Physical | Special | 120 |
+| Dragon Claw | Dragon | Special | Physical | 80 |
+| Faint Attack | Dark | Special | Physical | 60 |
+| Fire Punch | Fire | Special | Physical | 75 |
+| Flame Wheel | Fire | Special | Physical | 60 |
+| Gust | Flying | Physical | Special | 40 |
+| Hidden Power | Varies | By its type | Special | — |
+| Hyper Beam | Normal | Physical | Special | 150 |
+| Hyper Voice | Normal | Physical | Special | 90 |
+| Ice Ball | Ice | Special | Physical | 30 |
+| Ice Punch | Ice | Special | Physical | 75 |
+| Icicle Spear | Ice | Special | Physical | 10 |
+| Knock Off | Dark | Special | Physical | 20 |
+| Leaf Blade | Grass | Special | Physical | 70 |
+| Mud Shot | Ground | Physical | Special | 55 |
+| Mud-Slap | Ground | Physical | Special | 20 |
+| Needle Arm | Grass | Special | Physical | 60 |
+| Night Shade | Ghost | Physical | Special | — |
+| Outrage | Dragon | Special | Physical | 90 |
+| Pursuit | Dark | Special | Physical | 40 |
+| Razor Leaf | Grass | Special | Physical | 55 |
+| Razor Wind | Normal | Physical | Special | 80 |
+| Sacred Fire | Fire | Special | Physical | 100 |
+| Shadow Ball | Ghost | Physical | Special | 80 |
+| Signal Beam | Bug | Physical | Special | 75 |
+| Silver Wind | Bug | Physical | Special | 60 |
+| Sludge | Poison | Physical | Special | 65 |
+| Sludge Bomb | Poison | Physical | Special | 90 |
+| Smog | Poison | Physical | Special | 20 |
+| Snore | Normal | Physical | Special | 40 |
+| Sonicboom | Normal | Physical | Special | — |
+| Spark | Electric | Special | Physical | 65 |
+| Spit Up | Normal | Physical | Special | 100 |
+| Swift | Normal | Physical | Special | 60 |
+| Thief | Dark | Special | Physical | 40 |
+| Thunderpunch | Electric | Special | Physical | 75 |
+| Tri Attack | Normal | Physical | Special | 80 |
+| Uproar | Normal | Physical | Special | 50 |
+| Vine Whip | Grass | Special | Physical | 35 |
+| Volt Tackle | Electric | Special | Physical | 120 |
+| Waterfall | Water | Special | Physical | 80 |
+| Weather Ball | Varies | By its type | Special | 50 |
+
+## Added moves
 
 The 419 moves from later generations that work in battle here. Pokémon learn them by
-level-up or as egg moves. The few left (moves that need a partner to act out of turn, such as
-After You and Instruct) are swapped for the closest Gen 3 move. As in Gen 3, a move's type
-decides whether it is physical or special (**Kind**); with the **Move Split** option on, the move
-itself does, as in today's games (**Move Split**).
+level-up, as egg moves or from [TMs](tms.md). The few left (moves that need a partner to act out
+of turn, such as After You and Instruct) are swapped for the closest original move. **Kind** is
+physical or special by the move's type, as these games do; **Move Split** is what the move is
+with that option on.
 
 | Move | Type | Kind | Move Split | Power | Accuracy | PP | What it does |
 |---|---|---|---|---|---|---|---|

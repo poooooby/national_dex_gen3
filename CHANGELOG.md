@@ -3,6 +3,14 @@
 All notable changes to this mod are documented here, in
 [keep a changelog](https://keepachangelog.com/en/1.1.0/) format.
 
+## [Unreleased]
+
+### Changed
+
+- **The move guide explains physical and special:** how the original games decide it, what the
+  **Move Split** option changes, and the 54 original moves that change with it (Shadow Ball,
+  Crunch, Fire Punch...).
+
 ## [1.19.0] - 2026-11-20
 
 ### Added
