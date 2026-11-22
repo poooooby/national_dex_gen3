@@ -36,6 +36,26 @@ learns, by level, TM, tutor and egg, with a link to share.
 - 🎒 **Modern held items**, evolution items, Linking Cord and Exp. Candies
 - 🍓 **EV-lowering berries** (Pomeg, Kelpsy, Qualot, Hondew, Grepa, Tamato) lower an EV and raise friendship in every Gen 3 game
 
+<p align="center">
+  <img src="docs/images/vending/machines.png" width="60%" alt="Two vending machines, one orange and one purple, in Celadon Dept. Store 4F"><br>
+  <sub>HELD EXPRESS and EVO EXPRESS on Celadon Dept. Store 4F; TM EXPRESS is on 2F. On Ruby, Sapphire
+  and Emerald they're in Lilycove's store, on Gold, Silver and Crystal in Goldenrod's. Walk up, press A,
+  and buy with the buttons or a tap. Some items wait for more Gym Badges.</sub>
+</p>
+
+<table>
+  <tr>
+    <td width="33%"><img src="docs/images/vending/evo_express.png" alt="The EVO EXPRESS screen: evolution items with prices, Linking Cord chosen"></td>
+    <td width="33%"><img src="docs/images/vending/held_express.png" alt="The HELD EXPRESS screen: held items with prices, Muscle Band chosen"></td>
+    <td width="33%"><img src="docs/images/vending/tm_express.png" alt="The TM EXPRESS screen: TM51 onward, Struggle Bug chosen with its type, power, accuracy and PP"></td>
+  </tr>
+  <tr>
+    <td align="center"><sub><b>EVO EXPRESS</b>: evolution stones, trade items and the Linking Cord</sub></td>
+    <td align="center"><sub><b>HELD EXPRESS</b>: the modern held items</sub></td>
+    <td align="center"><sub><b>TM EXPRESS</b>: the new TMs, with a tab for each type</sub></td>
+  </tr>
+</table>
+
 ### In Battle
 
 - 🎬 **Animations from the Gen 9 Move Animation Project** for the newer moves and the original ones, on every game
