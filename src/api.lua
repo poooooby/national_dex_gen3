@@ -207,21 +207,75 @@ return function(mod, state)
   --   hpMult(level)           HP x this while Dynamaxed (1.5 .. 2.0)
   --   raidStartLevel(stars, rng)   a Max Raid catch's starting level (Sword / Shield's roll)
   --   ids                     { DYNAMAX_CANDY = 955, MAX_MUSHROOMS = 956, MAX_HONEY = 957 }
+  -- Every function here answers what its comment says, or its default when the call fails (a bad
+  -- argument, a game that isn't up yet): it never throws into the caller's code.
+  local function guarded(fn, default)
+    return function(...)
+      local ok, a, b = pcall(fn, ...)
+      if ok then return a, b end
+      return default
+    end
+  end
   local Dx = state.dynamax
   if Dx then
     exports.dynamax = {
-      level = function(mon) return Dx.level(mon) end,
-      setLevel = function(mon, n) return Dx.setLevel(mon, n) end,
-      hasFactor = function(mon) return Dx.hasFactor(mon) end,
-      setFactor = function(mon, on) return Dx.setFactor(mon, on) end,
-      canDynamax = function(x) return Dx.canDynamax(x) end,
-      gmaxMoveOf = function(x) return Dx.gmaxMoveOf(x) end,
-      canGigantamax = function(mon) return Dx.canGigantamax(mon) end,
-      hpMult = function(level) return Dx.hpMult(level) end,
-      raidStartLevel = function(stars, rng) return Dx.raidStartLevel(stars, rng) end,
+      level = guarded(function(mon) return Dx.level(mon) end, 0),
+      setLevel = guarded(function(mon, n) return Dx.setLevel(mon, n) end, false),
+      hasFactor = guarded(function(mon) return Dx.hasFactor(mon) end, false),
+      setFactor = guarded(function(mon, on) return Dx.setFactor(mon, on) end, false),
+      canDynamax = guarded(function(x) return Dx.canDynamax(x) end, true),
+      gmaxMoveOf = guarded(function(x) return Dx.gmaxMoveOf(x) end, nil),
+      canGigantamax = guarded(function(mon) return Dx.canGigantamax(mon) end, false),
+      hpMult = guarded(function(level) return Dx.hpMult(level) end, 1.5),
+      raidStartLevel = guarded(function(stars, rng) return Dx.raidStartLevel(stars, rng) end, 1),
       ids = copy(Dx.ids),
     }
   end
+
+  -- The battle's field, for a mod that runs moves of its own in the game's battles (max_raids'
+  -- Max Moves and G-Max Moves). Added in 1.20.0; test for it by presence (and `version`). Each
+  -- takes the engine's battle adapter (`ad`, its _st the battle) and says the game's own words.
+  --   startTerrain(ad, kind, by)   "ELECTRIC" | "GRASSY" | "MISTY" | "PSYCHIC" for 5 turns (8 with a
+  --                                Terrain Extender on `by`); false when that terrain is already up
+  --   terrainOf(st)                the terrain up now, or nil
+  --   startGravity(ad, turns)      Gravity (5 turns), a Pokemon in the air falling; false if it's up
+  --   setHazard(ad, side, kind)    "stealthRock" | "toxicSpikes" | "stickyWeb" on a side (st.playerSide
+  --                                / st.enemySide); false when it can't be laid
+  --   clearHazards(side)           a side's entry hazards gone
+  --   startAuroraVeil(ad, side, turns)   Aurora Veil on a side, hail or not; false when it's up
+  --   addMoldMove(num)             a move (by number) that ignores the target's abilities
+  --   setMoveClass(num, class)     the Move Split option's class for a move: "physical" | "special" |
+  --                                nil (by its type, the game's way); moveClass(num) reads it
+  local MF, More = state.moveField, state.moreAbilities
+  local function splitHub()
+    local okT, Types = pcall(require, "src.core.game3.battle.types")
+    return okT and type(Types) == "table" and Types.__ndxSplit or nil
+  end
+  exports.battle = {
+    version = 1,
+    startTerrain = guarded(function(ad, kind, by) return MF and MF.startTerrain(ad, kind, by) or false end, false),
+    terrainOf = guarded(function(st) return MF and MF.terrainOf(st) or nil end, nil),
+    startGravity = guarded(function(ad, turns) return MF and MF.startGravity(ad, turns) or false end, false),
+    setHazard = guarded(function(ad, side, kind) return MF and MF.setHazard(ad, side, kind) or false end, false),
+    clearHazards = guarded(function(side) if MF then MF.clearHazards(side) end return MF ~= nil end, false),
+    startAuroraVeil = guarded(function(ad, side, turns)
+      return MF and MF.startAuroraVeil(ad, side, turns) or false
+    end, false),
+    addMoldMove = guarded(function(num) return More and More.addMoldMove(num) or false end, false),
+    setMoveClass = guarded(function(num, class)
+      local hub = splitHub()
+      num = tonumber(num)
+      if not (hub and num) then return false end
+      hub.classes = hub.classes or {}
+      hub.classes[num] = class == "physical" and "p" or class == "special" and "s" or nil
+      return true
+    end, false),
+    moveClass = guarded(function(num)
+      local hub = splitHub()
+      local c = hub and hub.classes and hub.classes[tonumber(num) or -1]
+      return c == "p" and "physical" or c == "s" and "special" or nil
+    end, nil),
+  }
 
   -- registerOwned(session) -> how many it looked at: the "Register Owned" option's step (every party
   -- and PC Pokemon marked caught), as it runs when the game's Pokedex opens; nothing while the option's

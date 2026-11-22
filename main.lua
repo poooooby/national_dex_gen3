@@ -754,7 +754,7 @@ return function(mod)
     end)
   end
   Api(mod, { species = registered, forms = registeredForms, bridges = bridges, art = art, dexPatch = DexPatch,
-    moves = registeredMoves, dynamax = Dynamax,
+    moves = registeredMoves, dynamax = Dynamax, moveField = MoveField, moreAbilities = MoreAbilities,
     -- (for a Pokedex of another mod's that opens in place of the game's: Register Owned as before the
     -- game's, and the FORMS page's names)
     registerOwned = function(session)

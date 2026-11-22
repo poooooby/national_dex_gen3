@@ -604,6 +604,33 @@ do
   end
 end
 
+-- ------- the field from outside a move (src/api.lua exports.battle: another mod's moves)
+do
+  local api = run.loader.exports and run.loader.exports.national_dex_gen3
+  local B = api and api.battle
+  T.check(B ~= nil and B.version == 1, "exports.battle is there")
+  if B then
+    local st, ad = battle()
+    T.check(B.startTerrain(ad, "ELECTRIC") == true, "startTerrain: Electric Terrain")
+    T.eq(B.terrainOf(st), "ELECTRIC", "terrainOf: it is up")
+    T.check(B.startTerrain(ad, "ELECTRIC") == false, "startTerrain: not twice")
+    T.check(B.startGravity(ad) == true and st.__ndxField.gravity == 5, "startGravity: 5 turns")
+    T.check(B.startGravity(ad) == false, "startGravity: not twice")
+    T.check(B.setHazard(ad, st.enemySide, "stealthRock") == true, "setHazard: Stealth Rock")
+    T.check(st.enemySide.__ndx.stealthRock == true, "setHazard: on that side")
+    T.check(B.setHazard(ad, st.enemySide, "stealthRock") == false, "setHazard: not twice")
+    T.check(B.setHazard(ad, st.enemySide, "nonsense") == false, "setHazard: an unknown kind refused")
+    B.clearHazards(st.enemySide)
+    T.check(not st.enemySide.__ndx.stealthRock, "clearHazards: gone")
+    T.check(B.startAuroraVeil(ad, st.playerSide) == true and st.playerSide.__ndx.auroraVeil == 5,
+      "startAuroraVeil: 5 turns, no hail needed")
+    T.check(B.startAuroraVeil(ad, st.playerSide) == false, "startAuroraVeil: not twice")
+    T.check(B.addMoldMove(950) == true, "addMoldMove: by number")
+    -- (a bad call answers its default; it never throws)
+    T.check(B.startTerrain(nil, "ELECTRIC") == false and B.setHazard() == false, "bad calls answer false")
+  end
+end
+
 Battle._adapter = nil
 run.release()
 T.finish("national_dex_gen3 field moves (" .. GAME .. ")")

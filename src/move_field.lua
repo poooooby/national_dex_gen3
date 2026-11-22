@@ -162,6 +162,68 @@ function MoveField.startTerrain(ad, kind, by)
   ad:say(t.start)
   return true
 end
+-- Gravity for 5 turns from outside a move (Gravity's own start; another mod's - G-Max Gravitas -
+-- through src/api.lua exports.battle): a Pokemon in the air falls; false when it is already up
+function MoveField.startGravity(ad, turns)
+  local st = ad and ad._st
+  if not st then return false end
+  local f = field(st)
+  if (f.gravity or 0) > 0 then return false end
+  f.gravity = tonumber(turns) or 5
+  ad:say("Gravity intensified!")
+  for _, b in ipairs(ad:activeBattlers()) do
+    if b.semiInvulnerable == "ON_AIR" then
+      local okE, Engine = pcall(require, "src.core.game3.battle.engine")
+      if okE and Engine.cancelMultiTurnMoves then Engine.cancelMultiTurnMoves(b) end
+      ad:say(prefixed(ad, b) .. " fell from the sky\ndue to the gravity!")
+    end
+  end
+  return true
+end
+
+-- an entry hazard laid on a side from outside a move (G-Max Stonesurge's Stealth Rock): kind
+-- "stealthRock" | "toxicSpikes" (a layer, two at most) | "stickyWeb", with the moves' own words;
+-- false when it can't be laid
+function MoveField.setHazard(ad, side, kind)
+  if not (ad and ad._st and side) then return false end
+  local d = side.__ndx or {}
+  side.__ndx = d
+  if kind == "stealthRock" then
+    if d.stealthRock then return false end
+    d.stealthRock = true
+    ad:say("Pointed stones float in the air\naround " .. teamName(ad, side) .. "!")
+  elseif kind == "toxicSpikes" then
+    if (d.toxicSpikes or 0) >= 2 then return false end
+    d.toxicSpikes = (d.toxicSpikes or 0) + 1
+    ad:say("Poison spikes were scattered\naround " .. teamName(ad, side) .. "'s feet!")
+  elseif kind == "stickyWeb" then
+    if d.stickyWeb then return false end
+    d.stickyWeb = true
+    ad:say("A sticky web spreads out\nunder " .. teamName(ad, side) .. "'s feet!")
+  else
+    return false
+  end
+  return true
+end
+-- a side's entry hazards gone (Defog's, from outside a move: G-Max Wind Rage)
+function MoveField.clearHazards(side)
+  if side and side.__ndx then
+    side.__ndx.stealthRock, side.__ndx.toxicSpikes, side.__ndx.stickyWeb = nil, nil, nil
+  end
+end
+
+-- Aurora Veil on a side from outside a move (G-Max Resonance: no hail needed), 5 turns, with the
+-- move's own words; false when it is already up. Its damage and its end are the move's own.
+function MoveField.startAuroraVeil(ad, side, turns)
+  if not (ad and ad._st and side) then return false end
+  local d = side.__ndx or {}
+  side.__ndx = d
+  if (d.auroraVeil or 0) > 0 then return false end
+  d.auroraVeil = tonumber(turns) or 5
+  ad:say("AURORA VEIL made " .. teamName(ad, side) .. "\nstronger against attacks!")
+  return true
+end
+
 -- fn(ad, b) -> true when b takes no indirect damage (Magic Guard; src/abilities_more.lua sets it)
 MoveField.noIndirect = nil
 
@@ -527,15 +589,7 @@ local function statusRule(rule, ad, user, target, M)
   elseif rule == "GRAVITY" then
     if (f.gravity or 0) > 0 then return fail(ad, M) end
     anim()
-    f.gravity = 5
-    ad:say("Gravity intensified!")
-    for _, b in ipairs(ad:activeBattlers()) do
-      if b.semiInvulnerable == "ON_AIR" then
-        local okE, Engine = pcall(require, "src.core.game3.battle.engine")
-        if okE and Engine.cancelMultiTurnMoves then Engine.cancelMultiTurnMoves(b) end
-        ad:say(prefixed(ad, b) .. " fell from the sky\ndue to the gravity!")
-      end
-    end
+    MoveField.startGravity(ad)
   elseif rule == "WONDER_ROOM" then
     fieldTimer("wonderRoom", 5, "It created a bizarre area in which\nDEFENSE and SP. DEF stats are swapped!")
   elseif rule == "MAGIC_ROOM" then

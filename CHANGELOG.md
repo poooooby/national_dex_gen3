@@ -5,6 +5,17 @@ All notable changes to this mod are documented here, in
 
 ## [Unreleased]
 
+### Added
+
+- **For other mods:** `exports.battle` lets a mod's own moves in the game's battles use WoobleDex's
+  field: terrains, Gravity, entry hazards, Aurora Veil, moves that ignore abilities, and each
+  move's Move Split class. Galar Rising's Max Moves and G-Max Moves use it.
+
+### Changed
+
+- **Sturdier exports:** the Dynamax functions answer a safe default instead of failing when a call
+  goes wrong.
+
 ## [1.19.2] - 2026-11-22
 
 ### Changed
