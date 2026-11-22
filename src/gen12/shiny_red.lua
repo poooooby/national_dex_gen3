@@ -31,7 +31,7 @@ function ShinyRed.star(x, y, size)
   if size >= 2 then g.rectangle("fill", x - 1, y - 1, 3, 3) end
 end
 
--- opts: { mod, require }
+-- opts: { mod, require, overlay = fn(hook) (optional: one shared battle.overlay wrap) }
 function ShinyRed.install(opts)
   local mod, require = opts.mod, opts.require
   local function visible(battle, side)
@@ -45,7 +45,8 @@ function ShinyRed.install(opts)
     local ok, grow = pcall(battle.growInScale, battle, b)
     return not (ok and grow)
   end
-  mod.hooks:wrap("battle.overlay", function(nextFn, battle, ...)
+  -- (opts.overlay: gen12/main.lua's one battle.overlay wrap for all of ours)
+  local function hook(nextFn, battle, ...)
     local r = nextFn(battle, ...)
     if type(battle) ~= "table" or type(battle.drawPicsLayer) ~= "function" then return r end
     -- the wide layout puts the pictures elsewhere: the sparkle is the classic screen's
@@ -79,7 +80,8 @@ function ShinyRed.install(opts)
       end
     end
     return r
-  end)
+  end
+  if opts.overlay then opts.overlay(hook) else mod.hooks:wrap("battle.overlay", hook) end
 end
 
 return ShinyRed

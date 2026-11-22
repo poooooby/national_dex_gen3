@@ -264,10 +264,12 @@ local function blit(orig, self, canvas, ...)
   return orig(self, canvas, ...)
 end
 
--- keep the blitCanvas wrap outermost (a mod wrapping it later would draw outside the grade)
-local function ensureOutermost(Renderer)
-  local hub = Renderer.__ndxDayNightHub
-  if Renderer.blitCanvas == hub.blit or hub.wraps >= 8 then return end
+-- keep the blitCanvas wrap outermost (a mod wrapping it later would draw outside the grade).
+-- The wrap is made in a function of its own: this check runs every frame, and a function that
+-- makes a closure closes its upvalues on every return, which LuaJIT cannot compile. A frame
+-- that aborts there leaves the engine's own frame code interpreted, about 2.5 KB of garbage a
+-- frame on Emerald that compiled code would not make (tests/drivers/garbage_probe.lua).
+local function wrapBlit(Renderer, hub)
   hub.wraps = hub.wraps + 1
   local orig = Renderer.blitCanvas
   local wrap = function(self, canvas, ...)
@@ -277,6 +279,11 @@ local function ensureOutermost(Renderer)
   end
   hub.blit = wrap
   Renderer.blitCanvas = wrap
+end
+local function ensureOutermost(Renderer)
+  local hub = Renderer.__ndxDayNightHub
+  if Renderer.blitCanvas == hub.blit or hub.wraps >= 8 then return end
+  wrapBlit(Renderer, hub)
 end
 
 -- this copy's end of frame: a new frame is ungraded; ease toward the target

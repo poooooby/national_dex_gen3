@@ -186,8 +186,12 @@ function EssAnims.install(opts)
     local tr, tg, tb = (c[C.TR] or 0) / 255, (c[C.TG] or 0) / 255, (c[C.TB] or 0) / 255
     if a > 0 or tr ~= 0 or tg ~= 0 or tb ~= 0 then
       local k = 1 - a
-      p.palAffine = { m = k,
-        r = tr * k + (c[C.CR] or 0) / 255 * a, g = tg * k + (c[C.CG] or 0) / 255 * a, b = tb * k + (c[C.CB] or 0) / 255 * a }
+      -- (one table per battler for the whole animation, filled in place: the battle reads it fresh)
+      local aff = m.aff
+      if not aff then aff = {}; m.aff = aff end
+      aff.m, aff.r, aff.g, aff.b = k, tr * k + (c[C.CR] or 0) / 255 * a, tg * k + (c[C.CG] or 0) / 255 * a,
+        tb * k + (c[C.CB] or 0) / 255 * a
+      p.palAffine = aff
     else
       p.palAffine = nil
     end

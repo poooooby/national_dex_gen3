@@ -74,13 +74,18 @@ end
 -- function and its source, so a frame makes no closure)
 function StatHints.chips(get, src, out)
   out = out or {}
+  -- (a chip's table is kept in out.pool when the list shortens: both boxes share one list, so a
+  -- frame with two chips by one box and none by the other makes nothing)
+  local pool = out.pool
+  if not pool then pool = {}; out.pool = pool end
   local n = 0
   for _, s in ipairs(StatHints.STATS) do
     local st = tonumber(get(src, s.key)) or 0
     local t = StatHints.text(s.key, s.label, st)
     if t then
       n = n + 1
-      local c = out[n] or {}
+      local c = pool[n]
+      if not c then c = {}; pool[n] = c end
       c.text, c.up = t, st > 0
       out[n] = c
     end
@@ -513,7 +518,11 @@ function StatHints.install(opts)
 
   -- one chip (state.drawChip: the seam tests watch): queued at window resolution, or drawn now
   state.drawChip = function(text, up, x, y, w, h)
-    if state.hiNow then return StatHints.enqueue(text, up, x, y, w, h) end
+    if state.hiNow then
+      -- (main.lua holds render.hud only while chips are queued)
+      if state.wantHud then state.wantHud() end
+      return StatHints.enqueue(text, up, x, y, w, h)
+    end
     local img = image(text, up)
     if img then love.graphics.draw(img, x, y) end
   end

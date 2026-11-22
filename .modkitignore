@@ -127,7 +127,12 @@ tools/ess_gallery.py
 tools/ess_quant.py
 tests/gen12_ess_test.lua
 tests/drivers/gen12_ess_probe.lua
+tests/drivers/garbage_probe.lua
 docs/index.html
 docs/.nojekyll
 docs/learnsets/index.html
 docs/learnsets/data.js
+docs/images/vending/machines.png
+docs/images/vending/evo_express.png
+docs/images/vending/held_express.png
+docs/images/vending/tm_express.png

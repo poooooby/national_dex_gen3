@@ -7,6 +7,11 @@ All notable changes to this mod are documented here, in
 
 ### Changed
 
+- **Less memory churn every frame, so fewer garbage-collection hitches:**
+  - In the overworld, WoobleDex makes nothing a frame on any game, where it made 3-3.5 KB a frame.
+  - In battle it makes 3.5-5 KB a frame less on Red, Gold and Emerald, and the Gen 9 animations
+    4-5.5 KB less while they play.
+
 - **The [Learnsets](https://poooooby.github.io/national_dex_gen3/learnsets/) page says where each move tutor
   is:** the town or building on FireRed / LeafGreen and Emerald, and the Battle Points the Battle
   Frontier's tutors ask.

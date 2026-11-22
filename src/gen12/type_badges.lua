@@ -46,11 +46,21 @@ function Badges.idOf(name)
 end
 
 -- the badge ids to show for a list of type names: each once, ??? only alone
-function Badges.ids(types)
-  local out, seen = {}, {}
-  for _, t in ipairs(type(types) == "table" and types or {}) do
+-- out: a list to fill (emptied first; the HUD draws pass one of their own: no table a frame)
+local NONE = {}
+function Badges.ids(types, out)
+  if out then
+    for i = #out, 1, -1 do out[i] = nil end
+  else
+    out = {}
+  end
+  for _, t in ipairs(type(types) == "table" and types or NONE) do
     local id = Badges.idOf(t)
-    if id and not seen[id] then seen[id] = true; out[#out + 1] = id end
+    if id then
+      local dup = false
+      for i = 1, #out do if out[i] == id then dup = true end end
+      if not dup then out[#out + 1] = id end
+    end
   end
   if #out > 1 then
     for i = #out, 1, -1 do if out[i] == 9 then table.remove(out, i) end end
@@ -125,8 +135,9 @@ function Badges.install(opts)
     return not ok or v ~= false
   end
   -- side: a mod's box for that side may have been drawn just now (Shape.seen); the badges go by it
+  local idList = {}
   local function drawRow(types, spot, side)
-    local ids = Badges.ids(types)
+    local ids = Badges.ids(types, idList)
     if #ids == 0 then return end
     local x, y = spot.x, spot.y
     local Shape = state.shape

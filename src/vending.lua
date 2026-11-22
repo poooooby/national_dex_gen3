@@ -316,6 +316,7 @@ return function(mod, deps)
       return false
     end
     pad(true)
+    if V.screenHooks then V.screenHooks(true) end
     return true
   end
 
@@ -398,11 +399,17 @@ return function(mod, deps)
       end
       return nxt(game, eo)
     end)
+    -- (input.step and the screen's hooks are held only while they have work: the engine's call
+    -- into a wrapped hook makes garbage every frame, whatever the wrap does; src/hook_slot.lua)
+    local Slot = deps.hookSlot
+    local function slot(name, fn)
+      if Slot then return Slot.new(mod, name, fn) end
+      mod.hooks:wrap(name, fn)
+      return nil
+    end
     -- placed on entering a map, and after a load once the field runs
-    V.pending = true
-    mod.events:on("map.entered", function() V.pending = true end)
-    mod.events:on("save.loaded", function() V.pending = true end)
-    mod.hooks:wrap("input.step", function(nxt, game, dt, ...)
+    local placing
+    placing = slot("input.step", function(nxt, game, dt, ...)
       local res = nxt(game, dt, ...)
       if V.pending then
         local ok, done = pcall(V.ensure)
@@ -413,10 +420,27 @@ return function(mod, deps)
           V.pending = false
         end
       end
+      if not V.pending and placing then placing:off() end
       return res
     end)
-    -- the screen over the game
-    mod.hooks:wrap("render.hud", function(nxt, game, viewport)
+    local function place()
+      V.pending = true
+      if placing then placing:on() end
+    end
+    place()
+    mod.events:on("map.entered", place)
+    mod.events:on("save.loaded", place)
+    -- the screen over the game, while it is open
+    local hud, pointer, wheel
+    function V.screenHooks(on)
+      if not hud then return end
+      if on then
+        hud:on(); pointer:on(); wheel:on()
+      else
+        hud:off(); pointer:off(); wheel:off()
+      end
+    end
+    hud = slot("render.hud", function(nxt, game, viewport)
       local res = nxt(game, viewport)
       -- (the layer taken away under it, a reset: the screen goes too)
       local Stack = engine("src.ui.game3.stack")
@@ -434,14 +458,16 @@ return function(mod, deps)
           G.pop()
           if not ok and log then log:warn("vending screen draw failed: %s", tostring(err)) end
         end
+      else
+        V.screenHooks(false)
       end
       return res
     end)
-    mod.hooks:wrap("input.pointer", function(nxt, game, ev)
+    pointer = slot("input.pointer", function(nxt, game, ev)
       if Screen.isOpen() then return Screen.pointer(ev) end
       return nxt(game, ev)
     end)
-    mod.hooks:wrap("input.wheel", function(nxt, game, dy)
+    wheel = slot("input.wheel", function(nxt, game, dy)
       if Screen.isOpen() then return Screen.wheel(dy) end
       return nxt(game, dy)
     end)

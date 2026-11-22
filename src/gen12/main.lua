@@ -23,9 +23,48 @@ return function(mod, loadSibling)
     local okRow, errRow = pcall(OptionsRow.install, mod, { generation = generation, count = #optionRows })
     if not okRow then mod.log:warn("WOOBLEDEX options row is off: %s", tostring(errRow)) end
   end
+  -- (no closure a call: the badges, the chips and Day & Night ask every frame)
+  local options = mod.options
   local function option(key)
-    local ok, value = pcall(function() return mod.options:get(key) end)
+    local ok, value = pcall(options.get, options, key)
     return not ok or value ~= false
+  end
+  -- per-frame hooks held only while they have work (src/hook_slot.lua; without it, held for good)
+  local HookSlot = loadSibling(mod, "src/hook_slot.lua")
+  -- Red's battle.overlay: one wrap per priority for all of WoobleDex's draws there (the engine's call
+  -- into each wrap makes garbage every battle frame). overlay(priority)(hook) adds a hook-style
+  -- function (nextFn, battle, ...); they run in the order added, each one's nextFn the next one's
+  -- (made once), the last one's the wrap's own.
+  local overlayHubs = {}
+  local function overlay(priority)
+    local hub = overlayHubs[priority]
+    if not hub then
+      local links, nexts, outer = {}, {}, nil
+      local function call(k, ...)
+        local f = links[k]
+        if not f then return outer(...) end
+        return f(nexts[k], ...)
+      end
+      hub = function(hook)
+        local k = #links + 1
+        links[k] = hook
+        nexts[k] = function(...) return call(k + 1, ...) end
+        if k == 1 then
+          pcall(function()
+            mod.hooks:wrap("battle.overlay", function(nextFn, ...)
+              local saved = outer
+              outer = nextFn
+              local ok, a, b = pcall(call, 1, ...)
+              outer = saved
+              if not ok then error(a, 0) end
+              return a, b
+            end, priority)
+          end)
+        end
+      end
+      overlayHubs[priority] = hub
+    end
+    return hub
   end
 
   -- Dark / Steel / Fairy, the modern typing of the cart's species and moves, and the two
@@ -102,7 +141,7 @@ return function(mod, loadSibling)
       if Summary then
         local ShinyRed = generation == 1 and loadSibling(mod, "src/gen12/shiny_red.lua") or nil
         if ShinyRed then
-          local okZ, errZ = pcall(ShinyRed.install, { mod = mod, require = require })
+          local okZ, errZ = pcall(ShinyRed.install, { mod = mod, require = require, overlay = overlay(0) })
           if not okZ then mod.log:warn("the shiny sparkle is off: %s", tostring(errZ)) end
         end
         local okY, errY = pcall(Summary.install, { require = require, generation = generation, core = core,
@@ -141,7 +180,7 @@ return function(mod, loadSibling)
       if okE and essState.count > 0 then
         mod.exports._ess = essState
         if generation == 1 then
-          pcall(function() mod.hooks:wrap("battle.overlay", Ess12.overlayHook(require)) end)
+          overlay(0)(Ess12.overlayHook(require))
         end
         mod.events:on("game.ready", function()
           local okI, errI = pcall(Ess12.install, { state = essState, Core = EssCore, require = require,
@@ -222,7 +261,7 @@ return function(mod, loadSibling)
         end
         local okB, errB = pcall(Breeding.install, { mod = mod, require = require, facts = facts,
           gender = genderOf, direct = directMove, eggMoves = function(dex) return eggByDex[dex] end,
-          log = mod.log })
+          log = mod.log, hookSlot = HookSlot })
         if okB then mod.exports._breeding = Breeding
         else mod.log:warn("breeding is off: %s", tostring(errB)) end
       end
@@ -419,7 +458,7 @@ return function(mod, loadSibling)
         machines = vendingData, screen = vendingScreen, items = itemRows, itemId = itemId, held = heldRows,
         tms = tmState and tmRows or {}, moves = loadSibling(mod, "data/moves.lua"),
         gen3Items = loadSibling(mod, "data/items.lua"), icons = loadSibling(mod, "data/item_icons.lua"),
-        typeId = BadgeIds and BadgeIds.idOf })
+        typeId = BadgeIds and BadgeIds.idOf, hookSlot = HookSlot })
       V.registerSprites()
       V.install()
       mod.exports._vending = V
@@ -443,7 +482,7 @@ return function(mod, loadSibling)
     if generation == 1 then
       local badges = Badges.install(badgeOpts(nil))
       if badges then
-        pcall(function() mod.hooks:wrap("battle.overlay", Badges.overlayHook(badges), OVERLAY_PRIORITY) end)
+        overlay(OVERLAY_PRIORITY)(Badges.overlayHook(badges))
       end
     else
       mod.events:on("game.ready", function(ev)
@@ -473,7 +512,7 @@ return function(mod, loadSibling)
     if generation == 1 then
       local hints = Hints.install(hintOpts(nil))
       if hints then
-        pcall(function() mod.hooks:wrap("battle.overlay", Hints.overlayHook(hints), OVERLAY_PRIORITY) end)
+        overlay(OVERLAY_PRIORITY)(Hints.overlayHook(hints))
       end
     else
       mod.events:on("game.ready", function(ev)

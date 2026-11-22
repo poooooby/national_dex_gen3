@@ -310,6 +310,7 @@ function Vending.new(opts)
     Screen.open(machine, V.stock(machine, game.data))
     game.stack:push(layer)
     pad(true)
+    if V.screenHooks then V.screenHooks(true) end
     return true
   end
 
@@ -354,10 +355,16 @@ function Vending.new(opts)
   end
 
   function V.install()
-    V.pending = true
-    mod.events:on("map.entered", function() V.pending = true; V.tries = 0 end)
-    mod.events:on("save.loaded", function() V.pending = true; V.tries = 0 end)
-    mod.hooks:wrap("input.step", function(nxt, game, ...)
+    -- (input.step and the screen's hooks are held only while they have work: the engine's call
+    -- into a wrapped hook makes garbage every frame, whatever the wrap does; src/hook_slot.lua)
+    local Slot = opts.hookSlot
+    local function slot(name, fn)
+      if Slot then return Slot.new(mod, name, fn) end
+      mod.hooks:wrap(name, fn)
+      return nil
+    end
+    local placing
+    placing = slot("input.step", function(nxt, game, ...)
       local r = nxt(game, ...)
       if V.pending then
         local ok, done = pcall(V.ensure)
@@ -369,8 +376,16 @@ function Vending.new(opts)
           V.pending = false
         end
       end
+      if not V.pending and placing then placing:off() end
       return r
     end)
+    local function place()
+      V.pending, V.tries = true, 0
+      if placing then placing:on() end
+    end
+    place()
+    mod.events:on("map.entered", place)
+    mod.events:on("save.loaded", place)
     if gen == 1 then
       mod.hooks:wrap("world.talk", function(nxt, ow, npc, ...)
         local m = npc and npc.def and byName[npc.def.name]
@@ -387,13 +402,23 @@ function Vending.new(opts)
         if m then V.open(m, mod.game) end
       end)
     end
-    mod.hooks:wrap("render.hud", function(nxt, game, viewport, ...)
+    -- the screen over the game, while it is open
+    local hud, pointer, wheel
+    function V.screenHooks(on)
+      if not hud then return end
+      if on then
+        hud:on(); pointer:on(); wheel:on()
+      else
+        hud:off(); pointer:off(); wheel:off()
+      end
+    end
+    hud = slot("render.hud", function(nxt, game, viewport, ...)
       local r = nxt(game, viewport, ...)
       if Screen.isOpen() then
         if current and current.stack then
           local inStack = false
           for _, s in ipairs(current.stack.states or {}) do if s == layer then inStack = true end end
-          if not inStack then Screen.close(); pad(false); return r end
+          if not inStack then Screen.close(); pad(false); V.screenHooks(false); return r end
         end
         local G = love and love.graphics
         if G and type(viewport) == "table" then
@@ -409,14 +434,16 @@ function Vending.new(opts)
             log:warn("vending screen draw failed: %s", tostring(err))
           end
         end
+      else
+        V.screenHooks(false)
       end
       return r
     end)
-    mod.hooks:wrap("input.pointer", function(nxt, game, ev, ...)
+    pointer = slot("input.pointer", function(nxt, game, ev, ...)
       if Screen.isOpen() then return Screen.pointer(ev) end
       return nxt(game, ev, ...)
     end)
-    mod.hooks:wrap("input.wheel", function(nxt, game, dy, ...)
+    wheel = slot("input.wheel", function(nxt, game, dy, ...)
       if Screen.isOpen() then return Screen.wheel(dy) end
       return nxt(game, dy, ...)
     end)

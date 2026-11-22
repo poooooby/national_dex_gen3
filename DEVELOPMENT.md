@@ -709,6 +709,64 @@ most gaps; keep to these when adding a mechanic:
   A species of this mod answers its own ability ahead of a battler's `ability` field: give one
   by `expTracedAbility`, as Skill Swap does.
 
+## Garbage each frame (`tests/drivers/garbage_probe.lua`)
+
+Anything that runs every frame (a per-frame hook, a draw wrap, the overworld's renderer wraps) should
+make no Lua garbage of its own. The probe measures bytes made a frame in the real game: the
+overworld standing still, a battle's menu with stat changes on both sides, and Gen 9 animations
+playing. It holds the collector still while it measures. The engine steps the collector every frame
+(`Game3.stepGC`, Gen 1/2 every fourth frame), and a `"step"` collects even while the collector is
+stopped, so it swaps the global `collectgarbage` for one that ignores `"step"` / `"collect"`. Without
+that, a small heap reads ~0. Run it with only WoobleDex in the game's mod list, and once with
+WoobleDex off for the baseline. `PROFILE=1` charges each frame's garbage to the function that made
+it (a call / return hook), plus the hook or event the engine was calling and the nearest WoobleDex
+line on the stack. `JITV=1` writes the JIT's trace aborts by line.
+
+What it found (2026-11-21):
+
+- **The engine's call into a wrapped hook makes garbage on every call**, whatever the wrap does:
+  argument packs and per-link closures in `Hooks:call`, and on Gen 3 the record views of
+  `UnifiedCallbacks`. That's about 1 KB a frame per per-frame hook on Red / Gold and 3.5 KB on
+  Emerald. So a per-frame hook (`input.step`, `render.hud`) is held only while it has work, through
+  `src/hook_slot.lua`:
+  - the vending machines' and the Day Care lady's `input.step` until they are placed (again on
+    `map.entered` / `save.loaded`);
+  - the vending screen's `render.hud` / `input.pointer` / `input.wheel` from `V.open` until the
+    screen is closed;
+  - Stat Hints' `render.hud` (WoobleView's window-resolution chips) from the first chip queued to
+    the first frame with none.
+
+  A slot is unwrapped from inside its own callback only after its `next()` has returned: the engine
+  walks the chain by position.
+- **Red's `battle.overlay` is one wrap per priority** (`overlay(priority)(hook)` in
+  `src/gen12/main.lua`): the animations and the shiny sparkle at 0, the type badges and Stat Hints at
+  1. Each keeps its hook shape; the links are made once.
+- **A function on the frame's path that LuaJIT cannot compile** (one that makes a closure closes its
+  upvalues on every return: "NYI: bytecode") leaves the engine's frame code around it interpreted.
+  Day & Night's `ensureOutermost` ran every frame and made its wrap closure inline; the closure is
+  made in `wrapBlit` now.
+- **Our own draws make no tables:**
+  - `src/ess_core.lua` reuses the layer lists and the shaders' colour tables.
+  - Gen 3's battler tint (`palAffine`), Gen 1/2's poses and Red's picture records are filled in place.
+  - Gold's both-pictures draw is a function of its own, not a closure.
+  - Red's wide overlay looks `BattleState` up once.
+  - The Gen 1/2 badges fill one id list.
+  - Stat Hints keep the chip tables in `out.pool`: both boxes share one list.
+  - Gen 1/2 `option()` reads with no closure.
+- **Left as they are:**
+  - `pokemon.sprite`, which the engine asks for each battler picture every frame: about 2.4 KB a frame
+    in Gold / Emerald battles through our art link. Every player has a sprite pack that wraps it too.
+  - Red's two overlay wraps in the classic layout: about 1.8 KB a frame, nothing to draw there unless
+    a shiny comes out.
+
+Figures, bytes a frame (WoobleDex off in brackets):
+
+| Game | Overworld | Battle menu | Animations |
+|---|---|---|---|
+| Red | 6749 → 3383 (3494) | 15996 → 10718 (8591) | ~16.2K → ~10.8K |
+| Gold | 6958 → 3913 (4103) | 14184 → 10390 (7489) | ~12.6K → ~8.6K |
+| Emerald | 10640 → 7198 (7200) | 18763 → 15236 (12008) | ~19.3K → ~15.5K (the cart's own ~13.3K) |
+
 ## Technical limits
 
 - Without an art provider, battles show whatever the engine decodes for an unknown slot.

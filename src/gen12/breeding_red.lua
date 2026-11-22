@@ -267,18 +267,28 @@ function Breeding.install(opts)
     end
     return nil
   end
+  -- (input.step held only until she is placed: the engine's call into a wrapped hook makes
+  -- garbage every frame; src/hook_slot.lua)
   local pending, tries = true, 0
-  mod.events:on("map.entered", function() pending, tries = true, 0 end)
-  mod.events:on("save.loaded", function() pending, tries = true, 0 end)
-  mod.hooks:wrap("input.step", function(nxt, game, ...)
+  local placing
+  local function step(nxt, game, ...)
     local r = nxt(game, ...)
     if pending then
       local ok, done = pcall(place)
       tries = tries + 1
       if (ok and done) or tries > 600 then pending = false end
     end
+    if not pending and placing then placing:off() end
     return r
-  end)
+  end
+  if opts.hookSlot then placing = opts.hookSlot.new(mod, "input.step", step) else mod.hooks:wrap("input.step", step) end
+  local function again()
+    pending, tries = true, 0
+    if placing then placing:on() end
+  end
+  again()
+  mod.events:on("map.entered", again)
+  mod.events:on("save.loaded", again)
   mod.hooks:wrap("world.talk", function(nxt, ow, npc, ...)
     if npc and npc.def and npc.def.name == Breeding.NAME then
       local game = (ow and ow.game) or mod.game

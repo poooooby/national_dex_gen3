@@ -57,6 +57,10 @@ vec4 effect(vec4 color, Image tex, vec2 uv, vec2 sc) {
 }
 ]]
 
+-- (a frame makes no tables: these are reused, the shaders' colours filled in place)
+local EMPTY = {}
+local ECOL, ETONE, NO_TONE = { 0, 0, 0, 0 }, { 0, 0, 0, 0 }, { 0, 0, 0, 0 }
+
 local function hasLove()
   return love and love.graphics and love.graphics.newImage and true or false
 end
@@ -193,7 +197,7 @@ local function plane(st, kind)
   return kind == "bg" and st.bg or st.fg
 end
 function Core.timings(state, st, frame)
-  for _, e in ipairs(st.anim.timing or {}) do
+  for _, e in ipairs(st.anim.timing or EMPTY) do
     local d = e.d or 0
     if (e.t == 2 or e.t == 4) and d > 0 and frame > e.f and frame <= e.f + d then
       local fr = (frame - e.f) / d
@@ -213,7 +217,7 @@ function Core.timings(state, st, frame)
       end
     end
   end
-  for _, e in ipairs(st.anim.timing or {}) do
+  for _, e in ipairs(st.anim.timing or EMPTY) do
     if e.f == frame then
       if e.t == 0 then
         if e.se and st.play then st.play(e, st) end
@@ -224,13 +228,16 @@ function Core.timings(state, st, frame)
         pl.rect = b
         pl.x, pl.y = -(e.x or 0), -(e.y or 0)
         pl.o = e.o or 0
-        pl.c = { e.c and e.c[1] or 0, e.c and e.c[2] or 0, e.c and e.c[3] or 0, e.c and e.c[4] or 0 }
+        local c = pl.c
+        c[1], c[2], c[3], c[4] = e.c and e.c[1] or 0, e.c and e.c[2] or 0, e.c and e.c[3] or 0, e.c and e.c[4] or 0
         pl.solid = not e.bg
       elseif e.t == 2 or e.t == 4 then
         local pl = plane(st, e.t == 2 and "bg" or "fg")
         local old = e.t == 2 and st.oldbg or st.oldfo
         old.x, old.y, old.o = pl.img and pl.x or 0, pl.img and pl.y or 0, pl.o or 0
-        old.c = { pl.c[1], pl.c[2], pl.c[3], pl.c[4] }
+        local c = old.c or {}
+        c[1], c[2], c[3], c[4] = pl.c[1], pl.c[2], pl.c[3], pl.c[4]
+        old.c = c
       end
     end
   end
@@ -238,8 +245,13 @@ end
 
 -- one frame: its cels into their layers, the battlers' own cels to setMon, its timings
 function Core.step(state, st, frame)
-  local cels = st.anim.frames[frame + 1] or {}
-  local layers = { {}, {}, {} }
+  local cels = st.anim.frames[frame + 1] or EMPTY
+  -- (the layers' lists are the animation's own, emptied for each frame)
+  local layers = st.cels
+  for k = 1, 3 do
+    local l = layers[k]
+    for i = #l, 1, -1 do l[i] = nil end
+  end
   local user, target
   for _, c in ipairs(cels) do
     local p = c[P]
@@ -260,7 +272,6 @@ function Core.step(state, st, frame)
     st.setMon(st, "user", user)
     if not st.onUser then st.setMon(st, "target", target) end
   end
-  st.cels = layers
   Core.timings(state, st, frame)
 end
 
@@ -294,8 +305,9 @@ function Core.drawPlane(state, st, pl)
     local sh = (pl.c[4] or 0) > 0 and Core.shader(state) or nil
     if sh then
       love.graphics.setShader(sh)
-      sh:send("ecol", { pl.c[1] / 255, pl.c[2] / 255, pl.c[3] / 255, pl.c[4] / 255 })
-      sh:send("etone", { 0, 0, 0, 0 })
+      ECOL[1], ECOL[2], ECOL[3], ECOL[4] = pl.c[1] / 255, pl.c[2] / 255, pl.c[3] / 255, pl.c[4] / 255
+      sh:send("ecol", ECOL)
+      sh:send("etone", NO_TONE)
     end
     love.graphics.setColor(1, 1, 1, a)
     local tw, th = r.w * k, r.h * k
@@ -382,8 +394,10 @@ function Core.drawCels(state, st, list)
       end
       if sh then
         love.graphics.setShader(sh)
-        sh:send("ecol", { (c[CR] or 0) / 255, (c[CG] or 0) / 255, (c[CB] or 0) / 255, ca / 255 })
-        sh:send("etone", { tr / 255, tg / 255, tb / 255, tgray / 255 })
+        ECOL[1], ECOL[2], ECOL[3], ECOL[4] = (c[CR] or 0) / 255, (c[CG] or 0) / 255, (c[CB] or 0) / 255, ca / 255
+        ETONE[1], ETONE[2], ETONE[3], ETONE[4] = tr / 255, tg / 255, tb / 255, tgray / 255
+        sh:send("ecol", ECOL)
+        sh:send("etone", ETONE)
       end
       love.graphics.setColor(1, 1, 1, (c[OPACITY] or 255) / 255)
       local rx, ry, rot = math.floor(x + 0.5), math.floor(y + 0.5), -math.rad(c[ANGLE] or 0)
@@ -403,7 +417,7 @@ end
 -- foreground plane
 function Core.drawLayer(state, st, k)
   if k == 1 then Core.drawPlane(state, st, st.bg) end
-  Core.drawCels(state, st, st.cels[k] or {})
+  Core.drawCels(state, st, st.cels[k] or EMPTY)
   if k == 3 then Core.drawPlane(state, st, st.fg) end
   love.graphics.setColor(1, 1, 1, 1)
 end

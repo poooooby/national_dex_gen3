@@ -143,6 +143,8 @@ return function(mod)
   local BigPc = loadSibling(mod, "src/big_pc.lua")
   -- optional: without them the vending machines (data/vending.lua) are not placed
   local makeVending = loadSibling(mod, "src/vending.lua")
+  -- per-frame hooks held only while they have work (src/hook_slot.lua; without it, held for good)
+  local HookSlot = loadSibling(mod, "src/hook_slot.lua")
   local makeVendingScreen = loadSibling(mod, "src/vending_screen.lua")
   local Api = loadSibling(mod, "src/api.lua")
   if not (Species and Fixups and Items and ItemArt and CryArt and Shops and Art and ConditionalEvos and Clock and Counters and Breeding and DexPatch and NationalUnlock and DexSync and DexRepeat and Editor and MonAnim and Api) then return end
@@ -608,10 +610,21 @@ return function(mod)
       local okI, hints = pcall(StatHints.install, { require = require, log = mod.log,
         enabled = function() return hintsOn end, view = wooble, shape = BoxShape })
       if okI and type(hints) == "table" and type(hints.hud) == "function" then
-        mod.hooks:wrap("render.hud", function(nxt, game, viewport)
+        -- render.hud draws the queued chips; held only while there are some (from the first chip
+        -- queued to the first frame with none: src/hook_slot.lua)
+        local function hud(nxt, game, viewport)
+          local had = (StatHints.queued()) > 0
           pcall(hints.hud)
-          return nxt(game, viewport)
-        end)
+          local r = nxt(game, viewport)
+          if not had and hints.hudSlot then hints.hudSlot:off() end
+          return r
+        end
+        if HookSlot then
+          hints.hudSlot = HookSlot.new(mod, "render.hud", hud)
+          hints.wantHud = function() hints.hudSlot:on() end
+        else
+          mod.hooks:wrap("render.hud", hud)
+        end
       end
     end
   end, 1)
@@ -698,7 +711,7 @@ return function(mod)
   -- their map; not in the save editor
   if makeVending and makeVendingScreen and not inEditor then
     local okV, vErr = pcall(function()
-      local V = makeVending(mod, { require = require, log = mod.log, screen = makeVendingScreen,
+      local V = makeVending(mod, { require = require, log = mod.log, screen = makeVendingScreen, hookSlot = HookSlot,
         data = read("data/vending.lua") or {}, tms = read("data/tms.lua") or {},
         moves = read("data/moves.lua") or {},
         itemIndex = Species.itemIndex(mod),

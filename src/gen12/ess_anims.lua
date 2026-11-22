@@ -82,6 +82,8 @@ local function frameCount(state, Core, name)
   return n
 end
 
+local EMPTY = {}
+
 local function copy(t)
   if type(t) ~= "table" then return t end
   local o = {}
@@ -248,11 +250,15 @@ end
 -- Red's battle.overlay hook (set at load: hooks are wrapped then): in the wide layout, every layer
 -- over the field (its side regions have no room for cels that cross between them)
 function Ess12.overlayHook(require)
+  local BS   -- (looked up once: a require every frame makes garbage through the mod's require)
   return function(nextFn, b, ...)
     local r = nextFn(b, ...)
     if type(b) ~= "table" or type(b.wideLayout) ~= "function" or not b:wideLayout() then return r end
-    local okB, BS = pcall(require, "src.battle.BattleState")
-    local h = okB and type(BS) == "table" and BS.__ndxEss
+    if BS == nil then
+      local okB, mod = pcall(require, "src.battle.BattleState")
+      BS = okB and type(mod) == "table" and mod or false
+    end
+    local h = BS and BS.__ndxEss
     local st = h and h.st
     if not (st and st.b == b and st.wide and not st.none and h.drawLayer and love and love.graphics) then return r end
     local G = love.graphics
@@ -284,7 +290,7 @@ function Ess12.install(opts)
     end
     local anim = b.anim
     if not (anim and not anim.stopped and anim.__ndxKey and state.lines[anim.__ndxKey]) then return nil end
-    local env = anim.env or {}
+    local env = anim.env or EMPTY
     return anim.__ndxKey, tonumber(anim.frames) or 0, (env.battleTurn or 0) == 0 and "player" or "enemy",
       anim.__ndxParam, anim
   end
@@ -320,8 +326,11 @@ function Ess12.install(opts)
       st.pose[side] = false
       return
     end
-    local dx, dy, sx, sy, rot, a = Core.monPose(st, which, c)
-    st.pose[side] = { dx = dx, dy = dy, sx = sx, sy = sy, rot = rot, a = a }
+    -- (one pose table per side for the whole animation, filled in place)
+    local p = st.poses[side]
+    if not p then p = {}; st.poses[side] = p end
+    p.dx, p.dy, p.sx, p.sy, p.rot, p.a = Core.monPose(st, which, c)
+    st.pose[side] = p
   end
 
   local C = Ess12.CENTRE[gen]
@@ -361,7 +370,7 @@ function Ess12.install(opts)
       scale = (tonumber(state.data.scale) or 0.375) * Ess12.CEL_SCALE, celScale = Ess12.CEL_SCALE,
       setMon = setMon, play = play, drawCopy = hub.drawCopy, onUser = l.user and true or nil,
     })
-    st.b, st.key, st.attacker, st.sideInfo, st.pose, st.lastTicks = b, key, attacker, info, {}, -1
+    st.b, st.key, st.attacker, st.sideInfo, st.pose, st.poses, st.lastTicks = b, key, attacker, info, {}, {}, -1
     st.hideMove, st.wide = l.turns == "hide", wide
     if st.hideMove then
       -- Fly's / Dig's return: its user is back from the start, as the pack plays it (the cart's own
@@ -515,9 +524,12 @@ function Ess12.install(opts)
         local h = BS.__ndxEss
         local img = type(self.picImage) == "function" and battler and battler.sprite and self:picImage(battler.sprite)
         if img then
+          -- (one record per battler, filled in place: this runs for every picture every frame)
           local s = scale or 1
-          h.args[battler] = { x = x, y = y, scale = scale, shakeX = shakeX, shakeY = shakeY,
-            cx = x + img:getWidth() * s / 2, cy = y + img:getHeight() * s / 2 }
+          local a = h.args[battler]
+          if not a then a = {}; h.args[battler] = a end
+          a.x, a.y, a.scale, a.shakeX, a.shakeY = x, y, scale, shakeX, shakeY
+          a.cx, a.cy = x + img:getWidth() * s / 2, y + img:getHeight() * s / 2
         end
         local st = h.drawing
         if not (st and st.b == self) then return drawBattlerPic(self, battler, x, y, scale, shakeX, shakeY, ...) end
@@ -564,6 +576,12 @@ function Ess12.install(opts)
         and type(BS.startAnim) == "function" then
       local drawPics, drawPic, startAnim = BS.drawPics, BS.drawPic, BS.startAnim
       hub.rawPic = drawPic
+      -- both pictures with the cels between them (a function of its own: no closure a frame)
+      local function both(self, h, st)
+        self:drawPic(self:activeMon("enemy"), false)
+        h.drawLayer(st, 2)
+        self:drawPic(self:activeMon("player"), true)
+      end
       BS.startAnim = function(self, key, opts2, ...)
         local r = startAnim(self, key, opts2, ...)
         if r and self.anim then
@@ -582,11 +600,7 @@ function Ess12.install(opts)
         end
         h.drawing = st
         h.drawLayer(st, 1)
-        local ok, err = pcall(function()
-          self:drawPic(self:activeMon("enemy"), false)
-          h.drawLayer(st, 2)
-          self:drawPic(self:activeMon("player"), true)
-        end)
+        local ok, err = pcall(both, self, h, st)
         h.drawLayer(st, 3)
         h.drawing = nil
         if not ok then error(err, 0) end
