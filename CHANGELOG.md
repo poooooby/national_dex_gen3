@@ -5,6 +5,8 @@ All notable changes to this mod are documented here, in
 
 ## [Unreleased]
 
+## [1.19.2] - 2026-11-22
+
 ### Changed
 
 - **Less memory churn every frame, so fewer garbage-collection hitches:**
