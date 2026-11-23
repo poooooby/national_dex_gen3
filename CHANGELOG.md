@@ -3,6 +3,14 @@
 All notable changes to this mod are documented here, in
 [keep a changelog](https://keepachangelog.com/en/1.1.0/) format.
 
+## [1.19.6] - 2026-11-22
+
+### Added
+
+- **OmniUI** (FireRed to Emerald): with OmniUI's look on, the type badges and Stat Hints show on its
+  battle cards (under a foe's, above yours) instead of disappearing with the game's own HP boxes, and
+  its Summary gets a **Dynamax** tab: the Dynamax Level, the HP it gives and the G-Max Factor.
+
 ## [1.19.5] - 2026-11-22
 
 ### Added

@@ -144,6 +144,7 @@ tests/drivers/abilities_probe.lua
 tests/achievements_test.lua
 tests/gen12_gaps_test.lua
 tests/abilities_more_test.lua
+tests/omni_test.lua
 docs/index.html
 docs/.nojekyll
 docs/learnsets/index.html

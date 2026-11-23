@@ -114,6 +114,7 @@ Pick **WOOBLEDEX** in the game's **OPTIONS** menu. Each setting applies to every
 - 🌿 [Wilds of Hoenn](https://github.com/poooooby/wilds-of-hoenn): Pokémon roaming the overworld
 - 🔍 [WoobleView](https://github.com/poooooby/gen3-hd-sprites): true-to-size battles, with the Stat Hints placed to match
 - 💎 [Facets](https://github.com/ElvieBlooms/facets): type badges and Stat Hints follow its battle boxes
+- 🖥️ [OmniUI](https://github.com/1Jamie/omni_ui): on FireRed to Emerald, type badges and Stat Hints sit on its battle cards, and its Summary gets a **Dynamax** tab
 - 🏆 **Recomp Achievements**: shows WoobleDex's achievements
 - 🎁 [Event Distributions](https://github.com/CapnJames95/gen1recomp-event-distributions): event gifts arrive as usual
 

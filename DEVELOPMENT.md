@@ -567,6 +567,38 @@ set did not apply); run with Facets on and `gbcHud` set to a set (DP and HGSS: 0
 Emerald, 2026-11-16), and `gen12_stat_hints_probe.lua` on Red / Gold with Facets' boxes and
 `battleLayout = "wide"` (0 failures).
 
+## OmniUI (`src/omni.lua`, Gen 3)
+
+OmniUI (1Jamie's `omni_ui`, 0.5.0-beta, optional) hides the battle's own HP boxes
+(`battle.status_hud_visible` false: `Healthbox.draw` is never called, so neither the badges nor the
+chips draw) and redraws the Summary. Its public API (`mod.find("omni_ui").exports`, a copy of
+`PublicApi`) is used instead, installed at the end of main.lua's priority-1 `game.ready` (OmniUI loads
+after us, priority 100):
+
+- `registerBattlerBadge` (one per side): `render(slot, x, y, theme)` is OmniUI's battler info and the
+  card's top left only, so the card's size is OmniUI's own formula (`Omni.cardSize`: width
+  clamp(0.44 x window, 160, 260); height 62 / 52 a foe's, 76 / 64 yours) and the live battler is found
+  as OmniUI's Gen 3 adapter fills its cards (a foe's from `st.enemy`, the second foe's from
+  `battlers[3]`, matched by species and level; yours from `st.player`). Items: the types (as
+  TypeBadges reads them) as pills in `TypeBadges.COLORS`, then the Stat Hints chips (the hold while a
+  move plays, as the HP boxes' chips), each `Layout.drawBadge` in the "tiny" font, 16 tall, flowing
+  at the card's width: under a foe's card, upward above yours. The options are the badges' and the
+  hints' own `enabled` (`Healthbox.__ndxBadges` / `__ndxStatHints`).
+- `registerSummaryTab` `woobledex_dynamax`: `draw(game, mon, rx, ry, rw, rh, theme)`, `mon.raw` is the
+  party mon: Dynamax Level gauge, HP multiplier, G-Max Factor and its move; "can't Dynamax".
+- OmniUI's registries outlive a game switch: one badge per OmniUI (`Healthbox.__ndxOmni.registered`,
+  keyed by its `registerBattlerBadge`), renders asking the hub (the newest install's), every render
+  checking `GameVersion.generation() == 3`; src/gen12/main.lua takes the tab off on Gen 1 / 2.
+
+Gaps on OmniUI's side (its API cannot reach them): Fairy shows as Normal (its Gen 3 type tables end
+at 17), its Gen 3 Pokedex stops at 386 and has no FORMS page, no marks on its PC, no card for your
+second Pokemon in doubles, and physical / special by type whatever Move Split says.
+
+Tests: `tests/omni_test.lua [game]` (a stand-in API: places, wrapping, doubles, the options, the
+hold, one registration, Gen 1 draws nothing, the tab). In game: `stat_hints_probe.lua` with
+`national_dex_gen3,omni_ui` (shots; its own checks fail, they watch the game's HP boxes), Emerald
+2026-11-22.
+
 ## Art
 
 Pictures (battle, summary and Pokédex) come from a sprite mod:

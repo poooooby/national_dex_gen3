@@ -111,6 +111,8 @@ return function(mod)
   local StatHints = loadSibling(mod, "src/stat_hints.lua")
   -- optional: another mod's battle box pictures measured, so the badges and chips follow them
   local BoxShape = loadSibling(mod, "src/box_shape.lua")
+  -- optional: the badges, chips and Dynamax marks through OmniUI's API, when it is installed
+  local OmniBridge = loadSibling(mod, "src/omni.lua")
   -- optional: without it every new move plays the cart animation named in data/moves.lua
   local MoveAnims = loadSibling(mod, "src/anims.lua")
   -- optional: without it the moves data/ess_anims.lua animates keep their cart look
@@ -636,6 +638,19 @@ return function(mod)
           mod.hooks:wrap("render.hud", hud)
         end
       end
+    end
+    -- OmniUI (optional): its overlay hides the HP boxes and redraws the Summary, so the badges,
+    -- chips and Dynamax marks go through its API (src/omni.lua); it has loaded by game.ready
+    if OmniBridge then
+      local okO, err = pcall(function()
+        local found = type(mod.find) == "function" and mod.find("omni_ui") or nil
+        local api = type(found) == "table" and found.exports or nil
+        if type(api) == "table" and OmniBridge.install(api, { require = require, log = mod.log,
+            colors = TypeBadges and TypeBadges.COLORS, chips = StatHints, dynamax = Dynamax }) then
+          mod.log:info("OmniUI: type badges, Stat Hints and the Dynamax tab on its screens")
+        end
+      end)
+      if not okO then mod.log:warn("OmniUI hookup failed: %s", tostring(err)) end
     end
   end, 1)
 

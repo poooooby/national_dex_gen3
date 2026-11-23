@@ -522,6 +522,18 @@ return function(mod, loadSibling)
     end
   end
 
+  -- OmniUI (optional): its registries outlive a game switch, so the Gen 3 DYNAMAX Summary tab
+  -- (src/omni.lua) comes off here
+  local OmniBridge = loadSibling(mod, "src/omni.lua")
+  if OmniBridge then
+    mod.events:on("game.ready", function()
+      pcall(function()
+        local found = type(mod.find) == "function" and mod.find("omni_ui") or nil
+        OmniBridge.uninstallTab(type(found) == "table" and found.exports or nil)
+      end)
+    end)
+  end
+
   -- Bigger PC: 40 boxes; those past the cart's count are kept in this mod's save data on disk
   local BigPc = loadSibling(mod, "src/gen12/big_pc.lua")
   local pc = BigPc and BigPc.install({ require = require, generation = generation,
