@@ -3,6 +3,14 @@
 All notable changes to this mod are documented here, in
 [keep a changelog](https://keepachangelog.com/en/1.1.0/) format.
 
+## [1.20.0] - 2026-11-23
+
+### Fixed
+
+- **Cries on Red to Crystal:** Pokémon #152–386 play their own cry instead of borrowing one from
+  a Pokémon the game has (Spinarak sounded like Staryu). On Gold, Silver and Crystal that is
+  #252–386; #152–251 keep the game's own cries. Hisuian Qwilfish uses Qwilfish's.
+
 ## [1.19.6] - 2026-11-22
 
 ### Added

@@ -9,9 +9,10 @@
 -- Icons: each species gets its proxy's party icon (data `icon`: Red's icon kind, Gold's ICON_
 -- sheet), through the `icons` registry.
 -- Cries: each species gets its proxy's cry as a registered cry ({ base = proxy }), so every screen
--- that only plays a cry when the game has one plays it. Species #387-1025 and their forms have
--- their own cry in assets/cries/cries.pak (the Gen 3 path's, data/cries.lua, by slot); a wrap of
--- Sound.playCry plays that one instead. The wrap is process-wide (Sound is never reloaded and
+-- that only plays a cry when the game has one plays it. Every species of ours has its own cry,
+-- which a wrap of Sound.playCry plays instead: #387-1025 and the forms from assets/cries/cries.pak
+-- (the Gen 3 path's, data/cries.lua), #152-386 from assets/cries/gen12.pak (data/gen12/cries.lua;
+-- Gold's own #152-251 are not ours, so they keep the game's cry). Both are keyed by slot. The wrap is process-wide (Sound is never reloaded and
 -- the player may switch games in one run) and asks the current load's handler, which only
 -- answers for this mod's species.
 
@@ -65,17 +66,19 @@ function Art.installPictures(mod, species)
   }
 end
 
--- The cries in cries.pak, by slot: { has(slot), sound(slot) -> SoundData or nil }
-function Art.pack(mod, index, log)
+-- The cries in one pack file (default assets/cries/cries.pak), by slot:
+-- { has(slot), sound(slot) -> SoundData or nil }
+function Art.pack(mod, index, log, file)
+  file = file or "assets/cries/cries.pak"
   local pak, failed, decodeFailed = nil, false, false
   local cache, order = {}, {}
   local function bytes()
     if pak or failed then return pak end
-    local ok, data = pcall(function() return mod:read("assets/cries/cries.pak") end)
+    local ok, data = pcall(function() return mod:read(file) end)
     if ok and type(data) == "string" and data:sub(1, 4) == "OggS" then pak = data
     else
       failed = true
-      if log then log:warn("could not read assets/cries/cries.pak: the new species borrow cries") end
+      if log then log:warn("could not read %s: those species borrow cries", file) end
     end
     return pak
   end
@@ -128,12 +131,27 @@ function Art.installCries(opts)
       end
     end
   end
-  local pack = Art.pack(opts.mod, opts.index or {}, opts.log)
+  -- opts.packs: { { index, file }, ... }; opts.index alone is the one cries.pak
+  local packs = {}
+  for _, p in ipairs(opts.packs or { { opts.index, nil } }) do
+    if type(p[1]) == "table" then packs[#packs + 1] = Art.pack(opts.mod, p[1], opts.log, p[2]) end
+  end
   local byId = species.byId
   hook.handler = function(_, sp)
     local entry = byId[sp]
     local slot = entry and entry.data.slot
-    if not (slot and pack.has(slot) and love and love.audio) then return nil end
+    if not (slot and love and love.audio) then return nil end
+    local pack
+    for _ = 1, 2 do
+      for i = 1, #packs do
+        if packs[i].has(slot) then pack = packs[i]; break end
+      end
+      -- a form with no recording of its own (Qwilfish's Hisuian form) borrows its base's
+      local base = not pack and entry.data.baseSpecies and byId[entry.data.baseSpecies]
+      if not base then break end
+      slot = base.data.slot
+    end
+    if not pack then return nil end
     local sd = pack.sound(slot)
     if not sd then return nil end
     if hook.playing then pcall(hook.playing.stop, hook.playing) end

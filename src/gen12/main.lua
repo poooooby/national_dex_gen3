@@ -299,7 +299,7 @@ return function(mod, loadSibling)
       evoState.added, evoState.dropped, #itemState.registered, tostring(shop))
   end
 
-  -- party icons and cries (borrowed from each species' proxy; #387+ play their own), sprite
+  -- party icons and cries (each species' own, else its proxy's), sprite
   -- mods' pictures over the placeholder, and the Pokedex
   local Art = loadSibling(mod, "src/gen12/art.lua")
   local Dex = loadSibling(mod, "src/gen12/dex.lua")
@@ -309,9 +309,11 @@ return function(mod, loadSibling)
     pictures = Art.installPictures(mod, speciesState)
     if generation == 2 then pcall(Art.installPalettes, mod, require, speciesState) end
     local cries = Art.installCries({ mod = mod, require = require, species = speciesState,
-      index = loadSibling(mod, "data/cries.lua"), log = mod.log })
+      packs = { { loadSibling(mod, "data/cries.lua") },
+                { loadSibling(mod, "data/gen12/cries.lua"), "assets/cries/gen12.pak" } },
+      log = mod.log })
     mod.log:info("art: %d icons, %d borrowed cries%s", c.icons, c.cries,
-      cries and ", own cries for #387+" or "")
+      cries and ", own cries for every species" or "")
   end
   if speciesState and Dex then
     if not Dex.register(mod, generation) then

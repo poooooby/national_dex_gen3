@@ -1,7 +1,8 @@
 -- Standalone: luajit mods/national_dex_gen3/tests/gen12_art_test.lua [red|blue|yellow|gold|silver|crystal ...]
 -- (from the gen1recomp root; runs on red, yellow, gold and crystal when none is named).
 -- src/gen12/art.lua + dex.lua: every species and form has a party icon and a cry the game can
--- play (its proxy's, resolved as Sound does), species #387+ also their own from cries.pak; a
+-- play (its proxy's, resolved as Sound does) and its own (#387+ and forms from cries.pak, #152-386
+-- from gen12.pak; Gold's own #152-251 keep the game's); a
 -- sprite mod's setArtProvider answer replaces the placeholder (in its own colours) for this
 -- mod's species only, through the engine's own Sprites; Red's Pokedex runs to #1025 in four
 -- digits with no form on it; Gold's Pokedex keeps no form after game.ready; a form seen or
@@ -13,6 +14,7 @@ local T = require("tests.modkit")
 local H = dofile((arg[0]:gsub("\\", "/"):match("^(.*)/") or ".") .. "/_gen12.lua")
 local Runtime = require("src.mods.Runtime")
 local cryIndex = H.module("data/cries.lua")
+local cryIndex12 = H.module("data/gen12/cries.lua")
 
 local records = {}
 for _, shard in ipairs(H.module("data/gen12/species/index.lua").shards) do
@@ -20,16 +22,29 @@ for _, shard in ipairs(H.module("data/gen12/species/index.lua").shards) do
 end
 for _, f in ipairs(H.module("data/gen12/forms.lua")) do records[#records + 1] = f end
 
--- the pak the cries come from: present, an Ogg stream, every index row inside it
-do
-  local f = io.open(H.modRoot() .. "/assets/cries/cries.pak", "rb")
+-- the paks the cries come from: present, an Ogg stream, every index row inside it
+for _, p in ipairs({ { "cries.pak", cryIndex, "data/cries.lua" }, { "gen12.pak", cryIndex12, "data/gen12/cries.lua" } }) do
+  local f = io.open(H.modRoot() .. "/assets/cries/" .. p[1], "rb")
   local pak = f and f:read("*a")
   if f then f:close() end
-  local inside = pak ~= nil
-  for _, row in pairs(cryIndex) do
+  local inside, rows = pak ~= nil, 0
+  for _, row in pairs(p[2]) do
+    rows = rows + 1
     if not pak or row[1] + row[2] > #pak or pak:sub(row[1] + 1, row[1] + 4) ~= "OggS" then inside = false end
   end
-  T.check(inside, "cries.pak holds an Ogg at every row of data/cries.lua")
+  T.check(inside and rows > 0, p[1] .. " holds an Ogg at every row of " .. p[3])
+end
+-- #152-386 are in gen12.pak, by the same slot (dex + 64), and nowhere in cries.pak
+do
+  local all, clash = true, nil
+  for _, r in ipairs(records) do
+    if not r.baseSpecies and r.dex >= 152 and r.dex <= 386 then
+      if not cryIndex12[r.slot] or r.slot ~= r.dex + 64 then all = false end
+      if cryIndex[r.slot] then clash = r.id end
+    end
+  end
+  T.check(all, "every species #152-386 has its cry in gen12.pak, by slot")
+  T.check(clash == nil, "cries.pak carries none of #152-386 (" .. tostring(clash) .. ")")
 end
 
 for _, version in ipairs(H.versions()) do
@@ -47,22 +62,52 @@ for _, version in ipairs(H.versions()) do
   local cartIcons = {}
   if gen == 1 then for _, kind in pairs(data.icons.byDex) do cartIcons[kind] = true end
   else for _, sheet in pairs(data.gen2Icons.species) do cartIcons[sheet] = true end end
-  local noIcon, noCry, own = nil, nil, 0
+  local noIcon, noCry, noOwn = nil, nil, nil
   for _, r in ipairs(records) do
     if data.pokemon[r.id] and (r.baseSpecies or r.dex > maxDex) then
       if not (icons[r.id] and cartIcons[icons[r.id]]) then noIcon = noIcon or r.id end
       local c = cries[r.id]
       local base = c and c.base and cries[c.base]
       if not (base and base.header) then noCry = noCry or r.id end
-      if cryIndex[r.slot] then own = own + 1 end
+      local slot = r.slot
+      if not (cryIndex[slot] or cryIndex12[slot]) and r.baseSpecies then
+        for _, b in ipairs(records) do if b.id == r.baseSpecies and not b.baseSpecies then slot = b.slot end end
+        if r.dex <= maxDex then slot = nil end          -- the base is the game's own: its cry
+      end
+      if slot and not (cryIndex[slot] or cryIndex12[slot]) then noOwn = noOwn or r.id end
     end
   end
   T.check(noIcon == nil, version .. ": every new species has a cart party icon (" .. tostring(noIcon) .. ")")
   T.check(noCry == nil, version .. ": every new species has a cry the game can play (" .. tostring(noCry) .. ")")
-  T.check(own > 700, version .. ": " .. own .. " of them also have their own cry")
+  T.check(noOwn == nil, version .. ": every new species and form also has its own cry, or its base's (" .. tostring(noOwn) .. ")")
   local Sound = require("src.core.Sound")
   T.check(Sound.__ndxGen12Cry and type(Sound.__ndxGen12Cry.handler) == "function",
     version .. ": Sound.playCry plays the pak's cries")
+  -- the handler picks the pack by slot: Spinarak (#167) is ours on Red, the game's own on Gold
+  do
+    local hook, played = Sound.__ndxGen12Cry, {}
+    local saved = { audio = love.audio, sound = love.sound, fs = love.filesystem.newFileData }
+    love.audio = { newSource = function(sd) return { play = function() played[#played + 1] = sd end,
+      stop = function() end, setVolume = function() end } end }
+    love.sound = { newSoundData = function(fd) return fd end }
+    love.filesystem.newFileData = function(bytes) return bytes end
+    local okS, spin = pcall(hook.handler, data, "SPINARAK")
+    local okL, luc = pcall(hook.handler, data, "LUCARIO")
+    local okQ, qwil = pcall(hook.handler, data, "QWILFISH_HISUI")
+    love.audio, love.sound, love.filesystem.newFileData = saved.audio, saved.sound, saved.fs
+    if gen == 1 then
+      T.check(okS and spin ~= nil and type(played[1]) == "string" and played[1]:sub(1, 4) == "OggS",
+        version .. ": Spinarak plays its own cry from gen12.pak")
+    else
+      T.check(okS and spin == nil, version .. ": Spinarak keeps the game's own cry")
+    end
+    T.check(okL and luc ~= nil, version .. ": Lucario plays its own cry from cries.pak")
+    if gen == 1 then
+      T.check(okQ and qwil ~= nil, version .. ": Hisuian Qwilfish plays Qwilfish's cry from gen12.pak")
+    else
+      T.check(okQ and qwil == nil, version .. ": Hisuian Qwilfish keeps the game's Qwilfish cry")
+    end
+  end
 
   -- a sprite mod's pictures (Red's and Gold's battle pics both resolve through Sprites.pic)
   local Sprites = require("src.pokemon.Sprites")

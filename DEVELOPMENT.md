@@ -1173,7 +1173,13 @@ Registered at load, first, so every record after can name them.
     `audio.cries[species]` exists.
   - Species #387-1025 and their forms also have their own cry in `assets/cries/cries.pak` (the
     Gen 3 path's, indexed by slot in `data/cries.lua`, read here, never edited).
-  - A wrap of `Sound.playCry` plays that one. The wrap is process-wide on
+  - Species #152-386 have theirs in `assets/cries/gen12.pak` (`data/gen12/cries.lua`, same slot
+    key), packed by `python tools/build_cries.py --cries <Gen 9 Pack>/Audio/SE/Cries --stems
+    <g9-battle-sprites>/data/dbk_data.lua --gen12` (Gen 3 has these species, so its pak never
+    carries them). Gold's own #152-251 are not this mod's species, so the handler never answers
+    for them. A form with no recording of its own (QWILFISH_HISUI) plays its base species'.
+  - A wrap of `Sound.playCry` plays that one (`installCries` `packs`: each `{ index, file }`,
+    first pack with the slot wins). The wrap is process-wide on
     `Sound.__ndxGen12Cry` (Sound is never reloaded, and the player may switch games in one run)
     and asks the current load's handler, which only answers for this mod's species.
   - It also wraps `Sound.setVolumeLevel` to follow the player's volume. Its scale is private to
