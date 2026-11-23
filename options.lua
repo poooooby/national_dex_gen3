@@ -67,7 +67,18 @@ return {
     label = "Stat Hints",
     type = "toggle",
     default = true,
-    description = "Show every stat a Pokemon has raised or lowered in battle by its HP box, with what it multiplies by: ATK 2x after Swords Dance, SPA 1/2 after two drops. They update after every move. Red for a rise, blue for a drop. In doubles they sit beside each box so they never cover the other Pokemon's.",
+    description = "Show every stat a Pokemon has raised or lowered in battle by its HP box, with what it multiplies by: ATK 2x after Swords Dance, SPA 0.5x after two drops. They update once each move has played. Green for a rise, red for a drop. In doubles they sit beside each box so they never cover the other Pokemon's.",
+  },
+  {
+    key = "stat_hints_look",
+    label = "Stat Hint Look",
+    type = "choice",
+    default = "smooth",
+    choices = {
+      { "Smooth", "smooth" },
+      { "Pixel", "pixel" },
+    },
+    description = "How the Stat Hints are drawn on FireRed, LeafGreen, Ruby, Sapphire and Emerald. Smooth: small, sharp text at your screen's own resolution. Pixel: chunky pixel letters that match the game's art. Red to Crystal always use Pixel.",
   },
   {
     key = "move_split",

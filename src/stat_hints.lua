@@ -19,12 +19,15 @@
 -- A chip: its text inside a rounded outline, both green for a rise and red for a drop, on a white
 -- ground a quarter see-through. The multiplier is a decimal rounded to hundredths, trailing zeros
 -- dropped. Two ways to draw it:
---   window resolution, with WoobleView (gen3-hd-sprites, its uiMap export): smaller chips in a smooth
+--   window resolution (option stat_hints_look "smooth", the default): smaller chips in a smooth
 --     font (LOVE's own), queued while the boxes draw and drawn from render.hud (StatHints.hud) where
---     the UI canvas went: WoobleView's uiMap when it placed the UI (Fill Screen), else the
---     Renderer's own UI blits (a Renderer:blitCanvas wrap notes them). Sizes in StatHints.HI.
---   the game's pixels, without it: a 3 x 5 font of their own, each chip made on the CPU once per
---     text and drawn on the UI canvas.
+--     the UI canvas went: WoobleView's uiMap (gen3-hd-sprites 0.8.6+) when it placed the UI (Fill
+--     Screen), else the Renderer's own UI blits (a Renderer:blitCanvas wrap notes them), with or
+--     without WoobleView. Sizes in StatHints.HI. A frame whose chips found neither (a mod that
+--     presents the UI its own way, or no render.hud) turns window resolution off until the option
+--     changes (state.hiBroken): the chips go back to the game's pixels.
+--   the game's pixels ("pixel", or as above): a 3 x 5 font of their own, each chip made on the CPU
+--     once per text and drawn on the UI canvas.
 -- Neither makes anything per frame.
 local StatHints = {}
 
@@ -213,7 +216,7 @@ end
 -- the game's pixels' measure
 StatHints.PIXEL = { H = StatHints.H, GAP = StatHints.GAP, width = StatHints.width }
 
--- ------- window resolution (with WoobleView): sizes in game pixels, drawn at the window's scale
+-- ------- window resolution: sizes in game pixels, drawn at the window's scale
 -- H the chip's height, EM the font's size, PAD the room each side of the text, LINE the outline
 -- (window px per game px), RADIUS its corners
 StatHints.HI = { H = 6, GAP = 1, EM = 5, PAD = 1, LINE = 0.3, RADIUS = 1.2 }
@@ -249,11 +252,12 @@ end
 local queue, queued = {}, 0
 StatHints.QUEUE_MAX = 64
 function StatHints.enqueue(text, up, x, y, w, h)
-  if queued >= StatHints.QUEUE_MAX then return end
+  if queued >= StatHints.QUEUE_MAX then return false end
   queued = queued + 1
   local q = queue[queued]
   if not q then q = {}; queue[queued] = q end
   q.text, q.up, q.x, q.y, q.w, q.h = text, up, x, y, w, h
+  return true
 end
 function StatHints.queued() return queued, queue end
 function StatHints.clearQueue() queued = 0 end
@@ -423,7 +427,7 @@ function StatHints.spotByShape(Shape, s, side, x, y, doubles, out, partner)
 end
 
 -- opts: { require, enabled = fn() -> bool, log, view = fn() -> WoobleView's exports or nil,
---   shape = src/box_shape.lua (optional) }
+--   smooth = fn() -> bool (window resolution wanted; default true), shape = src/box_shape.lua (optional) }
 function StatHints.install(opts)
   local require = opts.require
   local okH, Healthbox = pcall(require, "src.core.game3.battle.healthbox")
@@ -445,11 +449,27 @@ function StatHints.install(opts)
     local okA, active = pcall(ex.isActive)
     return (okA and active) and ex or nil
   end
+  -- window resolution: wanted (the option), drawable (LOVE), and not found broken on this run
+  local smooth = opts.smooth or function() return true end
+  state.misses, state.hiBroken = 0, false
+  state.hiWanted = function()
+    if state.hiBroken then return false end
+    local okS, on = pcall(smooth)
+    if okS and on == false then return false end
+    return love ~= nil and love.graphics ~= nil and love.graphics.newFont ~= nil
+  end
+  -- the option changed: window resolution may be tried again
+  state.resetHi = function() state.misses, state.hiBroken = 0, false end
+  local function broke(why)
+    if state.hiBroken then return end
+    state.hiBroken = true
+    if opts.log then opts.log:info("stat hints: drawn on the game's pixels (%s)", why) end
+  end
   if Healthbox.__ndxStatHints then return state end
   Healthbox.__ndxStatHints = state
 
-  -- the Renderer's own blits of the UI canvas this frame (for window-resolution chips without
-  -- WoobleView's map): a process-wide note on the Renderer, read by StatHints.hud
+  -- the Renderer's own blits of the UI canvas this frame (where window-resolution chips go when
+  -- WoobleView has not placed the UI): a process-wide note on the Renderer, read by StatHints.hud
   local okR, Renderer = pcall(require, "src.render.Renderer")
   local blits, nBlits = {}, 0
   for i = 1, 4 do blits[i] = { 0, 0, 1, 1, 0, 0, 0, 0 } end
@@ -476,11 +496,17 @@ function StatHints.install(opts)
       if ex then okM, map = pcall(ex.uiMap) end
       if not okM then map = nil end
       if map or nBlits > 0 then
+        state.misses = 0
         local okD, err = pcall(StatHints.drawQueue, map, blits, nBlits)
         if not okD and opts.log and not state.warned then
           state.warned = true
           opts.log:warn("stat hint draw failed: %s", tostring(err))
         end
+      else
+        -- chips with nowhere to go: the UI reached the screen some other way (a few frames in a
+        -- row, not one: a frame can draw before its first blit)
+        state.misses = state.misses + 1
+        if state.misses >= 3 then broke("the screen is presented another way") end
       end
     end
     queued, nBlits = 0, 0
@@ -521,7 +547,9 @@ function StatHints.install(opts)
     if state.hiNow then
       -- (main.lua holds render.hud only while chips are queued)
       if state.wantHud then state.wantHud() end
-      return StatHints.enqueue(text, up, x, y, w, h)
+      -- a full queue: render.hud never came to draw and clear it
+      if not StatHints.enqueue(text, up, x, y, w, h) then broke("no render.hud") end
+      return
     end
     local img = image(text, up)
     if img then love.graphics.draw(img, x, y) end
@@ -620,7 +648,7 @@ function StatHints.install(opts)
     end
     if #chipsNow == 0 then return end
     spotNow = state.spot(boxSide, boxX, boxY, boxDoubles, spotT, boxImg)
-    state.hiNow = state.view() ~= nil
+    state.hiNow = state.hiWanted()
     if state.hiNow then
       StatHints.layout(chipsNow, spotNow, place, StatHints.HI)
       return

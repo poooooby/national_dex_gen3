@@ -499,15 +499,18 @@ seam) and reads the battler's `stages` each draw, so the chips follow every move
   outward of its badges, held on the screen (`spot.right`). No chip crosses `SPLIT` (row 66),
   where WoobleView's Battle Fit splits the UI in singles; in doubles its split is row 58, between
   the foes' bands and yours.
-- Two ways to draw. With WoobleView (gen3-hd-sprites 0.8.6+, `exports.features.uiMap`, found with
-  `mod.find` in main.lua) the chips are measured in LOVE's own font (`StatHints.HI`: 6 tall, size
-  5, pad 1), queued while the boxes draw (`StatHints.enqueue`, slots reused), and drawn from
-  `render.hud` (main.lua's hook, `state.hud`) at window resolution: where `exports.uiMap()` says
-  WoobleView put the UI canvas this frame (banded: a chip above `map.split` goes with the top
-  band, clipped to `topBox`), else by the Renderer's own UI canvas blits, noted by a
-  `Renderer:blitCanvas` wrap (`Renderer.__ndxStatHintsBlit`). Fonts are cached by pixel size.
-  Without WoobleView: a 3 x 5 font of our own, each chip an image made on the CPU once per text
-  (`StatHints.PIXEL`: 9 tall), drawn on the UI canvas.
+- Two ways to draw, picked by option `stat_hints_look` (`smooth` default, `pixel`; main.lua passes
+  `opts.smooth`, `state.hiWanted()`). Smooth: the chips are measured in LOVE's own font
+  (`StatHints.HI`: 6 tall, size 5, pad 1), queued while the boxes draw (`StatHints.enqueue`, slots
+  reused), and drawn from `render.hud` (main.lua's hook, `state.hud`) at window resolution: where
+  WoobleView's `exports.uiMap()` (gen3-hd-sprites 0.8.6+, `exports.features.uiMap`, found with
+  `mod.find`) says it put the UI canvas this frame (banded: a chip above `map.split` goes with the
+  top band, clipped to `topBox`), else by the Renderer's own UI canvas blits, noted by a
+  `Renderer:blitCanvas` wrap (`Renderer.__ndxStatHintsBlit`) -- WoobleView or not. Fonts are cached
+  by pixel size. Three `render.hud` calls in a row with chips but no map and no blit (a mod that
+  presents the UI its own way), or a full queue (no `render.hud`), set `state.hiBroken`: pixel chips
+  until an option change (`state.resetHi`). Pixel: a 3 x 5 font of our own, each chip an image
+  made on the CPU once per text (`StatHints.PIXEL`: 9 tall), drawn on the UI canvas.
 - Red to Crystal (`src/gen12/stat_hints.lua`) use the pixel chips by their HUDs (`CLASSIC`,
   `WIDE1`): a foe's under its HUD from (8, 33), yours in rows ending at x 152 above your HUD
   (row 47), 64 wide (clear of the foe's chips), further rows above. Stages come from the
@@ -516,8 +519,8 @@ seam) and reads the battler's `stages` each draw, so the chips follow every move
   `drawEnemyHud` / `drawPlayerHud` (`GS.__ndxStatHints`).
 
 Tests: `tests/stat_hints_test.lua [game]` (text, every move redrawn, singles and doubles placement,
-seven changes on all four doubles boxes, the split row, the window-resolution path through a stub
-WoobleView, the option, garbage), drivers `tests/drivers/stat_hints_probe.lua` (Emerald: Swords
+seven changes on all four doubles boxes, the split row, the window-resolution path by the
+Renderer's blit and through a stub WoobleView, the fall back to pixels, both options, garbage), drivers `tests/drivers/stat_hints_probe.lua` (Emerald: Swords
 Dance twice through the battle's menu, singles and doubles, every chip clear of every box) and
 `tests/drivers/gen12_stat_hints_probe.lua` (Red / Gold: Shell Smash, then Swords Dance).
 

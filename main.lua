@@ -588,17 +588,25 @@ return function(mod)
     end
     -- the stat chips by the battle's HP boxes (src/stat_hints.lua), option stat_hints
     if StatHints then
-      local hintsOn = true
+      local hintsOn, hintsSmooth = true, true
+      local hints
       local function readHints()
         local okGet, value = pcall(function() return mod.options:get("stat_hints") end)
         hintsOn = not (okGet and value == false)
+        local okLook, look = pcall(function() return mod.options:get("stat_hints_look") end)
+        hintsSmooth = not (okLook and look == "pixel")
       end
       readHints()
       mod.events:on("mod.options_changed", function(ev)
-        if type(ev) == "table" and ev.mod == mod.id and ev.key == "stat_hints" then readHints() end
+        if type(ev) == "table" and ev.mod == mod.id
+          and (ev.key == "stat_hints" or ev.key == "stat_hints_look") then
+          readHints()
+          if hints and hints.resetHi then hints.resetHi() end
+        end
       end)
-      -- WoobleView (gen3-hd-sprites): with its uiMap export the chips are drawn at window
-      -- resolution from render.hud; without it on the game's pixels
+      -- option stat_hints_look: "smooth" draws the chips at window resolution from render.hud (placed
+      -- by WoobleView's uiMap when it moved the UI, else by the Renderer's own UI blits), "pixel" on
+      -- the game's pixels
       local view
       local function wooble()
         if view == nil then
@@ -607,9 +615,11 @@ return function(mod)
         end
         return view or nil
       end
-      local okI, hints = pcall(StatHints.install, { require = require, log = mod.log,
-        enabled = function() return hintsOn end, view = wooble, shape = BoxShape })
-      if okI and type(hints) == "table" and type(hints.hud) == "function" then
+      local okI, installed = pcall(StatHints.install, { require = require, log = mod.log,
+        enabled = function() return hintsOn end, smooth = function() return hintsSmooth end,
+        view = wooble, shape = BoxShape })
+      hints = okI and installed or nil
+      if type(hints) == "table" and type(hints.hud) == "function" then
         -- render.hud draws the queued chips; held only while there are some (from the first chip
         -- queued to the first frame with none: src/hook_slot.lua)
         local function hud(nxt, game, viewport)

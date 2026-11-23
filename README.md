@@ -96,6 +96,7 @@ Pick **WOOBLEDEX** in the game's **OPTIONS** menu. Each setting applies to every
 | **Register Owned** | On / Off | On | Counts your party and PC as caught in the Pokédex |
 | **Type Badges** | On / Off | On | Type badges beside each HP box |
 | **Stat Hints** | On / Off | On | Stat changes beside each HP box |
+| **Stat Hint Look** | Smooth / Pixel | Smooth | FireRed to Emerald: sharp text at your screen's resolution, or pixel letters like the game's |
 | **Modern Rules** | On / Off | On | Red, Blue and Yellow only: today's battle rules |
 | **Move Split** | On / Off | Off | Physical or special by the move itself, as in today's games, instead of by its type |
 
@@ -111,7 +112,7 @@ Pick **WOOBLEDEX** in the game's **OPTIONS** menu. Each setting applies to every
 - 🎞️ [WoobleSpritePack](https://github.com/poooooby/g9-battle-sprites-gen3): **the pictures.** Needed, or new Pokémon show blank
 - 🗺️ [WoobleSpawns](https://github.com/poooooby/g1r_modern_spawns): **the wild.** Pokémon from every generation in every area
 - 🌿 [Wilds of Hoenn](https://github.com/poooooby/wilds-of-hoenn): Pokémon roaming the overworld
-- 🔍 [WoobleView](https://github.com/poooooby/gen3-hd-sprites): sharper Stat Hints and true-to-size battles
+- 🔍 [WoobleView](https://github.com/poooooby/gen3-hd-sprites): true-to-size battles, with the Stat Hints placed to match
 - 💎 [Facets](https://github.com/ElvieBlooms/facets): type badges and Stat Hints follow its battle boxes
 - 🏆 **Recomp Achievements**: shows WoobleDex's achievements
 - 🎁 [Event Distributions](https://github.com/CapnJames95/gen1recomp-event-distributions): event gifts arrive as usual

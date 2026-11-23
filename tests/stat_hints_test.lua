@@ -62,6 +62,9 @@ T.eq(#missing, 0, "every character has a glyph (" .. table.concat(missing, "") .
 -- ------- drawn by the boxes
 local state = Healthbox.__ndxStatHints
 T.check(type(state) == "table" and type(state.drawChip) == "function", "the hints are installed on the HP boxes")
+-- the game's pixels until the window-resolution checks below (whatever the headless LOVE offers)
+local hiWantedOwn = state.hiWanted
+state.hiWanted = function() return false end
 local drawn = {}
 local drawChipOwn = state.drawChip
 state.drawChip = function(text, up, x, y, w, h)
@@ -235,8 +238,57 @@ for _, list in ipairs({ s1, s2 }) do
 end
 T.check(not bad, "singles: seven a side at their widest: on the screen, apart, off the boxes and the split")
 
--- ------- window resolution, with WoobleView (its uiMap export)
-T.check(state.view() == nil, "no WoobleView: the game's pixels")
+-- ------- window resolution (option stat_hints_look, "smooth" by default), with or without WoobleView
+T.check(state.view() == nil, "no WoobleView here")
+local Gsaved = love.graphics
+local prints = {}
+local stubFont = { getHeight = function() return 23 end, getBaseline = function() return 18 end,
+  getWidth = function(_, t) return #t * 12 end }
+local stubG = setmetatable({
+  print = function(t, x, y) prints[#prints + 1] = { t = t, x = x, y = y } end,
+  newFont = function() return stubFont end,
+}, { __index = function() return function() end end })
+state.hiWanted = hiWantedOwn
+love.graphics = stubG
+T.check(state.hiWanted() == true, "smooth by default, WoobleView or not")
+-- without WoobleView: placed by the Renderer's own blit of the UI canvas
+local Renderer = require("src.render.Renderer")
+local fakeR = setmetatable({ canvas = {} }, { __index = Renderer })
+state.drawChip = drawChipOwn
+Healthbox.draw("enemy", { stages = { attack = 2 } })
+local nq = state.queued()
+Renderer.blitCanvas(fakeR, fakeR.canvas, 3, 3, nil, 3, 3, 40, 20, 40, 20, 720, 480)
+state.hud()
+love.graphics = Gsaved
+local pb = prints[1]
+T.check(nq == 1 and #prints == 1 and pb.t == "ATK 2x" and state.queued() == 0,
+  "no WoobleView: one chip queued, drawn from render.hud, the queue cleared")
+T.check(pb and pb.x >= 40 + ex * 3 and pb.x < 40 + (ex + 4) * 3 and pb.y > 20 + (ey + SH.FRAME.enemy.bottom) * 3,
+  "at the Renderer's own blit of the UI, scaled")
+-- a screen presented some other way (no blit, no map): three frames, then the game's pixels
+love.graphics = stubG
+for _ = 1, 3 do Healthbox.draw("enemy", { stages = { attack = 2 } }); state.hud() end
+love.graphics = Gsaved
+T.check(state.hiBroken == true and state.hiWanted() == false, "chips with nowhere to go: back to the game's pixels")
+state.resetHi()
+love.graphics = stubG
+T.check(state.hiWanted() == true, "an option change tries window resolution again")
+love.graphics = Gsaved
+-- a full queue (no render.hud ever drew it): the game's pixels
+love.graphics = stubG
+for _ = 1, SH.QUEUE_MAX + 1 do Healthbox.draw("enemy", { stages = { attack = 2 } }) end
+love.graphics = Gsaved
+T.check(state.hiBroken == true, "a queue nobody drains: back to the game's pixels")
+love.graphics = stubG
+state.hud()                                           -- (drains the mod's own queue)
+love.graphics = Gsaved
+state.resetHi()
+prints = {}
+state.drawChip = function(text, up, x, y, w, h)
+  drawn[#drawn + 1] = { text = text, up = up, x = x, y = y, w = w or SH.width(text), h = h or SH.H }
+end
+
+-- with WoobleView (its uiMap export)
 local map = { x = 100, y = 50, sx = 4, sy = 4, box = { 100, 50, 960, 640 }, banded = false, split = 66, topY = 0 }
 local wooble = { features = { uiMap = true }, isActive = function() return true end, uiMap = function() return map end }
 local viewOwn = state.view
@@ -263,14 +315,7 @@ end
 T.check(#hiAll == 28 and hiOk, "doubles at window resolution: seven a box, in its band, apart, on the screen")
 -- queued while the boxes draw, drawn from render.hud where WoobleView put the UI, then cleared
 state.drawChip = drawChipOwn
-local Gsaved = love.graphics
-local prints = {}
-local stubFont = { getHeight = function() return 23 end, getBaseline = function() return 18 end,
-  getWidth = function(_, t) return #t * 12 end }
-love.graphics = setmetatable({
-  print = function(t, x, y) prints[#prints + 1] = { t = t, x = x, y = y } end,
-  newFont = function() return stubFont end,
-}, { __index = function() return function() end end })
+love.graphics = stubG
 Healthbox.draw("enemy", { stages = { attack = 2 } })
 local n = state.queued()
 state.hud()
@@ -284,6 +329,8 @@ state.view = viewOwn
 state.drawChip = function(text, up, x, y, w, h)
   drawn[#drawn + 1] = { text = text, up = up, x = x, y = y, w = w or SH.width(text), h = h or SH.H }
 end
+-- (the rest on the game's pixels)
+state.hiWanted = function() return false end
 
 -- ------- the option, and no garbage made by a draw
 local saved = state.enabled
@@ -316,6 +363,24 @@ local schema = run.loader.optionSchemas.national_dex_gen3
 local opt
 for _, o in ipairs(schema or {}) do if o.key == "stat_hints" then opt = o end end
 T.check(opt and opt.default == true and opt.label == "Stat Hints", "a Stat Hints option, on by default")
+local look
+for _, o in ipairs(schema or {}) do if o.key == "stat_hints_look" then look = o end end
+T.check(look and look.default == "smooth" and #look.label <= 14 and #look.choices == 2,
+  "a Stat Hint Look option (Smooth / Pixel), Smooth by default")
+-- Pixel: window resolution is not tried, whatever the screen offers
+local smoothOwn = state.hiWanted
+state.hiWanted = hiWantedOwn
+local okSet = pcall(function()
+  run.loader.modOptions = run.loader.modOptions or {}
+  run.loader.modOptions.national_dex_gen3 = run.loader.modOptions.national_dex_gen3 or {}
+  run.loader.modOptions.national_dex_gen3.stat_hints_look = "pixel"
+  run.loader.events:emit("mod.options_changed", { mod = "national_dex_gen3", key = "stat_hints_look", value = "pixel" })
+end)
+love.graphics = stubG
+local pixelNow = state.hiWanted()
+love.graphics = Gsaved
+T.check(okSet and pixelNow == false, "Pixel: the game's pixels")
+state.hiWanted = smoothOwn
 
 run.release()
 T.finish("national_dex_gen3 stat hints (" .. GAME .. ")")

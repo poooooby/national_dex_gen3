@@ -3,6 +3,18 @@
 All notable changes to this mod are documented here, in
 [keep a changelog](https://keepachangelog.com/en/1.1.0/) format.
 
+## [1.19.5] - 2026-11-22
+
+### Added
+
+- **Stat Hint Look** (FireRed to Emerald): **Smooth**, the default, draws the Stat Hints in small,
+  sharp text at your screen's resolution, with or without WoobleView (it used to need WoobleView);
+  **Pixel** keeps the game's pixel letters.
+
+### Fixed
+
+- The Stat Hints option's description: green for a rise and red for a drop, as they are drawn.
+
 ## [1.19.4] - 2026-11-22
 
 ### Fixed
