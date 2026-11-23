@@ -14,9 +14,9 @@ differently from the newer games. Gen 3 decides physical or special by a move's 
 | Aftermath | Hurts the foe as it faints. | If it faints from a contact move, the attacker loses 1/4 of its max HP. |
 | Anger Point | Crits max out ATTACK. | When a critical hit lands on it, its ATTACK rises to the maximum. |
 | Anger Shell | Riled up at half HP. | When a hit drops it to half HP or less, its ATTACK, SP. ATK and SPEED rise one stage and its DEFENSE and SP. DEF fall one stage. |
-| Anticipation | Senses the foe's danger. | On entering battle it shudders if the foe knows a damaging move that is super effective against it. |
+| Anticipation | Senses the foe's danger. | On entering battle it shudders if a foe knows a damaging move that is super effective against it. |
 | Armor Tail | Blocks priority moves. | Foes' moves with raised priority (Quick Attack, Extreme Speed, Prankster's moves...) fail against it. |
-| Aroma Veil | Blocks mental attacks. | Taunt, Torment, Encore, Disable, Heal Block and Attract have no effect on it. |
+| Aroma Veil | Blocks mental attacks. | Taunt, Torment, Encore, Disable, Heal Block and Attract have no effect on it or its partner. |
 | As One Spectrier | Unnerve plus Grim Neigh. | The foe can't eat its held berry, and its SP. ATK rises one stage when it knocks out a foe with a move. |
 | As One Glastrier | Unnerve plus Chilling Neigh | The foe can't eat its held berry, and its ATTACK rises one stage when it knocks out a foe with a move. |
 | Aura Break | Reverses the auras. | While it is in battle, Fairy Aura and Dark Aura weaken Fairy and Dark moves to 3/4 instead of boosting them. |
@@ -31,7 +31,7 @@ differently from the newer games. Gen 3 decides physical or special by a move's 
 | Competitive | Stat cuts raise SP. ATK. | When a foe lowers one of its stats, its SP. ATK rises two stages. |
 | Contrary | Stat changes are reversed. | Every stat change on it goes the other way: Growl raises its ATTACK, Overheat raises its SP. ATK. |
 | Corrosion | Poisons any type. | It can poison Steel and Poison types, with poison moves and with its moves' added effects. |
-| Cotton Down | Hits lower foes' SPEED. | When a move hits it, the attacker's SPEED falls one stage. |
+| Cotton Down | Hits lower foes' SPEED. | When a move hits it, the SPEED of every other Pokemon on the field falls one stage, its partner's too. |
 | Cud Chew | Eats a berry twice. | At the end of the turn after it eats a berry, it eats it again. |
 | Cursed Body | May disable a move. | When a move hits it, that move is disabled 30% of the time, for 4 turns. |
 | Dancer | Copies dance moves. | When another Pokemon uses a dance move (Swords Dance, Dragon Dance, Quiver Dance, Petal Dance, Teeter Dance, Feather Dance, Fiery Dance, Lunar Dance, Victory Dance...), it dances the same move right after. |
@@ -41,7 +41,7 @@ differently from the newer games. Gen 3 decides physical or special by a move's 
 | Defeatist | Weak at half HP or less. | At half HP or less its ATTACK and SP. ATK are halved. |
 | Defiant | Stat cuts raise ATTACK. | When a foe lowers one of its stats, its ATTACK rises two stages. |
 | Disguise | Fakes the first hit. | The first damaging hit on it does no damage: its disguise breaks instead and it loses 1/8 of its max HP. |
-| Download | Ups ATK or SP.ATK on entry. | On entering battle, its SP. ATK rises one stage if the foe's SP. DEF is lower than its DEFENSE, otherwise its ATTACK does. |
+| Download | Ups ATK or SP.ATK on entry. | On entering battle, its SP. ATK rises one stage if the foes' SP. DEF is lower than their DEFENSE (both foes added up in a double battle), otherwise its ATTACK does. |
 | Dragons Maw | Powers up DRAGON moves. | Its Dragon moves get 1.5x power. |
 | Dry Skin | Likes water, hates fire. | Water moves have no effect on it and restore 1/4 of its max HP instead. Fire moves deal 1.25x damage to it. In rain it restores 1/8 of its max HP each turn; in harsh sunlight it loses 1/8 each turn. |
 | Earth Eater | GROUND moves restore HP. | Ground moves have no effect on it and restore 1/4 of its max HP instead. |
@@ -50,11 +50,11 @@ differently from the newer games. Gen 3 decides physical or special by a move's 
 | Emergency Exit | Flees at half HP. | When a hit drops it to half HP or less, it switches out; a wild one runs away. |
 | Fairy Aura | Powers up FAIRY moves. | While it is in battle, every Pokemon's Fairy moves get 1.33x power. |
 | Filter | Dulls super-effective hits. | Super-effective moves deal 3/4 damage to it. |
-| Flower Gift | Powers up in sunshine. | In harsh sunlight its ATTACK and SP. DEF are 1.5x. |
-| Flower Veil | Guards GRASS types' stats. | If it is a Grass type, foes can't lower its stats and status moves can't give it a status problem. |
+| Flower Gift | Powers up in sunshine. | In harsh sunlight its own and its partner's ATTACK and SP. DEF are 1.5x. |
+| Flower Veil | Guards GRASS types' stats. | If it or its partner is a Grass type, foes can't lower that Pokemon's stats and status moves can't give it a status problem. |
 | Fluffy | Contact halved; FIRE x2. | Moves that make contact deal half damage to it, but Fire moves deal double. A Fire move that makes contact (Fire Punch, Flare Blitz) deals normal damage. |
-| Forewarn | Reveals the foe's top move. | On entering battle it names the foe's most powerful move. |
-| Frisk | Checks the foe's held item. | On entering battle it reveals the foe's held item. |
+| Forewarn | Reveals the foe's top move. | On entering battle it names the most powerful move any foe knows. |
+| Frisk | Checks foes' held items. | On entering battle it reveals each foe's held item. |
 | Full Metal Body | Prevents stat reduction. | Foes can't lower its stats, Intimidate included, and no ability can set this one aside. |
 | Fur Coat | Halves physical damage. | Physical moves deal half damage to it. Gen 3 sorts moves by type: Normal, Fighting, Flying, Poison, Ground, Rock, Bug, Ghost and Steel moves are physical. |
 | Gluttony | Eats pinch berries early. | It eats a berry meant for 1/4 HP or less (Liechi, Ganlon, Salac, Petaya, Apicot, Lansat, Starf, Micle, Custap) at half HP instead. |
@@ -103,7 +103,7 @@ differently from the newer games. Gen 3 decides physical or special by a move's 
 | Opportunist | Copies foes' stat rises. | When a foe's stats rise, its own rise the same way. |
 | Orichalcum Pulse | Sunshine ups its ATTACK. | It turns the sunlight harsh when it enters battle, and its ATTACK is 1.33x in harsh sunlight. |
 | Overcoat | Blocks weather and powder. | Sandstorm and hail don't hurt it, and powder and spore moves (Sleep Powder, Stun Spore, Poison Powder, Spore, Cotton Spore, Rage Powder, Magic Powder) have no effect on it. |
-| Pastel Veil | Prevents poisoning. | It can't be poisoned. |
+| Pastel Veil | Prevents poisoning. | It and its partner can't be poisoned, and a poisoned partner is cured as it enters battle. |
 | Pickpocket | Steals items on contact. | When a contact move hits it and it holds nothing, it takes the attacker's held item. |
 | Poison Touch | May poison on contact. | Its contact moves have a 30% chance to poison the target. |
 | Prankster | Status moves go first. | Its status moves get +1 priority, so they usually go first. Dark types are not immune to them here. |
@@ -153,13 +153,13 @@ differently from the newer games. Gen 3 decides physical or special by a move's 
 | Steadfast | Flinching ups SPEED. | Its SPEED rises one stage each time it flinches. |
 | Steam Engine | FIRE/WATER hits up SPEED. | When a Fire or Water move hits it, its SPEED rises six stages. |
 | Steelworker | Powers up STEEL moves. | Its Steel moves get 1.5x power. |
-| Storm Drain | WATER moves raise SP. ATK. | Water moves have no effect on it and raise its SP. ATK one stage instead. |
+| Storm Drain | WATER moves raise SP. ATK. | Water moves have no effect on it and raise its SP. ATK one stage instead. In a double battle it draws a Water move aimed at one other Pokemon to itself. |
 | Strong Jaw | Powers up biting moves. | Biting moves get 1.5x power: Bite, Crunch, Hyper Fang, Poison Fang, Fire Fang, Ice Fang, Thunder Fang, Psychic Fangs, Jaw Lock, Fishious Rend. |
 | Super Luck | Raises critical-hit ratio. | Its moves land critical hits more often: one stage up, as if every move had a high critical-hit ratio. |
 | Supreme Overlord | Fallen allies up power. | Its moves get 10% more power for each fainted Pokemon in its party, up to 50%. |
 | Surge Surfer | Fast on Electric Terrain. | Its SPEED doubles on Electric Terrain. |
-| Supersweet Syrup | Lowers foe's evasion. | The first time it enters each battle, the foe's evasiveness falls one stage. |
-| Sweet Veil | Prevents sleep. | It can't be put to sleep by a move. |
+| Supersweet Syrup | Lowers foes' evasion. | The first time it enters each battle, each foe's evasiveness falls one stage. |
+| Sweet Veil | Prevents sleep. | It and its partner can't be put to sleep by a move. |
 | Tangled Feet | Evades more if confused. | While it is confused, moves aimed at it are half as accurate. |
 | Tangling Hair | Contact lowers SPEED. | A foe that makes contact with it has its SPEED lowered one stage. |
 | Technician | Powers up weak moves. | Moves with 60 power or less get 1.5x power. |

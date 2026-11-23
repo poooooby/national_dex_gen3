@@ -228,6 +228,21 @@ function GA:vol(b)
   return b.__ndxHeldVol
 end
 function GA:foe(b) return self.ad:foeOf(b) end
+-- every standing foe of b: both in a double battle
+function GA:foes(b)
+  local list = {}
+  local ok, all = pcall(self.ad.foesOf, self.ad, b)
+  if ok and type(all) == "table" then
+    for _, f in ipairs(all) do
+      if f ~= b and self.ad:hp(f) > 0 then list[#list + 1] = f end
+    end
+  end
+  if #list == 0 then
+    local f = self.ad:foeOf(b)
+    if f then list[1] = f end
+  end
+  return list
+end
 function GA:sideName(b) return b and b.side end
 function GA:battlers()
   local list = self.ad:activeBattlers() or {}

@@ -436,6 +436,7 @@ GENERIC_CATEGORIES = {"net-good-stats", "damage-raise", "damage-lower", "damage-
 # in those categories, but with a condition or mechanic the description leaves out
 GENERIC_EXCLUDE = {
     "aromatic-mist", "decorate", "magnetic-flux", "gear-up",          # a partner only
+    "life-dew",                                                        # the user and its partner
     "captivate", "venom-drench", "rototiller", "stuff-cheeks",         # conditions
     "parting-shot", "throat-chop",                                     # switching, silencing
     "geomancy", "freeze-shock", "ice-burn",                            # a charging turn
@@ -549,6 +550,7 @@ MANUAL: dict[str, dict[str, Any]] = {
     "beak-blast": {"effect": 0},
     "jungle-healing": {"rule": "JUNGLE_HEALING", "target": "user"},
     "lunar-blessing": {"rule": "JUNGLE_HEALING", "target": "user"},
+    "life-dew": {"rule": "LIFE_DEW", "target": "user"},
     "gear-up": {"rule": "GEAR_UP", "target": "user"}, "magnetic-flux": {"rule": "MAGNETIC_FLUX", "target": "user"},
     "rototiller": {"rule": "ROTOTILLER", "target": "user"}, "flower-shield": {"rule": "FLOWER_SHIELD", "target": "user"},
     "aromatic-mist": {"rule": "AROMATIC_MIST", "target": "ally"}, "decorate": {"rule": "DECORATE", "target": "ally"},
@@ -586,7 +588,9 @@ MANUAL: dict[str, dict[str, Any]] = {
     "head-smash": {"extra": {"kind": "hit", "drain": -50}},
     "light-of-ruin": {"extra": {"kind": "hit", "drain": -50}},
     "bitter-blade": {"extra": {"kind": "hit", "drain": 50}},
-    "matcha-gotcha": {"extra": {"kind": "hit", "drain": 50, "ailment": "BURN", "ailmentChance": 20}},
+    # PokeAPI has it as one target; it hits both foes
+    "matcha-gotcha": {"target": "all-opponents",
+                      "extra": {"kind": "hit", "drain": 50, "ailment": "BURN", "ailmentChance": 20}},
     "spin-out": {"extra": {"kind": "hit", "self": {"speed": -2}, "chance": 100}},
     "armor-cannon": {"extra": {"kind": "hit", "self": {"defense": -1, "spDef": -1}, "chance": 100}},
     "headlong-rush": {"extra": {"kind": "hit", "self": {"defense": -1, "spDef": -1}, "chance": 100}},

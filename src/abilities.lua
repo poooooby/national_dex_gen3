@@ -83,6 +83,41 @@ local function abilityOf(ad, b)
   return ok and name or nil
 end
 
+-- b's standing partner in a double battle, else nil
+local function partnerOf(ad, b)
+  if not (ad and b and ad.partnerOf) then return nil end
+  local ok, p = pcall(ad.partnerOf, ad, b)
+  if ok and type(p) == "table" and p ~= b and (tonumber(p.mon and p.mon.hp) or 0) > 0 then return p end
+  return nil
+end
+
+-- a battle line broken to the text box's width (26 letters)
+local function wrap26(s)
+  local out, line = {}, ""
+  for word in tostring(s):gmatch("%S+") do
+    if line == "" then line = word
+    elseif #line + 1 + #word <= 26 then line = line .. " " .. word
+    else out[#out + 1] = line; line = word end
+  end
+  if line ~= "" then out[#out + 1] = line end
+  return table.concat(out, "\n")
+end
+
+-- every standing foe of b (both in a double battle)
+local function foesOf(ad, b)
+  local list = {}
+  local ok, all = pcall(ad.foesOf, ad, b)
+  if ok and type(all) == "table" and #all > 0 then
+    for _, f in ipairs(all) do
+      if f ~= b and (tonumber(f.mon and f.mon.hp) or 0) > 0 then list[#list + 1] = f end
+    end
+    return list
+  end
+  local okF, f = pcall(ad.foeOf, ad, b)
+  if okF and type(f) == "table" then list[1] = f end
+  return list
+end
+
 local WeatherRules
 local function weatherRules()
   if WeatherRules == nil then
@@ -476,23 +511,31 @@ function RealAbilities.install(opts)
           return true
         elseif ab == "FRISK" and not b.expFrisked then
           b.expFrisked = true
-          local foe = ad:foeOf(b)
-          local item = foe and foe.mon and tonumber(foe.mon.item or foe.mon.heldItem) or 0
-          if item > 0 and okI and ItemsData.displayName then
-            ad:say(prefixed(ad, b) .. " frisked the foe and\nfound its " .. tostring(ItemsData.displayName(item)) .. "!")
-            return true
+          -- every foe's item (both in a double battle)
+          local found = false
+          for _, foe in ipairs(foesOf(ad, b)) do
+            local item = foe.mon and tonumber(foe.mon.item or foe.mon.heldItem) or 0
+            if item > 0 and okI and ItemsData.displayName then
+              ad:say(wrap26(prefixed(ad, b) .. " frisked " .. prefixed(ad, foe) .. " and found its "
+                .. tostring(ItemsData.displayName(item)) .. "!"))
+              found = true
+            end
           end
+          if found then return true end
         elseif ab == "ANTICIPATION" and not b.expAnticipated then
           b.expAnticipated = true
-          local foe = ad:foeOf(b)
+          -- a move of any foe's
           local okM, Moves = pcall(require, "src.core.game3.battle.moves")
-          for _, mv in ipairs(foe and foe.mon and foe.mon.moves or {}) do
-            local num = type(mv) == "table" and tonumber(mv.id or mv.move) or tonumber(mv)
-            local okG, def = okM and pcall(Moves.get, num)
-            if okG and type(def) == "table" and (tonumber(def.power) or 0) > 0 and okT
-                and Types.effectiveness(def.type, b.type1, b.type2) > 1 then
-              ad:say(prefixed(ad, b) .. " shuddered!")
-              return true
+          for _, foe in ipairs(foesOf(ad, b)) do
+            for _, mv in ipairs(foe.mon and foe.mon.moves or {}) do
+              local num = type(mv) == "table" and tonumber(mv.id or mv.move) or tonumber(mv)
+              local okG, def = false, nil
+              if okM then okG, def = pcall(Moves.get, num) end        -- (`a and pcall()` keeps one value)
+              if okG and type(def) == "table" and (tonumber(def.power) or 0) > 0 and okT
+                  and Types.effectiveness(def.type, b.type1, b.type2) > 1 then
+                ad:say(prefixed(ad, b) .. " shuddered!")
+                return true
+              end
             end
           end
         end
@@ -561,6 +604,42 @@ function RealAbilities.install(opts)
         end)
       end
       return r
+    end
+  end
+
+  -- Storm Drain draws a one-target Water move to itself in a double battle (from a foe or its
+  -- partner), as the cart's Lightning Rod does Electric ones; the absorb below then takes it.
+  -- Follow Me goes first; Snipe Shot, Mold Breaker, Stalwart and Propeller Tail are not drawn.
+  local okE, Engine = pcall(require, "src.core.game3.battle.engine")
+  if need.absorb and okE and type(Engine.resolveTarget) == "function" and not Engine.__nationalDexStormDrain then
+    Engine.__nationalDexStormDrain = true
+    local resolveTarget = Engine.resolveTarget
+    local NOT_DRAWN = set{ "MOLD_BREAKER", "TURBOBLAZE", "TERAVOLT", "STALWART", "PROPELLER_TAIL" }
+    Engine.resolveTarget = function(st, ad, attacker, moveId, chosenId, info, ...)
+      local rid = resolveTarget(st, ad, attacker, moveId, chosenId, info, ...)
+      if not (RealAbilities._on and st and st.double and ad and attacker and tonumber(rid)) then return rid end
+      local ok, drawn = safe(function()
+        local okM, Moves = pcall(require, "src.core.game3.battle.moves")
+        local okS, State = pcall(require, "src.core.game3.battle.state")
+        local mv = okM and Moves.get(moveId)
+        if not (okS and type(mv) == "table" and (tonumber(mv.target) or 0) == 0
+            and tonumber(mv.type) == ID.WATER) then return nil end
+        if NOT_DRAWN[abilityOf(ad, attacker) or ""] or moveName(require, mv) == "SNIPE_SHOT" then return nil end
+        if Engine.followMeId and Engine.followMeId(st, ad, attacker) ~= nil then return nil end
+        local aid = State.idOf(attacker)
+        if abilityOf(ad, State.battler(st, rid)) == "STORM_DRAIN" then return nil end
+        local best, bestNum = nil, 99
+        for id = 0, 3 do
+          local b = id ~= aid and id ~= rid and State.isPresent(st, id) and State.battler(st, id)
+          if b and (tonumber(b.mon and b.mon.hp) or 0) > 0 and abilityOf(ad, b) == "STORM_DRAIN" then
+            local n = Engine.turnOrderNum and tonumber(Engine.turnOrderNum(st, id)) or id
+            if n < bestNum then best, bestNum = id, n end
+          end
+        end
+        return best
+      end)
+      if ok and drawn ~= nil then return drawn end
+      return rid
     end
   end
 
@@ -673,12 +752,18 @@ function RealAbilities.install(opts)
       local ab = abilityOf(ad, battler)
       -- a foe's drop, a 100% added one (the cart's "certain") included; not the user's own
       if delta < 0 and not flags.user then
+        -- Flower Veil: a Grass-type holder or partner of the holder
+        local holder, key = battler, ab
         local blocks = (ab == "BIG_PECKS" and stat == "defense")
           or (ab == "FLOWER_VEIL" and hasType(battler, ID.GRASS))
+        if not blocks and hasType(battler, ID.GRASS) then
+          local p = partnerOf(ad, battler)
+          if abilityOf(ad, p) == "FLOWER_VEIL" then blocks, holder, key = true, p, "FLOWER_VEIL" end
+        end
         if blocks then
           if flags.allowPtr then
             ad:sayText("STRINGID_PKMNSXPREVENTSYLOSS", {
-              scrActive = battler, scrActiveAbility = idOf[ab], buff1 = Secondary.statName(stat),
+              scrActive = holder, scrActiveAbility = idOf[key], buff1 = Secondary.statName(stat),
             })
           end
           return "blocked"
@@ -700,8 +785,10 @@ function RealAbilities.install(opts)
     local function guarded(ad, target, status)
       local ab = abilityOf(ad, target)
       if ab == "LEAF_GUARD" and weather(ad) == "SUN" then return ab end
-      if ab == "SWEET_VEIL" and status == "SLP" then return ab end
-      if ab == "FLOWER_VEIL" and hasType(target, ID.GRASS) then return ab end
+      -- Sweet Veil and Flower Veil cover the holder and its partner
+      local pab = abilityOf(ad, partnerOf(ad, target))
+      if status == "SLP" and (ab == "SWEET_VEIL" or pab == "SWEET_VEIL") then return "SWEET_VEIL" end
+      if hasType(target, ID.GRASS) and (ab == "FLOWER_VEIL" or pab == "FLOWER_VEIL") then return "FLOWER_VEIL" end
       return nil
     end
     -- for src/abilities_more.lua's guard (the adapter's canApplyStatus, the abilities that pass

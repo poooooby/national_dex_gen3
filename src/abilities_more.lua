@@ -224,6 +224,12 @@ local function newContext(opts)
     end
     return list
   end
+  -- b's partner in a double battle, standing; nil in a single battle
+  function C.partner(ad, b)
+    local ok, p = pcall(ad.partnerOf, ad, b)
+    if ok and type(p) == "table" and p ~= b and ad:hp(p) > 0 then return p end
+    return nil
+  end
   function C.anyActive(ad, key, except)
     for _, x in ipairs(ad:activeBattlers() or {}) do
       if x ~= except and ad:hp(x) > 0 and C.ab(ad, x) == key then return x end
@@ -450,7 +456,10 @@ function More.damage(C, ad, c, dmg, info)
   if ua == "GORILLA_TACTICS" and phys then m = m * 1.5 end
   if ua == "DEFEATIST" and ad:hp(u) * 2 <= ad:maxHp(u) then m = m * 0.5 end
   if ua == "SLOW_START" and phys and (u.__ndxAbSlowStart or 0) > 0 then m = m * 0.5 end
-  if ua == "FLOWER_GIFT" and phys and C.weather(ad) == "SUN" then m = m * 1.5 end
+  -- Flower Gift in the sun: the holder's and its partner's Attack
+  if phys and (ua == "FLOWER_GIFT" or C.ab(ad, C.partner(ad, u)) == "FLOWER_GIFT") and C.weather(ad) == "SUN" then
+    m = m * 1.5
+  end
   if ua == "ORICHALCUM_PULSE" and phys and C.weather(ad) == "SUN" then m = m * 4 / 3 end
   if ua == "HADRON_ENGINE" and not phys and C.terrain(ad) == "ELECTRIC" then m = m * 4 / 3 end
   if ua == "STAKEOUT" and ad._st and t.__ndxAbEntered == ad._st.turn then m = m * 2 end
@@ -479,7 +488,10 @@ function More.damage(C, ad, c, dmg, info)
     if ta == "WATER_BUBBLE" and mt == ID.FIRE then m = m * 0.5 end
     if ta == "PURIFYING_SALT" and mt == ID.GHOST then m = m * 0.5 end
     if ta == "SHADOW_SHIELD" and ad:hp(t) >= ad:maxHp(t) then m = m * 0.5 end
-    if ta == "FLOWER_GIFT" and not phys and C.weather(ad) == "SUN" then m = m / 1.5 end
+    if not phys and (ta == "FLOWER_GIFT" or C.ab(ad, C.partner(ad, t)) == "FLOWER_GIFT")
+        and C.weather(ad) == "SUN" then
+      m = m / 1.5                                   -- and its Sp. Def (the partner's too)
+    end
     if ta == "ANGER_POINT" and info.critical then t.__ndxAbCritTaken = true end
   end
   if m == 1 then return dmg end
@@ -1013,7 +1025,8 @@ function More.install(opts)
           ad:sayFail(); blocked = true
         elseif ta == "GUARD_DOG" and id == "EXP_ROAR_EFFECT" then
           say(ad, "%s anchors itself with %s!", who(ad, target), X.nameOf(ta)); blocked = true
-        elseif ta == "AROMA_VEIL" and MENTAL[key] then
+        elseif MENTAL[key] and (ta == "AROMA_VEIL" or X.ab(ad, X.partner(ad, target)) == "AROMA_VEIL") then
+          -- the holder and its partner
           say(ad, "%s is protected by an aromatic veil!", who(ad, target)); blocked = true
         elseif ta == "OVERCOAT" and X.flag("powder", mv, num) then
           blocked = POWDER_FAIL(ad, target)
@@ -1451,9 +1464,17 @@ function More.abilityGuard(C, ad, user, target, how)
 end
 
 function More.statusGuard(C, ad, b, status)
-  local k = C.ab(ad, b)
-  if not k then return nil end
   status = tostring(status or ""):upper()
+  -- a partner's Pastel Veil keeps poison off it too
+  if (status == "PSN" or status == "TOX") and C.partner and C.ab(ad, C.partner(ad, b)) == "PASTEL_VEIL" then
+    return "PASTEL_VEIL"
+  end
+  local k = C.ab(ad, b)
+  if not k then
+    -- Sweet Veil / Flower Veil on a partner (src/abilities.lua)
+    local RA = C.RA
+    return RA and RA.guarded and RA.guarded(ad, b, status) or nil
+  end
   if k == "PURIFYING_SALT" or k == "COMATOSE" then return k end
   if k == "SHIELDS_DOWN" and ad:hp(b) * 2 > ad:maxHp(b) then return k end
   if k == "PASTEL_VEIL" and (status == "PSN" or status == "TOX") then return k end
@@ -1496,24 +1517,43 @@ function More.onEntry(C, ad, b)
   end
   if k == "INTREPID_SWORD" and once("sword") then return stat(ad, b, "attack", 1, { user = true }) == "worked" end
   if k == "DAUNTLESS_SHIELD" and once("shield") then return stat(ad, b, "defense", 1, { user = true }) == "worked" end
-  if k == "SUPERSWEET_SYRUP" and foe and ad:hp(foe) > 0 and once("syrup") then
+  -- every standing foe (both in a double battle)
+  local foes = C.foes(ad, b)
+  if k == "SUPERSWEET_SYRUP" and #foes > 0 and once("syrup") then
     say(ad, "A supersweet aroma is wafting from %s!", who(ad, b))
-    stat(ad, foe, "evasion", -1, { allowPtr = true })
+    for _, f in ipairs(foes) do stat(ad, f, "evasion", -1, { allowPtr = true }) end
     return true
   end
-  if k == "DOWNLOAD" and foe and ad:hp(foe) > 0 then
-    local d = C.Pokemon and foe.mon and tonumber(foe.mon.defense) or 0
-    local s = foe.mon and tonumber(foe.mon.spDef) or 0
+  if k == "DOWNLOAD" and #foes > 0 then
+    -- the foes' Defense and Sp. Def added up
+    local d, s = 0, 0
+    for _, f in ipairs(foes) do
+      d = d + (f.mon and tonumber(f.mon.defense) or 0)
+      s = s + (f.mon and tonumber(f.mon.spDef) or 0)
+    end
     return stat(ad, b, s < d and "spAtk" or "attack", 1, { user = true }) == "worked"
   end
-  if k == "FOREWARN" and foe and ad:hp(foe) > 0 then
+  if k == "PASTEL_VEIL" then
+    -- a poisoned partner is cured as it comes in
+    local p = C.partner(ad, b)
+    local s = p and ad:status(p)
+    if s == "PSN" or s == "TOX" then
+      ad:clearStatus(p)
+      say(ad, "%s was cured of its poisoning!", who(ad, p))
+      return true
+    end
+  end
+  if k == "FOREWARN" and #foes > 0 then
+    -- the strongest move any foe knows
     local best, power = nil, -1
-    for _, mv in ipairs(foe.mon and foe.mon.moves or {}) do
-      local n = type(mv) == "table" and tonumber(mv.id or mv.move) or tonumber(mv)
-      local rec = n and n > 0 and C.moveRec(n)
-      local p = rec and (tonumber(rec.power) or 0) or -1
-      if p == 1 then p = 80 end
-      if rec and p > power then best, power = n, p end
+    for _, f in ipairs(foes) do
+      for _, mv in ipairs(f.mon and f.mon.moves or {}) do
+        local n = type(mv) == "table" and tonumber(mv.id or mv.move) or tonumber(mv)
+        local rec = n and n > 0 and C.moveRec(n)
+        local p = rec and (tonumber(rec.power) or 0) or -1
+        if p == 1 then p = 80 end
+        if rec and p > power then best, power = n, p end
+      end
     end
     if best then
       local okN, nm = pcall(C.Moves.displayName, best)
@@ -1706,9 +1746,12 @@ function More.afterHit(C, M)
       did = stat(ad, target, "attack", 1) == "worked"
     elseif ta == "WATER_COMPACTION" and mt == ID.WATER then
       did = stat(ad, target, "defense", 2) == "worked"
-    elseif ta == "COTTON_DOWN" and uUp then
+    elseif ta == "COTTON_DOWN" then
+      -- every other Pokemon on the field, its own partner too
       say(ad, "%s's COTTON DOWN scattered!", who(ad, target))
-      stat(ad, user, "speed", -1, { allowPtr = true })
+      for _, x in ipairs(ad:activeBattlers() or {}) do
+        if x ~= target and ad:hp(x) > 0 then stat(ad, x, "speed", -1, { allowPtr = true }) end
+      end
       did = true
     elseif (ta == "GOOEY" or ta == "TANGLING_HAIR") and touched and uUp then
       stat(ad, user, "speed", -1, { allowPtr = true })

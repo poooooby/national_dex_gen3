@@ -498,7 +498,9 @@ local function after(rule, M)
     ad:applyHpLoss(user, ad:hp(user))
     if M.tryFaintUser then M:tryFaintUser() end
   elseif (rule == "CHLOROBLAST" or rule == "MIND_BLOWN") and ad:hp(user) > 0
-      and abilityOf(ad, user) ~= "MAGIC_GUARD" then
+      and abilityOf(ad, user) ~= "MAGIC_GUARD" and not M.__ndxHalfPaid then
+    -- once a move: Mind Blown hits everyone around it in a double battle, the cost is still half
+    M.__ndxHalfPaid = true
     ad:applyHpLoss(user, math.ceil(ad:maxHp(user) / 2))
     ad:say(prefixed(ad, user) .. " lost half\nof its HP!")
     if M.tryFaintUser then M:tryFaintUser() end

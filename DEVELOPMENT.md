@@ -793,8 +793,16 @@ Things that work but not exactly as in today's games, or are only partly verifie
   the real party prompt), Dragon Tail, Spiky Shield's and King's Shield's punishment and Soak, on
   Emerald, FireRed and Sapphire. Everything else is checked headlessly only (`tests/moves_test.lua`,
   `move_effects_test.lua`, `move_rules_test.lua`, `move_field_test.lua`, `abilities_test.lua`).
-- Double battles: only a headless doubles state (Decorate, Pollen Puff on a partner) is tested.
-  The turn stamps (Sucker Punch, Payback, Bolt Beak, Fusion Flare/Bolt) and the switch-out moves
+- Double battles: `tests/doubles_test.lua [game]` runs whole moves in a headless doubles state
+  (battler ids 0 / 2 the player's, 1 / 3 the foe's): the entry abilities that read every foe
+  (`C.foes` in abilities_more, `foesOf` in abilities.lua), the partner guards (Sweet / Flower /
+  Aroma / Pastel Veil, Flower Gift; `C.partner`, `partnerOf`), Cotton Down on everyone around,
+  Mind Blown's half paid once a move (`M.__ndxHalfPaid`: Hit.run runs per target), Life Dew,
+  Matcha Gotcha, Expanding Force (an `Engine.forEachTarget` wrap runs the move as MOVE_TARGET_BOTH
+  for the one use on Psychic Terrain), Storm Drain (an `Engine.resolveTarget` wrap, as the cart's
+  Lightning Rod), and the held items' `A:foes` (Adrenaline Orb, Mirror Herb; an adapter without
+  `foes`, Gen 1/2's, keeps the one foe). Anything aimed at more than one Pokemon: never
+  `ad:foeOf` (one foe), use the foes / partner helpers. The turn stamps (Sucker Punch, Payback, Bolt Beak, Fusion Flare/Bolt) and the switch-out moves
   were written with singles in mind.
 - Protection variants keep their own "used last turn" streak; the cart's Protect after one of
   them doesn't see it (and vice versa). Shed Tail makes the cart's Substitute (a quarter of HP,

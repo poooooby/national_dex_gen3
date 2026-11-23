@@ -721,6 +721,18 @@ local function statusRule(rule, ad, user, target, M)
       end
     end
     if not did then fail(ad, M) end
+  elseif rule == "LIFE_DEW" then
+    -- the user and its partner each get back a quarter of their HP (no status cure)
+    local did = false
+    for _, b in ipairs({ user, partnerOf(ad, user) }) do
+      if b and ad:hp(b) < ad:maxHp(b) and (b.__ndxHealBlock or 0) <= 0 then
+        if not did then anim() end
+        did = true
+        ad:heal(b, math.max(1, math.floor(ad:maxHp(b) / 4)))
+        ad:sayText("STRINGID_PKMNREGAINEDHEALTH", { def = b })
+      end
+    end
+    if not did then fail(ad, M) end
   elseif rule == "OCTOLOCK" then
     if not target or target == user or not accuracy() then return end
     if target.expTrapped or target.escapePrevention or (target.substituteHP or 0) > 0 then return fail(ad, M) end
@@ -1179,6 +1191,28 @@ function MoveField.install(opts)
         end
       end
       return switchIn(st, ad, b, o, ...)
+    end
+    -- Expanding Force: on Psychic Terrain, used by a grounded Pokemon at a foe, it hits both foes
+    -- (the move runs as if aimed at both for the one use; the move's own record is left alone)
+    if type(Engine.forEachTarget) == "function" then
+      local forEachTarget = Engine.forEachTarget
+      Engine.forEachTarget = function(M, body, ...)
+        local move = type(M) == "table" and M.move
+        local st, ad, user, target = M and M.st, M and M.adapter, M and M.user, M and M.target
+        if MoveField._on and type(move) == "table" and st and st.double and ad and user and target
+            and target.side ~= user.side and MoveField._rules[tonumber(M.mnum) or -1] == "EXPANDING_FORCE"
+            and terrainOf(st) == "PSYCHIC" and grounded(ad, user) then
+          local spread = {}
+          for k, v in pairs(move) do spread[k] = v end
+          spread.target = 8                                  -- MOVE_TARGET_BOTH
+          M.move = spread
+          local ok, a, b = pcall(forEachTarget, M, body, ...)
+          M.move = move
+          if not ok then error(a, 0) end
+          return a, b
+        end
+        return forEachTarget(M, body, ...)
+      end
     end
     -- Fairy Lock: nobody switches or runs the turn after
     local function locked(st)

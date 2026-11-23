@@ -3,6 +3,24 @@
 All notable changes to this mod are documented here, in
 [keep a changelog](https://keepachangelog.com/en/1.1.0/) format.
 
+## [1.19.4] - 2026-11-22
+
+### Fixed
+
+- **Double battles:** effects that should reach both foes, the partner or everyone around now do.
+  - Both foes: Supersweet Syrup lowers both foes' evasiveness; Frisk finds both foes' items;
+    Anticipation and Forewarn read both foes' moves; Download adds up both foes' Defense and
+    Sp. Def; one Intimidate sets off both foes' Adrenaline Orbs; Mirror Herb copies boosts from
+    either foe; Matcha Gotcha hits both foes; Expanding Force hits both foes on Psychic Terrain.
+  - The partner too: Sweet Veil, Flower Veil, Aroma Veil and Pastel Veil protect the partner (and
+    Pastel Veil cures a poisoned partner as it comes in); Flower Gift raises the partner's Attack
+    and Sp. Def in the sun; Life Dew heals the partner; Storm Drain draws a Water move aimed at
+    another Pokemon to itself.
+  - Everyone around: Cotton Down slows every other Pokemon on the field, not just the attacker.
+  - Mind Blown costs half the user's HP once; in a double battle it used to cost half for every
+    Pokemon it hit, so the user always fainted.
+- **Anticipation** works: it never made its Pokemon shudder, in any battle.
+
 ## [1.19.3] - 2026-11-22
 
 ### Added

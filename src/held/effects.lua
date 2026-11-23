@@ -49,6 +49,12 @@ return function(core, opts)
     if r and r.effect.kind == k then return r.effect, id end
     return nil
   end
+  -- b's foes: both in a double battle (an adapter with `foes`), else the one
+  local function foesOf(A, b)
+    if A.foes then return A:foes(b) end
+    local f = A:foe(b)
+    return { f }
+  end
   local function use(A, b, id)
     A:setItem(b, nil)
     local v = A:vol(b)
@@ -402,20 +408,26 @@ return function(core, opts)
           A:switchOut(b, {})
         end
       end
-      -- Mirror Herb: the holder copies the boosts its foe just gave itself
-      local foe = A:foe(b)
-      local r3, id3 = row(A, foe)
-      if b == u and r3 and r3.effect.kind == "mirrorHerb" and A:hp(foe) > 0 then
-        local got = {}
-        local any = false
-        for _, st in ipairs(core.STATS) do
-          local d = A:stage(b, st) - (before[st] or 0)
-          if d > 0 then got[st] = d; any = true end
-        end
-        if any then
-          use(A, foe, id3)
-          say(A, "%s used its %s to mirror its opponent's stat changes!", A:name(foe), named(A, id3))
-          A:stages(foe, got)
+      -- Mirror Herb: a foe of the user's (either, in a double battle) copies the boosts the user
+      -- just gave itself
+      if b == u then
+        local got, any = nil, false
+        for _, foe in ipairs(foesOf(A, b)) do
+          local r3, id3 = row(A, foe)
+          if r3 and r3.effect.kind == "mirrorHerb" and A:hp(foe) > 0 then
+            if got == nil then
+              got = {}
+              for _, st in ipairs(core.STATS) do
+                local d = A:stage(b, st) - (before[st] or 0)
+                if d > 0 then got[st] = d; any = true end
+              end
+            end
+            if any then
+              use(A, foe, id3)
+              say(A, "%s used its %s to mirror its opponent's stat changes!", A:name(foe), named(A, id3))
+              A:stages(foe, got)
+            end
+          end
         end
       end
     end
@@ -552,13 +564,16 @@ return function(core, opts)
     if not b or A:hp(b) <= 0 then return end
     local e, id = kind(A, b, "airBalloon")
     if e then say(A, "%s floats in the air with its %s!", A:name(b), named(A, id)) end
-    -- Adrenaline Orb: the foe that came in has Intimidate
-    local foe = A:foe(b)
+    -- Adrenaline Orb: the foe that came in has Intimidate (it reaches both foes in a double battle)
     local ab = core.abilityOf and core.abilityOf(A, b)
-    local oe, oid = foe and kind(A, foe, "adrenalineOrb")
-    if oe and ab == "INTIMIDATE" and A:hp(foe) > 0 then
-      use(A, foe, oid)
-      A:stages(foe, { speed = 1 })
+    if ab == "INTIMIDATE" then
+      for _, foe in ipairs(foesOf(A, b)) do
+        local oe, oid = foe and kind(A, foe, "adrenalineOrb")
+        if oe and A:hp(foe) > 0 then
+          use(A, foe, oid)
+          A:stages(foe, { speed = 1 })
+        end
+      end
     end
     A:vol(b).choiceLock = nil
     -- Luck Incense (Gold): the prize money doubles, as its own Amulet Coin does once sent out
