@@ -1,6 +1,6 @@
 # Generation 6 Pokémon
 
-72 Pokémon, #650–721. [Back to the index](../pokemon.md).
+72 Pokémon, #650–721. [Back to the index](../Pokemon-Guide.md).
 
 ### #650 Chespin
 

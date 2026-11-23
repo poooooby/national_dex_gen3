@@ -1,6 +1,6 @@
 # Generation 5 Pokémon
 
-156 Pokémon, #494–649. [Back to the index](../pokemon.md).
+156 Pokémon, #494–649. [Back to the index](../Pokemon-Guide.md).
 
 ### #494 Victini
 

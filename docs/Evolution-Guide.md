@@ -2,7 +2,7 @@
 
 A player's guide to the evolutions and alternate forms this mod adds, especially the ones
 that work differently from the games you know. For every Pokémon's stats and moves see
-[Added Pokémon](pokemon.md); for every item's price and shop see [Added items](items.md).
+[Added Pokémon](Pokemon-Guide.md); for every item's price and shop see [Added items](Item-Guide.md).
 
 *This page is written by hand; the two pages above are generated from the mod's data.*
 
@@ -60,7 +60,7 @@ trade items (Protector, Electirizer...) after 3, Ice Stone and Razor Claw after 
 and the Galarica items after 5, Masterpiece Teacup after 7 and Metal Alloy after 8. One you can't
 buy yet stays on the machine, faded, with the badges it needs.
 
-[Added items](items.md) lists every item with its exact price, badges and shop.
+[Added items](Item-Guide.md) lists every item with its exact price, badges and shop.
 
 ## Rockruff → Lycanroc
 
@@ -130,7 +130,7 @@ It stands in for a trade with a held item too, as long as the Pokémon is holdin
 Porygon2 holding a Dubious Disc becomes Porygon-Z, Onix holding a Metal Coat becomes Steelix,
 Rhydon holding a Protector becomes Rhyperior. The held item is used up, just as in a trade.
 Holding the wrong item (or none), it has no effect. A real trade still works too. The full list
-is in the [items guide](items.md#linking-cord).
+is in the [items guide](Item-Guide.md#linking-cord).
 
 ## Original Pokémon with new evolutions
 
@@ -159,7 +159,7 @@ use the item on it; "trade" means trade it while it holds the item.
 
 Pokémon this mod adds have their own item evolutions too (for example Lampent → Chandelure
 with a Dusk Stone, or Doublade → Aegislash). They are listed under each item in
-[Added items](items.md).
+[Added items](Item-Guide.md).
 
 ## Other evolutions worth knowing
 
@@ -385,7 +385,7 @@ and Typhlosion. (Dusk Lycanroc is not on that list: evolve a Rockruff at dusk.)
 
 Megas, Gigantamax and in-battle or purely cosmetic forms are not included.
 
-Stats, typing, abilities and moves for each form are in [Alternate forms](pokemon/forms.md).
+Stats, typing, abilities and moves for each form are in [Alternate forms](Form-Guide.md).
 
 **Keep the mod on.** A Pokémon in a form is saved as a species number only this mod knows.
 If you turn the mod off while a form is in your party or PC, the game cannot draw it and

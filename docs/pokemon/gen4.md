@@ -1,6 +1,6 @@
 # Generation 4 Pokémon
 
-107 Pokémon, #387–493. [Back to the index](../pokemon.md).
+107 Pokémon, #387–493. [Back to the index](../Pokemon-Guide.md).
 
 ### #387 Turtwig
 

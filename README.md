@@ -14,11 +14,11 @@ is missing, up to Pecharunt, with today's moves, abilities, items and types to g
 
 ### Core Mechanics
 
-- 🆕 **Every Pokémon, #1–1025**, plus [128 alternate forms](docs/pokemon/forms.md)
-- 🔄 **[Every evolution](docs/evolutions-and-forms.md)**, including newer ones for the originals
-- ⚔️ **[Every newer move](docs/moves.md)** works for real
-- 🧬 **[Every newer ability](docs/abilities.md)** works for real
-- 🧚 **[The Fairy type](docs/fairy.md)** and today's type chart
+- 🆕 **Every Pokémon, #1–1025**, plus [128 alternate forms](docs/Form-Guide.md)
+- 🔄 **[Every evolution](docs/Evolution-Guide.md)**, including newer ones for the originals
+- ⚔️ **[Every newer move](docs/Move-Guide.md)** works for real
+- 🧬 **[Every newer ability](docs/Ability-Guide.md)** works for real
+- 🧚 **[The Fairy type](docs/Fairy-Guide.md)** and today's type chart
 - 📖 **The Pokédex runs to #1025**, with a FORMS page for alternate forms
 
 ## 📚 Player Guides
@@ -26,13 +26,13 @@ is missing, up to Pecharunt, with today's moves, abilities, items and types to g
 🔎 **[Learnsets](https://poooooby.github.io/national_dex_gen3/learnsets/)**: search any Pokémon and see every move it
 learns, by level, TM, tutor and egg, with a link to share.
 
-[Pokémon](docs/pokemon.md) · [Forms](docs/pokemon/forms.md) · [Evolutions](docs/evolutions-and-forms.md) ·
-[Moves](docs/moves.md) · [Abilities](docs/abilities.md) · [Fairy types](docs/fairy.md) ·
-[Items](docs/items.md) · [TMs](docs/tms.md)
+[Pokémon](docs/Pokemon-Guide.md) · [Forms](docs/Form-Guide.md) · [Evolutions](docs/Evolution-Guide.md) ·
+[Moves](docs/Move-Guide.md) · [Abilities](docs/Ability-Guide.md) · [Fairy types](docs/Fairy-Guide.md) ·
+[Items](docs/Item-Guide.md) · [TMs](docs/TM-Guide.md)
 
 ### Items and Shopping
 
-- 🏪 **Vending machines** in the department store sell [the new items](docs/items.md) and [TMs](docs/tms.md)
+- 🏪 **Vending machines** in the department store sell [the new items](docs/Item-Guide.md) and [TMs](docs/TM-Guide.md)
 - 🎒 **Modern held items**, evolution items, Linking Cord and Exp. Candies
 - 🍓 **EV-lowering berries** (Pomeg, Kelpsy, Qualot, Hondew, Grepa, Tamato) lower an EV and raise friendship in every Gen 3 game
 
@@ -123,8 +123,8 @@ Pick **WOOBLEDEX** in the game's **OPTIONS** menu. Each setting applies to every
 - **WoobleDex was once called National Dex Gen 3.** Saves and settings carry over.
 - **On Red to Crystal it replaces the original National Dex mod.** Turn that one off.
 - **Alternate forms aren't found in the wild yet,** and there are no Megas or Gigantamax forms.
-- **A few evolutions are adapted** where the game can't check a condition ([details](docs/evolutions-and-forms.md)).
-- **A move's type decides physical or special,** as in the original games, unless you turn on **Move Split** ([which moves change](docs/moves.md#physical-and-special)). Link battles on FireRed to Emerald always use the game's own rule, so both players' games agree.
+- **A few evolutions are adapted** where the game can't check a condition ([details](docs/Evolution-Guide.md)).
+- **A move's type decides physical or special,** as in the original games, unless you turn on **Move Split** ([which moves change](docs/Move-Guide.md#physical-and-special)). Link battles on FireRed to Emerald always use the game's own rule, so both players' games agree.
 - **Keep the mod installed** on any save that uses its Pokémon or moves.
 - **Exporting to a cartridge .sav** can't hold the new Pokémon, moves, items or extra boxes. Your mod save always keeps them.
 - **Link play** works with players who also use WoobleDex.

@@ -1,12 +1,12 @@
 -- Builds the player reference in docs/ from the mod's own data, so it cannot
 -- drift from what the game does:
---   docs/items.md            the added items: price, where to buy, what evolves with them
---   docs/tms.md              the added TMs: move, price, where to buy, how many Pokemon learn it
---   docs/moves.md            physical / special with and without Move Split (the original moves
+--   docs/Item-Guide.md            the added items: price, where to buy, what evolves with them
+--   docs/TM-Guide.md              the added TMs: move, price, where to buy, how many Pokemon learn it
+--   docs/Move-Guide.md            physical / special with and without Move Split (the original moves
 --                            that change), then the added moves: type, power, accuracy, PP, what they do
---   docs/abilities.md        the added abilities and what they do
---   docs/fairy.md            every Fairy-type Pokemon, original, added and forms
---   docs/pokemon.md          index of the added Pokemon
+--   docs/Ability-Guide.md        the added abilities and what they do
+--   docs/Fairy-Guide.md            every Fairy-type Pokemon, original, added and forms
+--   docs/Pokemon-Guide.md          index of the added Pokemon
 --   docs/pokemon/genN.md     every added species of one generation: types, its
 --                            Gen 3 ability, and its level-up learnset
 --
@@ -79,7 +79,7 @@ local function out(path, lines)
   f:close()
 end
 
--- ---- items.md
+-- ---- Item-Guide.md
 
 local GROUP = {
   frlg = { "firered", "leafgreen" },
@@ -373,7 +373,7 @@ for _, g in ipairs({ "frlg", "rse" }) do
   end
   L[#L + 1] = ""
 end
-out("docs/items.md", L)
+out("docs/Item-Guide.md", L)
 
 -- ---- pokemon
 
@@ -446,12 +446,12 @@ local I = {
   "",
   "## How to read the entries",
   "",
-  "- **Ability.** " .. #(realAbilities.defs or {}) .. " newer abilities work for real ([the list](abilities.md));",
+  "- **Ability.** " .. #(realAbilities.defs or {}) .. " newer abilities work for real ([the list](Ability-Guide.md));",
   "  any other is the closest Gen 3 ability (for example Simple becomes Own Tempo), which the",
   "  Pokémon shows and acts like. A second name is its second ability slot.",
   "- **Typing.** The modern typing, Fairy included (Gen 6's type chart).",
   "- **Learnset.** The same moves at the same levels as in the modern games. Newer moves work for",
-  "  real ([the list](moves.md)); the few that can't are replaced, at the same level, by the closest",
+  "  real ([the list](Move-Guide.md)); the few that can't are replaced, at the same level, by the closest",
   "  Gen 3 move.",
   "- TM, HM, tutor and egg moves are not listed here.",
   "",
@@ -468,13 +468,13 @@ end
 I[#I + 1] = ""
 I[#I + 1] = "## Alternate forms"
 I[#I + 1] = ""
-I[#I + 1] = "- [Forms](pokemon/forms.md): Alolan, Galarian, Hisuian and Paldean forms, Wormadam's cloaks, the Rotom appliances,"
+I[#I + 1] = "- [Forms](Form-Guide.md): Alolan, Galarian, Hisuian and Paldean forms, Wormadam's cloaks, the Rotom appliances,"
 I[#I + 1] = "  the Therian and Origin forms and more, each a Pokémon of its own."
 I[#I + 1] = ""
 I[#I + 1] = "## By type"
 I[#I + 1] = ""
-I[#I + 1] = "- [Fairy](fairy.md): every Fairy-type Pokémon, the originals that became part Fairy included."
-out("docs/pokemon.md", I)
+I[#I + 1] = "- [Fairy](Fairy-Guide.md): every Fairy-type Pokémon, the originals that became part Fairy included."
+out("docs/Pokemon-Guide.md", I)
 
 for g = 4, 9 do
   local list = byGen[g]
@@ -482,7 +482,7 @@ for g = 4, 9 do
     local P = {
       string.format("# Generation %d Pokémon", g),
       "",
-      string.format("%d Pokémon, #%d–%d. [Back to the index](../pokemon.md).", #list, list[1].dex, list[#list].dex),
+      string.format("%d Pokémon, #%d–%d. [Back to the index](../Pokemon-Guide.md).", #list, list[1].dex, list[#list].dex),
       "",
     }
     for _, r in ipairs(list) do
@@ -547,9 +547,9 @@ local F = {
   "",
   "- **Where do they come from?** A spawn mod puts the ones that are wild in the real games in the wild",
   "  ([WoobleSpawns](https://github.com/poooooby/g1r_modern_spawns) does), and many evolve from another form:",
-  "  see each form's *Evolves* line and the [evolution and forms guide](../evolutions-and-forms.md). Any form",
+  "  see each form's *Evolves* line and the [evolution and forms guide](Evolution-Guide.md). Any form",
   "  can also be made with the save editor.",
-  "- Ability, typing and moves follow the same rules as the other Pokémon (see the [index](../pokemon.md)).",
+  "- Ability, typing and moves follow the same rules as the other Pokémon (see the [index](Pokemon-Guide.md)).",
   "- Left out: Mega Evolutions, Gigantamax forms, forms that only exist during a battle, cosmetic forms and",
   "  gender differences (those use the same Pokémon with a different picture).",
   "",
@@ -572,9 +572,9 @@ for _, base in ipairs(group) do
     F[#F + 1] = ""
   end
 end
-out("docs/pokemon/forms.md", F)
+out("docs/Form-Guide.md", F)
 
--- ---- fairy.md: every Fairy-type Pokemon (data/types.lua is the typing the game uses)
+-- ---- Fairy-Guide.md: every Fairy-type Pokemon (data/types.lua is the typing the game uses)
 
 -- GitHub's heading anchor: lower case, punctuation dropped, spaces to hyphens
 local function anchor(text)
@@ -592,7 +592,7 @@ local FY = {
   "",
   "Every Pokémon that is part Fairy in this mod, with its typing as the game uses it. Fairy beats",
   "Dragon, Dark and Fighting; Fire, Poison and Steel resist it; Dragon moves can't touch it, and",
-  "Poison and Steel moves hit it hard. [Back to the index](pokemon.md).",
+  "Poison and Steel moves hit it hard. [Back to the index](Pokemon-Guide.md).",
   "",
   "*Generated from `data/types.lua` by `tools/build_docs.lua`.*",
   "",
@@ -634,12 +634,12 @@ if #fairyForms > 0 then
   FY[#FY + 1] = "|---|---|---|"
   for _, f in ipairs(fairyForms) do
     local heading = string.format("%s — #%d", formName(f), f.baseDex)
-    FY[#FY + 1] = string.format("| %d | [%s](pokemon/forms.md#%s) | %s |", f.baseDex, formName(f), anchor(heading), typesText(f))
+    FY[#FY + 1] = string.format("| %d | [%s](Form-Guide.md#%s) | %s |", f.baseDex, formName(f), anchor(heading), typesText(f))
   end
 end
 FY[#FY + 1] = ""
 FY[#FY + 1] = string.format("%d Pokémon (%d of them originals from #1–386) and %d forms.", #dexes, originals, #fairyForms)
-out("docs/fairy.md", FY)
+out("docs/Fairy-Guide.md", FY)
 
 -- ---- moves
 
@@ -700,7 +700,7 @@ for _, line in ipairs({
   "## Added moves",
   "",
   "The " .. #newMoves .. " moves from later generations that work in battle here. Pokémon learn them by",
-  "level-up, as egg moves or from [TMs](tms.md). The few left (moves that need a partner to act out",
+  "level-up, as egg moves or from [TMs](TM-Guide.md). The few left (moves that need a partner to act out",
   "of turn, such as After You and Instruct) are swapped for the closest original move. **Kind** is",
   "physical or special by the move's type, as these games do; **Move Split** is what the move is",
   "with that option on.",
@@ -718,7 +718,7 @@ for _, m in ipairs(sortedMoves) do
   M[#M + 1] = string.format("| %s | %s | %s | %s | %s | %s | %d | %s |", m.full or title(m.name), title(m.type), kind, today,
     m.power > 1 and tostring(m.power) or "—", m.accuracy > 0 and tostring(m.accuracy) or "—", m.pp, text)
 end
-out("docs/moves.md", M)
+out("docs/Move-Guide.md", M)
 
 -- ---- abilities
 
@@ -742,7 +742,7 @@ table.sort(sortedAbilities, function(a, b) return a.name < b.name end)
 for _, d in ipairs(sortedAbilities) do
   A[#A + 1] = string.format("| %s | %s | %s |", title((d.slug:gsub("-", " "))), d.text, d.detail or d.text)
 end
-out("docs/abilities.md", A)
+out("docs/Ability-Guide.md", A)
 
 -- ---- tms
 
@@ -770,7 +770,7 @@ for _, t in ipairs(tms) do
     title(m.type or "?"), t.price, gates[t.move] or 0, #s.frlg > 0 and join(s.frlg, "; ") or "not sold",
     #s.rse > 0 and join(s.rse, "; ") or "not sold", #t.dex + #t.forms)
 end
-out("docs/tms.md", TM)
+out("docs/TM-Guide.md", TM)
 
 -- ---- learnsets: docs/learnsets/data.js for the searchable page (docs/learnsets/index.html, on
 -- GitHub Pages): every Pokemon #1-1025 and every form, with its level-up moves, TMs / HMs, tutor

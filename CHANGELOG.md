@@ -847,7 +847,7 @@ All notable changes to this mod are documented here, in
 
 ### Fixed
 
-- The package no longer includes `docs/fairy.md` (a developer-side docs page; `.modkitignore`).
+- The package no longer includes `docs/Fairy-Guide.md` (a developer-side docs page; `.modkitignore`).
 
 ## [1.1.0] - 2026-10-15
 
@@ -866,7 +866,7 @@ All notable changes to this mod are documented here, in
 
 ### Changed
 
-- **Ability descriptions:** `docs/abilities.md` gives each added ability's full effect (every
+- **Ability descriptions:** `docs/Ability-Guide.md` gives each added ability's full effect (every
   number, and what works differently from the newer games: Fluffy's double Fire damage, Sand
   Force not blocking sandstorm, Leaf Guard not stopping added effects...) beside the one-line
   summary text, from a `DETAILS` table in `tools/build_abilities.py` (`detail` in
@@ -1039,7 +1039,7 @@ All notable changes to this mod are documented here, in
   functions; each needs only its own target and falls back to the Gen 3 ability without it.
   Known limits: Leaf Guard / Sweet Veil / Flower Veil don't stop a move's secondary status, Super
   Luck doesn't stack with high-crit moves, Ice Body / Snow Cloak don't block hail damage.
-  `docs/abilities.md` lists them. Tests: `tests/abilities_test.lua`.
+  `docs/Ability-Guide.md` lists them. Tests: `tests/abilities_test.lua`.
 - **118 newer moves as real moves** (`src/moves.lua`, data from `tools/build_moves.py` ->
   `data/moves.lua`): a newer move whose effect is one Gen 3 already has (matched by PokeAPI's
   effect description against the cart's own moves, attacks only onto attacking effects) is
@@ -1051,7 +1051,7 @@ All notable changes to this mod are documented here, in
   moves keep their substitutes. Works around a registry fault that writes a new move into the
   move index by name (learnsets and, after a reload, the move rows end up under the name): the
   numbers are put back after every write. Save editor: the moves are in its move list.
-  `docs/moves.md` lists them. Tests: `tests/moves_test.lua`.
+  `docs/Move-Guide.md` lists them. Tests: `tests/moves_test.lua`.
 - **The Fairy type** (Gen 6+) as a real type, id 18 (`src/types.lua`, data from
   `tools/build_types.py` -> `data/types.lua`):
   - the Gen 6 type chart: Fairy's 12 matchups, inserted before the chart's Foresight sentinel, and
@@ -1260,8 +1260,8 @@ All notable changes to this mod are documented here, in
   19:00-20:00 and day is every other hour (dusk counts as day). The friendship day/night evolutions (Budew, Riolu, Chingling, Snom, and
   Eevee where the cart has them) are decided by this clock too, so they now work on
   FireRed and LeafGreen and use these hours instead of the engine's noon/midnight split.
-- **Evolution and forms guide** (`docs/evolutions-and-forms.md`, written by hand) for players,
-  and `docs/items.md` now lists held-item evolutions (Dusk Lycanroc, Alcremie) under their items.
+- **Evolution and forms guide** (`docs/Evolution-Guide.md`, written by hand) for players,
+  and `docs/Item-Guide.md` now lists held-item evolutions (Dusk Lycanroc, Alcremie) under their items.
 - Cracked Pot and Chipped Pot cost 3000 (Bulbapedia's buy price).
 - **Tea evolutions**: Cracked Pot / Chipped Pot (Sinistea -> Polteageist) and
   Unremarkable Teacup / Masterpiece Teacup (Poltchageist -> Sinistcha) are registered
@@ -1302,10 +1302,10 @@ All notable changes to this mod are documented here, in
   - Cries for each form (shared with the base where the pack has none).
   - Six abilities that appear only on forms are mapped (Gorilla Tactics, Mimicry,
     As One x2, Mind's Eye, Power Construct).
-- `docs/`: a player reference, generated from the mod's own data. `items.md`
+- `docs/`: a player reference, generated from the mod's own data. `Item-Guide.md`
   lists every added item with its price, where it is sold in FireRed /
   LeafGreen and Ruby / Sapphire / Emerald, and what evolves with it;
-  `pokemon.md` and `pokemon/gen4.md`-`gen9.md` list all 639 species with
+  `Pokemon-Guide.md` and `pokemon/gen4.md`-`gen9.md` list all 639 species with
   typing, Gen 3 ability and level-up learnset.
 - The 19 evolution items are now sold, by item type and progression:
   stones and Sachet/Whipped Dream on Celadon Dept. Store 4F (FRLG) and the

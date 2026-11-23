@@ -1,6 +1,6 @@
 # Generation 8 Pokémon
 
-96 Pokémon, #810–905. [Back to the index](../pokemon.md).
+96 Pokémon, #810–905. [Back to the index](../Pokemon-Guide.md).
 
 ### #810 Grookey
 

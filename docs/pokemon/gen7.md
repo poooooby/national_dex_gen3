@@ -1,6 +1,6 @@
 # Generation 7 Pokémon
 
-88 Pokémon, #722–809. [Back to the index](../pokemon.md).
+88 Pokémon, #722–809. [Back to the index](../Pokemon-Guide.md).
 
 ### #722 Rowlet
 

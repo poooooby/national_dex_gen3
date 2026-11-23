@@ -2,7 +2,7 @@
 
 Every Pokémon that is part Fairy in this mod, with its typing as the game uses it. Fairy beats
 Dragon, Dark and Fighting; Fire, Poison and Steel resist it; Dragon moves can't touch it, and
-Poison and Steel moves hit it hard. [Back to the index](pokemon.md).
+Poison and Steel moves hit it hard. [Back to the index](Pokemon-Guide.md).
 
 *Generated from `data/types.lua` by `tools/build_docs.lua`.*
 
@@ -79,31 +79,31 @@ Poison and Steel moves hit it hard. [Back to the index](pokemon.md).
 
 | # | Form | Type |
 |---|---|---|
-| 38 | [Ninetales (Alola)](pokemon/forms.md#ninetales-alola--38) | Ice / Fairy |
-| 78 | [Rapidash (Galar)](pokemon/forms.md#rapidash-galar--78) | Psychic / Fairy |
-| 110 | [Weezing (Galar)](pokemon/forms.md#weezing-galar--110) | Poison / Fairy |
-| 669 | [Flabébé (Yellow)](pokemon/forms.md#flabébé-yellow--669) | Fairy |
-| 669 | [Flabébé (Orange)](pokemon/forms.md#flabébé-orange--669) | Fairy |
-| 669 | [Flabébé (Blue)](pokemon/forms.md#flabébé-blue--669) | Fairy |
-| 669 | [Flabébé (White)](pokemon/forms.md#flabébé-white--669) | Fairy |
-| 670 | [Floette (Eternal)](pokemon/forms.md#floette-eternal--670) | Fairy |
-| 670 | [Floette (Yellow)](pokemon/forms.md#floette-yellow--670) | Fairy |
-| 670 | [Floette (Orange)](pokemon/forms.md#floette-orange--670) | Fairy |
-| 670 | [Floette (Blue)](pokemon/forms.md#floette-blue--670) | Fairy |
-| 670 | [Floette (White)](pokemon/forms.md#floette-white--670) | Fairy |
-| 671 | [Florges (Yellow)](pokemon/forms.md#florges-yellow--671) | Fairy |
-| 671 | [Florges (Orange)](pokemon/forms.md#florges-orange--671) | Fairy |
-| 671 | [Florges (Blue)](pokemon/forms.md#florges-blue--671) | Fairy |
-| 671 | [Florges (White)](pokemon/forms.md#florges-white--671) | Fairy |
-| 869 | [Alcremie (Ruby Cream)](pokemon/forms.md#alcremie-ruby-cream--869) | Fairy |
-| 869 | [Alcremie (Matcha Cream)](pokemon/forms.md#alcremie-matcha-cream--869) | Fairy |
-| 869 | [Alcremie (Mint Cream)](pokemon/forms.md#alcremie-mint-cream--869) | Fairy |
-| 869 | [Alcremie (Lemon Cream)](pokemon/forms.md#alcremie-lemon-cream--869) | Fairy |
-| 869 | [Alcremie (Salted Cream)](pokemon/forms.md#alcremie-salted-cream--869) | Fairy |
-| 869 | [Alcremie (Ruby Swirl)](pokemon/forms.md#alcremie-ruby-swirl--869) | Fairy |
-| 869 | [Alcremie (Caramel Swirl)](pokemon/forms.md#alcremie-caramel-swirl--869) | Fairy |
-| 869 | [Alcremie (Rainbow Swirl)](pokemon/forms.md#alcremie-rainbow-swirl--869) | Fairy |
-| 888 | [Zacian (Crowned)](pokemon/forms.md#zacian-crowned--888) | Fairy / Steel |
-| 905 | [Enamorus (Therian)](pokemon/forms.md#enamorus-therian--905) | Fairy / Flying |
+| 38 | [Ninetales (Alola)](Form-Guide.md#ninetales-alola--38) | Ice / Fairy |
+| 78 | [Rapidash (Galar)](Form-Guide.md#rapidash-galar--78) | Psychic / Fairy |
+| 110 | [Weezing (Galar)](Form-Guide.md#weezing-galar--110) | Poison / Fairy |
+| 669 | [Flabébé (Yellow)](Form-Guide.md#flabébé-yellow--669) | Fairy |
+| 669 | [Flabébé (Orange)](Form-Guide.md#flabébé-orange--669) | Fairy |
+| 669 | [Flabébé (Blue)](Form-Guide.md#flabébé-blue--669) | Fairy |
+| 669 | [Flabébé (White)](Form-Guide.md#flabébé-white--669) | Fairy |
+| 670 | [Floette (Eternal)](Form-Guide.md#floette-eternal--670) | Fairy |
+| 670 | [Floette (Yellow)](Form-Guide.md#floette-yellow--670) | Fairy |
+| 670 | [Floette (Orange)](Form-Guide.md#floette-orange--670) | Fairy |
+| 670 | [Floette (Blue)](Form-Guide.md#floette-blue--670) | Fairy |
+| 670 | [Floette (White)](Form-Guide.md#floette-white--670) | Fairy |
+| 671 | [Florges (Yellow)](Form-Guide.md#florges-yellow--671) | Fairy |
+| 671 | [Florges (Orange)](Form-Guide.md#florges-orange--671) | Fairy |
+| 671 | [Florges (Blue)](Form-Guide.md#florges-blue--671) | Fairy |
+| 671 | [Florges (White)](Form-Guide.md#florges-white--671) | Fairy |
+| 869 | [Alcremie (Ruby Cream)](Form-Guide.md#alcremie-ruby-cream--869) | Fairy |
+| 869 | [Alcremie (Matcha Cream)](Form-Guide.md#alcremie-matcha-cream--869) | Fairy |
+| 869 | [Alcremie (Mint Cream)](Form-Guide.md#alcremie-mint-cream--869) | Fairy |
+| 869 | [Alcremie (Lemon Cream)](Form-Guide.md#alcremie-lemon-cream--869) | Fairy |
+| 869 | [Alcremie (Salted Cream)](Form-Guide.md#alcremie-salted-cream--869) | Fairy |
+| 869 | [Alcremie (Ruby Swirl)](Form-Guide.md#alcremie-ruby-swirl--869) | Fairy |
+| 869 | [Alcremie (Caramel Swirl)](Form-Guide.md#alcremie-caramel-swirl--869) | Fairy |
+| 869 | [Alcremie (Rainbow Swirl)](Form-Guide.md#alcremie-rainbow-swirl--869) | Fairy |
+| 888 | [Zacian (Crowned)](Form-Guide.md#zacian-crowned--888) | Fairy / Steel |
+| 905 | [Enamorus (Therian)](Form-Guide.md#enamorus-therian--905) | Fairy / Flying |
 
 64 Pokémon (18 of them originals from #1–386) and 26 forms.

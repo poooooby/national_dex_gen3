@@ -78,7 +78,7 @@ move stays as it is. A **—** for power is a move whose damage is worked out an
 ## Added moves
 
 The 419 moves from later generations that work in battle here. Pokémon learn them by
-level-up, as egg moves or from [TMs](tms.md). The few left (moves that need a partner to act out
+level-up, as egg moves or from [TMs](TM-Guide.md). The few left (moves that need a partner to act out
 of turn, such as After You and Instruct) are swapped for the closest original move. **Kind** is
 physical or special by the move's type, as these games do; **Move Split** is what the move is
 with that option on.

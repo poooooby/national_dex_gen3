@@ -10,9 +10,9 @@ form also counts the base Pokémon in your Pokédex.
 
 - **Where do they come from?** A spawn mod puts the ones that are wild in the real games in the wild
   ([WoobleSpawns](https://github.com/poooooby/g1r_modern_spawns) does), and many evolve from another form:
-  see each form's *Evolves* line and the [evolution and forms guide](../evolutions-and-forms.md). Any form
+  see each form's *Evolves* line and the [evolution and forms guide](Evolution-Guide.md). Any form
   can also be made with the save editor.
-- Ability, typing and moves follow the same rules as the other Pokémon (see the [index](../pokemon.md)).
+- Ability, typing and moves follow the same rules as the other Pokémon (see the [index](Pokemon-Guide.md)).
 - Left out: Mega Evolutions, Gigantamax forms, forms that only exist during a battle, cosmetic forms and
   gender differences (those use the same Pokémon with a different picture).
 

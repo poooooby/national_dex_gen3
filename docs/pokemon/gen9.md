@@ -1,6 +1,6 @@
 # Generation 9 Pokémon
 
-120 Pokémon, #906–1025. [Back to the index](../pokemon.md).
+120 Pokémon, #906–1025. [Back to the index](../Pokemon-Guide.md).
 
 ### #906 Sprigatito
 

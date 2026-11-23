@@ -11,12 +11,12 @@ the originals and forms included: level-up, TM, tutor and egg moves, with a link
 
 ## How to read the entries
 
-- **Ability.** 178 newer abilities work for real ([the list](abilities.md));
+- **Ability.** 178 newer abilities work for real ([the list](Ability-Guide.md));
   any other is the closest Gen 3 ability (for example Simple becomes Own Tempo), which the
   Pokémon shows and acts like. A second name is its second ability slot.
 - **Typing.** The modern typing, Fairy included (Gen 6's type chart).
 - **Learnset.** The same moves at the same levels as in the modern games. Newer moves work for
-  real ([the list](moves.md)); the few that can't are replaced, at the same level, by the closest
+  real ([the list](Move-Guide.md)); the few that can't are replaced, at the same level, by the closest
   Gen 3 move.
 - TM, HM, tutor and egg moves are not listed here.
 
@@ -31,9 +31,9 @@ the originals and forms included: level-up, TM, tutor and egg moves, with a link
 
 ## Alternate forms
 
-- [Forms](pokemon/forms.md): Alolan, Galarian, Hisuian and Paldean forms, Wormadam's cloaks, the Rotom appliances,
+- [Forms](Form-Guide.md): Alolan, Galarian, Hisuian and Paldean forms, Wormadam's cloaks, the Rotom appliances,
   the Therian and Origin forms and more, each a Pokémon of its own.
 
 ## By type
 
-- [Fairy](fairy.md): every Fairy-type Pokémon, the originals that became part Fairy included.
+- [Fairy](Fairy-Guide.md): every Fairy-type Pokémon, the originals that became part Fairy included.
