@@ -3,6 +3,15 @@
 All notable changes to this mod are documented here, in
 [keep a changelog](https://keepachangelog.com/en/1.1.0/) format.
 
+## [1.20.2] - 2026-11-24
+
+### Fixed
+
+- **FireRed to Emerald after the save editor:** a game started after the save editor had been
+  opened in the same run was taken for the editor, and played without the new moves, the Bigger
+  PC, the bigger bag, day and night, the vending machines and achievements until the game was
+  restarted.
+
 ## [1.20.1] - 2026-11-24
 
 ### Changed

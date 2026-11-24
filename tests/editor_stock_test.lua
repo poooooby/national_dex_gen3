@@ -51,6 +51,10 @@ end
 SaveData.saveOptions = function() end
 Data:load()
 Gen.bindGame3Data(Data)
+-- (App.load makes its session before it loads mods; the mod takes the editor for the host only
+-- while it has one, src/editor.lua Editor.detect)
+local session = {}
+package.loaded["App"] = { getState = function() return session end }
 local run = T.sdk.loadMods({ "mods/national_dex_gen3" }, { data = Data, generation = 3 })
 SaveData.loadOptions, SaveData.saveOptions = loadOptions, saveOptions
 T.eq(#run.errors, 0, "the mod loads in the editor (" .. tostring(run.errors[1]) .. ")")
@@ -271,4 +275,17 @@ do
 end
 
 run.release()
+
+-- a FireRed game started after the editor closed is a game: App.unload drops the session and the
+-- editor's modules are evicted, while its require path stays set (require("Gen") still loads)
+do
+  local Editor = dofile("mods/national_dex_gen3/src/editor.lua")
+  T.check(Editor.detect(require) == true, "the editor open: the editor is the host")
+  session = nil
+  T.check(Editor.detect(require) == false, "the editor unloaded: a game")
+  package.loaded["App"], package.loaded["Gen"] = nil, nil
+  T.check(pcall(require, "Gen"), "(the editor's require path still loads Gen)")
+  T.check(Editor.detect(require) == false, "the editor closed: a game")
+end
+
 T.finish("national_dex_gen3 stock save editor")

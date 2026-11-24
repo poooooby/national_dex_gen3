@@ -24,10 +24,19 @@
 
 local Editor = {}
 
--- Is the save editor the host? It is the only host with its own `Gen` module.
+-- Is the save editor the host? Only while it is open: its App has a session from App.load (made
+-- before it loads mods) until App.unload, and closing it evicts its modules. Its require path
+-- stays set for the rest of the run, so `require("Gen")` alone would also answer yes in a
+-- FireRed to Emerald game started after the editor was opened (which then lost the new moves,
+-- the Bigger PC and the rest of the in-game features). (Mods have no `package`: in such a game
+-- App is loaded afresh, with no session.)
 function Editor.detect(require)
   local ok, Gen = pcall(require, "Gen")
   if not (ok and type(Gen) == "table" and type(Gen.bindGame3Data) == "function") then return false end
+  local okA, App = pcall(require, "App")
+  if not (okA and type(App) == "table" and type(App.getState) == "function") then return false end
+  local okS, S = pcall(App.getState)
+  if not (okS and S ~= nil) then return false end
   local okV, GameVersion = pcall(require, "src.core.GameVersion")
   return okV and type(GameVersion.generation) == "function" and GameVersion.generation() == 3
 end
