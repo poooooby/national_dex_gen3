@@ -3,6 +3,13 @@
 All notable changes to this mod are documented here, in
 [keep a changelog](https://keepachangelog.com/en/1.1.0/) format.
 
+## [1.20.1] - 2026-11-24
+
+### Changed
+
+- **Mod Manager description:** it names every game WoobleDex covers, Red to Emerald, instead of
+  FireRed to Emerald only.
+
 ## [1.20.0] - 2026-11-23
 
 ### Fixed
