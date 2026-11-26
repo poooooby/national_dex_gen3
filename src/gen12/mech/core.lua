@@ -66,8 +66,17 @@ function Core.new(opts)
   for _, r in ipairs(opts.gen3 or {}) do
     if type(r.extra) == "table" then self.extra[r.id] = r.extra end
   end
+  for id, e in pairs(Core.FORMER_EXTRA) do
+    if not self.extra[id] then self.extra[id] = e end
+  end
   return self
 end
+
+-- Moves whose Gen 3 row traded its `extra` for a doubles rule: the Gen 1/2 rows still say
+-- mech.extra, and these games have no partner, so the old description is exact here.
+Core.FORMER_EXTRA = {
+  LIFE_DEW = { kind = "status", heal = 25, healTarget = "self" },   -- a rule since 1.19.4
+}
 
 -- ------------------------------------------------------------------ registering mechanics
 function Core:move(id, spec) self.byMove[id] = spec end

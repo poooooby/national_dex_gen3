@@ -10,11 +10,13 @@ if not _G.love then _G.love = require("tests.love_stub") end
 
 local T = require("tests.modkit")
 local H = dofile((arg[0]:gsub("\\", "/"):match("^(.*)/") or ".") .. "/_gen12.lua")
-local gen3 = H.module("data/moves.lua")
+local gen12 = H.module("data/gen12/moves.lua")
 local Red = H.module("src/gen12/battle/red.lua")
 
+-- the Gen 1/2 rows built from Gen 3's `extra` data (mech.extra), not Gen 3's own rows: Life Dew
+-- left Gen 3's `extra` for a rule in 1.19.4 (it heals the partner in doubles) and is still one here
 local described = {}
-for _, r in ipairs(gen3) do if r.extra then described[#described + 1] = r.id end end
+for _, r in ipairs(gen12) do if r.mech and r.mech.extra then described[#described + 1] = r.id end end
 
 T.eq(#described, 88, "88 newer moves are described as data")
 T.eq(Red.wrap("Enemy PIDGEOTTO's attack was blocked by the barrier"),

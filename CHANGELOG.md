@@ -3,6 +3,13 @@
 All notable changes to this mod are documented here, in
 [keep a changelog](https://keepachangelog.com/en/1.1.0/) format.
 
+## [1.20.3] - 2026-11-25
+
+### Fixed
+
+- **Life Dew on Red to Crystal:** heals the user by a quarter of its HP again. Since 1.19.4 it
+  played as a stand-in move there.
+
 ## [1.20.2] - 2026-11-24
 
 ### Fixed
